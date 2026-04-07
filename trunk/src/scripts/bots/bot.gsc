@@ -31,6 +31,11 @@
     EULA.
 ******************************************************************************/
 
+/*** DEPRECATED ***
+ *
+ *  This file is deprecated in favor of _bot.gsc, and will be removed in the future.
+ *
+ */
 #include scripts\include\utility;
 
 

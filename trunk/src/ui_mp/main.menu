@@ -107,7 +107,7 @@
             textscale       TEXTSIZE_TITLE
             textalign       ITEM_ALIGN_CENTER
             forecolor       1 1 1 0.85
-            exp text ( "Reign of the ^1Undead^7 2.2.2" );
+            exp text ( "Reign of the ^1Undead^7 2.2.2-git" );
             visible         1   decoration  }
 
         //#include "ui/background_bars.menu"
@@ -241,7 +241,7 @@
     {
         CENTER_POPUP_SETUP( single_popmenu, 9, ;, 1 )
 
-        CHOICE_POPMENU_TITLE( "Reign of the ^1Undead^7 2.2.2" )
+        CHOICE_POPMENU_TITLE( "Reign of the ^1Undead^7 2.2.2-git" )
         CHOICE_SECTION_TITLE( 2, "Developer:" )
         CHOICE_SUBTEXT_COLOR_VIS( 3, "                           Mark A. Taff", textcolor, 1 )
         CHOICE_SECTION_TITLE( 4, "Original Developer:" )

@@ -38,6 +38,7 @@
 
 #include scripts\bots\_bot;
 #include scripts\include\utility;
+#include scripts\include\int_stack;
 
 init()
 {
@@ -76,10 +77,10 @@ init()
     level.slowBots = 1;
     level.burningZombieDemeritSize = getDvarInt("surv_burning_zombie_demerit_size");
 
-
     wait 1;
     if (level.loadBots) {
         // this is a server restart, so create bots
+        noticePrint("Calling to load " + level.dvar["bot_count"] + " bots.");
         instantiateBots(level.dvar["bot_count"]);
     } else {
         // this is a map restart, so existing bots will reconnect
@@ -280,8 +281,9 @@ availableBot()
 {
     debugPrint("in _bots::availableBot()", "fn", level.fullVerbosity);
 
+    // noticePrint("level.availableBots.size: " + level.availableBots.size);
     if (level.availableBots.size == 0) {
-        if (false) {
+        if (true) {
             // for debugging.  this usually only happens when we all of our bot slots are
             // already zombies, but the game would make more zombies if we had more slots
             spawnedBots = 0;
@@ -326,6 +328,7 @@ spawnZombie(zombieType, spawnpoint, bot)
     bot.targetPosition = undefined;
     bot.type = zombieType;
     bot.pathNodes = [];
+    bot.pathStack = scripts\include\int_stack::new();
     bot.myWaypoint = undefined;
     bot.goalWp = undefined;
     bot.nextWp = undefined;
@@ -395,15 +398,17 @@ spawnZombie(zombieType, spawnpoint, bot)
     bot scripts\bots\_types::onSpawn(bot.type);
     bot linkto(bot.mover);
     bot thread fixStuck();
-    bot idle();
+    bot idle(bot);
     if (level.zombieAiDevelopment) {
         bot.runSpeed = bot.runSpeed * 5;    // scale to seconds
         bot.walkSpeed = bot.walkSpeed * 5;  // scale to seconds
-        bot thread main();
+        // bot thread main();
+        // bot thread botMain();
+        bot thread scripts\bots\_bot::botMain(bot);
     } else {
         bot thread zomMain();
     }
-    bot thread groan();
+    bot thread groan(bot);
     bot.readyToBeKilled = true;
 
     return bot;
@@ -520,6 +525,116 @@ addToAssist(player, damage)
     struct.player = player;
     struct.damage = damage;
 }
+
+
+// // Returns the human-readable name of the BOT state as a string
+// botStateToString(state) {
+//     switch(state)
+//     {
+//         case 0:         return "IDLE"; // Idle
+//         case 1:    return "SEARCHING"; // Wandering, no target, low alert
+//         case 2:     return "STALKING"; // Trying to get/keep target in sight, medium alert
+//         case 3:     return "PURSUING"; // Target in sight, high alert
+//         case 4:        return "MELEE"; // In melee range and attacking
+//         case 5:      return "STUNNED"; // Hit by thundergun / stunned
+//         case 6:    return "REACQUIRE_TARGET"; // Lost sight, going to last known position
+//         case 7:         return "DEAD"; // Dead
+//         case 8:   return "VICTORIOUS"; // Successfully killed target, standing over it
+//         case 9:      return "RECYCLE"; // ready to recycle
+//         default:                     return "UNKNOWN_STATE_" + state;
+//     }
+// }
+
+// botMain()
+// {
+//     // no function entrance debugging, main loop
+//     self endon("disconnect");
+//     self endon("death");
+//     level endon("game_ended");
+
+//     wait 1.2; // wait until bot is standing up before he starts to move
+//     count = 0;
+//     self.previousStatus = 9; // initialize previousStatus so we can detect status changes in the loop and print them for debugging
+//     while (1) {
+//         count++;
+//         if (count > 100) {
+//             noticePrint("Bot " + self.index + " bailing on main loop.");
+//             break;
+//         }
+//         switch (self.status) {
+//             case 9: // BOT_STATE_IDLE
+//                 // set state searching
+//                 self.status = 0; // BOT_STATE_SEARCHING
+//                 self.previousStatus = 9;
+//                 self.alertLevel = 100;
+//                 setSpeed();
+//                 noticePrint("Bot " + self.index + " Idle --> Searching");
+//                 iPrintLnBold("Bot " + self.index + " Idle --> Searching");
+//                 break;
+//             case 0: // BOT_STATE_SEARCHING
+//                 bestTarget();  // sets self.bestTarget & self.closestTarget
+//                 if (!isDefined(self.bestTarget)) {
+//                     // wander towards self.closestTarget, but keep searching
+//                     iPrintLnBold("Searching towards " + self.closestTarget.name);
+//                 } else {
+//                     self.targetedPlayer = self.bestTarget;  // temp hack, think we have 2 variables for the same things indifferent parts of the code
+//                     setTargetedPlayer(self.bestTarget);
+//                     self.status = 1; // BOT_STATE_STALKING;
+//                     noticePrint("Bot " + self.index + " Searching --> Stalking " + self.bestTarget.name);
+//                     iPrintLnBold("Bot " + self.index + " Searching --> Stalking " + self.bestTarget.name);
+//                     // iPrintLnBold("Targeting: " + self.bestTarget.name);
+//                 }
+//                 doWander();
+//                 // findNewTarget()
+//                 // if not found, break;  keep searching wandering randomly
+//                 // if found, set state stalking
+//                 break;
+//             case 1: // BOT_STATE_STALKING
+//                 noticePrint("Bot " + self.index + " Stalking " + self.bestTarget.name);
+//                 // canWeSeeTarget() if no, set state reacquire target; break;
+//                 // checkForBetterTarget() // every Nth iteration
+//                 // if not found, break;  keep stalking current target
+//                 // if found, stalk new target
+//                 break;
+//             case 2: // BOT_STATE_PURSUING
+//                 // canWeSeeTarget() if no, set state reacquire target; break;
+//                 // checkForBetterTarget() // every Nth iteration
+//                 // if not found, break;  keep pursuing current target
+//                 // if found, pursue new target
+//                 break;
+//             case 5: // BOT_STATE_REACQUIRE
+//                 // move to last known target position
+//                 // if at last known position, look for target
+//                 // canWeSeeTarget() if no, canWeSeeAnyTarget()? if no, set state searching.
+//                 // if yes, set state to stalking | pursuing depending on distance to target
+//                 break;
+//             case 4: // BOT_STATE_STUNNED
+//                 // wait until stun duration is over, then set state searching
+//                 break;
+//             case 3: // BOT_STATE_MELEE
+//                 break;
+//             case 6: // BOT_STATE_DEAD
+//                 // do nothing, wait for respawn.  might have to wait for body to decompose
+//                 break;
+//             case 7: // BOT_STATE_VICTORIOUS
+//                 // play groan; then set state idle
+//                 break;
+//             case 8: // BOT_STATE_RECYCLE
+//                 // likely reinit and respawn
+//                 break;
+//                 default:
+//                 self.status = 9; // BOT_STATE_IDLE 
+                
+//         }
+
+//         wait level.zomInterval;  // set to 0.2 seconds, or 4 frames.
+//         // wait: seconds, where the server runs 20 frames per second.  Therefore,
+//         // `wait 1` pauses execution for 1 second (20 frames),
+//         // `wait 0.05` pauses for 1 frame
+//     }
+// }
+
+
 
 zomMain()
 {
@@ -744,46 +859,12 @@ zomMoveTowards(target_position)
 //         targetWp = nearestWaypoint(target_position, true, self.bestTarget);
         targetWp = nearestWaypoints(target_position, 1)[0];
 
-        if (self.myWaypoint < 0) {
-            if ((self.myWaypoint == -1) ||  // we never got past this init value
-                (self.myWaypoint == -2) ||  // we hit our own corpse
-                (self.myWaypoint == -4))    // returned waypoint index exceeds array bounds
-            {
-                value = self.myWaypoint;
-                self.myWaypoint = undefined;
-                errorPrint("self.myWaypoint: " + value + " targetWp: " + targetWp);
-                return;
-            } else if (self.myWaypoint == -3) { // no visible waypoints from our position
-                // this can happen if we are inside an object we shouldn't be in,
-                // like a shipping container
-                self.myWaypoint = nearestWaypoints(self.origin, 1)[0];
-                if (self.myWaypoint < 0) {
-                    value = self.myWaypoint;
-                    self.myWaypoint = undefined;
-                    errorPrint("self.myWaypoint: " + value + " targetWp: " + targetWp);
-                    return;
-                }
-            }
-        } else if (targetWp < 0) {
-            if ((targetWp == -1) ||  // we never got past this init value
-                (targetWp == -2) ||  // we hit our own corpse
-                (targetWp == -4))    // returned waypoint index exceeds array bounds
-            {
-                value = targetWp;
-                targetWp = undefined;
-                errorPrint("self.myWaypoint: " + self.myWaypoint + " targetWp: " + value);
-                return;
-            } else if (targetWp == -3) { // no visible waypoints from our position
-                // this can happen if the target is inside an object we shouldn't be in,
-                // like a shipping container, or with insufficient waypoints
-                targetWp = nearestWaypoints(self.origin, 1)[0];
-                if (targetWp < 0) {
-                    value = targetWp;
-                    targetWp = undefined;
-                    errorPrint("self.myWaypoint: " + self.myWaypoint + " targetWp: " + value);
-                    return;
-                }
-            }
+        self.myWaypoint = validateWaypoint(self.myWaypoint, "myWaypoint");
+        targetWp = validateWaypoint(targetWp, "targetWp");
+
+        // both are vaild
+        if ((self.myWaypoint) && (targetWp)) {
+            debugPrint("myWaypoint: " + self.myWaypoint + " targetWp: " + targetWp, "val");
         }
 
         if (targetWp == self.myWaypoint) {
@@ -888,65 +969,6 @@ pushout(org)
         pushoutPos = linkObj.origin + (pushOutDir * (minDistance-distance));
         linkObj.origin = (pushoutPos[0], pushoutPos[1], self.origin[2]);
     }
-}
-
-/**
- * @brief Moves a zombie to/towards a desired position
- *
- * @param goalPosition vector The desired new position of the zombie
- * @param speed integer ??? How fast the zombie should move
- *
- * @returns nothing
- */
-moveToPoint(goalPosition, speed)
-{
-    // 8th most-called function (2% of all function calls).
-    // Do *not* put a function entrance debugPrint statement here!
-
-    dis = distance(self.mover.origin, goalPosition);
-
-    if (dis < speed) {speed = dis;}
-    else {speed = speed * level.zomSpeedScale;}
-
-    targetDirection = vectorToAngles(VectorNormalize(goalPosition - self.mover.origin));
-    step = anglesToForward(targetDirection) * speed ;
-
-    self SetPlayerAngles(targetDirection);
-
-    // tentative new position for zombie
-    newPos = self.mover.origin + step + (0,0,40);
-    // find ground level below tentative new position
-    dropNewPos = dropPlayer(newPos, 200);
-    if (isDefined(dropNewPos)) {
-        newPos = (dropNewPos[0], dropNewPos[1], self compareZ(goalPosition[2], dropNewPos[2]));
-    }
-    // now actually move the zombie to the new position
-    self.mover moveto(newPos, level.zomInterval, 0, 0);
-}
-
-compareZ(goalPositionZ, dropNewZ)
-{
-    // 9th most-called function (2% of all function calls).
-    // Do *not* put a function entrance debugPrint statement here!
-
-    deltaZ = dropNewZ - self.origin[2];
-    limit = 60; //30
-    if (deltaZ > limit) {
-        // new position would be more than 30 units higher than current position
-        if (goalPositionZ > dropNewZ) {
-            // goalPositionZ is even higher, limit delta height to 'limit' units
-            return self.origin[2] + limit;
-        } else {return goalPositionZ;}
-    }
-    if (deltaZ < -1 * limit) {
-        // new position would be more than 30 units lower than current position
-        if (goalPositionZ < dropNewZ) {
-            // dropNewZ is even lower, np
-            return dropNewZ;
-        } else {return goalPositionZ;}
-    }
-    // deltaZ is +/- limit units of current height, so just return the new height
-    return dropNewZ;
 }
 
 zomAreaDamage(range)

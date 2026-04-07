@@ -34,6 +34,26 @@
  * @file utility.gsc General utility functions
  */
 
+#include scripts\include\realtime;
+
+// Call this once at the start of every map / new game
+logMapStartHeader()
+{
+    initRealTime();
+
+    logPrint("============================================================\n");
+    logPrint("Map Started: " + getRealDateTimeString() + "\n");
+    logPrint("Map: " + getDvar("mapname") + "\n");
+    logPrint("Timezone: " + level.realTimeTZ + " (UTC" + level.realTimeOffset + ")\n");
+    logPrint("============================================================\n");
+}
+
+// Use this everywhere for timestamped logs
+logTimestamped(message)
+{
+    logPrint("[" + getRealDateTimeString() + "] " + message + "\n");
+}
+
 /**
  * @brief Writes debug messages to logfile specified in g_log dvar
  *

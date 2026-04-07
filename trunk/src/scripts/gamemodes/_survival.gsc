@@ -34,6 +34,7 @@
 #include scripts\include\hud;
 #include scripts\include\array;
 #include scripts\include\utility;
+#include scripts\include\realtime;
 
 initGame()
 {
@@ -120,6 +121,9 @@ buildWaveOrder()
 
     // Tack on the final wave
     level.waveOrder[level.totalWaves - 1] = level.finalWave;
+
+    // Force first wave to be specific special wave, for dev/debug purposes only
+    // level.waveOrder[0] = "burning";
 
     debugPrint("Total waves is: " + level.totalWaves, "val");
     for (i=0; i<level.waveOrder.size; i++) {
@@ -501,7 +505,7 @@ startRegularWave()
     scripts\players\_players::resetSpawning();
     level.intermission = 0;
 
-    noticePrint("Beginning wave " + level.currentWave + ": regular zombies");
+    noticePrint("[" + getRealDateTimeString() + "] Beginning wave " + level.currentWave + ": regular zombies");
 
     // Start bringing in the ZOMBIES!!!
     level notify("start_monitoring");
@@ -650,7 +654,7 @@ startSpecialWave(type)
     scripts\players\_players::resetSpawning();
     level.intermission = 0;
 
-    noticePrint("Beginning wave " + level.currentWave + ": " + level.waveType + " zombies");
+    noticePrint("[" + getRealDateTimeString() + "] Beginning wave " + level.currentWave + ": " + level.waveType + " zombies");
 
     // Start bringing in the ZOMBIES!!!
     level notify("start_monitoring");
@@ -949,11 +953,13 @@ spawnZombie(override, spawntype)
         if (isdefined(override)) {
             type = override;
             spawn = randomSpawnpoint();
-            return scripts\bots\_bots::spawnZombie(type, spawn);
+            bot = scripts\bots\_bots::availableBot();
+            return scripts\bots\_bots::spawnZombie(type, spawn, bot);
         } else {
             type = scripts\gamemodes\_gamemodes::getRandomType();
             spawn = randomSpawnpoint();
-            return scripts\bots\_bots::spawnZombie(type, spawn);
+            bot = scripts\bots\_bots::availableBot();
+            return scripts\bots\_bots::spawnZombie(type, spawn, bot);
         }
     }
 }

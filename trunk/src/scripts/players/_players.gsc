@@ -975,10 +975,10 @@ watchPlayersData()
 {
     debugPrint("in _players::watchPlayersData()", "fn", level.nonVerbose);
 
-    while(1) {
-        wait 30;
-        printPlayersData();
-    }
+    // while(1) {
+    //     wait 30;
+    //     printPlayersData();
+    // }
 }
 
 

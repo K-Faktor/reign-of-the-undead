@@ -116,7 +116,7 @@ init()
     for ( index = 0; index < level.weaponList.size; index++ )
     {
         precacheItem(level.weaponList[index]);
-        debugPrint("Precached weapon: " + level.weaponList[index], "val");
+        // debugPrint("Precached weapon: " + level.weaponList[index], "val");
     }
 
     //precacheItem("c4_mp");

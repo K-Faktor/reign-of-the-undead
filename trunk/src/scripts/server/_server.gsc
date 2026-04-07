@@ -70,7 +70,7 @@ init()
     level.activePlayers = 0;
 
     level.gametype = toLower(getDvar("g_gametype"));
-    level.modversion = "RotU v2.2.2";
+    level.modversion = "RotU v2.2.2-git";
     level.dedicated = getDvar("dedicated");
 
     /**
@@ -103,6 +103,7 @@ init()
     currentMap = getdvar("mapname");
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
     noticePrint("Starting map " + currentMapName + " (" + currentMap + ").");
+    logMapStartHeader();
 
     thread scripts\server\_settings::init();
     thread maps\mp\_umiEditor::init();

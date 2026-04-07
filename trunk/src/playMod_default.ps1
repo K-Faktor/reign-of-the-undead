@@ -1,4 +1,3 @@
-#!/usr/bin/bash
 #******************************************************************************
 #     Reign of the Undead, v2.x
 #
@@ -32,11 +31,21 @@
 #     EULA.
 #******************************************************************************
 
-# Depends on: being run from the mods/rotudev folder
+# This file is untested, but Grok says it will work.
+# YMMV.  Check the paths for iw3mp.exe, the Mods folder,
+# and your CWD.
 
-# Suppress output by redirecting to /dev/null if needed, but here we'll just run commands
-# Ensure the correct current working directory gets set
-cd "$(dirname "$0")"/../../
+Clear-Host
+Write-Host "=== CoD4 Listen Server Launcher ===" -ForegroundColor Cyan
+Write-Host ""
+
+$UNIXEPOCH = [int][double]::Parse((Get-Date -UFormat %s))
+
+Write-Host "Current Unix timestamp : " -NoNewline
+Write-Host $UNIXEPOCH -ForegroundColor Green
+Write-Host "Launch time           : " -NoNewline
+Write-Host (Get-Date) -ForegroundColor Green
+Write-Host ""
 
 # Launch the Listen server
 #   In a listen server, the COD4 client and server run in the same process, which makes
@@ -49,36 +58,32 @@ cd "$(dirname "$0")"/../../
 #   developer and developer_script should be 0 for regular games, but must be 1 to use the UMI Editor
 #   exec server.cfg loads all of the various *.cfg files
 #   devmap sets the name of the map to load when the server starts
-#   +set real_time_offset value is a -5 for CDT (US Chicago).  If not set, you get UTC.
-#   +set real_time_tz "CDT (US Chicago)"  used as a string
 
-UNIXEPOCH=$(date +%s)
+# You can create a *.bat file as beolow to run this file, if desired
 
-WINEPREFIX=~/.wine_cod4
-wine "./iw3mp.exe" \
-  +set fs_game "mods/rotudev" \
-  +set sv_punkbuster "0" \
-  +set dedicated 0 \
-  +set developer 0 \
-  +set developer_script 0 \
-  +set g_gametype "surv" \
-  +set real_time_base "$UNIXEPOCH" \
-  +set real_time_offset -5 \
-  +set real_time_tz "CDT (Dallas, Texas)" \
-  +exec server.cfg \
-  +devmap mp_surv_testmap
-  # +devmap mp_surv_tunnel
-  # +devmap mp_xtr_abydos
-  # +devmap mp_xtr_arena
-  # +devmap mp_surv_bjwifi_beach
-  # +devmap mp_surv_bjelovar
-  # +devmap mp_surv_bjwifi_fort
-  # +devmap mp_surv_new_moon_lg
-  # +devmap mp_surv_pacman
-  # +devmap mp_surv_springfield
-  # +devmap mp_fnrp_simpsons
-  # +devmap mp_xtr_volcano
+# @echo off
+# powershell -ExecutionPolicy Bypass -File "%~dp0Start-CoD4.ps1"
+# pause
 
-# If run from command line, change back to original folder
-# (Optional, since script ends here)
-cd Mods/rotudev
+$arguments = @(
+    "+set", "fs_game",           "mods/rotudev"
+    "+set", "sv_punkbuster",     "0"
+    "+set", "dedicated",         "0"
+    "+set", "developer",         "0"
+    "+set", "developer_script",  "0"
+    "+set", "g_gametype",        "surv"
+    "+set", "real_time_base",    $UNIXEPOCH
+    "+exec", "server.cfg"
+    "+devmap", "mp_surv_testmap"
+)
+
+try {
+    Write-Host "Starting iw3mp.exe..." -ForegroundColor Yellow
+    & ".\iw3mp.exe" $arguments
+}
+catch {
+    Write-Host "ERROR: Failed to launch iw3mp.exe" -ForegroundColor Red
+    Write-Host $_.Exception.Message
+}
+
+Write-Host "`nServer launcher finished." -ForegroundColor Cyan

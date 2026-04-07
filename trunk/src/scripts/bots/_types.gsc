@@ -890,8 +890,10 @@ toxicCloud(origin, time)
     playfx(level.toxicFX, origin);
     ent playsound("toxic_gas");
     self endon("death");
+
     for (t=0;t<40; t++) {
         for (i=0; i<level.players.size; i++) {
+            if( level.players[i].isBot) {continue;}
             if (!isDefined(level.players[i])) {continue;}
             if (distance(level.players[i].origin, origin) < 128) {
                 if (!isDefined(!level.players[i].entoxicated)) {continue;}
