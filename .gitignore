@@ -30,6 +30,7 @@ master_maps/
 .env
 .directory
 _private*
+__pycache__
 
 # Ignore OS-specific files
 .DS_Store

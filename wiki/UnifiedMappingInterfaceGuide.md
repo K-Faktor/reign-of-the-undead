@@ -14,7 +14,7 @@ For the most up-to-date API documentation, you should refer to the debug version
 - `_umi.gsc`
 - `_umiEditor.gsc`
 
-You can find them in the debug version of `rotu_svr_scripts.iwd` or directly in the SVN repository.
+You can find them in the debug version of `rotu_svr_scripts.iwd` or directly in the repository.
 
 ## Important Bugs
 
@@ -28,7 +28,7 @@ This bug will be fixed in a future update.
 To load a non-RotU map or override a RotU map, you generally need three files (example for `mp_damnalley`):
 
 - `mp_damnalley.gsc` — main map script
-- `mp_damnalley_waypoints.gsc` — waypoints for the map
+- `mp_damnalley_waypoints.gsc` — waypoints for the map (not required if internal waypoints are OK)
 - `mp_damnalley_tradespawns.gsc` — tradespawns (shops and weapon upgrades)
 
 These files should be placed in:
@@ -48,6 +48,8 @@ After making changes, rebuild the mod with `perl makeMod.pl -s` (SVN) or manuall
 4. Update `fs_game` to point to your mod folder (e.g. `mods/rotudev`).
 
 To edit waypoints and tradespawns, set `umiEditorMode = true` in the map’s main `.gsc` file.  
+Additionally, for screenshot mode, set `screenshotMode = true` in the map’s main `.gsc` file.  This prevents all the UMI stuff from spawning, for clean screenshots.
+
 To test the map with zombies, set `umiEditorMode = false`.
 
 - `umiEditorMode = true`: No zombies, editor tools active.
@@ -59,16 +61,56 @@ The UMI Editor follows the **devPlayer** defined in `admin.cfg` (`set admin_forc
 
 In the map’s main `.gsc` file, you will usually see:
 
-```gsc
-if (umiEditorMode) {
-    devDrawAllPossibleSpawnpoints();
-    maps\mp\_umiEditor::initMapEditor();
-} else {
+    umiEditorMode = true;   // toggle true/false to switch between editor and game mode
+    screenshotMode = true;  // hide all the UMI stuff to facilitate screenshots
+
+```bash
+    if (umiEditorMode) {
+        if (!screenshotMode) {
+            devDrawAllPossibleSpawnpoints();
+        }
+        maps\mp\_umiEditor::initMapEditor();
+    } else {
+        buildWeaponShopsByTargetname("ammostock");
+        buildShopsByTargetname("weaponupgrade");
+    }
 ```
 The call to `devDrawAllPossibleSpawnpoints();` draws a red vertical laser at each possible spawnpoint.  The purpose of this is to prevent you from placing a tradespawn (shop or weapons upgrade) on top of or too close to a spawnpoint.
 
 # Commands
 The UMI Editor commands are available from the menu by pressing b then 5.  Admin commands are available from b then 4, in case you need to teleport through an obstacle to get to a waypoint location.  Additionally, there are keyboard shortcuts for some commands, as noted in the HUD.
+
+# Map Screenshots
+**Since:** RotU 2.2.2-git
+
+Set the `screenshotMode = true;` as noted above.
+
+In playMod.bat, ensure the following values are set in the command line for `iw3mp.exe`:
+
+```bash
+  +set dedicated 0 \
+  +set developer 1 \
+  +set developer_script 1 \
+
+  +set r_fullscreen \
+  +set sv_pure 0 \
+  +set thereisacow 1337
+```
+
+  * Launch the game
+  * Choose a class
+  * Change teams to spectator
+  * Fly around to get the view you want.
+  * Use in-game console (use backtick\tilde key \` to toggle in-game console on/off)
+  * Turn off minimap & all hud elements, good for screenshots:
+```bash
+/exec minimap
+```
+
+  * Alt+Tab, set up screenshot program for full screen capture after a delay
+  * Alt+Tab back to game;  Save screenshot.
+
+Spectacle on KDE gave me a 16 MiB, 4K *.png.  Probably a bit more than I need.
 
 # Waypoints
 When running a map in umiEditorMode, nearby linked waypoints are marked by blue flags.  Unlinked waypoints are marked with red flags. While creating a waypoint link, you will be carrying a black flag.
@@ -109,14 +151,14 @@ Waypoint links are drawn in a variety of colors, and they are drawn 10 units hig
   You can change the type of the current (closest) waypoint with the 'cycle waypoint type' command.  RotU doesn't use this currently, but the new AI under development will.
 
   ## Best Practices
-    * Place a waypoint at the exact bottom and top of each flight of stairs or ramp.
-    * If two flights of stairs connect at 90 degrees at a landing, place one additional waypoint on that landing.
-    * If two flights of stairs connect at a landing but keep going in the same direction, place one additional waypoint on the landing.
-    * If two flights of stairs connect at 180 degrees at a landing, place two additional waypoints on the landing.
-    * Use enough waypoints.  A good rule of thumb is to have them no further apart than twice the height of a player.
-    * Avoid placing a waypoint so close to an obstruction that a zombie would be inside the obstruction if it were at the waypoint or following the waypoint link.
-    * If several waypoints are linked in a line, offset each waypoint slightly so the zombie won't travel in a straight line while following the links.
-    * Place a line of waypoint links along natural lines of drift, such as along rivers, ditches, ridges, roads, paths, and valleys.
+   * Place a waypoint at the exact bottom and top of each flight of stairs or ramp.
+   * If two flights of stairs connect at 90 degrees at a landing, place one additional waypoint on that landing.
+   * If two flights of stairs connect at a landing but keep going in the same direction, place one additional waypoint on the landing.
+   * If two flights of stairs connect at 180 degrees at a landing, place two additional waypoints on the landing.
+   * Use enough waypoints.  A good rule of thumb is to have them no further apart than twice the height of a player.
+   * Avoid placing a waypoint so close to an obstruction that a zombie would be inside the obstruction if it were at the waypoint or following the waypoint link.
+   * If several waypoints are linked in a line, offset each waypoint slightly so the zombie won't travel in a straight line while following the links.
+   * Place a line of waypoint links along natural lines of drift, such as along rivers, ditches, ridges, roads, paths, and valleys.
 
 # Tradespawns
 The shops and weapon upgrades are collectively called tradespawns. The number of equipment shops in a map must equal the number of weapon upgrades in the map.
@@ -174,7 +216,7 @@ After using the 'save waypoints' command the waypoints in memory will be dumped 
 ```
 You will need to copy all those lines and paste them over the existing waypoints file, or into a new waypoints file if one doesn't exist yet. Once that is done, you will need to delete the timecodes at the beginning of each line.
 
-A global replacement of, in this example, '{{{ 65:23 }}}' with an empty string "" will delete all of the timecodes except two of them.  Those two must be deleted manually.  The two commented lines in the header reminding you to delete the timecodes may also be deleted.  You should also ensure there is a final newline in the file, i.e. a blank line after the final closing brace `}'.
+A global replacement of, in this example, '65:23 ' with an empty string "" will delete all of the timecodes except two of them.  Those two must be deleted manually.  The two commented lines in the header reminding you to delete the timecodes may also be deleted.  You should also ensure there is a final newline in the file, i.e. a blank line after the final closing brace `}'.
 
 The final file should look like:
 ```gsc

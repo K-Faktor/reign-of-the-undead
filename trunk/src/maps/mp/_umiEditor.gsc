@@ -212,13 +212,24 @@ initMapEditor()
     level.currentWaypoint = 0;
     level.currentWaypointLink = 0;
 
-    devInitWaypointFlags();
-    devInitializeUnlinkedWaypoints();
-    iPrintLnBold("Waypoint links are drawn 10 units above their origin for better visibility");
-    thread devInitWaypointHud();
-    thread devWatchPlayer();
-    wait 0.05;
-    level thread devDrawWaypointLinks();
+    screenshotMode = true;
+
+    if (screenshotMode) {
+        // hide everything.  Almost works.
+        // still need to hide minimap, rank progress bar, and 'spectate'
+        // hud messages
+        level.minimapEnabled = false;
+        level.showHud = false; // This hides the entire HUD, including the compass
+    } else {
+        devInitWaypointFlags();
+        devInitializeUnlinkedWaypoints();
+        iPrintLnBold("Waypoint links are drawn 10 units above their origin for better visibility");
+        thread devInitWaypointHud();
+        thread devWatchPlayer();
+        wait 0.05;
+        level thread devDrawWaypointLinks();
+    }
+
 }
 
 /**

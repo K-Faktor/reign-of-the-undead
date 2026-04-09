@@ -209,7 +209,7 @@
       "codeName": "mp_xtr_volcano",
       "englishName": "Volcano",
       "listingImage": "https://example.com/listing_mp_xtr_volcano.jpg",
-      "desc": "A giant volcano on a beach",
+      "desc": "A giant volcano on a beach.",
       "author": "jerkan",
       "waypoints": "internal",
       "authorContact": "jerkan@net.hr",
@@ -219,6 +219,22 @@
       "rating": 4,
       "statusReason": "Map loads, zombies spawn, and wander. Everything seems OK-ish.",
       "testedAgainst": ["2.2.2", "HEAD"]
+    },    
+    {
+      "codeName": "mp_surv_gold_rush",
+      "englishName": "Gold Rush",
+      "listingImage": "https://example.com/listing_mp_surv_gold_rush.jpg",
+      "desc": "Zombies attck a gold mine.",
+      "author": "Guerrero",
+      "waypoints": "internal",
+      "authorContact": "",
+      "authorWebsite": "",
+      "blacklisted": false,
+      "status": "works",
+      "rating": 4,
+      "statusReason": "Map loads, zombies spawn, and wander. Everything seems OK-ish.",
+      "testedAgainst": ["2.2.2", "HEAD"]
     }    
+
   ]
 }
