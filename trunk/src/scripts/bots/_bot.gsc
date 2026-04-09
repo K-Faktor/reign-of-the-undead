@@ -59,7 +59,6 @@ instantiate()
 
     initialize(bot);
     return true;
-    // return initialize(bot);
 }
 
 /**
@@ -78,14 +77,6 @@ initialize(bot)
     bot.readyToBeKilled = false;
     bot.spawnPoint = undefined;
 
-    // Wait until the bot is properly connected
-    // limit = 20;             // infinite loop protection
-    // while(!isDefined(bot.pers["team"])) {
-    //     if (limit<0) {break;}
-    //     wait .05;
-    //     limit--;
-    // }
-
     // Extra safety - wait until the bot is really connected
     limit = 40;   // ~2 seconds max
     while (!isDefined(bot) || !isDefined(bot.pers) || !isDefined(bot.pers["team"]))
@@ -103,7 +94,6 @@ initialize(bot)
     bot.pers["team"] = "axis";
     wait 0.1;
 
-    // bot.pathNodes
     bot setStat(512, 100); // Yes we are indeed a bot
     bot setrank(255, 0);
 
@@ -118,10 +108,10 @@ initialize(bot)
         bot.movement.last = 0;
         bot.movement.orders = [];
         bot.speed = 0;
-        bot.pathNodes = [];
         // we assume one order every 0.05s, for 0.2s until we reevaluate movement,
         // but may need more orders to accomodate falling on maps like farthouse
-        for (i=0; i<20; i++) { // 1s
+        // for (i=0; i<20; i++) { // 1s of movement
+        for (i=0; i<10; i++) { // 0.5s of movement, reduced because ran out of variables
             order = spawnStruct();
             order.origin = (0,0,0);
             order.time = 0; //s
@@ -132,11 +122,8 @@ initialize(bot)
     }
 
     bot.index = level.bots.size;
-
     makeBotAvailable(bot);
-
     level.bots[bot.index] = bot;   
-
     return true;
 }
 
@@ -278,12 +265,12 @@ setAnimation(bot, type)
 
     if (isDefined(bot.animation[type])) {
         bot.animWeapon = bot.animation[type];
-        self TakeAllWeapons();
+        bot TakeAllWeapons();
         bot.pers["weapon"] = bot.animWeapon;
-        self giveweapon(bot.pers["weapon"]);
-        self givemaxammo(bot.pers["weapon"]);
-        self setspawnweapon(bot.pers["weapon"]);
-        self switchtoweapon(bot.pers["weapon"]);
+        bot giveweapon(bot.pers["weapon"]);
+        bot givemaxammo(bot.pers["weapon"]);
+        bot setspawnweapon(bot.pers["weapon"]);
+        bot switchtoweapon(bot.pers["weapon"]);
     }
 }
 
@@ -339,23 +326,10 @@ getPath(bot)
     if (level.waypointsInvalid) {
         return botPathfindVisualNav(bot);
     } else {
-        // noticePrint("Getting Waypoint Path!");
-        // iPrintLnBold("Getting Waypoint Path!");
         return botPathfindWaypointsNew(bot);
     }
 
 }
-
-// case 0:         return "IDLE";
-// case 1:    return "SEARCHING";
-// case 2:     return "STALKING";
-// case 3:     return "PURSUING";
-// case 4:        return "MELEE";
-// case 5:      return "STUNNED";
-// case 6:    return "REACQUIRE_TARGET";
-// case 7:         return "DEAD";
-// case 8:   return "VICTORIOUS";
-// case 9:      return "RECYCLE";
 
 // Returns the human-readable name of the BOT state as a string
 botStateToString(state) {
@@ -428,18 +402,21 @@ botMain(bot)
                 if (bot.stateTickCount % 5 == 0) {
                     bot.stateTickCount++;
                     // find a target                    
-                    bestTarget(bot);  // sets bot.bestTarget & bot.closestTarget
-                    if (!isDefined(bot.bestTarget)) {
+                    if (!isDefined(bot.targetedPlayer)) {
+                        bot bestTarget(bot);  // sets bot.bestTarget & bot.closestTarget
+                    // if (!isDefined(bot.bestTarget)) {
                         // wander towards bot.closestTarget, but keep searching
-                        bot thread doWander(bot);
-                        iPrintLnBold("Searching towards " + bot.closestTarget.name);
+                        // bot thread doWander(bot);
+                        // bot thread wander(bot);
+                        bot thread wander(bot);
+                        iPrintLnBold("Searching towards " + bot.targetedPlayer.name);
                     } else {
-                        bot.targetedPlayer = bot.bestTarget;  // temp hack, think we have 2 variables for the same things indifferent parts of the code
-                        setTargetedPlayer(bot.bestTarget);
+                        // bot.targetedPlayer = bot.bestTarget;  // temp hack, think we have 2 variables for the same things indifferent parts of the code
+                        // setTargetedPlayer(bot.bestTarget);
 
                         // set state searching
                         bot changeState(bot, 2); // BOT_STATE_STALKING
-                        iPrintLnBold("Bot " + bot.index + " Searching --> Stalking " + bot.bestTarget.name);
+                        iPrintLnBold("Bot " + bot.index + " Searching --> Stalking " + bot.targetedPlayer.name);
                     }
                 } else {
                     bot.stateTickCount++;
@@ -450,7 +427,9 @@ botMain(bot)
                 if (bot.stateTickCount == 0) {
                     bot.stateTickCount++;
                     noticePrint("Bot " + bot.index + " Stalking " + bot.bestTarget.name + " pos: " + bot.bestTarget.origin);
-                    bot thread doWander(bot);
+                    // bot thread doWander(bot);
+                    // bot thread wander(bot);
+                    bot thread wander(bot);
                 } else {
                     bot.stateTickCount++;
                 }
@@ -498,33 +477,7 @@ botMain(bot)
     }
 }
 
-//  movement chain:
-// _bots::botMain() --> _bot::doWander() --> gePath() --> botPathfindWaypoints()
-doWander(bot)
-{
-    debugPrint("in _bot::doWander()", "fn", level.fullVerbosity);
-
-    // if (bot.isWandering) {return;} // unused property
-    // else {bot.isWandering = true;}
-
-    bot endon("dying");
-    bot endon("disconnect");
-    bot endon("death");
-    bot endon("state_changed");    
-    level endon("game_ended");
-
-    // iPrintLnBold("doWander()");
-
-    path = getPath(bot);
-    // bot thread computeMovement(bot);
-    // bot thread executeMovementQueue(bot);
-    // bot thread wander(bot);
-    // noticePrint("path: " + path);
-    // @todo if we have a target, get a path to the target instead of wandering randomly
-    // for now, just wander randomly
-    // self thread wander();
-}
-
+// controls bot movement across the map
 wander(bot)
 {
     debugPrint("in _bot::wander()", "fn", level.fullVerbosity);
@@ -537,116 +490,83 @@ wander(bot)
     bot endon("state_changed");
     level endon("game_ended");
 
-    if (level.waypointsInvalid) {
-        // use direct method
-        noticePrint("Waypoints Invalid Wandering!");
-        // @todo This is probably the old zombiescript.gsc method, and *must* be 
-        //   maintained for maps w/o waypoints, though it could potentially be improved.
-        //   Lots of issues w/zombies glitching inside stuff, "floating" up stairs, etc.
-    } else {
-        // noticePrint("Waypoint Wandering!");
-        count = 0;
-        // use waypoints
-        bot.isFollowingWaypoints = true;
-        // bot.status = level.BOT_WANDERING;
-        // noticePrint("bot.origin: " + bot.origin + " bot.mover.origin: " + bot.mover.origin);
-        bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
-        if (!isDefined(bot.myWaypoint) || bot.myWaypoint < 0 || bot.myWaypoint >= level.Wp.size) {
-            errorPrint("Invalid myWaypoint: " + bot.myWaypoint + ", waypoints size: " + level.Wp.size);
-            return;
+    if (level.waypointsInvalid)
+    {
+        noticePrint("Waypoints Invalid - using old wandering method");
+        // TODO: old direct wandering fallback
+        return;
+    }
+
+    stackEmptyCount = 0;
+    while (1)
+    {
+        // Get a fresh path if our stack is empty
+        if (!isDefined(bot.pathStack) || bot.pathStack isEmpty()) {
+            stackEmptyCount++;
+            getPath(bot);                    // This loads bot.pathStack internally
+            // bot.pathStack print("New path loaded");
+            if (stackEmptyCount >= 3) {wait 0.5;}
         }
-        /// temp HACK, jump bot to its first waypoint
-        // wait 3;
-        // bot enqueueMovement(bot, level.Wp[bot.myWaypoint].origin, 0.05, bot.angles);
-        // bot setSpeed(bot);
-        // bot executeMovementQueue(bot);
 
-        // bot.goalWp = bot.myWaypoint;
-//         bot.goalWp = 108; /// temp HACK
-
-        // devel: limit wander iterations to 300 to avoid infinite loops
-        while (count < 30) {
-            count++;
-            // get a goal waypoint if required
-            // if (bot.goalWp == bot.myWaypoint) {iPrintLnBold("Reached Goal Waypoint!");}
-            // while (bot.goalWp == bot.myWaypoint) {
-            //     // bot changeState(bot, 0);
-            //     // infinite loop if the bot is stuck!
-            //     bot.goalWp = randomInt(level.Wp.size);
-            //     noticePrint("bot " + bot.index + " is stuck with goalWp == bot.myWaypoint.  Just keeps choosing new random Wp: " + bot.goalWp);
-            //     // iPrintLnBold("Selected Random New Waypoint!");
-            //     wait 1.5; // s
-            // }
-            if (bot.pathNodes.size == 0) {
-                if (bot.myWaypoint == bot.goalWp) {
-                    // No path exists from one point the the *same* point
-                    bot.status = 0; // for now, go idle
-                    warnPrint("528: Temp: Went idle; already at goal Waypoint.");
-                    return;
-                }
-                bot.pathNodes = AStarNew(bot.myWaypoint, bot.goalWp);
-                noticePrint("588: A* call (bot, myWaypoint, bot.goalWp): (" + bot.name + ", " + bot.myWaypoint + ", " + bot.goalWp + ")");
-                pathPrint(bot, "589: path: ");
-                noticePrint("bot" + bot.index + ": path from: " + bot.myWaypoint + " to: " + bot.goalWp);
-                path = "";
-                for (i=bot.pathNodes.size - 1; i>=0; i--) {
-                    path = path + " " + bot.pathNodes[i];
-                }
-                noticePrint("2-bot" + bot.index + ": path: " + path);
+        if (isDefined(bot.nextWp) && (bot.myWaypoint == bot.nextWp)) {
+            // both the bot & the player have the same closest waypoint in common
+            // if the map has sparse waypoints, either not too many, or a very large map,
+            // the player and the zombie might still be quite far away from each other.
+            dis = distanceSquared(bot.origin, bot.targetedPlayer.origin);
+            if (dis < level.meleeRangeSquared) {
+                noticePrint("In melee range");
             }
-            // pop the next wp to head towards off the stack
-            bot.nextWp = bot.pathNodes[bot.pathNodes.size - 1];
-            bot.pathNodes[bot.pathNodes.size - 1] = undefined;
+            if (dis < level.pursuitRangeSquared) {
+                noticePrint("In pursuit range");
+                // enter pursuit mode
+            }
+        }
+
+        if (!(bot.pathStack isEmpty())) {
+            stackEmptyCount = 0;
+            // Process ONE waypoint per iteration
+            bot.nextWp = bot.pathStack pop();
 
             bot.pathType = pathType(bot.myWaypoint, bot.nextWp);
-            // noticePrint("bot: bot.pathType: " + toEnglishPathType(bot.pathType));
+
+            // === Handle different path types ===
             if (bot.pathType == level.PATH_CLAMPED) {
                 bot clamped(bot);
                 bot executeMovementQueue(bot);
-                bot.myWaypoint = bot.nextWp;
             } else if (bot.pathType == level.PATH_TELEPORT) {
                 bot teleport(bot);
-                bot.myWaypoint = bot.nextWp;
             } else if (bot.pathType == level.PATH_MANTLE) {
-                if ((bot.pathNodes.size >= 1) &&
-                    (pathType(bot.nextWp, bot.pathNodes[bot.pathNodes.size - 1]) == level.PATH_FALL))
+                if ((!(bot.pathStack isEmpty())) &&
+                    (pathType(bot.nextWp, bot.pathStack peek()) == level.PATH_FALL))
                 {
                     bot.pathType = level.PATH_MANTLE_OVER;
                     bot mantleOver(bot);
                 } else {
                     bot mantle(bot);
                     bot executeMovementQueue(bot);
-                    bot.myWaypoint = bot.nextWp;
                 }
-            } else if ((bot.pathType == level.PATH_LADDER) && (bot.isBipedal)) {
-                // if path type is ladder, but not a biped, we need to do something creative
-                // so the bots don't congregate at the bottom of the ladder
+            } else if (bot.pathType == level.PATH_LADDER && bot.isBipedal) {
                 bot ladder(bot);
                 bot executeMovementQueue(bot);
-                bot.myWaypoint = bot.nextWp;
             } else if (bot.pathType == level.PATH_NORMAL) {
-                // @todo somewhere in enqueueMovement() or executeMovementQueue(), we should be checking for targets,
-                // doing melee damage(), or chasing a target.  
-                if (bot.targetedPlayer.isAlive) {
-                    bot thread stalk(bot);
-                } else {
-                    // bot enqueueMovement(bot);
-                    bot changeState(bot, 8); // Victorious
-                }
-                // self enqueueMovement();
-                bot thread executeMovementQueue(bot);
-                bot.myWaypoint = bot.nextWp;
+                bot normalPath(bot);           // removed "thread" for now
+                bot executeMovementQueue(bot);
             } else if (bot.pathType == level.PATH_FALL) {
                 bot fall(bot);
             } else if (bot.pathType == level.PATH_JUMP) {
                 bot jump(bot);
-                bot.myWaypoint = bot.nextWp;
+            } else {
+                // fallback
+                bot normalPath(bot);
+                bot executeMovementQueue(bot);
             }
+
+            bot.myWaypoint = bot.nextWp;
         }
-        // iPrintLnBold("Done Wandering--exceeded 300 iterations");
-        // noticePrint("bot: done wandering--exceeded 300 iterations");
+        wait 0.05;   // Give the engine breathing room - very important
     }
 }
+
 
 setSpeed(bot)
 {
@@ -772,7 +692,7 @@ mantleOver(bot)
         else if (bot.speed <= 250) {speed = 200;}
         else {speed = 300;}
         mantleMovement = cachedMovement(bot.myWaypoint, bot.nextWp, level.MANTLE_SPEED);
-        lastWp = bot.pathNodes[bot.pathNodes.size - 1];
+        lastWp = bot.pathStack peek();
         fallMovement = cachedMovement(bot.nextWp, lastWp, speed);
         if ((isDefined(mantleMovement)) && (isDefined(fallMovement))) {
             // use the first motion from mantle
@@ -804,7 +724,7 @@ mantleOver(bot)
             }
             bot.myWaypoint = bot.nextWp;
             bot.nextWp = lastWp;
-            bot.pathNodes[bot.pathNodes.size - 1] = undefined;
+            bot.pathStack pop();
             self postFall(fallMovement.closest);
             return;
         } else {
@@ -1028,23 +948,25 @@ fall(bot)
 
 postFall(bot, closest)
 {
-    potentialNodes = bot.pathNodes;
-    potentialNodes[potentialNodes.size] = bot.nextWp;
-    for(i=0; i<closest.size; i++) {
-        noticePrint("Closest: " + i +":"+ closest[i]);
-        for (j=0; j<potentialNodes.size; j++) {
-            if (closest[i] == potentialNodes[j]) {
-                noticePrint(closest[i] + " found in potentialNodes");
-            }
-        }
-    }
-    bot pathPrint(bot, "postFall() initial path: ");
+    // Asking: does the closest wp exist in bot.pathStack?
+    // but we aren't doing anything with it, regardless
+    // potentialNodes = bot.pathNodes;
+    // potentialNodes[potentialNodes.size] = bot.nextWp;
+    // for(i=0; i<closest.size; i++) {
+    //     noticePrint("Closest: " + i +":"+ closest[i]);
+    //     for (j=0; j<potentialNodes.size; j++) {
+    //         if (closest[i] == potentialNodes[j]) {
+    //             noticePrint(closest[i] + " found in potentialNodes");
+    //         }
+    //     }
+    // }
+
+    bot.pathStack print("postFall() initial path: ");
     noticePrint(bot, "bot.origin: " + bot.origin);
 
     nearestWp = nearestWaypoints(bot.origin, 1)[0];
     if (nearestWp == bot.goalWp) {
-        // just move to goalWp, and invalidate pathNodes
-//         iPrintLnBold("post-fall: moving to goalWp");
+        // just move to goalWp, and invalidate pathStack
         distance = distance(bot.origin, level.Wp[bot.goalWp].origin);
         direction = vectorNormalize(level.Wp[bot.goalWp].origin - bot.origin);
         facing = vectorToAngles(direction);
@@ -1052,35 +974,34 @@ postFall(bot, closest)
         self enqueueMovement(level.Wp[bot.goalWp].origin, time, facing);
         self executeMovementQueue();
         bot.myWaypoint = bot.goalWp;
-        bot.pathNodes = [];
+        bot.pathStack empty();
         return;
     }
-    // invalidate any pathNodes up to nearestWp
-    for (i=bot.pathNodes.size - 1; i>=0; i--) {
-        if (bot.pathNodes[i] == nearestWp) {
-//             iPrintLnBold("post-fall: found nearestWp in pathNodes");
-            break;
-        } else {
-            bot.pathNodes[i] = undefined;
-        }
+
+    // invalidate any waypoints up to nearestWp
+    while ((bot.pathStack size() > 0) && (bot.pathStack peek() != nearestWp)) {
+        // remove all wp not equal tp nearestWp, until nearestWp is top of stack, or stack is empty
+        bot.pathStack pop();
     }
-    if (bot.pathNodes.size == 0) {
+
+    if (bot.pathStack isEmpty()) {
         // we need a new path
 //         iPrintLnBold("post-fall: getting a new path");
         if (nearestWp == bot.goalWp) {
             // No path exists from one point the the *same* point
             bot.status = 0; // for now, go idle
-            warnPrint("1014: Temp: Went idle; already at goal Waypoint.");
+            warnPrint("994: Temp: Went idle; already at goal Waypoint.");
             return;
         }
-        bot.pathNodes = AStarNew(nearestWp, bot.goalWp);
-        noticePrint("1004: A* call (bot, myWaypoint, bot.goalWp): (" + bot.name + ", " + bot.myWaypoint + ", " + bot.goalWp + ")");
-        bot pathPrint("bot, 1025: path: ");
+        bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
+        noticePrint("998: A* call (bot, myWaypoint, bot.goalWp): (" + bot.name + ", " + bot.myWaypoint + ", " + bot.goalWp + ")");
+        bot.pathStack print("1000: bot " + bot.index + " postFall path");
     }
 
     // decide which of the remaining nodes to go to, and how to get there
-    // do we go to nearestWp, or to a point on a waypoint link to one of the pathNodes?
-    testWp = bot.pathNodes[bot.pathNodes.size - 1];
+    // do we go to nearestWp, or to a point on a waypoint link to one of
+    // the waypoints in pathStack?
+    testWp = bot.pathStack peek();
     directDistance = distance(bot.origin, level.Wp[testWp].origin);
     linkDistance = distance(level.Wp[nearestWp].origin, level.Wp[testWp].origin);
     if (directDistance < linkDistance) {
@@ -1094,8 +1015,8 @@ postFall(bot, closest)
             facing = vectorToAngles(level.Wp[testWp].origin - bot.origin);
             self enqueueMovement(level.Wp[testWp].origin, time, facing);
             self executeMovementQueue();
-            bot.pathNodes[bot.pathNodes.size - 1] = undefined;
             bot.nextWp = testWp;
+            bot.pathStack pop();
             bot.myWaypoint = bot.nextWp;
             return;
         } else {
@@ -1109,18 +1030,18 @@ postFall(bot, closest)
                 // move to line
                 noticePrint("post-fall: moving testWp via nearest point on link line");
                 distance = distance(bot.origin, linePosition);
-                time = distance / bot.speed;
+                time = distance / zeroGuard(bot.speed, 30, "_bot::postFall() line 1033 bot.speed");
                 facing = vectorToAngles(vectorToLine);
                 self enqueueMovement(linePosition, time, facing);
 
                 // move to waypoint
                 distance = distance(linePosition, level.Wp[testWp].origin);
-                time = distance / bot.speed;
+                time = distance / zeroGuard(bot.speed, 30, "_bot::postFall() line 1039 bot.speed");
                 facing = vectorToAngles(level.Wp[testWp].origin - level.Wp[bot.nextWp].origin);
                 self enqueueMovement(level.Wp[testWp].origin, time, facing);
                 self executeMovementQueue();
-                bot.pathNodes[bot.pathNodes.size - 1] = undefined;
                 bot.nextWp = testWp;
+                bot.pathStack pop();                
                 bot.myWaypoint = bot.nextWp;
                 return;
             }
@@ -1130,36 +1051,42 @@ postFall(bot, closest)
     // go to nearestWp
     noticePrint("post-fall: moving directly to nearestWp: " + nearestWp);
     distance = distance(bot.origin, level.Wp[nearestWp].origin);
-    time = distance / bot.speed;
+    time = distance / zeroGuard(bot.speed, 30, "_bot::postFall() line 1054 bot.speed");
     facing = vectorToAngles(level.Wp[nearestWp].origin - bot.origin);
     self enqueueMovement(level.Wp[nearestWp].origin, time, facing);
     self executeMovementQueue();
-    bot.pathNodes[bot.pathNodes.size - 1] = undefined;
+    bot.pathStack pop();        
     bot.nextWp = nearestWp;
     bot.myWaypoint = bot.nextWp;
-    bot pathPrint(bot, "post-fall path: ");
+    bot.pathStack print("post-fall path: ");
     noticePrint("testWp: " + testWp);
 }
 
-// convenience
-printPath(bot, message) {pathPrint(message);}
-
-pathPrint(bot, message)
-{
-    path = "[";
-    for (i=0; i<bot.pathNodes.size; i++) {
-        path = path + " " + bot.pathNodes[i];
-    }
-    path = path + " ]";
-    noticePrint(message + path);
-    // noticePrint("(myWaypoint, nextWp, goalWp): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + bot.goalWp + ")");
-    // noticePrint("(myWaypoint, goalWp): (" + bot.myWaypoint + ", " + bot.goalWp + ")");
+/*
+ * @brief Protects against 'Divide By Zero' errors
+ *
+ * @param divisor numeric The number you are dividing by
+ * @param replacement numeric The number to use if the divisor is zero
+ * @param reference string Reference to the offending code,
+ *   such as "_bot::postFall() line 1055 bot.speed"
+ *
+ * @returns integer A non-zero number, either \c replacement or 1
+ */
+zeroGuard(divisor, replacement, reference) {
+    if (!isDefined(divisor)) {return undefined;} // don't make things worse
+    if (divisor == 0) {
+        errorPrint("DivideByZero: " + reference);
+        if (replacement == 0) { // What the hell, man!
+            ret = 1;
+        } else {ret = replacement;}
+    } else {ret = divisor;}
+    return ret;
 }
 
 getOnPath(bot)
 {
     directDistance = distance(bot.origin, level.Wp[bot.nextWp].origin);
-    testWp = bot.pathNodes[bot.pathNodes.size - 1];
+    testWp = bot.pathStack peek();
     pathDistance = distance(level.Wp[bot.nextWp].origin, level.Wp[testWp].origin);
     pathQueued = false;
     if (directDistance < pathDistance) {
@@ -1171,12 +1098,14 @@ getOnPath(bot)
             // we have a clear path
             // move to line
             distance = distance(bot.origin, linePosition);
+            // divide by zero guards
             time = distance / bot.speed;
             facing = vectorToAngles(vectorToLine);
             self enqueueMovement(linePosition, time, facing);
 
             // move to waypoint
             distance = distance(linePosition, level.Wp[testWp].origin);
+            // divide by zero guards
             time = distance / bot.speed;
             facing = vectorToAngles(level.Wp[testWp].origin - level.Wp[bot.nextWp].origin);
             self enqueueMovement(level.Wp[testWp].origin, time, facing);
@@ -1186,14 +1115,23 @@ getOnPath(bot)
     if (!pathQueued) {
         // move directly to first waypoint
         distance = distance(bot.origin, level.Wp[bot.myWaypoint].origin);
+        // divide by zero guards
         time = distance / bot.speed;
         facing = vectorToAngles(level.Wp[bot.myWaypoint].origin - bot.origin);
         enqueueMovement(level.Wp[bot.myWaypoint].origin, time, facing);
     }
+    // executeMovement() ???
+    bot.pathStack pop();
 }
 
-/// draws a scaled unit vector in the direction of the velocity vector
-// map must be in developer mode
+/*
+ * @brief Draws a scaled unit vector in the direction of the velocity vector
+ *
+ * @param v_0 vector Initial velocity vector
+ * @param r_0 vector Initial position vector
+ *
+ * @depends map must be in developer mode
+ */
 drawVelocity(v_0, r_0)
 {
     from = r_0;
@@ -1204,7 +1142,14 @@ drawVelocity(v_0, r_0)
     }
 }
 
-// map must be in developer mode
+/*
+ * @brief Draws a line between two points
+ *
+ * @param from vector Position vector to start the line, i.e. r_i
+ * @param to vector Position vector to start the line, i.e. r_f
+ *
+ * @depends map must be in developer mode
+ */
 drawLine(from, to)
 {
     while (1) {
@@ -1213,11 +1158,23 @@ drawLine(from, to)
     }
 }
 
+/**
+ * Reflects a vector v over a surface with normal n.
+ *
+ * @param v The incident vector (e.g. velocity or direction)
+ * @param n The surface normal vector (should ideally be normalized)
+ * @return The reflected vector
+ *
+ * This implements the standard reflection formula:
+ *     r = v - 2 * dot(n, v) * n
+ */
 reflect(v, n)
 {
-    d = vectorNormalize(v);
-    r = d - 2 * vectorDot(n, d) * n;
-    return r;
+    if (!isDefined(v) || !isDefined(n))
+        return (0,0,0);
+
+    d = vectorNormalize(v);                    // Incident direction (unit vector)
+    return d - 2 * vectorDot(n, d) * n;
 }
 
 computeMantle(from, to, mover, movement)
@@ -1562,10 +1519,10 @@ cacheMovement(movement)
 printMovementCacheDistribution()
 {
     // prob not needed for DEPLOY
-    noticePrint("bot: printing movement cache");
+    // noticePrint("bot: printing movement cache");
     for (i=0; i<level.movementCache.size; i++) {
         count = level.movementCache[i].size;
-        noticePrint("bot: " + i + ":" + count);
+        // noticePrint("1497: bot: " + i + ":" + count);
     }
 }
 
@@ -1692,7 +1649,7 @@ toEnglishPathType(pathType)
     } else if (pathType == level.PATH_LADDER) {
         return "ladder";
     } else if (pathType == level.PATH_CLAMPED) {
-        return "clamped";  //  ??? stay on line even in the air?
+        return "clamped";  //  stay on exactly on the line
     } else if (pathType == level.PATH_FALL) {
         return "fall";
     } else if (pathType == level.PATH_TELEPORT) {
@@ -1706,10 +1663,19 @@ toEnglishPathType(pathType)
 
 pathType(fromWp, toWp)
 {
+    // don't spin out on errors
+    if (!isDefined(fromWp)) {return undefined;}
+    if (!isDefined(toWp)) {return undefined;}
+
     if (fromWp == toWp) {
         errorPrint("fromWp equals toWp (" + fromWp + "), there cannot be a path type!");
     }
-    if (level.Wp[fromWp].type == "mantle") {
+
+    // almost always true, so check it first
+    if ((level.Wp[fromWp].type == "stand") && (level.Wp[toWp].type == "stand")) {
+        return level.PATH_NORMAL;
+    }
+    else if (level.Wp[fromWp].type == "mantle") {
         deltaZ = level.Wp[toWp].origin[2] - level.Wp[fromWp].origin[2];
         distance = distance2D(level.Wp[fromWp].origin, level.Wp[toWp].origin);
         if ((deltaZ >= level.MANTLE_MIN_Z) && (deltaZ <= level.MANTLE_MAX_Z) && (distance < level.MANTLE_MAX_DISTANCE)) {
@@ -1842,19 +1808,22 @@ canSeeTarget(bot, target)
     return false;
 }
 
-/// normal walk/run movement
+
+/// normal movement path from one waypoint to another, not a chain of waypoints
 /*
+* @brief Moves a bot from one normal waypoint to another normal one
+*
 * Enqueues as many movement animation frames as it takes to move from current
 * waypoint to next waypoint, at the current speed, with each frame being about
 * 18 inches of movement.
-* 
-* depends: bot.speed, bot.myWaypoint, bot.nextWp, level.Wp, level.BOT_MOVE_DISTANCE
+*
+* @returns nothing
+* @depends: bot.speed, bot.myWaypoint, bot.nextWp, level.Wp, level.BOT_MOVE_DISTANCE
 */
-// format docs later
-computeMovement(bot)
+normalPath(bot)
 {
     if (bot.isFollowingWaypoints) {
-        noticePrint("In computeMovement(), .isFollowingWaypoints is true");
+        noticePrint("In normalPath(), .isFollowingWaypoints is true");
         // since we are following waypoints, we assume no solid objects or obstructions
 
         // make animation frame such that frame distance is about 18 inches.
@@ -1885,88 +1854,9 @@ computeMovement(bot)
         }
         noticePrint(count + " movements enqueued.");
         time = distance / bot.speed;
-        // noticePrint("1802: (time, distance, bot.speed): " + time + " " + distance + " " + bot.speed);
-        // self enqueueMovement(level.Wp[bot.nextWp].origin, time, facing);
-
-        // // Meant to be final movement cleanups, but I think this code, while needed,
-        // // doesn't fit here any more, and is a bug by being here.
-        // // Finishing movement tweaks.  Here, nextWp is our current goal waypoint
-        // // Ensures we end at a waypoint
-        // i = bot.previousAStarCallTargetWp;
-        // if ((i == bot.nextWp) &&
-        //     (distanceSquared(level.Wp[i].origin, position) <= distanceSquared(level.Wp[bot.nextWp].origin, position)))
-        // {
-        //     noticePrint("Bot " + bot.index + " Finishing: to target");
-        //     // we are closer to our target's position than we are to 
-        //     // our goal waypoint, so go directly to target position
-        //     // moveToPoint(bot.previousAStarCallTargetWp.origin, bot.cur_speed);
-        //     distance = distance(level.Wp[i].origin, position);
-        //     time = distance / bot.speed;
-        //     bot enqueueMovement(bot, level.Wp[i].origin, time, facing);
-        //     bot.isFollowingWaypoints = false;
-        //     bot.underway = false;
-        //     bot.myWaypoint = undefined;
-        // } else {
-        //     // we are closer to our goal waypoint than we are to 
-        //     // our target's position, so go directly to our goal waypoint
-        //     // if we are within 64 units of it
-        //     if (distance(level.Wp[bot.nextWp].origin, position) <  64) {
-        //         noticePrint("Bot " + bot.index + " Finishing: to goalWp: " + bot.nextWp);
-        //         // moveToPoint(level.Wp[bot.nextWp].origin, bot.cur_speed);
-        //         time = distance(level.Wp[bot.nextWp].origin, position) / bot.speed;
-        //         bot enqueueMovement(bot, level.Wp[bot.nextWp].origin, time, facing);
-        //         // bot.isFollowingWaypoints = true;
-        //         // bot.underway = false;
-        //         // bot.myWaypoint = bot.nextWp;
-        //     }
-        // }
     } else {
         noticePrint("In computeMovement(), but .isFollowingWaypoints is false!");
     }
-
-//     if (bot.isFollowingWaypoints) {
-//         // since we are following waypoints, we assume no solid objects or obstructions
-//         stepDistance = bot.speed * 0.05;
-//         goalDirection = vectorNormalize(level.Wp[bot.nextWp].origin - bot.origin);
-//         steps = 0;
-//
-//         position = bot.origin;
-//         while ((steps < 4) && (bot.origin != level.Wp[bot.nextWp].origin)) {
-//             steps++;
-//             // find the ground 0.05s ahead of us
-//             goalPosition = position + (goalDirection * stepDistance);
-//             goalPosition = self findGround(goalPosition);
-//             stepDirection = vectorNormalize(position - bot.origin);
-//
-//             // we assume this position is still on the ground (or close enough)
-//             position = position + (stepDirection * stepDistance);
-//             deltaZ = position[2] - bot.origin[2];
-//             if (deltaZ >= 0) { // going up
-//
-//             } else { // going down
-//                 if (deltaZ > distance * -1) {
-//                     // just walk
-//                 } else {
-//                     // we need to fall!
-//                 }
-//             }
-//         }
-//         distance = distance(bot.origin, level.Wp[bot.nextWp].origin);
-//         position = bot.origin + (goalDirection * stepDistance);
-//         position = self findGround(position);
-//         stepDirection = vectorNormalize(position - bot.origin);
-//         deltaZ = position[2] - bot.origin[2];
-//         if (deltaZ >= 0) { // going up
-//
-//         } else { // going down
-//             if (deltaZ > distance * -1) {
-//                 // just walk
-//             } else {
-//                 // we need to fall!
-//             }
-//         }
-//     } else {
-//     }
 }
 
 // @todo algorithm to smooth the corners at waypoints, so we don't have to turn sharply at each waypoint.
@@ -2000,39 +1890,6 @@ validateWaypoint(bot, wp, label) {
     return wp;
 }    
 
-rebuildPathNodes(bot, targetWp) {
-    if ((bot.previousAStarCallTargetWp != targetWp) ||     // our target wp has changed since our last A* call
-        (bot.pathNodes.size == 0))                 // we are out of path nodes
-    {
-        // invalidate the pathNodes stack and get a fresh stack from A*
-        if (bot.previousAStarCallTargetWp != targetWp) {noticePrint(bot.name + ": bot.previousAStarCallTargetWp != targetWp");}
-        if (bot.myWaypoint != bot.lastAStarWp) {noticePrint(bot.name + ": bot.myWaypoint != bot.lastAStarWp");}
-        if (bot.pathNodes.size == 0) {noticePrint(bot.name + ": bot.pathNodes.size == 0");}
-        noticePrint("1892: A* call (bot, myWaypoint, targetWp): (" + bot.name + ", " + bot.myWaypoint + ", " + targetWp + ")");
-        bot.pathNodes = AStarNew(bot.myWaypoint, targetWp);
-        self pathPrint(bot, "1935: path: ");
-        bot.previousAStarCallTargetWp = targetWp;    
-    } else {level.savedAStarCalls++;}  
-}
-
-// Waypoint logic
-// should be watchingTarget during movement
-//   if they move too much, should end current movements, should empty pathStack, then start over
-//   same if they become isDown or isUntargetable
-// if pathStack is undef, warn then return (it should have been defined at spawn)
-// if pathStack is empty:
-//  --update myWaypoint & targetWp
-//  --if they are the same, then return "at target!"
-//  --if not same, new A* call to load new waypoints
-//      -- means either:
-//            -target moved to different waypoint while we were moving, or
-//            -we didn't load all the wp into the stack, target too far (does the code do that?)
-// while (pathStack is not empty):  limit 10 (safety)
-//   --pop() next waypoint into nextWp
-//   --computeMovement to wp
-//   --enqueue movements to wp
-//   --execute movements to wp
-//   --wait until moving is actually done
 botPathfindWaypointsNew(bot) {
     // Follow waypoints pathfinding
     bot.isFollowingWaypoints = true;
@@ -2046,7 +1903,9 @@ botPathfindWaypointsNew(bot) {
     }
     if (bot.pathStack isEmpty()) {
         // I need myWaypoint, and a targetWp (which means I need a target)
-        bot bestTarget(bot);
+        if (!isDefined(bot.targetedPlayer)) {
+            bot bestTarget(bot);
+        }
         bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
         bot.targetWp = nearestWaypoints(bot.targetedPlayer.origin, 1)[0];
         if (bot.myWaypoint == bot.targetWp) {
@@ -2065,137 +1924,7 @@ botPathfindWaypointsNew(bot) {
             bot.previousAStarCallTargetWp =  bot.targetWp;
         }
     }
-    // have a valid bot.pathStack here
-    limit = 10;  // limit to 10 waypoints for safety
-    count = 0;
-    while (!(bot.pathStack isEmpty())) {
-        if (count > limit) {
-            warnPrint("Exceeded loop limit, bailing");
-            bot.pathStack empty(); // cleanup
-            return;
-        }
-        bot.nextWp = bot.pathStack pop();
-        bot computeMovement(bot);
-        bot executeMovementQueue(bot);
-        count++;
-
-        // nextWp is myWaypoint for next iteration
-        bot.myWaypoint = bot.nextWp;
-    }
-// while (pathStack is not empty):  limit 10 (safety)
-//   --pop() next waypoint into nextWp
-//   --computeMovement to wp
-//   --enqueue movements to wp
-//   --execute movements to wp
-//   --wait until moving is actually done    
-
 }
-
-
-// @todo Hell zombies (all zombies?) should spawn facing random directions.
-// Hell zombies all face the same way at spawn.  Probably mostly affects
-// zombies that spawn in distributed spots vs. normal spawn points.
-
-// botPathfindWaypoints(bot) {
-//     // Follow waypoints pathfinding
-//     if (!isdefined(bot.myWaypoint)) {
-//         // bot just spawned from _bots::spawnZombie()
-//         wait 1;
-//         // I need myWaypoint, and a targetWp (which means I need a target)
-//         bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
-//         target = undefined;
-//         bot bestTarget(bot);
-//         targetWp = nearestWaypoints(bot.targetedPlayer.origin, 1)[0];   
-
-//         noticePrint("A* call (bot, myWaypoint, targetWp): (" + bot.index + ", " + bot.myWaypoint + ", " + targetWp + ")");
-//         if (bot.pathNodes.size == 0) {
-//             if (bot.myWaypoint == targetWp) {
-//                 // No path exists from one point the the *same* point
-//                 bot.status = 0; // for now, go idle
-//                 warnPrint("528: Temp: Went idle; already at goal Waypoint.");
-//                 return;
-//             }
-//         }
-//         bot.pathNodes = AStarNew(bot.myWaypoint, targetWp);
-//         bot pathPrint(bot, "2041: initialization path: ");
-//         bot.previousAStarCallTargetWp = targetWp;         
-
-//         bot.pathStack pushMany(AStarNew(bot.myWaypoint, targetWp));
-//         bot.pathStack print("2045: bot " + bot.index + " initialization path: ");
-
-//         bot.isFollowingWaypoints = true;
-//         bot.alertLevel = 100;
-//         setSpeed(bot);
-//     }
-
-//     if (!isDefined(bot.previousAStarCallTargetWp)) {bot.previousAStarCallTargetWp = -1;}
-//     if (!isDefined(bot.lastAStarWp)) {bot.lastAStarWp = -1;}
-//     if (!isDefined(bot.myWaypoint)) {
-//         bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
-//     }
-
-//     target = undefined;
-//     if (isDefined(bot.targetedPlayer)) {target = bot.targetedPlayer;}
-//     else {target = bot.bestTarget;}
-    
-//     noticePrint("2059: target: " + target.origin);
-//     targetWp = nearestWaypoints(target.origin, 1)[0];    
-//     bot.myWaypoint = validateWaypoint(bot, bot.myWaypoint, "myWaypoint");
-//     targetWp = validateWaypoint(bot, targetWp, "targetWp");
-
-//     if (!(bot.myWaypoint == targetWp)) {       // Never ask for a path from one waypoint to *itself*
-//         // Rebuilds bot.pathNodes if:
-//         //   - our target wp has changed since our last A* call, OR
-//         //   - we are out of path nodes
-//         bot rebuildPathNodes(bot, targetWp);
-//     }
-//     // nextWp = bot.pathNodes[bot.pathNodes.size - 1];
-//     // bot.isFollowingWaypoints = true;
-//     // bot.alertLevel = 100;
-//     // setSpeed();
-//     // pop the next wp to head towards off the stack
-//     // nextWp = bot.pathNodes[bot.pathNodes.size - 1];
-//     // bot.pathNodes[bot.pathNodes.size - 1] = undefined;
-//     // bot.lastAStarWp = nextWp;
-
-//     // bot.nextWp = nextWp;
-//     // bot.goalWp = targetWp;
-//     // bot.underway = true;     
-
-//     // both are vaild
-//     if ((bot.myWaypoint) && (targetWp)) {
-//         noticePrint("2028: myWaypoint and targetWp are valid.");
-//         // enqueueMovement(); // creates the animation frame steps for the movement
-//         // executeMovementQueue(); // actually moves the bot position in animation frame ssteps
-//         // return;
-//     }
-
-//     if (targetWp == bot.myWaypoint) {
-//         // we are already at the closest waypoint, just move to target
-//         noticePrint("2093: Already at target waypoint");
-//         moveToPoint(bot, target.origin, bot.cur_speed);
-//         bot.underway = false;
-//         bot.myWaypoint = undefined;
-//     } else {
-//         // pop the next wp to head towards off the stack
-//         nextWp = bot.pathNodes[bot.pathNodes.size - 1];
-//         noticePrint("2043: Set nextWp: " + nextWp);
-//         bot.pathNodes[bot.pathNodes.size - 1] = undefined;
-//         // bot.lastAStarWp = nextWp;
-
-//         bot.nextWp = nextWp;
-//         bot.goalWp = targetWp;
-//         bot.underway = true; 
-
-//         pathPrint(bot, "2051: bot.pathNodes: ");
-
-//     }      
-// }
-
-searchFront() {}    // existing, can see target ahead?
-searchLeft() {}     // existing, turn head left (no anim), then same as searchFront()
-searchRight() {}    // existing, turn head right (no anim), then same as searchFront()
-
 
 botPathfindVisualNav(target_position) {
     // Visual navigation pathfinding (no waypoints)
@@ -2275,21 +2004,6 @@ compareZ(bot, goalPositionZ, dropNewZ)
     return dropNewZ;
 }
 
-// doWander() {
-//     // If we don't have a target, wander around and look for one.
-//     // We can use waypoints if they are available, or visual navigation if not.
-// }
-
-// Use waypoints or visiual nav to stalk target at normal speed.
-stalk(bot)
-{
-    debugPrint("in _bot::stalk()", "fn", level.fullVerbosity);
-    noticePrint("In stalk()");
-
-    bot thread computeMovement(bot);
-    // bot thread executeMovementQueue(bot);
-}
-
 // chase target.  Given array of target's positions over last 3 seconds,
 // move to the closest one to you, then follow the same position history
 // as your target, as fast as you can.  If you get with melee range, attack target.
@@ -2307,6 +2021,8 @@ pursue(bot) {}
 // Don't let 'em get close!
 jumpMelee() {}
 
+
+// probably deprecated for waypoints pathfinding
 findPathToTarget(bot)
 {
     debugPrint("in _bot::findPathToTarget()", "fn", level.highVerbosity);
@@ -2378,7 +2094,7 @@ findLinearPath(origin, destination, distance)
     return position;
 }
 
-// map must be in developer mode
+// map must be in developer mode for line() function
 isPathNavigable(bot, origin, destination)
 {
     debugPrint("in _bot::isPathNavigable()", "fn", level.highVerbosity);
@@ -2427,8 +2143,6 @@ enqueueMovement(bot, origin, time, facing)
             bot.movement.orders[i] = order;
         }
     }
-
-
 //     noticePrint("enqueueing movement: (" + origin + ", " + time + ", " + facing + ")");
 //     noticePrint("size, first, last: (" + bot.movement.orders.size + ", " + bot.movement.first + ", " + bot.movement.last + ")");
     // insert the movement order into the queue
@@ -2441,6 +2155,9 @@ enqueueMovement(bot, origin, time, facing)
 findGround(position)
 {
     debugPrint("in _bot::findGround()", "fn", level.highVerbosity);
+
+    // if input param is undef, no point spinning the server
+    if (!isDefined(position)) {return undefined;}
 
     top = position + (0,0,50);
     bottom = position + (0,0,-9500); // large value for farthouse and other mouse-scale maps
@@ -2513,12 +2230,14 @@ bestTarget(bot)
         if (!isDefined(player)) {continue;}
         if ((isDefined(player.isTargetable)) && (!player.isTargetable)) {continue;}
         if (player.isAlive) {
+            // noticePrint("2604: playerName: " + player.name);
             dis = distanceSquared(bot.origin, player.origin);
             if (dis < closestDis) {
                 closestDis = dis;
                 closestPlayer = player;
             }
-            if (self canSeeTarget(player)) {
+            if (bot canSeeTarget(bot, player)) {
+                // iPrintLnBold("Bot can see: " + player.name);
                 if (dis < closestVisDis) {
                     closestVisDis = dis;
                     closestVisiblePlayer = player;
@@ -2527,31 +2246,17 @@ bestTarget(bot)
         }
     }
     if (isdefined(closestVisiblePlayer)) {
-        iPrintLnBold("Best target: " + closestVisiblePlayer.name);
+        // iPrintLnBold("Best target: " + closestVisiblePlayer.name);
         bot.targetedPlayer = closestVisiblePlayer;
         bot.bestTarget = closestVisiblePlayer;
     } else if (isDefined(closestPlayer)) {
-        iPrintLnBold("No visible targets, closest target: " + closestPlayer.name);
+        // iPrintLnBold("No visible targets, closest target: " + closestPlayer.name);
         bot.targetedPlayer = closestPlayer;
         bot.bestTarget = closestPlayer;
     } else {
-        iPrintLnBold("No player targets!");
+        // iPrintLnBold("No player targets!");
         return undefined;
     }
-    // // the best target is the closest player the bot can see
-    // targets = self sortTargetsByDistance();
-    // if (!isDefined(targets[0])) {return undefined;}
-
-    // bot.bestTarget = undefined;
-    // for (i=0; i<targets.size; i++) {
-    //     if (self canSeeTarget(targets[i].player)) {
-    //         iPrintLnBold("Can see target: " + targets[i].player.name);
-    //         bot.bestTarget = targets[i].player;
-    //     }
-    // }
-    // // if the bot can't see any of the players, just use the closest player
-    // iPrintLnBold("Cannot see any targets!");
-    // bot.closestTarget = targets[0].player;
 }
 
 closestTarget()
@@ -2591,6 +2296,7 @@ sortTargetsByDistance(bot)
     return data;
 }
 
+// deprecated??
 main(bot)
 {
     debugPrint("in _bot::main()", "fn", level.highVerbosity);
@@ -2627,11 +2333,10 @@ executeMovementQueue(bot)
         noticePrint("2540: Bot " + bot.index + " No movements queued; nothing to do.");
         return;
     }
-//    self findPathToTarget();
+
     if (isdefined(bot.bestTarget)) {movingToName = bot.bestTarget.name;}
     else {movingToName = bot.closestTarget.name;}
     noticePrint("2624: Target waypoint position for player: " + movingToName + " " + level.Wp[bot.targetWp].origin);
-    // bot walk(bot); // test this
 
     // noticePrint("Moving!");
     // iPrintLnBold("Moving to target " + bot.targetedPlayer.name);
@@ -2656,25 +2361,11 @@ executeMovementQueue(bot)
             initialPosition = undefined;
         }
         beginStep = bot.mover.origin;
-        // noticePrint("pre-move bot.mover.origin: " + bot.mover.origin);
-//         noticePrint("moving to:" + position + ", " + time);
         bot setPlayerAngles(angles);
-//         now = getTime();
-//         noticePrint("pre-move now: " + now + "ms");
         bot.mover moveTo(position, time, 0, 0); // internally-threaded
-//         wait time;
-//         while (bot.mover.origin != position) {wait 0.05;}// === bot.mover waittill("movedone")
-//         noticePrint("waiting time: " + time + "s");
         bot.mover waittill("movedone");
-        // self waittill("movedone");
         endStep = bot.mover.origin;
         noticePrint("2563: Bot " + bot.index + " Step Pos (from, to): " + beginStep + " -> " + endStep);
-//         noticePrint("post-move bot.mover.origin: " + bot.mover.origin);
-//         now = getTime();
-//         noticePrint("post-move now: " + now + "ms");
-
-//         wait time;
-//         wait 0.1;
         bot.movement.first++;
     }
     // we have executed all the queued movement orders, so reset the queue
@@ -2682,29 +2373,6 @@ executeMovementQueue(bot)
     bot.movement.last = 0;
 
     wait 0.05;
-    // invalidate any pathNodes up to nearestWp
-    nearestWp = nearestWaypoints(bot.origin, 1)[0];
-    index = undefined;
-    for (i=bot.pathNodes.size - 1; i>=0; i--) {
-        if (bot.pathNodes[i] == nearestWp) {
-            index = i;
-            break;
-        }
-    }
-    if (isdefined(index)) {
-        for (i=bot.pathNodes.size - 1; i>=0; i--) {
-            if (i>index) {
-                bot.pathNodes[i] = undefined;
-            }
-            if (i == index) {break;}
-        }
-    }
-//             iPrintLnBold("post-fall: found nearestWp in pathNodes");
-        //     break;
-        // } else {
-        //     bot.pathNodes[i] = undefined;
-        // }
-    // }    
 }
 
 /**
@@ -2794,7 +2462,7 @@ melee(bot)
     if (bot.quake) {Earthquake( 0.25, .2, bot.origin, 380);}
 
     if (isAlive(self)) {
-        bot  damage(70);
+        bot damage(bot, level.botMeleeRange);
         bot playSoundOnBot(bot, 0, "zom_attack", randomint(8));
     }
     wait .6;
@@ -2882,19 +2550,11 @@ fixStuck(bot)
 {
     debugPrint("in _bot::fixStuck()", "fn", level.highVerbosity);
 
-    if (!isDefined(bot))
-        return;
+    if (!isDefined(bot)) {return;}
 
-    noticePrint("2728: fixStuck: bot is defined");
-
-    // Use 'bot' instead of 'self' for endons
     bot endon("dying");
     bot endon("disconnect");
     bot endon("death");
-
-    // bot endon("dying");
-    // bot endon("disconnect");
-    // bot endon("death");
     level endon("game_ended");
 
     lastX = undefined;

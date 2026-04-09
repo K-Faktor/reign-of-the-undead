@@ -44,7 +44,7 @@ logMapStartHeader()
     logPrint("============================================================\n");
     logPrint("Map Started: " + getRealDateTimeString() + "\n");
     logPrint("Map: " + getDvar("mapname") + "\n");
-    logPrint("Timezone: " + level.realTimeTZ + " (UTC" + level.realTimeOffset + ")\n");
+    // logPrint("Timezone: " + level.realTimeTZ + "\n");
     logPrint("============================================================\n");
 }
 

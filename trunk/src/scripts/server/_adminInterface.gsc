@@ -383,7 +383,7 @@ watchAdminMenuResponses()
 
     while (1) {
         self waittill( "menuresponse", menu, response );
-//         debugPrint("menu: " + menu + " response: " + response, "val");
+        debugPrint("menu: " + menu + " response: " + response, "val");
 
         // menu "-1" is the main in-game popup menu bound to the 'b' key
         if ((menu == "-1") && (response == "admin_menu_open_request")) {

@@ -123,7 +123,8 @@ buildWaveOrder()
     level.waveOrder[level.totalWaves - 1] = level.finalWave;
 
     // Force first wave to be specific special wave, for dev/debug purposes only
-    // level.waveOrder[0] = "burning";
+    // values: toxic burning burning_dog burning_tank inferno tank boss many_bosses cyclops
+    // level.waveOrder[0] = "tank";
 
     debugPrint("Total waves is: " + level.totalWaves, "val");
     for (i=0; i<level.waveOrder.size; i++) {

@@ -49,9 +49,9 @@ initRealTime()
     level.realTimeOffset = getDvarInt("real_time_offset");  
 
     // Timezone name for logging
-    level.realTimeTZ = getDvar("real_time_tz");
+    level.realTimeTZ = getDvar("real_time_tz_str");
     if (level.realTimeTZ == "")
-        level.realTimeTZ = "UTC";
+        level.realTimeTZ = "UTC London";
 
     level.realTimeServerStart = getTime() / 1000;   // seconds elapsed since this RotU server started
 }

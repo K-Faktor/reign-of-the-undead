@@ -49,8 +49,8 @@ cd "$(dirname "$0")"/../../
 #   developer and developer_script should be 0 for regular games, but must be 1 to use the UMI Editor
 #   exec server.cfg loads all of the various *.cfg files
 #   devmap sets the name of the map to load when the server starts
-#   +set real_time_offset value is a -5 for CDT (US Chicago).  If not set, you get UTC.
-#   +set real_time_tz "CDT (US Chicago)"  used as a string
+#   +set real_time_offset value is an integer, -5 for CDT (US Chicago).  If not set, you get UTC.
+#   +set real_time_tz_str "CDT (UTC-5) US Chicago" used as a string
 
 UNIXEPOCH=$(date +%s)
 
@@ -64,7 +64,7 @@ wine "./iw3mp.exe" \
   +set g_gametype "surv" \
   +set real_time_base "$UNIXEPOCH" \
   +set real_time_offset -5 \
-  +set real_time_tz "CDT (Dallas, Texas)" \
+  +set real_time_tz_str "CDT (UTC-5) Dallas, Texas" \
   +exec server.cfg \
   +devmap mp_surv_testmap
   # +devmap mp_surv_tunnel

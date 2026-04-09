@@ -350,13 +350,19 @@ onPlayerConnect()
 
     if (level.gameEnded) {self.sessionstate = "intermission";}
 
+    wait 0.05;
+
     // Keep track of players that have already joined this game at least once
     self.uniqueId = self.name + self.guid;
     if (!inArray(level.uniquePlayers, self.uniqueId)) {
         // never joined this game, so add them to the array
         level.uniquePlayers[level.uniquePlayers.size] = self.uniqueId;
-        debugPrint(self.name + " has joined the game for the first time", "val");
         self.hasPreviouslyJoined = false;
+        // for (i=0; i<string.size; i++) {
+        // if ((tokenMatchCount(self.name, "bot") > 0) && isNumeric(self.name[3])) {
+        // if (!self.isBot) {
+        debugPrint(self.name + " has joined the game for the first time", "val");
+        // }
     } else {
         debugPrint(self.name + " has previously joined this game", "val");
         self.hasPreviouslyJoined = true;
@@ -896,6 +902,7 @@ printPlayersData()
 
     for (i = 0; i < players.size; i++) {
         if (!isDefined(players[i])) {continue;}
+        if (players[i].isBot) {continue;}
 
         p = players[i];
         if (p.name.size > maxName) {maxName = p.name.size;}
@@ -945,6 +952,7 @@ printPlayersData()
 
     for (i = 0; i < players.size; i++) {
         if (!isDefined(players[i])) {continue;}
+        if (players[i].isBot) {continue;}
 
         p = players[i];
         name = leftPad(p.name, " ", maxName);

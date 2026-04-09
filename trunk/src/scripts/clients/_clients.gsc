@@ -67,6 +67,21 @@ catchBot()
 {
     debugPrint("in _clients::catchBot()", "fn", level.nonVerbose);
 
+    clientNum = self getEntityNumber();
+
+    // Listen server host is always client 0
+    if (level.dedicated == "listen server") {
+        if (clientNum == 0) {
+            noticePrint("Listen server host detected (client 0): " + self.name);
+            self.isHost = true;
+            self.isBot = false;
+            return 0;
+        } else {
+            self.isBot = true;
+            return 1;
+        }
+    }
+
     // Reconnecting bot
     if (self getStat(512) == 100) {
         level.loadBots = 0;

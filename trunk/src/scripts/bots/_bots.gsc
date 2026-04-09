@@ -77,6 +77,11 @@ init()
     level.slowBots = 1;
     level.burningZombieDemeritSize = getDvarInt("surv_burning_zombie_demerit_size");
 
+    level.botMeleeRange = 70;
+    level.meleeRangeSquared = level.botMeleeRange * level.botMeleeRange;
+    level.pursuitRange = 200;
+    level.pursuitRangeSquared = level.pursuitRange * level.pursuitRange;
+
     wait 1;
     if (level.loadBots) {
         // this is a server restart, so create bots
@@ -283,15 +288,14 @@ availableBot()
 
     // noticePrint("level.availableBots.size: " + level.availableBots.size);
     if (level.availableBots.size == 0) {
-        if (true) {
+        if (false) {
             // for debugging.  this usually only happens when we all of our bot slots are
             // already zombies, but the game would make more zombies if we had more slots
             spawnedBots = 0;
             for (i=0; i<level.bots.size; i++) {
                 if (level.bots[i].hasSpawned) {spawnedBots++;}
             }
-            errorPrint("No available bots!");
-            noticePrint("Already " + spawnedBots + " alive");
+            warnPrint("No available bots! Already " + spawnedBots + " alive.");
         }
         return undefined;
     } else {
@@ -327,7 +331,7 @@ spawnZombie(zombieType, spawnpoint, bot)
     bot.currentTarget = undefined;
     bot.targetPosition = undefined;
     bot.type = zombieType;
-    bot.pathNodes = [];
+    // bot.pathNodes = [];
     bot.pathStack = scripts\include\int_stack::new();
     bot.myWaypoint = undefined;
     bot.goalWp = undefined;
@@ -369,10 +373,17 @@ spawnZombie(zombieType, spawnpoint, bot)
     bot setspawnweapon(bot.pers["weapon"]);
     bot switchtoweapon(bot.pers["weapon"]);
 
+    // Generate random angle between -180 and 180
+    randomAngle = randomIntRange(-180, 181);   // 181 because range is exclusive on the upper bound
     if (isDefined(spawnpoint.angles)) {
-        bot spawn(spawnpoint.origin, spawnpoint.angles);
+        // randomize existing spawnpoint angles
+        angle = spawnpoint.angles + (0, randomAngle, 0);        
+        bot spawn(spawnpoint.origin, angle);
+        // bot spawn(spawnpoint.origin, spawnpoint.angles); // 2.2.2
     } else {
-        bot spawn(spawnpoint.origin, (0,0,0));
+        // randomize spawnpoint angle
+        bot spawn(spawnpoint.origin, (0, randomAngle, 0));
+        // bot spawn(spawnpoint.origin, (0,0,0)); // 2.2.2
     }
 
     level.botsAlive++;
@@ -873,24 +884,23 @@ zomMoveTowards(target_position)
             self.underway = false;
             self.myWaypoint = undefined;
         } else {
-            if ((self.lastAStarTargetWp != targetWp) ||     // our target wp has changed since our last A* call
+            if ((self.previousAStarCallTargetWp != targetWp) ||     // our target wp has changed since our last A* call
 //                 (self.myWaypoint != self.lastAStarWp) ||    // our current wp is not the waypoint we were supposed to go to
-                (self.pathNodes.size == 0))                 // we are out of path nodes
+                (self.pathStack isEmpty()))                 // we are out of path nodes
             {
-                // invalidate the pathNodes stack and get a fresh stack from A*
-                if (self.lastAStarTargetWp != targetWp) {noticePrint(self.name + ": self.lastAStarTargetWp != targetWp");}
+                // invalidate the pathStack and get a fresh stack from A*
+                if (self.previousAStarCallTargetWp != targetWp) {noticePrint(self.name + ": self.lastAStarTargetWp != targetWp");}
                 if (self.myWaypoint != self.lastAStarWp) {noticePrint(self.name + ": self.myWaypoint != self.lastAStarWp");}
-                if (self.pathNodes.size == 0) {noticePrint(self.name + ": self.pathNodes.size == 0");}
+                if (self.pathStack isEmpty()) {noticePrint(self.name + ": self.pathStack is empty");}
                 noticePrint("A* call (bot, myWaypoint, targetWp): (" + self.name + ", " + self.myWaypoint + ", " + targetWp + ")");
-                self.pathNodes = AStarNew(self.myWaypoint, targetWp);
-                self.lastAStarTargetWp = targetWp;
+                self.pathStack pushMany(AStarNew(self.myWaypoint, self.targetWp));
+                self.previousAStarCallTargetWp = targetWp;
             } else {
                 level.savedAStarCalls++;
             }
             // pop the next wp to head towards off the stack
-            nextWp = self.pathNodes[self.pathNodes.size - 1];
-            self.pathNodes[self.pathNodes.size - 1] = undefined;
-            self.lastAStarWp = nextWp;
+            nextWp = self.pathStack pop();
+            self.previousAStarCallTargetWp = nextWp;
 
             self.nextWp = nextWp;
             self.underway = true;

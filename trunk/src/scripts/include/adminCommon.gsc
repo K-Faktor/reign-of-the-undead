@@ -403,11 +403,16 @@ onPlayerConnect()
     while (1) {
         level waittill( "connected", player );
 
+        if (player.isBot) {return;}
+
+        if (player getStat(512) == 100) {
+            player.isBot = true;
+        }
+
         player.isAdmin = false;
 
         guid = getSubStr(player getGuid(), 24, 32);
         debugPrint("connecting guid: " + guid, "val");
-        debugPrint("dedicated: " + getDvar("dedicated"), "val");
 
         // force admin guid if required
         if (level.dedicated == "listen server") {
