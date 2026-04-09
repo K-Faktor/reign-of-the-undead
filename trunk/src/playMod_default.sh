@@ -52,6 +52,17 @@ cd "$(dirname "$0")"/../../
 #   +set real_time_offset value is an integer, -5 for CDT (US Chicago).  If not set, you get UTC.
 #   +set real_time_tz_str "CDT (UTC-5) US Chicago" used as a string
 
+# To enable clear screenshotMode in a UMI Listen server, ensure the following values
+# are set in the command line for `iw3mp.exe`:
+#
+#   +set dedicated 0 \
+#   +set developer 1 \
+#   +set developer_script 1 \
+#   <snip>
+#   +set r_fullscreen \
+#   +set sv_pure 0 \
+#   +set thereisacow 1337
+
 UNIXEPOCH=$(date +%s)
 
 WINEPREFIX=~/.wine_cod4

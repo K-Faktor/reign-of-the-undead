@@ -31,7 +31,7 @@
 #     Reign of the Undead must also comply with Activision/Infinity Ward's modtools
 #     EULA.
 #******************************************************************************
-"""Ported makeMod.pl for Reign of the Undead.
+"""Ported makeMod.pl for Reign of the Undead, by Claude Haiku 4.5.
 
 This script is intended to replicate the current makeMod.pl behavior for no-argument
 builds and the common build/install workflows.
@@ -41,6 +41,7 @@ import argparse
 import hashlib
 import os
 import shutil
+import subprocess
 import sys
 import zipfile
 from pathlib import Path
@@ -261,7 +262,7 @@ def find_changes(root_dir: Path, checksum_file: Path, config):
 
         current_map[key] = digest
 
-    return rebuild_flags, files
+    return rebuild_flags, files, current_map
 
 
 def build_new_checksum_file(root_dir: Path, checksum_file: Path):
@@ -275,6 +276,14 @@ def build_new_checksum_file(root_dir: Path, checksum_file: Path):
             digest = file_md5(file_path)
             fh.write(f"{key}|{digest}\n")
     print("Created new checksum file.")
+
+
+def write_updated_checksums(checksum_file: Path, checksums_map: dict):
+    """Write updated checksums after an incremental build."""
+    ensure_dir(checksum_file.parent)
+    with checksum_file.open("w", encoding="utf-8") as fh:
+        for key, digest in sorted(checksums_map.items()):
+            fh.write(f"{key}|{digest}\n")
 
 
 def rebuild_mod(config, root_dir: Path):
@@ -379,7 +388,6 @@ def rebuild_mod(config, root_dir: Path):
     print(" ", " ".join(cmd))
     if shutil.which("wine") is None:
         raise RuntimeError("wine executable not found on PATH")
-    import subprocess
     process = subprocess.run(
         [
             "wine",
@@ -530,6 +538,8 @@ def rebuild_scripts_only(config, root_dir: Path, checksum_file: Path):
     build_iwd_files(config, root_dir)
     update_upload_folder(config)
     print("The server script files have been rebuilt.")
+    # Rebuild checksum file for consistency
+    build_new_checksum_file(root_dir, checksum_file)
 
 
 def build_iwd_files(config, root_dir: Path):
@@ -637,10 +647,202 @@ def print_help():
     print("  -f  Force a full rebuild")
     print("  -s  Force rebuild of server scripts only")
     print("  -c  Clean build outputs")
-    print("  -q  Quality checks (not fully implemented)")
+    print("  -q  Quality checks")
     print("  -h  Show help")
     print("  -v  Show version")
-    print("  -r  Prepare a release (not implemented)")
+    print("  -r  Prepare a release")
+
+
+def quality_check(root_dir: Path):
+    """Run code quality checks on GSC files."""
+    print("Running quality checks...")
+    files = load_files(root_dir)
+    src_files = [f for f in files if "/src/" in f.as_posix() and f.suffix.lower() == ".gsc"]
+    
+    license_issues = []
+    tab_issues = []
+    todo_items = []
+    bug_items = []
+    deprecated_items = []
+    hack_items = []
+    fixme_items = []
+    
+    print(f"Found {len(src_files)} GSC files to check...")
+    
+    # License check
+    for file_path in src_files:
+        if "_waypoints.gsc" in file_path.name or "_tradespawns.gsc" in file_path.name:
+            continue
+        try:
+            content = file_path.read_text(encoding="utf-8", errors="replace")
+        except Exception as exc:
+            print(f"Warning: Unable to read {file_path}: {exc}")
+            continue
+        
+        if not ("Copyright (c) 2010-2013 Reign of the Undead Team" in content and
+                'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND' in content):
+            rel = file_path.relative_to(root_dir)
+            license_issues.append(str(rel))
+    
+    # Tab check
+    text_suffixes = {".gsc", ".menu", ".cfg", ".txt"}
+    text_files = [f for f in files if "/src/" in f.as_posix() and f.suffix.lower() in text_suffixes]
+    for file_path in text_files:
+        try:
+            content = file_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            continue
+        if "\t" in content:
+            rel = file_path.relative_to(root_dir)
+            tab_issues.append(str(rel))
+    
+    # Line-by-line checks for notations
+    for file_path in src_files:
+        try:
+            with file_path.open("r", encoding="utf-8", errors="replace") as fh:
+                for line_num, line in enumerate(fh, 1):
+                    rel = file_path.relative_to(root_dir)
+                    if "@todo" in line.lower():
+                        todo_items.append(f"{rel}:{line_num}")
+                    if "@bug" in line.lower():
+                        bug_items.append(f"{rel}:{line_num}")
+                    if "@deprecated" in line.lower():
+                        deprecated_items.append(f"{rel}:{line_num}")
+                    if "hack:" in line.lower():
+                        hack_items.append(f"{rel}:{line_num}")
+                    if "fixme" in line.lower():
+                        fixme_items.append(f"{rel}:{line_num}")
+        except Exception:
+            continue
+    
+    # Report
+    print("\n--- Quality Report ---")
+    print(f"Files with license issues:     {len(license_issues)}")
+    if license_issues:
+        for item in license_issues[:5]:
+            print(f"  - {item}")
+        if len(license_issues) > 5:
+            print(f"  ... and {len(license_issues) - 5} more")
+    
+    print(f"Files with tab characters:     {len(tab_issues)}")
+    if tab_issues:
+        for item in tab_issues[:5]:
+            print(f"  - {item}")
+        if len(tab_issues) > 5:
+            print(f"  ... and {len(tab_issues) - 5} more")
+    
+    print(f"@todo items found:             {len(todo_items)}")
+    print(f"@bug items found:              {len(bug_items)}")
+    print(f"@deprecated items found:       {len(deprecated_items)}")
+    print(f"hack: items found:             {len(hack_items)}")
+    print(f"fixme items found:             {len(fixme_items)}")
+    print("---")
+
+
+def release(config, root_dir: Path, release_name: str, bash_path: str):
+    """Prepare a release package."""
+    print(f"Creating a RotU release named {release_name}...")
+    
+    config["opt_d"] = False
+    release_folder = config["releasePath"] / release_name
+    ensure_dir(release_folder)
+    
+    # Copy test map from map_src
+    map_folder = release_folder / "mp_surv_testmap"
+    ensure_dir(map_folder)
+    src_folder = config["workPath"]
+    map_src = src_folder.parent.parent / "map_src" / "contrib" / "test_map" / "usermaps" / "mp_surv_testmap"
+    
+    if map_src.is_dir():
+        for map_file in ["mp_surv_testmap.ff", "mp_surv_testmap.iwd", "mp_surv_testmap_load.ff"]:
+            src = map_src / map_file
+            if src.is_file():
+                copy_file(src, map_folder / map_file)
+        print(f"Copied test map to {release_folder}")
+    else:
+        print(f"Warning: Test map source not found: {map_src}")
+    
+    # Copy config files (rename from _default.cfg)
+    src_dir = root_dir / "src"
+    for file_name in config["configFiles"]:
+        base = Path(file_name).stem
+        default_src = src_dir / f"{base}_default.cfg"
+        if default_src.is_file():
+            copy_file(default_src, release_folder / file_name)
+    print(f"Copied config files to {release_folder}")
+    
+    # Copy batch files (rename from _default versions)
+    for base in ["playMod", "host", "join"]:
+        for ext in ["bat", "sh"]:
+            default_src = src_dir / f"{base}_default.{ext}"
+            if default_src.is_file():
+                copy_file(default_src, release_folder / f"{base}.{ext}")
+    print(f"Copied batch files to {release_folder}")
+    
+    # Copy text files
+    text_files = ["AUTHORS.txt", "CHANGELOG.txt", "LICENSE.txt", "README.txt"]
+    for text_file in text_files:
+        src = src_dir / text_file
+        if src.is_file():
+            copy_file(src, release_folder / text_file)
+    print(f"Copied text files to {release_folder}")
+    
+    # Do a full non-debug build
+    print("Building full release (non-debug)...")
+    build_new_checksum_file(root_dir, root_dir / "build" / "checksums.txt")
+    config.update({
+        "rebuild2D": True,
+        "rebuildWeapons": True,
+        "rebuildSound": True,
+        "rebuildServerCustom": True,
+        "rebuildServerScripts": True,
+        "rebuildCustomIwd": True,
+        "rebuildCustomMapsIwd": True,
+        "rebuildMod": True,
+        "installConfig": True,
+        "installBatchFiles": True,
+    })
+    build_iwd_files(config, root_dir)
+    rebuild_mod(config, root_dir)
+    
+    # Copy built files to release folder
+    iwds = [
+        "rotu_svr_scripts.iwd",
+        "rotu_svr_custom.iwd",
+        "yz_custom.iwd",
+        "rotu_svr_mapdata.iwd",
+        "sound.iwd",
+        "2d.iwd",
+        "weapons.iwd",
+    ]
+    for iwd_file in iwds:
+        src = config["modPath"] / iwd_file
+        if src.is_file():
+            copy_file(src, release_folder / iwd_file)
+            print(f"Copied {iwd_file} to {release_folder}")
+    
+    # Copy mod.ff
+    mod_ff = config["modPath"] / "mod.ff"
+    if mod_ff.is_file():
+        copy_file(mod_ff, release_folder / "mod.ff")
+        print(f"Copied mod.ff to {release_folder}")
+    
+    # Create zip archive
+    zip_path = config["releasePath"] / f"{release_name}.zip"
+    print(f"Creating release archive: {zip_path}")
+    shutil.rmtree(zip_path, ignore_errors=True)
+    
+    with zipfile.ZipFile(zip_path, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for root, dirs, files in os.walk(release_folder):
+            dirs[:] = [d for d in dirs if d.lower() != ".svn"]
+            root_path = Path(root)
+            for file_name in files:
+                file_path = root_path / file_name
+                arcname = file_path.relative_to(config["releasePath"])
+                zf.write(file_path, arcname.as_posix())
+    
+    print(f"Saved zip archive of release to {zip_path}")
+    print(f"Release {release_name} complete!")
 
 
 def main():
@@ -698,10 +900,10 @@ def main():
         clean(config, root_dir)
         return
     if args.q:
-        print("Quality checks are not fully implemented in this port.")
+        quality_check(root_dir)
         return
     if args.r:
-        print("Release support is not yet implemented in makeMod.py")
+        release(config, root_dir, args.r, bash_path)
         return
 
     config["opt_d"] = args.d
@@ -757,9 +959,10 @@ def main():
         install_config(config, root_dir)
         install_batch_files(config, root_dir, bash_path)
         update_upload_folder(config)
+        build_new_checksum_file(root_dir, checksum_file)
         return
 
-    rebuild_flags, _files = find_changes(root_dir, checksum_file, config)
+    rebuild_flags, _files, checksums_map = find_changes(root_dir, checksum_file, config)
     if rebuild_flags is None:
         print("Checksum file unreadable, doing a full build.")
         build_new_checksum_file(root_dir, checksum_file)
@@ -788,6 +991,10 @@ def main():
     install_config(config, root_dir)
     install_batch_files(config, root_dir, bash_path)
     update_upload_folder(config)
+    
+    # Write updated checksums for next run
+    write_updated_checksums(checksum_file, checksums_map)
+    
     if config.get("rebuildMod"):
         print("Rebuilt mod.ff")
     print("Build complete.")
