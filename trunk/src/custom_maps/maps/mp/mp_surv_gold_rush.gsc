@@ -62,10 +62,11 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = true;   // toggle true/false to switch between editor and game mode
+    // DEPRECATED. New method: add '+set enable_umi_editor 1' to command line in playMod.bat
+    // umiEditorMode = true;   // toggle true/false to switch between editor and game mode
     screenshotMode = true;  // hide all the UMI stuff to facilitate screenshots
 
-    if (umiEditorMode) {
+    if (level.umiEnabled) {
         if (!screenshotMode) {
             devDrawAllPossibleSpawnpoints();
         }
@@ -80,7 +81,7 @@ main()
     buildZombieSpawnByTargetname("spawngroup3", 1);
     buildZombieSpawnByTargetname("spawngroup4", 1);
 
-    if (umiEditorMode) {
+    if (level.umiEnabled) {
         // Do Nothing
     } else {
         startGame();

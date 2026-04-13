@@ -925,6 +925,10 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)
     noticePrint("Map: You may call _umi::modName() to determine which mod is trying to load the map.");
 
     shops = strTok(equipmentShops, " ");
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"equipmentShopCount\": " + shops.size + "}}";            
+        logPrint(json + "\n");            
+    }
     if (!isDefined(level.tradespawns[int(shops[0])])) {
         errorPrint("Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().");
         return;
@@ -985,6 +989,10 @@ buildShopsByTargetname(targetname)
     debugPrint("in _umi::buildShopsByTargetname()", "fn", level.nonVerbose);
 
     ents = getentarray(targetname, "targetname");
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"equipmentShopCount\": " + ents.size + "}}";            
+        logPrint(json + "\n");            
+    }
     if (ents.size == 0) {
         errorPrint("Map: No equipment shops (entities matching targetname: " + targetname + ") found.");
         return;
@@ -1013,6 +1021,10 @@ buildWeaponShopsByTargetname(targetname, loadTime)
     debugPrint("in _umi::buildWeaponShopsByTargetname()", "fn", level.nonVerbose);
 
     ents = getentarray(targetname, "targetname");
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"weaponShopCount\": " + ents.size + "}}";            
+        logPrint(json + "\n");            
+    }
     if (ents.size == 0) {
         errorPrint("Map: No weapon shops (entities matching targetname: " + targetname + ") found.");
         return;
@@ -1056,6 +1068,11 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
     noticePrint("Map: You may call _umi::modName() to determine which mod is trying to load the map.");
 
     weapons = strTok(weaponShops, " ");
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"weaponShopCount\": " + weapons.size + "}}";            
+        logPrint(json + "\n");            
+    }
+
     if (!isDefined(level.tradespawns[int(weapons[0])])) {
         errorPrint("Map: No weapon shop tradespawns defined, or tradespawns haven't been loaded().");
         return;
@@ -1099,12 +1116,14 @@ loadWaypoints()
     debugPrint("in _umi::loadWaypoints()", "fn", level.lowVerbosity);
 
     waypointsLoaded = false;
+    waypointType = "None";
 
     if (isDefined(level.waypoints)) {
         // load external waypoints
         waypointsLoaded = loadExternalWaypoints();
     }
     if (waypointsLoaded) {
+        waypointType = "external";
         debugPrint("External waypoints loaded: " + waypointsLoaded, "val", level.lowVerbosity);
     } else {
         debugPrint("No external waypoints found, attempting to load internal waypoints.", "val", level.lowVerbosity);
@@ -1114,10 +1133,16 @@ loadWaypoints()
         waypointsLoaded = loadInternalWaypoints();
         if (waypointsLoaded){
             debugPrint("Internal waypoints loaded: " + waypointsLoaded, "val", level.lowVerbosity);
+            waypointType = "internal";
         } else {
             debugPrint("No internal waypoints found.", "val", level.lowVerbosity);
         }
     }
+
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"waypointType\": \"" + waypointType + "\"}}";    
+        logPrint(json + "\n");
+    }    
 
     if (waypointsLoaded) {
         // load distances, validate, kd-tree
@@ -1327,6 +1352,7 @@ validateWaypoints()
         warnPrint("Waypoint validation was stopped for performance reasons before it finished.");
         warnPrint("There may be invalid waypoints that aren't noted.");
     }
+    validStr = "";
     fixedWaypoints = false;
     if (invalidWaypoints.size > 0) {
         errorPrint("Map " + getdvar("mapname") + " has invalid waypoints!");
@@ -1343,14 +1369,24 @@ validateWaypoints()
 
         if (level.waypointsInvalid) {
             noticePrint("RotU will not be using the waypoints in this map!");
+            validStr = "Invalid";
         } else if (fixedWaypoints) {
             noticePrint("RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!");
+            validStr = "Valid, after fixes";
         }
     } else {
         noticePrint("Waypoints PASSED critical validation tests!");
+        validStr = "Valid";
     }
+
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"waypointsValid\": \"" + validStr + "\", \"waypointCount\": " + level.Wp.size + "}}";    
+        logPrint(json + "\n");
+    }    
     waypointQuality();
 }
+
+
 
 waypointQuality()
 {

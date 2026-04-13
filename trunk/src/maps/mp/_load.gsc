@@ -39,6 +39,10 @@ main(bScriptgened, bCSVgened, bsgenabled)
 {
     debugPrint("in _load::main()", "fn", level.nonVerbose);
 
+    level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
+    level.autoMapTestDone = false;
+    noticePrint("_load::main(): set auto map testing mode " + level.autoMapTesting);
+
     if ( !isdefined( level.script_gen_dump_reasons ) )
         level.script_gen_dump_reasons = [];
     if ( !isdefined( bsgenabled ) )

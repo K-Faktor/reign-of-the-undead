@@ -36,15 +36,29 @@
 
 #include scripts\include\realtime;
 
+boolToJson(b)
+{
+    if (b)
+        return "true";
+    return "false";
+}
+
 // Call this once at the start of every map / new game
 logMapStartHeader()
 {
     initRealTime();
 
+    currentMap = getDvar("mapname");
+    currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
+    if (currentMapName == currentMap) {currentMapName = "";}
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"mapName\": \"" + currentMap + "\", \"mapEnglishName\": \"" + currentMapName + "\", \"timestamp\": \"" + getRealDateTimeString() + "\"}}";    
+        logPrint(json + "\n");
+    }
+
     logPrint("============================================================\n");
     logPrint("Map Started: " + getRealDateTimeString() + "\n");
-    logPrint("Map: " + getDvar("mapname") + "\n");
-    // logPrint("Timezone: " + level.realTimeTZ + "\n");
+    logPrint("Map: " + currentMap + "\n");
     logPrint("============================================================\n");
 }
 

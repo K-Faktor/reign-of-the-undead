@@ -419,9 +419,19 @@ onPlayerConnect()
     self thread scripts\players\_rank::onPlayerConnect();
     self thread scripts\server\_environment::onPlayerConnect();
 
-    /// Force open the change class menu when a player joins the server
     self thread scripts\players\_classes::monitorEnabledClasses();
-    self openMenu( game["menu_changeclass_allies"] );
+
+    // For automated map testing, force human player to join Listen server
+    // as a soldier
+    if (level.autoMapTesting) {
+        self thread  scripts\players\_classes::pickClass("soldier");
+        self closeMenu();
+        self closeInGameMenu();
+        self thread scripts\players\_classes::acceptClass();
+    } else {
+        // Force open the change class menu when a player joins the server
+        self openMenu( game["menu_changeclass_allies"] );
+    }
 
     wait 0.05;
 
@@ -438,6 +448,8 @@ onPlayerConnect()
     } else {
         self.canGetSpecialWeapons = true;
     }
+
+    wait 0.05;
 
     if ((level.canBuyRaygun) && (self.canGetSpecialWeapons)) {
         self setclientdvar("ui_raygun", 1); // enable raygun in shop
@@ -1421,6 +1433,11 @@ spawnPlayer(preserveState)
     debugPrint(self.name + ": sessionteam: " + self.sessionteam, "val");
     self notify("spawned_player");
     debugPrint("Spawned " + self.name, "val");
+
+    if (level.autoMapTesting) {
+        json = "{\"autoMapTest\": {\"humanPlayerSpawned\": " + boolToJson(true) + "}}";            
+        logPrint(json + "\n");     
+    }
 }
 
 removeSpawnProtection(time)

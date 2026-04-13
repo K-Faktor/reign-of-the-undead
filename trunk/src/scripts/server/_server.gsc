@@ -40,6 +40,13 @@ init()
     // should we use the alternate bot AI under devlopment?
     level.zombieAiDevelopment = true;
 
+    // run in atuomatic map testing mode?
+    level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
+    level.autoMapTestDone = false;
+    if (level.autoMapTesting) {
+        noticePrint("In auto map testing mode");
+    }
+
     debugPrint("Running debug version of rotu_svr_scripts.iwd.", "val");
     if (level.printFunctionEntryMessages) {
         debugPrint("Printing function entrance messages", "val");
@@ -138,6 +145,16 @@ init()
     noticePrint("Server is running and waiting for players to connect.");
     runTestCode();
 }
+
+// // Clean shutdown - Recommended
+// shutdownServer()
+// {
+//     iprintln("^1Server is shutting down...");
+//     wait 2;                     // Give players time to see the message
+    
+//     // This sends the command as if typed in the server console
+//     exec("killserver");
+// }
 
 /**
  * @brief Checks for and tries to fix an incorrect rcon password

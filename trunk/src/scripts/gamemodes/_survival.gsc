@@ -126,6 +126,11 @@ buildWaveOrder()
     // values: toxic burning burning_dog burning_tank inferno tank boss many_bosses cyclops
     // level.waveOrder[0] = "tank";
 
+    if (level.autoMapTesting) {
+        // Force first wave to be regular wave for auto map testing
+        level.waveOrder[0] = "regular";
+    }
+
     debugPrint("Total waves is: " + level.totalWaves, "val");
     for (i=0; i<level.waveOrder.size; i++) {
         debugPrint("Wave [" + i + "] is " + level.waveOrder[i], "val");
@@ -483,7 +488,9 @@ startRegularWave()
     level.intermission = 1;
 
     timer(level.dvar["surv_timeout"], &"ZOMBIE_NEWWAVEIN", (.2,.7,0));
-    wait level.dvar["surv_timeout"] + 2;
+    if (!level.autoMapTesting) {
+        wait level.dvar["surv_timeout"] + 2;
+    }
 
     level.waveSize = getWaveSize(level.currentWave);
     level.waveProgress = 0;
@@ -499,7 +506,9 @@ startRegularWave()
 
     announceMessage(&"ZOMBIE_NEWWAVE", level.waveSize, (.2,.7,0), 4, 95);
 
-    wait 5;
+    if (!level.autoMapTesting) {
+        wait 5;
+    }
 
     scripts\server\_environment::setAmbient("zom_ambient");
 
@@ -571,7 +580,9 @@ startSpecialWave(type)
     }
 
     timer(level.dvar["surv_timeout"], &"ZOMBIE_NEWWAVEIN" , (.7,.2,0));
-    wait level.dvar["surv_timeout"] + 2;
+    if (!level.autoMapTesting) {
+        wait level.dvar["surv_timeout"] + 2;
+    }
 
     if (level.waveType == "boss") {level.waveSize = 1;}
     else if ((level.waveType == "cyclops") || (level.waveType == "many_bosses")) {
@@ -637,7 +648,9 @@ startSpecialWave(type)
         announceMessage(&"ZOMBIE_NEWSPECIALWAVE", level.zom_typenames[type], (.7,.2,0), 4, 95);
     }
 
-    wait 5;
+    if (!level.autoMapTesting) {
+        wait 5;
+    }
 
     // Set the environment for the special wave
     scripts\server\_environment::setAmbient(scripts\bots\_types::getAmbientForSpecialWave(type));

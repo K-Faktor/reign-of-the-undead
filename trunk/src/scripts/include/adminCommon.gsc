@@ -419,6 +419,10 @@ onPlayerConnect()
             // getGuid() returns garbage if a listen server, so force admin
             guid = getDvar("admin_forced_guid");
             debugPrint("Listen server: Host player's guid forced to " + guid, "val");
+            if (level.autoMapTesting) {
+                json = "{\"autoMapTest\": {\"serverIsUp\": " + boolToJson(true) + "}}";            
+                logPrint(json + "\n");            
+            }
         } else if (level.dedicated == "dedicated LAN server") {
             // Do nothing
         } else if (level.dedicated == "dedicated internet server") {

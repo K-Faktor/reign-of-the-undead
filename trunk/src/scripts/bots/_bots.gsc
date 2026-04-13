@@ -46,6 +46,35 @@ init()
 
     precache();
 
+    // runtime errors on maps with no waypoints.  Test: mp_4nuketown
+    // same map has Error: Could not load stringtable "waypoints/mp_4nuketown_wp.csv".
+
+    // runtime errors on maps with no waypoints.  Test: mp_ancient_final_wp
+    // same map has Error: Could not load stringtable "waypoints/mp_ancient_final_wp.csv".
+    // no such path/file in the *.iwd.  In the *.ff?
+
+        // Error: Could not load stringtable "waypoints/mp_ancient_final_wp.csv".
+
+        // ******* script runtime error *******
+        // type undefined is not a float: (file 'scripts/include/waypoints.gsc', line 804)
+        //         x = randomFloatRange(level.waypointMinX, level.waypointMaxX);
+        //                                 *
+        // Error: called from:
+        // (file 'scripts/include/waypoints.gsc', line 934)
+        //         origin = random3dPoint(useMapExtents);   // if true, generate points within 3D volume covered by waypoints
+        //                 *
+        // Error: called from:
+        // (file 'scripts/include/waypoints.gsc', line 66)
+        //     nearestWaypointsTest(100, true);
+        //     *
+        // Error: called from:
+        // (file 'scripts/bots/_bots.gsc', line 51)
+        //     scripts\include\waypoints::initializeWaypoints();
+        //     *
+        // Error: called from:
+        // (file 'scripts/server/_server.gsc', line 124)
+        //     thread scripts\bots\_bots::init();
+
     scripts\include\waypoints::initializeWaypoints();
 
     if (getDvarInt("use_flexible_slots") != 1) {level.useFlexibleSlots = false;}

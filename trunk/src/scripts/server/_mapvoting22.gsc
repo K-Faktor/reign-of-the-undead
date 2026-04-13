@@ -415,9 +415,30 @@ mapTextName(mapname)
 {
     debugPrint("in _mapvoting22::mapTextName()", "fn", level.lowVerbosity);
 
-    dvarName = "name_"+mapname;
-    textName = getdvar(dvarname);
+    // dvarName = "name_"+mapname;
+    // textName = getdvar(dvarname);
+    textName = getDvar("name_" + mapname);
+    if (textName != "") {
+        return textName;
+    }
 
+    // set englishMapNames1 "map1|Name One,map2|Name Two,...,map150|Name 150"
+    // set englishMapNames2 "map151|Name 151,...,map300|Name 300"
+
+    // @todo implement me to save dvars
+    // // Then check our packed lists
+    // names1 = getDvar( "englishMapNames1" );
+    // names2 = getDvar( "englishMapNames2" );
+
+    // tokens = strTok( names1 + "," + names2, "," );
+
+    // for( i = 0; i < tokens.size; i++ )
+    // {
+    //     pair = strTok( tokens[i], "|" );
+    //     if ( pair.size == 2 && pair[0] == codeName )
+    //         return pair[1];
+    // }
+    
     // Use the mapname if there is no English name for the map
     if ((textName == "") && (mapname != "nota")) {
         message = dvarname + " not set in configuration files (mapvote.cfg) for map " + mapname +".\n";

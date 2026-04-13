@@ -128,7 +128,7 @@ onMenuResponse()
     for(;;) {
         self waittill("menuresponse", menu, response);
 
-//      println( self getEntityNumber() + " menuresponse: " + menu + " " + response );
+        println( self getEntityNumber() + " menuresponse: " + menu + " " + response );
 
         if ( menu == game["menu_skillpoints"]) {
             switch(response)
@@ -276,6 +276,7 @@ onMenuResponse()
         {
             self closeMenu();
             self closeInGameMenu();
+            noticePrint("279: soldier class respone is: " + response);
             thread  scripts\players\_classes::pickClass(response);
             continue;
         }

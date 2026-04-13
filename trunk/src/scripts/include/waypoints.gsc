@@ -56,6 +56,11 @@ initializeWaypoints()
 
     if (!level.waypointsInvalid) {
         initKdWaypointTree();
+    } else {
+        // We try loading external waypoints first, then internal waypoints.  If
+        // there aren't any internal waypoints either, don't try to test waypoints
+        // that don't exist
+        return;
     }
 
     if (!isDefined(level.astarCalls)) {level.astarCalls = 0;}

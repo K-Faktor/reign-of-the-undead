@@ -25,8 +25,12 @@ sudo apt update
 sudo apt install git
 ```
 
-### Perl
+### Python
 TODO: Port to python.
+
+### Perl
+**Deprecated**
+Use python now with makeMod.py instead of makeMod.pl.
 
 The build system is written in Perl, which should already be installed in Kubuntu.  Check with:
 ```bash
@@ -179,16 +183,24 @@ The first line is the path to the perl interpreter you previously installed. You
 ## Build the Mod
 To build the mod, open a command line (cmd.exe, i.e. 'Command Prompt'), then cd as required to get to the tools directory (`~/rotu/trunk/tools` or similar). To get an idea of makeMod.pl's features, at the command prompt execute
 
-`perl makeMod.pl -h`
+### makeMod.pl Deprecated, use makeMod.py Instead
 
-Once you've read that brief documentation, execute
+Old perl:
+```bash
+perl makeMod.pl -h
+perl -w makeMod.pl
+```
 
-`perl -w makeMod.pl`
+New python:
+```bash
+./makeMod.py -h
+./makeMod.py
+```
 
 to build the mod.  Building may take a minute or more, depending on the speed of your computer.  When the script finishes, the mod will have been compiled, installed, and relevant files copied to the uploadPath you specified in `.env`.
 
 ## Configure the the Mod
-After you build the mod the first time, copy the `*.cfg` files from the `build` folder to the `local` folder.  Those local `*.cfg` files won't be programatically edited, but they will be copied into `build` and into your built mod every time you rebuild the mod. That way, your configuration changes won't be lost every time you rebuild the mod. **Not Implemented Yet**
+After you build the mod the first time, copy the `*.cfg` files from the `build` folder to the `local` folder.  Those local `*.cfg` files won't be programatically edited, but they will be copied into `build` and into your built mod every time you rebuild the mod. That way, your configuration changes won't be lost every time you rebuild the mod. **Implemented in makeMod.py**
 
 ### PORTING: Work In Progess Below
 

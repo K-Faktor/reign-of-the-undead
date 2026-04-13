@@ -373,6 +373,7 @@ botMain(bot)
     // each tick is level.zomInterval second, i.e. 0.2 seconds, or 4 frames.
     bot.tickCount = 0;
     bot.stateTickCount = 0;
+    botSpawnedAndStalking = 0;
     bot.previousStatus = 0; // initialize previousStatus so we can detect status changes in the loop and print them for debugging
     while (1) {
         if (bot.tickCount > 10000) {bot.tickCount = 0;}             // overflow protection
@@ -423,12 +424,16 @@ botMain(bot)
                 }
                 break;
             case 2: // BOT_STATE_STALKING
+                if ((!level.autoMapTestDone) && (level.autoMapTesting)) {
+                    level.autoMapTestDone = true;
+                    json = "{\"autoMapTest\": {\"botSpawnedAndStalking\": " + boolToJson(true) + "}}";            
+                    logPrint(json + "\n");
+                    iPrintLnBold("Auto Map Test: COMPLETED");
+                }  
                 // stalk now, until state changes
                 if (bot.stateTickCount == 0) {
                     bot.stateTickCount++;
                     noticePrint("Bot " + bot.index + " Stalking " + bot.bestTarget.name + " pos: " + bot.bestTarget.origin);
-                    // bot thread doWander(bot);
-                    // bot thread wander(bot);
                     bot thread wander(bot);
                 } else {
                     bot.stateTickCount++;

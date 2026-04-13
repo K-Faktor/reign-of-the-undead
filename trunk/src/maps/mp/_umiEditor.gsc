@@ -55,11 +55,15 @@ init()
         (getDvarInt("dedicated") == 0))     // Listen server
     {
         level.developerMode = true;
+        if (getDvarInt("enable_umi_editor") == 1) {
+            level.umiEnabled = true;
+            initMapEditor();
+        }
     } else {
         level.developerMode = false;
-        noticePrint("Map: Developer mode is off, UMI Map Editor is unavailable");
-        noticePrint("Map: To enable developer mode, playMod.bat/host.bat requires '+set developer 1 +set developer_script 1'");
-        noticePrint("Map: Also, the server must be a Listen server.");
+        level.umiEnabled = false;
+        noticePrint("_umiEditor: Developer mode is off, UMI Map Editor is unavailable");
+        noticePrint("_umiEditor: To enable UMI Editor mode, playMod.bat requires '+set dedicated 0 +set developer 1 +set developer_script 1 +set enable_umi_editor 1'");
     }
 }
 
@@ -184,10 +188,8 @@ initMapEditor()
         wait 0.5;
     }
 
-    if (!level.developerMode) {
-        noticePrint("Map: Developer mode is off, UMI Map Editor is unavailable");
-        noticePrint("Map: To enable developer mode, playMod.bat requires '+set developer 1 +set developer_script 1'");
-        iPrintLnBold("Error: Game must be started in developer mode, see server log");
+    if (!level.umiEnabled) {
+        iPrintLnBold("Warning: UMI Editor is not enabled, see server log");
         return;
     }
 
@@ -196,7 +198,7 @@ initMapEditor()
 
     // Prevent massive runtime errors from hanging the hosting computer
     if (!(isDefined(level.devPlayer))) {
-        errorPrint("level.devPlayer is not defined, which may mean the admin player wasn't recognized.");
+        errorPrint("level.devPlayer is not defined, which may mean the admin player wasn't recognized. Did you set admin_forced_guid?");
         errorPrint("Aborting initialization of UMI Map Editor.");
         return;
     }
