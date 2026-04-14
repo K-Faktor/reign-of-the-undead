@@ -80,12 +80,7 @@ main()
     buildZombieSpawnByTargetname("spawngroup3", 1);
     buildZombieSpawnByTargetname("spawngroup4", 1);
 
-    if (level.umiEnabled) {
-        // Do Nothing
-    } else {
-        startGame();
-        // thread spawnpoint_protection();
-    }
+    startGame();
 }
 
 // spawnpoint_protection()

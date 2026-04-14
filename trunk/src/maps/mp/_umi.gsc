@@ -1913,8 +1913,13 @@ startGame()
 {
     debugPrint("in _umi::startGame()", "fn", level.nonVerbose);
 
-    findAdditionalSpawnpoints();
-    scripts\gamemodes\_survival::beginGame();
+    if (level.umiEnabled) {
+        // Do Nothing.  Don't really start game when we are using UMI or taking ascreenshots
+    } else {
+        findAdditionalSpawnpoints();
+        scripts\gamemodes\_survival::beginGame();
+    }
+
 }
 
 /**

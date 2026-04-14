@@ -82,9 +82,5 @@ main()
     }
 
     buildZombieSpawnsByClassname("mp_dm_spawn");
-    if (level.umiEnabled) {
-        // Do Nothing
-    } else {
-        startGame();
-    }
+    startGame();
 }
