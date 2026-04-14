@@ -62,15 +62,14 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    // DEPRECATED. New method: add '+set enable_umi_editor 1' to command line in playMod.bat
-    // umiEditorMode = true;   // toggle true/false to switch between editor and game mode
-    screenshotMode = true;  // hide all the UMI stuff to facilitate screenshots
-
     if (level.umiEnabled) {
-        if (!screenshotMode) {
-            devDrawAllPossibleSpawnpoints();
+        if (level.screenshotMode) {
+            // do nothing
         }
-        maps\mp\_umiEditor::initMapEditor();
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }
     } else {
         buildWeaponShopsByTargetname("ammostock");
         buildShopsByTargetname("weaponupgrade");

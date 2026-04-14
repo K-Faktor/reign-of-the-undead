@@ -39,8 +39,15 @@ main(bScriptgened, bCSVgened, bsgenabled)
 {
     debugPrint("in _load::main()", "fn", level.nonVerbose);
 
+    // load a few critical items ASAP
     level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
     level.autoMapTestDone = false;
+    level.umiEnabled = (getDvarInt("enable_umi_editor") == 1);
+    level.screenshotMode = (getDvarInt("screenshot_mode") == 1);
+    level.isDedicated = (getDvarInt("dedicated") == 0);
+    level.developerMode = (getDvarInt("developer") == 1);
+    level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
+
     noticePrint("_load::main(): set auto map testing mode " + level.autoMapTesting);
 
     if ( !isdefined( level.script_gen_dump_reasons ) )

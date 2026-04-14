@@ -50,18 +50,7 @@ init()
     precacheModel("prop_flag_russian");  // used for unlinked waypoints
     precacheModel("prop_flag_brit");     // used for linking waypoints
 
-    if ((getDvarInt("developer_script") == 1) &&
-        (getDvarInt("developer") == 1) &&
-        (getDvarInt("dedicated") == 0))     // Listen server
-    {
-        level.developerMode = true;
-        if (getDvarInt("enable_umi_editor") == 1) {
-            level.umiEnabled = true;
-            initMapEditor();
-        }
-    } else {
-        level.developerMode = false;
-        level.umiEnabled = false;
+    if (!level.umiEnabled) {
         noticePrint("_umiEditor: Developer mode is off, UMI Map Editor is unavailable");
         noticePrint("_umiEditor: To enable UMI Editor mode, playMod.bat requires '+set dedicated 0 +set developer 1 +set developer_script 1 +set enable_umi_editor 1'");
     }
@@ -214,9 +203,9 @@ initMapEditor()
     level.currentWaypoint = 0;
     level.currentWaypointLink = 0;
 
-    screenshotMode = true;
+    // screenshotMode = true;
 
-    if (screenshotMode) {
+    if (level.screenshotMode) {
         // hide everything.  Almost works.
         // still need to hide minimap, rank progress bar, and 'spectate'
         // hud messages

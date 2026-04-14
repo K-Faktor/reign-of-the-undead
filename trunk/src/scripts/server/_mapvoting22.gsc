@@ -441,8 +441,8 @@ mapTextName(mapname)
     
     // Use the mapname if there is no English name for the map
     if ((textName == "") && (mapname != "nota")) {
-        message = dvarname + " not set in configuration files (mapvote.cfg) for map " + mapname +".\n";
-        message += "\t" + dvarName + " should contain the English name of the map.";
+        message = "name_" + mapname + " not set in configuration files (mapvote.cfg) for map " + mapname +".\n";
+        message += "\t" + "name_" + mapname + " should contain the English name of the map.";
         warnPrint(message);
         return mapname;
     }

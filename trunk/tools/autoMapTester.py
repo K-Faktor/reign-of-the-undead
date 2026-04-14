@@ -32,9 +32,6 @@
 #     EULA.
 #******************************************************************************
 
-# TODO:
-# Summary: still need to save to a README.md
-
 import argparse
 import os
 import json
@@ -51,19 +48,6 @@ import sys
 import hashlib
 from datetime import datetime
 
-
-# Load PROJECT_PATH from .env file
-# load_dotenv()
-
-# project_path = os.getenv("PROJECT_PATH")
-# if not project_path:
-#     print("Error: PROJECT_PATH not found in .env file")
-#     sys.exit(1)
-
-# project_path = Path(project_path).resolve()
-
-# Load environment
-# load_dotenv('/home/mark/reign-of-the-undead/.env')
 
 here = Path(__file__).resolve()
 project_default = here.parents[2] if len(here.parents) >= 3 else here.parent
