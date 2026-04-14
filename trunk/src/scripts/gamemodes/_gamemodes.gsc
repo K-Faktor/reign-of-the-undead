@@ -413,14 +413,17 @@ endMap(endReasontext, showcredits)
 
     setdvar( "g_deadChat", 1 );
 
-    players = getentarray("player", "classname");
-    message = "^1You may not leave the game until the next map loads!";
-    for(i = 0; i < players.size; i++) {
-        players[i] setclientdvar("canleavegame", 0);
-        players[i] closeMenu();
-        players[i] closeInGameMenu();
-        players[i] iPrintlnBold(message);
-        players[i] freezePlayerForRoundEnd();
+    // Don't lock the 'Leave' menu on a Listen server
+    if (!level.isDedicated) {
+        players = getentarray("player", "classname");
+        message = "^1You may not leave the game until the next map loads!";
+        for(i = 0; i < players.size; i++) {
+            players[i] setclientdvar("canleavegame", 0);
+            players[i] closeMenu();
+            players[i] closeInGameMenu();
+            players[i] iPrintlnBold(message);
+            players[i] freezePlayerForRoundEnd();
+        }
     }
 
     scripts\server\_environment::stopAmbient(2);
