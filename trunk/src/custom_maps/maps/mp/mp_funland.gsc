@@ -64,24 +64,21 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = false; // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
-        maps\mp\_umiEditor::initWeaponShopEditor("0");
-        maps\mp\_umiEditor::initEquipmentShopEditor("1");
-//         maps\mp\_umiEditor::devDumpEntities();
-
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+            maps\mp\_umiEditor::initEquipmentShopEditor("1");
+            maps\mp\_umiEditor::initWeaponShopEditor("0");
+        }
     } else {
         buildWeaponShopsByTradespawns("0");
         buildShopsByTradespawns("1");
     }
 
     buildZombieSpawnsByClassname("mp_dm_spawn");
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        startGame();
-    }
+    startGame();
 }

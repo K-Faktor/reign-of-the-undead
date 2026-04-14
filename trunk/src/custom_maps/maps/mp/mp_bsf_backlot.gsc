@@ -63,11 +63,14 @@ main()
     precache();
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = false;  // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }
     } else {
         buildWeaponShopsByTargetname("ammostock");
         buildShopsByTargetname("weaponupgrade");

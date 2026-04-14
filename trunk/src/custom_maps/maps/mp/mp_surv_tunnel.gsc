@@ -76,11 +76,14 @@ main()
     mg2 setTopArc(0);       // degrees
     mg2 setBottomArc(50);   // degrees
 
-    umiEditorMode = false;  // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }
     } else {
         buildWeaponShopsByTargetname("ammostock");
         buildShopsByTargetname("weaponupgrade");
@@ -91,12 +94,8 @@ main()
     buildZombieSpawnByTargetname("spawngroup3", 1);
     buildZombieSpawnByTargetname("spawngroup4", 1);
 
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        startGame();
-        thread spawnpoint_protection();
-    }
+    thread spawnpoint_protection();
+    startGame();
 }
 
 spawnpoint_protection()

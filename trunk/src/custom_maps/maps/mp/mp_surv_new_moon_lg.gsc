@@ -63,6 +63,8 @@ main()
     setDvar("bg_fallDamageMaxHeight","9100");
     setDvar("bg_fallDamageMinHeight","9000");
 
+    level.barricadefx = LoadFX("dust/dust_trail_IR");
+
     //maps\mp\mp_surv_new_moon_lg_fx::main();
     maps\mp\mp_surv_new_moon_lg_rotate::main();
     maps\mp\_dmg_dalay_new_moon::main();
@@ -72,11 +74,14 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = false; // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }
     } else {
         buildWeaponShopsByTargetname("ammostock");
         buildShopsByTargetname("weaponupgrade");
@@ -91,11 +96,6 @@ main()
     buildZombieSpawnByTargetname("spawngroup7", 1);
     buildZombieSpawnByTargetname("spawngroup8", 1);
 
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        startGame();
-        level.barricadefx = LoadFX("dust/dust_trail_IR");
-        buildBarricadesByTargetname("staticbarricade", 7, 400, level.barricadefx, level.barricadefx);
-    }
+    buildBarricadesByTargetname("staticbarricade", 7, 400, level.barricadefx, level.barricadefx);
+    startGame();
 }

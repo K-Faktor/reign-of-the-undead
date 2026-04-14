@@ -67,11 +67,14 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = false;  // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }  
     } else {
         buildWeaponShopsByTradespawns("0 2 4 6 8");
         buildShopsByTradespawns("1 3 5 7 9");
@@ -79,9 +82,5 @@ main()
 
     buildZombieSpawnsByClassname("mp_dm_spawn");
 
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        startGame();
-    }
+    startGame();
 }

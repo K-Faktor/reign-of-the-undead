@@ -57,16 +57,19 @@ main()
     setdvar("r_glowskybleedintensity0",".3");
     setdvar("compassmaxrange","1800");
 
-     thread maps\mp\mp_surv_boss_road_waypoints::load_waypoints();
-     convertToNativeWaypoints();
+    thread maps\mp\mp_surv_boss_road_waypoints::load_waypoints();
+    convertToNativeWaypoints();
 
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = false;  // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }
     } else {
         buildWeaponShopsByTargetname("ammostock");
         buildShopsByTargetname("weaponupgrade");
@@ -81,9 +84,5 @@ main()
     buildZombieSpawnByTargetname("spawngroup7", 1);
     buildZombieSpawnByTargetname("spawngroup8", 1);
 
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        startGame();
-    }
+    startGame();
 }

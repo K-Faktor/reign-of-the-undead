@@ -42,7 +42,7 @@ main()
      * Error: unknown function: (file 'maps/mp/mp_burgundy_bulls_fx.gsc', line 20)
      *        maps\createfx\mp_burgundy_bulls_fx::main();
      *
-     * It seems to run just fine with +set developer_script 1 though
+     * It seems to run just fine with +set developer_script 0 though
      */
     maps\mp\mp_burgundy_bulls_fx::main();
     thread maps\createfx\mp_burgundy_bulls_fx::Add_FX();

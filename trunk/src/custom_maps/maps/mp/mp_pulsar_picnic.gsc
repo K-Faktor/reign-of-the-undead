@@ -106,11 +106,14 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    umiEditorMode = false;  // toggle true/false to switch between editor and game mode
-
-    if (umiEditorMode) {
-        devDrawAllPossibleSpawnpoints();
-        maps\mp\_umiEditor::initMapEditor();
+    if (level.umiEnabled) {
+        if (level.screenshotMode) {
+            // do nothing
+        }
+        else {
+            devDrawAllPossibleSpawnpoints();
+            maps\mp\_umiEditor::initMapEditor();
+        }
     } else {
         buildWeaponShopsByTargetname("ammostock");
         buildShopsByTargetname("weaponupgrade");
@@ -122,16 +125,12 @@ main()
     buildZombieSpawnByTargetname("spawngroup4", 1);
     buildZombieSpawnByTargetname("spawngroup5", 1);
 
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        thread messagealert1();
-        thread messagealert2();
-        thread messagealert3();
-        thread messagealert4();
-        thread quake();
-        startGame();
-    }
+    thread messagealert1();
+    thread messagealert2();
+    thread messagealert3();
+    thread messagealert4();
+    thread quake();
+    startGame();
 }
 
 messagealert1()
