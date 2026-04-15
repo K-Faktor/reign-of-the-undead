@@ -415,34 +415,53 @@ mapTextName(mapname)
 {
     debugPrint("in _mapvoting22::mapTextName()", "fn", level.lowVerbosity);
 
-    // dvarName = "name_"+mapname;
-    // textName = getdvar(dvarname);
+    textName = "";
+
+    // Allow for name overrides via the `set name_[mapname] = "My Custom Name"` paradigm
     textName = getDvar("name_" + mapname);
     if (textName != "") {
         return textName;
     }
 
-    // set englishMapNames1 "map1|Name One,map2|Name Two,...,map150|Name 150"
-    // set englishMapNames2 "map151|Name 151,...,map300|Name 300"
+    // Man, I was going to build a nice data structure for this, but timing tests
+    // show each name lookup takes a single clock tick (reported as 0ms).
+    // "4nuketown:4t4 Nuketown,4t4_scrap:Scrap,4t4scrap:Scrap,argel:Argel"
+    names = "";
+    for (i=1; i<=20; i++) { // 20 should be enough for ~550 maps
+        packed = getDvar( "sv_mapnames" + i );
+        if ((!isDefined(packed)) || (packed == "")) {
+            // noticePrint("Last map name dvar counter: " + int(i-1));  // 1-based counter adjustment
+            break;
+        } else {
+            if (names == "") { // first
+                names = packed;
+            } else {
+                names = names + "," + packed;
+            }
+        }
+    }
+    // tokenize our concatenated list of comma-separated sv_mapnames[N] dvars
+    tokens = strTok(names, ",");
 
-    // @todo implement me to save dvars
-    // // Then check our packed lists
-    // names1 = getDvar( "englishMapNames1" );
-    // names2 = getDvar( "englishMapNames2" );
+    // noticePrint("Found " + tokens.size + " map names key:value pairs");
+    for(i=0; i<tokens.size; i++) {
+        pair = strTok(tokens[i], ":");  // colon-separated key:value pairs
+        if ((pair.size == 2) && ("mp_" + pair[0] == mapname)) {
+            // noticePrint("Found map name in packed string: " + "mp_" + pair[0] + " yields: " + pair[1]);
+            textName = pair[1];
+        }
+    }
 
-    // tokens = strTok( names1 + "," + names2, "," );
+    if (textName != "") {
+        return textName;
+    }
 
-    // for( i = 0; i < tokens.size; i++ )
-    // {
-    //     pair = strTok( tokens[i], "|" );
-    //     if ( pair.size == 2 && pair[0] == codeName )
-    //         return pair[1];
-    // }
-    
+
     // Use the mapname if there is no English name for the map
     if ((textName == "") && (mapname != "nota")) {
-        message = "name_" + mapname + " not set in configuration files (mapvote.cfg) for map " + mapname +".\n";
-        message += "\t" + "name_" + mapname + " should contain the English name of the map.";
+        message = "English name for the map " + mapname + " not set in configuration files (mapvote.cfg sv_mapnames[N] dvars).\n";
+        message += "\t\t\t\t\t\t If this is a playable map in RotU, please file a bug report on github about the missing name in our master map name json file.\n";
+        message += "\t\t\t\t\t\t For now, you can set the name manually via: \t" + "set name_" + mapname + " \"Custom Map Name\"";
         warnPrint(message);
         return mapname;
     }

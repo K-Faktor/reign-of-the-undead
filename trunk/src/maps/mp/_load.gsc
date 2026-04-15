@@ -43,23 +43,19 @@ bootstrapCritical()
     // Ensure thsi can be called safely repeatedly, from the sundry of ways
     // map makers find to hook into our code.
     if ((!isDefined(level.bootstrapped)) || (level.bootstrapped == 0)) {
-        // precache items map maker often forget, yet the try to call
+        // precache items map makers often forget, yet they still try to call
         maps\mp\_umi::precacheCommonItems();
+        // precache models for the UMI maps & UMI Editor
+        maps\mp\_umiEditor::precacheUmiModels();
 
         // load a few critical items ASAP
         level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
         level.autoMapTestDone = false;
         level.umiEnabled = (getDvarInt("enable_umi_editor") == 1);
-
-        // precache models for the editor
-        if (level.umiEnabled) {maps\mp\_umiEditor::precacheUmiModels();}
-
         level.screenshotMode = (getDvarInt("screenshot_mode") == 1);
         level.isDedicated = (getDvarInt("dedicated") == 0);
         level.developerMode = (getDvarInt("developer") == 1);
         level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
-
-        // ::buildWeaponShopsByTargetname() depends on: level.ammoStockType
 
         noticePrint("_load::bootstrapCritical(): RotU has bootstrapped");
         level.bootstrapped = 1;

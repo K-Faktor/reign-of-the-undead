@@ -1936,9 +1936,8 @@ waitUntilFirstPlayerSpawns()
     debugPrint("in _umi::waitUntilFirstPlayerSpawns()", "fn", level.lowVerbosity);
 
     // NOTE: Some maps call this method almost *immediately*, thus giving RotU
-    // almost no time to get itself set up.  So we fake-wait here, without actually
-    // calling 'wait' or its kin, and the call a cleanup function to do the waiting
-    // when we're ready.
+    // almost no time to get itself set up.  So we ensure we bootstrap a few
+    // critical items before any calls to 'wait' or its kin.
     maps\mp\_load::bootstrapCritical();
 
     noticePrint("Map: First call to wait(), it is now too late to precache models or load fx.");

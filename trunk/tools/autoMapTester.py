@@ -82,7 +82,6 @@ test_platform = TEST_ENVIRONMENT
 # prob deprecated, we read from master en names now, but may be used to write new dvars to mapvote.cfg
 map_cfg_path = os.path.join(PROJECT_PATH, 'trunk', 'src', 'mapvote_default.cfg')
 
-
 # load master map name data
 with open(map_names_json, 'r') as f:
     name_data = json.load(f)
@@ -115,6 +114,7 @@ def print_help():
     print("Usage: autoMapTester.py [-s] [-r] [-h] [-v] [-m map_name]")
     print("  -s, --sort     Sort maps.json in ascending alpa order by map codeName")
     print("  -r, --readme   Rebuild all README.md files, including summary README.md file")
+    print("  -n, --names    Pack English map names into dvar strings")
     print("  -h, --help     Show help")
     print("  -v, --version  Show version")
     print("  -m, --map      Test the given map")
@@ -124,6 +124,44 @@ def print_help():
     print("")
     print("  Test all maps not in history file, one map per invocation:")
     print("    ./autoMapTester.py")
+
+
+def packMapNames():
+    with open(map_names_json, 'r') as f:
+        data = json.load(f)
+
+    # Ensure the key exists and is a list
+    if isinstance(data, list):
+        # Sort the list of maps by 'mapName', mp_surv_testmap
+        data = sorted(data, key=lambda x: x['mapName'])
+        packedString = ""
+        characterLimit = 600
+        dvarCounter = 1
+        dvarName = f"sv_mapnames{dvarCounter}"
+        mapCounter = 0
+
+        # "surv_testmap:Official Test Map,"
+        for item in data:
+            mapCounter += 1
+            key = item['mapName'].replace("mp_", "")
+            val = item['englishName']
+            packedItem = f"{key}:{val}"
+            if len(packedString + packedItem) < characterLimit:
+                if len(packedString) == 0:
+                    packedString = f"{packedItem}"          # no leading comma
+                else:
+                    packedString = f"{packedString},{packedItem}"
+            else:
+                # finish old dvar
+                print(f"set {dvarName} \"{packedString}\"")
+
+                # start new dvar
+                packedString = packedItem
+                dvarCounter += 1
+                dvarName = f"sv_mapnames{dvarCounter}"
+        if dvarCounter >= 20:
+            print(f"BUG: Created >= 20 dvars, but RotU will only read 20.")
+        print(f"Packed {mapCounter} map names.")
 
 
 def make_readme(map_data):
@@ -630,6 +668,7 @@ def main():
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument("-s", "--sort", action="store_true")
     parser.add_argument("-r", "--readme", action="store_true")
+    parser.add_argument("-n", "--names", action="store_true")
     parser.add_argument("-h", "--help", action="store_true")
     parser.add_argument("-v", "--version", action="store_true")
     parser.add_argument("-m", "--map", type=str, default=None)
@@ -650,6 +689,10 @@ def main():
     if args.sort:
         # sort maps.json file to match file system order
         sortJson()
+        return
+    if args.names:
+        # pack map names into dvar strings
+        packMapNames()
         return
     if args.readme:
         # rebuild all README.md files, including summary README.md file, then exit
