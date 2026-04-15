@@ -31,24 +31,48 @@
     EULA.
 ******************************************************************************/
 
-#include common_scripts\utility;
+#include common_scripts\utility;        // CoD4 raw folder
 #include maps\mp\_utility;
 #include scripts\include\utility;
+
+
+// Bootstrap a few critical items, because we never know what nonsense map makers
+// will throw at us.
+bootstrapCritical()
+{
+    // Ensure thsi can be called safely repeatedly, from the sundry of ways
+    // map makers find to hook into our code.
+    if ((!isDefined(level.bootstrapped)) || (level.bootstrapped == 0)) {
+        // precache items map maker often forget, yet the try to call
+        maps\mp\_umi::precacheCommonItems();
+
+        // load a few critical items ASAP
+        level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
+        level.autoMapTestDone = false;
+        level.umiEnabled = (getDvarInt("enable_umi_editor") == 1);
+
+        // precache models for the editor
+        if (level.umiEnabled) {maps\mp\_umiEditor::precacheUmiModels();}
+
+        level.screenshotMode = (getDvarInt("screenshot_mode") == 1);
+        level.isDedicated = (getDvarInt("dedicated") == 0);
+        level.developerMode = (getDvarInt("developer") == 1);
+        level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
+
+        // ::buildWeaponShopsByTargetname() depends on: level.ammoStockType
+
+        noticePrint("_load::bootstrapCritical(): RotU has bootstrapped");
+        level.bootstrapped = 1;
+    }     
+}
+
 
 main(bScriptgened, bCSVgened, bsgenabled)
 {
     debugPrint("in _load::main()", "fn", level.nonVerbose);
+    noticePrint("in maps/mp/_load::main()");
 
-    // load a few critical items ASAP
-    level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
-    level.autoMapTestDone = false;
-    level.umiEnabled = (getDvarInt("enable_umi_editor") == 1);
-    level.screenshotMode = (getDvarInt("screenshot_mode") == 1);
-    level.isDedicated = (getDvarInt("dedicated") == 0);
-    level.developerMode = (getDvarInt("developer") == 1);
-    level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
-
-    // noticePrint("_load::main(): set auto map testing mode " + level.autoMapTesting);
+    bootstrapCritical();
 
     if ( !isdefined( level.script_gen_dump_reasons ) )
         level.script_gen_dump_reasons = [];

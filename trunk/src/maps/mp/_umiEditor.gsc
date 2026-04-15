@@ -43,18 +43,30 @@
 
 init()
 {
-    // Used as default weapon/shop models when running UMI maps
-    precacheModel("ad_sodamachine");
-    precacheModel("com_plasticcase_green_big");
-    precacheModel("prop_flag_american"); // used for linked waypoints
-    precacheModel("prop_flag_russian");  // used for unlinked waypoints
-    precacheModel("prop_flag_brit");     // used for linking waypoints
-
     if (!level.umiEnabled) {
         noticePrint("_umiEditor: Developer mode is off, UMI Map Editor is unavailable");
         noticePrint("_umiEditor: To enable UMI Editor mode, playMod.bat requires '+set dedicated 0 +set developer 1 +set developer_script 1 +set enable_umi_editor 1'");
     }
 }
+
+
+/**
+ * @brief Precaches models used by UMI Editor, called in _load::bootstrap() if req'd
+ *
+ * @returns nothing
+ */
+precacheUmiModels()
+{
+    debugPrint("in _umiEditor::precacheUmiModels()", "fn", level.nonVerbose);
+
+    // Used as default weapon/shop models when running UMI maps
+    precacheModel("ad_sodamachine");
+    precacheModel("com_plasticcase_green_big");
+    precacheModel("prop_flag_american");            // used for linked waypoints
+    precacheModel("prop_flag_russian");             // used for unlinked waypoints
+    precacheModel("prop_flag_brit");                // used for linking waypoints
+}
+
 
 /**
  * @brief Initializes this use of the development menu

@@ -54,6 +54,7 @@
 // aren't part of RotU.
 //
 
+
 /**
  * @brief Returns the lower-cased name of the mod that is trying to load the map
  *
@@ -1881,7 +1882,7 @@ setPreferBtdWaypoints(value)
 }
 
 /**
- * @brief Precache common items maps have tried to precache too late, causing errors.
+ * @brief Precache common items maps try to use, but often don't precache
  *
  * Must be called before the call to `wait` in the mod
  *
@@ -1890,7 +1891,6 @@ setPreferBtdWaypoints(value)
  */
 precacheCommonItems()
 {
-    noticePrint("_umi::precacheCommonItems() Begin precacheModel() calls");
     /**
      * Many maps try to load dust_trail_IR, but it generates errors
      * about it not being precached.  Effects cannot be precached after a call to
@@ -1898,6 +1898,7 @@ precacheCommonItems()
      * maps call for it.
      */
     level.barricadefx = loadfx("dust/dust_trail_IR");
+    level.windfx = loadfx ("props/car_glass_large");    // mp_fnrp_bigfight
 
     /** Many maps try to run shellshock("default_mp", 1), but there
      * was no such shock file, which caused errors about it not being precached.
@@ -1917,7 +1918,6 @@ precacheCommonItems()
 
     // Used by UMI so stock barrels don't look like the barrels we use as barricades
     precachemodel("com_barrel_blue_rust");
-    noticePrint("_umi::precacheCommonItems(): Finished precaching common items.");
 }
 
 /**
@@ -1933,22 +1933,26 @@ precacheCommonItems()
  */
 waitUntilFirstPlayerSpawns()
 {
-    // @todo Outside of 
     debugPrint("in _umi::waitUntilFirstPlayerSpawns()", "fn", level.lowVerbosity);
 
-    precacheCommonItems();
+    // NOTE: Some maps call this method almost *immediately*, thus giving RotU
+    // almost no time to get itself set up.  So we fake-wait here, without actually
+    // calling 'wait' or its kin, and the call a cleanup function to do the waiting
+    // when we're ready.
+    maps\mp\_load::bootstrapCritical();
 
     noticePrint("Map: First call to wait(), it is now too late to precache models or load fx.");
     // N.B. It doesn't care if the models are already precached or not; it
     //      errors out just calling the precacheModel(), et. al. methods.
     wait 0.5;
 
-    scripts\gamemodes\_gamemodes::initGameMode(); //test
+    scripts\gamemodes\_gamemodes::initGameMode();
 
     while (level.activePlayers == 0) {
-        wait .5;
+        wait 0.5;
     }
 }
+
 
 /**
  * @brief UMI begins the actual gameplay

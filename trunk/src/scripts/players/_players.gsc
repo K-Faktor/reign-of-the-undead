@@ -451,6 +451,14 @@ onPlayerConnect()
 
     wait 0.05;
 
+    // Maps that don't use _zombiescript or UMI to set up shops, waypoints,
+    // spawn points, or make calls to startGame(), won't then call _survival, where canBuyRaygun
+    // read. We read it here just to stop the runtime error; it won't actually
+    // make the map playable--for that I need to overload the map's main GSC file.
+    if (!isDefined(level.canBuyRaygun)) {
+        warnPrint("The map might not be set up for RotU. See: _players::onPlayerConnect()");
+    }
+    level.canBuyRaygun = getDvarInt("surv_buy_raygun_anytime");
     if ((level.canBuyRaygun) && (self.canGetSpecialWeapons)) {
         self setclientdvar("ui_raygun", 1); // enable raygun in shop
     } else {

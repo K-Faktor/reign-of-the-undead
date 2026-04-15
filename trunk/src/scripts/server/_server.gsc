@@ -33,6 +33,7 @@
 
 #include scripts\include\utility;
 
+// called from maps\mp\gametypes\surv::Callback_StartGameType()
 init()
 {
     debugPrint("in _server::init()", "fn", level.nonVerbose);
@@ -40,7 +41,7 @@ init()
     // should we use the alternate bot AI under devlopment?
     level.zombieAiDevelopment = true;
 
-    // run in atuomatic map testing mode?
+    // run in automatic map testing mode?
     level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
     level.autoMapTestDone = false;
     if (level.autoMapTesting) {
@@ -80,37 +81,6 @@ init()
     level.modversion = "RotU v2.2.2-git";
     level.dedicated = getDvar("dedicated");
 
-    // DEPRECATED: Moved to _umi::precacheCommonItems().  Delete her later
-    // if no issues arise after more testing.
-    // /**
-    //  * Many maps try to load dust_trail_IR, but it generates errors
-    //  * about it not being precached.  Effects cannot be precached after a call to
-    //  * wait(), so we force it to be precached here so it is available when the
-    //  * maps call for it.
-    //  */
-    // level.barricadefx = loadfx("dust/dust_trail_IR");
-
-    // /** Many maps try to run shellshock("default_mp", 1), but there
-    //  * was no such shock file, which caused errors about it not being precached.
-    //  * We copied Activision's default.shock file as default_mp.shock, and precache
-    //  * it here to stop these errors
-    //  */
-    // precacheshellshock("default_mp");
-
-    // /**
-    //  * Many maps try to precache these bottles too late, and we can't
-    //  * fix all the maps individually, so we precache them here to stop these errors.
-    //  */
-    // noticePrint("102: _server::init() Begin precacheModel() calls");
-    // precacheModel("com_bottle1");
-    // precacheModel("com_bottle2");
-    // precacheModel("com_bottle3");
-    // precacheModel("com_bottle4");
-
-    // // Used by UMI so stock barrels don't look like the barrels we use as barricades
-    // precachemodel("com_barrel_blue_rust");
-    // noticePrint("110: _server::init() End precacheModel() calls");
-
     currentMap = getdvar("mapname");
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
     noticePrint("Starting map " + currentMapName + " (" + currentMap + ").");
@@ -146,19 +116,10 @@ init()
     thread verifyRconPassword();
 
     wait 0.5;
+ 
     noticePrint("Server is running and waiting for players to connect.");
     runTestCode();
 }
-
-// // Clean shutdown - Recommended
-// shutdownServer()
-// {
-//     iprintln("^1Server is shutting down...");
-//     wait 2;                     // Give players time to see the message
-    
-//     // This sends the command as if typed in the server console
-//     exec("killserver");
-// }
 
 /**
  * @brief Checks for and tries to fix an incorrect rcon password

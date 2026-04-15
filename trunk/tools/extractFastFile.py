@@ -105,10 +105,10 @@ elif PLATFORM == "WINDOWS":
 
 result = subprocess.run(unzip_cmd, shell=True, capture_output=False, text=True)
 # print(f"Output: {result.stdout}")
-print(f"Exit code: {result.returncode}")
+print(f"offzip exit code: {result.returncode}")
 
-# read maps_unzip_dir for list of *.txt files
-txt_files = [f.absolute() for f in Path(maps_unzip_dir).rglob('*.txt')]
+# read maps_unzip_dir for list of *.txt|*.dat files
+txt_files = [f.absolute() for ext in ('*.txt', '*.dat') for f in Path(maps_unzip_dir).rglob(ext)]
 for file_path in txt_files:
     if PLATFORM == "LINUX":
         extract_cmd = f"{wine_env} wine {iw_ff_extract_exe} {file_path} {map_extract_dir}"
@@ -118,7 +118,7 @@ for file_path in txt_files:
     # execute extract command
     result = subprocess.run(extract_cmd, shell=True, capture_output=False, text=True)
     # print(f"Output: {result.stdout}")
-    print(f"Exit code: {result.returncode}")
+    print(f"iw_ff_extract exit code: {result.returncode}")
 
 
 # WINEARCH=win32 WINEPREFIX=~/.wine_cod4 wine "$PATH"offzip.exe -a "$TMP""$MAPNAME".ff "$PATH""$MAPNAME"_unzip

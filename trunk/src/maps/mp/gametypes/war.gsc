@@ -39,6 +39,7 @@ main()
     // source the settings the debug system depends on
     initializeDebugSystem();
     debugPrint("in war::main()", "fn", level.lowVerbosity);
+    noticePrint("in war::main()");
 
     if (getDvar("mapname") == "mp_background") {return;} // this isn't required...
 

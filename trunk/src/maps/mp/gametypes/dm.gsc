@@ -41,6 +41,8 @@ main()
     scripts\include\constants::init();
     debugPrint("in dm::main()", "fn", level.lowVerbosity);
 
+    noticePrint("in dm::main()");
+
     if (getDvar("mapname") == "mp_background") {return;} // this isn't required...
 
     maps\mp\gametypes\_callbacksetup::SetupCallbacks();

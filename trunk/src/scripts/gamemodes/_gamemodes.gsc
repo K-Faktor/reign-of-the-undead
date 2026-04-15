@@ -631,9 +631,9 @@ buildCenteredCreditText()
     debugPrint("in _gamemodes::buildCenteredCreditText()", "fn", level.nonVerbose);
 
     // N.B. manually padded string, because we don't have font metrics
-    credits  = "        Thanks for playing Rotu 2.2.2!\n";
-    credits += "     Rotu 2.2.2 is open source software.\n";
-    credits += "code.google.com/p/reign-of-the-undead/";
+    credits  = "        Thanks for playing Rotu 2.2.2-git!\n";
+    credits += "     Rotu 2.2.2-git is open source software.\n";
+    credits += "github.com/marktaff/reign-of-the-undead";
     return credits;
 }
 
