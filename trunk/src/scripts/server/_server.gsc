@@ -80,32 +80,36 @@ init()
     level.modversion = "RotU v2.2.2-git";
     level.dedicated = getDvar("dedicated");
 
-    /**
-     * Many maps try to load dust_trail_IR, but it generates errors
-     * about it not being precached.  Effects cannot be precached after a call to
-     * wait(), so we force it to be precached here so it is available when the
-     * maps call for it.
-     */
-    level.barricadefx = loadfx("dust/dust_trail_IR");
+    // DEPRECATED: Moved to _umi::precacheCommonItems().  Delete her later
+    // if no issues arise after more testing.
+    // /**
+    //  * Many maps try to load dust_trail_IR, but it generates errors
+    //  * about it not being precached.  Effects cannot be precached after a call to
+    //  * wait(), so we force it to be precached here so it is available when the
+    //  * maps call for it.
+    //  */
+    // level.barricadefx = loadfx("dust/dust_trail_IR");
 
-    /** Many maps try to run shellshock("default_mp", 1), but there
-     * was no such shock file, which caused errors about it not being precached.
-     * We copied Activision's default.shock file as default_mp.shock, and precache
-     * it here to stop these errors
-     */
-    precacheshellshock("default_mp");
+    // /** Many maps try to run shellshock("default_mp", 1), but there
+    //  * was no such shock file, which caused errors about it not being precached.
+    //  * We copied Activision's default.shock file as default_mp.shock, and precache
+    //  * it here to stop these errors
+    //  */
+    // precacheshellshock("default_mp");
 
-    /**
-     * Many maps try to precache these bottles too late, and we can't
-     * fix all the maps individually, so we precache them here to stop these errors.
-     */
-    precacheModel("com_bottle1");
-    precacheModel("com_bottle2");
-    precacheModel("com_bottle3");
-    precacheModel("com_bottle4");
+    // /**
+    //  * Many maps try to precache these bottles too late, and we can't
+    //  * fix all the maps individually, so we precache them here to stop these errors.
+    //  */
+    // noticePrint("102: _server::init() Begin precacheModel() calls");
+    // precacheModel("com_bottle1");
+    // precacheModel("com_bottle2");
+    // precacheModel("com_bottle3");
+    // precacheModel("com_bottle4");
 
-    // Used by UMI so stock barrels don't look like the barrels we use as barricades
-    precachemodel("com_barrel_blue_rust");
+    // // Used by UMI so stock barrels don't look like the barrels we use as barricades
+    // precachemodel("com_barrel_blue_rust");
+    // noticePrint("110: _server::init() End precacheModel() calls");
 
     currentMap = getdvar("mapname");
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);

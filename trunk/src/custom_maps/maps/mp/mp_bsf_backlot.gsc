@@ -99,11 +99,7 @@ main()
     buildBarricadesByTargetname("woodbarricade", 5, 400, level.barricadefx, level.barricadefx);
     buildBarricadesByTargetname("fencebarricade", 4, 400, level.barricadefx, level.barricadefx);
 
-    if (umiEditorMode) {
-        // Do Nothing
-    } else {
-        startGame();
-    }
+    startGame();
 }
 
 precache()

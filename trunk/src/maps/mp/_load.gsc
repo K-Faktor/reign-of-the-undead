@@ -48,7 +48,7 @@ main(bScriptgened, bCSVgened, bsgenabled)
     level.developerMode = (getDvarInt("developer") == 1);
     level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
 
-    noticePrint("_load::main(): set auto map testing mode " + level.autoMapTesting);
+    // noticePrint("_load::main(): set auto map testing mode " + level.autoMapTesting);
 
     if ( !isdefined( level.script_gen_dump_reasons ) )
         level.script_gen_dump_reasons = [];

@@ -82,15 +82,15 @@ usage() {
     echo "Commands:" >&2
     echo "  (no arguments)         Normal game startup (uses hard-coded settings)" >&2
     echo "  <mapname>              Start normal game on specific map" >&2
-    echo "  maptest <mapname>      Start map in test mode (dev/testing)" >&2
+    echo "  maptest <mapname>      Start map in test mode (Used by autoMapTest.py)" >&2
     echo "  screenshot <mapname>   Start map in screenshot mode" >&2
     echo "  umi <mapname>          Start map in UMI Editor mode" >&2
     echo "" >&2
     echo "Examples:" >&2
-    echo "  $0                          # Normal start" >&2
-    echo "  $0 mp_surv_texas            # Normal game on this map" >&2
-    echo "  $0 maptest mp_surv_texas    # Test mode on this map" >&2
-    echo "  $0 screenshot mp_surv_texas # Screenshot mode on this map" >&2
+    echo "  $0                           # Normal start" >&2
+    echo "  $0 mp_surv_texas             # Normal game on this map" >&2
+    echo "  $0 maptest mp_surv_texas     # Used by autoMapTest.py" >&2
+    echo "  $0 screenshot mp_surv_texas  # Screenshot mode on this map" >&2
     exit 1
 }
 
@@ -149,13 +149,6 @@ esac
 UNIXEPOCH=$(date +%s)
 WINEPREFIX=~/.wine_cod4
 
-echo "Mode: $MODE"
-if [ -n "$MAPNAME" ]; then
-    echo "Map : $MAPNAME"
-fi
-echo "----------------------------------------"
-
-# Example of how to branch based on mode:
 if [ "$MODE" = "maptest" ]; then
     # ======================
     # MAPTEST MODE
