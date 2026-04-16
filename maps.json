@@ -70,7 +70,7 @@
     },
     {
       "codeName": "mp_ancient_final",
-      "englishName": "Ancient",
+      "englishName": "",
       "listingImage": "listing_mp_ancient_final.jpg",
       "smallImage": "small_mp_ancient_final.jpg",
       "desc": "",
@@ -85,22 +85,22 @@
       "md5Iwd": "39c81df4a89132aae05aadf112b3b142 mp_ancient_final.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-11 23:11:02 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:07:08 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "cannot cast undefined to bool: (file 'scripts/players/_players.gsc', line 454) if ((level.canBuyRaygun) && (self.canGetSpecialWeapons)) {.  This map used to work in 2014, I swear. Handle maps w/o tradespawns & waypoints without errors."
+      "notes": "Needs waypoints & tradespawns, maybe bot spaw points"
     },
     {
       "codeName": "mp_argel",
@@ -425,12 +425,12 @@
       "md5Iwd": "d5f69d2b8751364e140de70f5e826bc3 mp_bsf_backlot.iwd",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": true,
-        "timestamp": "2026-04-11 23:29:20 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:10:01 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 286,
         "waypointType": "external",
@@ -554,22 +554,22 @@
       "authorContact": "",
       "authorWebsite": "",
       "rating": 4,
-      "works": "No",
+      "works": "Partial",
       "blacklisted": true,
-      "md5Map": null,
+      "md5Map": "1ce1bda8b659c3c3685d66821775aaf3 mp_burgundy_bulls.ff",
       "md5Load": "52c86e4b694851cfa69f0dc4a10af364 mp_burgundy_bulls_load.ff",
-      "md5Iwd": null,
+      "md5Iwd": "14d51919cbd1f2ecef3990abaa0bd26b mp_burgundy_bulls.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
-        "didStartMap": false,
-        "didSpawnHuman": false,
+        "didStartMap": true,
+        "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-11 23:34:36 CDT (UTC-5)",
-        "waypointsValid": "",
-        "waypointCount": 0,
-        "waypointType": "",
+        "timestamp": "2026-04-15 19:57:27 CDT (UTC-5)",
+        "waypointsValid": "Valid",
+        "waypointCount": 349,
+        "waypointType": "external",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
@@ -935,22 +935,22 @@
       "md5Iwd": "d6c39e149cfaf332be14cd1c0aaf1e5b mp_dust2_classic.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-11 23:49:04 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:11:17 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error.  Otherwise loads, looks nice.  Needs waypoints & tradespawns, that might be consequence of bug."
+      "notes": "Needs waypoints & tradespawns."
     },
     {
       "codeName": "mp_dust3",
@@ -969,22 +969,22 @@
       "md5Iwd": "883d95f8b9c47b741046843556b9316f mp_dust3.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-11 23:45:45 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:12:50 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error.  Otherwise loads, looks nice.  Needs waypoints & tradespawns, that might be consequence of bug."
+      "notes": "Looks nice.  Needs waypoints & tradespawns."
     },
     {
       "codeName": "mp_dustcod4",
@@ -1037,22 +1037,22 @@
       "md5Iwd": "dcd11e56b72a2a6770ea36042c03d3fe mp_evil_house.iwd",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": true,
-        "timestamp": "2026-04-11 23:51:15 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:14:10 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 106,
         "waypointType": "internal",
         "weaponShopCount": 1,
         "equipmentShopCount": 1,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": true
       },
-      "notes": "Precache error: precacheModel(\"com_bottle\" + i).  Think that is fixable with a *.gsc main map file."
+      "notes": ""
     },
     {
       "codeName": "mp_fabrika",
@@ -1804,7 +1804,7 @@
     },
     {
       "codeName": "mp_fnrp_futurama_v3",
-      "englishName": "",
+      "englishName": "Futurama",
       "listingImage": "listing_mp_fnrp_futurama_v3.jpg",
       "smallImage": "small_mp_fnrp_futurama_v3.jpg",
       "desc": "",
@@ -1819,22 +1819,22 @@
       "md5Iwd": "673362d3387d6c247cb68a4718a13d01 mp_fnrp_futurama_v3.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 00:26:13 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:15:29 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 422,
         "waypointType": "internal",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun runtime error --> no shops, no zombies."
+      "notes": "Needs shops."
     },
     {
       "codeName": "mp_fnrp_gas",
@@ -1978,7 +1978,7 @@
       "listingImage": "listing_mp_fnrp_joxonfield.jpg",
       "smallImage": "small_mp_fnrp_joxonfield.jpg",
       "desc": "",
-      "author": "",
+      "author": "olwing",
       "authorContact": "",
       "authorWebsite": "",
       "rating": 4,
@@ -2023,22 +2023,22 @@
       "md5Iwd": "adfbbe19415d95e78c4a85425efdfcd5 mp_fnrp_laberinto_v2.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 00:34:17 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:17:20 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Deathrun map? Same level.canBuyRaygun error."
+      "notes": "Deathrun map? I suppose I could open all the doors?"
     },
     {
       "codeName": "mp_fnrp_liberty",
@@ -2193,22 +2193,22 @@
       "md5Iwd": "d8ca457a392546b46581dbfcf60ca6bf mp_fnrp_metro.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 00:40:31 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:19:16 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 291,
         "waypointType": "internal",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error."
+      "notes": "TDM map, needs shops & override script."
     },
     {
       "codeName": "mp_fnrp_mohbaazar",
@@ -2465,22 +2465,22 @@
       "md5Iwd": "a17108ea0c8552efdda41061822f0600 mp_fnrp_piratas.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 00:49:59 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:21:19 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Deathrun? Same level.canBuyRaygun error"
+      "notes": "Deathrun? Don't think I can do much with this map."
     },
     {
       "codeName": "mp_fnrp_poncho_nite",
@@ -3315,22 +3315,22 @@
       "md5Iwd": "d7cab93ba5c71f1d892f40c1e5b06f1e mp_hhk_ballroom.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 01:21:45 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:22:39 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error"
+      "notes": "Needs shops, override script."
     },
     {
       "codeName": "mp_highrise",
@@ -4252,7 +4252,7 @@
     },
     {
       "codeName": "mp_onslaught",
-      "englishName": "",
+      "englishName": "Forest Mansion",
       "listingImage": "listing_mp_onslaught.jpg",
       "smallImage": "small_mp_onslaught.jpg",
       "desc": "",
@@ -4267,22 +4267,22 @@
       "md5Iwd": "6ad75e130cd695ce4674fa9b7c49ad5f mp_onslaught.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 02:31:54 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:24:12 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error. that is read from dvar in _survival.gsc, so if map is another game type..."
+      "notes": "Needs waypoints, shops, overrode script. Map is large, but some things are shader pink on my environment."
     },
     {
       "codeName": "mp_outset",
@@ -4335,22 +4335,22 @@
       "md5Iwd": "9c4175ad52d0d2b2218eb23935c28cce mp_poolday.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 02:34:02 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:26:36 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error"
+      "notes": "Needs waypoints, shops"
     },
     {
       "codeName": "mp_prunis",
@@ -4811,22 +4811,22 @@
       "md5Iwd": "c8a858a9130f42bfe41f21e0e9f432e3 mp_ruins.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 02:53:43 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:27:57 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error"
+      "notes": "Needs waypoints & shops."
     },
     {
       "codeName": "mp_sbase",
@@ -9163,22 +9163,22 @@
       "md5Iwd": "0d50bc4f3ca26deb830f7fb2c919373c mp_toujane_beta.iwd",
       "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-12 13:20:35 CDT (UTC-5)",
+        "timestamp": "2026-04-15 21:29:16 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
         "weaponShopCount": 0,
         "equipmentShopCount": 0,
         "compileErrors": 0,
-        "runtimeErrors": 1,
+        "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": "Same level.canBuyRaygun error"
+      "notes": "Needs waypoints & shops."
     },
     {
       "codeName": "mp_vukovar",

@@ -1,9 +1,9 @@
 # Map Testing Report
-**Generated**: 4:57pm Monday, April 13, 2026
+**Generated**: 9:51pm Wednesday, April 15, 2026
 
 [Planned] You can see the test results for each map in the README.md file in map's testing folder: map_testing/[mp_mapname]/README.md
 
-## Missing Authors (58):
+## Missing Authors (57):
 No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, so wasn't extracted. More research is required.
  - mp_bsf_backlot
  - mp_evil_house
@@ -15,7 +15,6 @@ No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, 
  - mp_fnrp_dulc
  - mp_fnrp_gas
  - mp_fnrp_icecream
- - mp_fnrp_joxonfield
  - mp_fnrp_liberty
  - mp_fnrp_mohbaazar
  - mp_fnrp_outfield
@@ -68,11 +67,10 @@ No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, 
 No name in master english names json yet, as the map doesn't work well enough yet.
  - mp_surv_ddv_army
 
-## Missing FastFiles (12):
+## Missing FastFiles (11):
 These are maps I lost files to over the years, some certainly used to work in RotU.
  - mp_arkona_osg
  - mp_brecourt_v2
- - mp_burgundy_bulls
  - mp_caen
  - mp_howling_night
  - mp_prunis
@@ -257,31 +255,19 @@ These maps passed rudimentary tests.
  - mp_xtr_arena
  - mp_xtr_volcano
 
-## Maps with Compile or Runtime Errors (19):
+## Maps with Compile or Runtime Errors (6):
 These maps have errors that need to be investigated. Some are errors in the maps, and some are errors in RotU.
- - mp_ancient_final
- - mp_dust2_classic
- - mp_dust3
- - mp_evil_house
  - mp_fnrp_bigfight
  - mp_fnrp_corridors
- - mp_fnrp_futurama_v3
- - mp_fnrp_laberinto_v2
- - mp_fnrp_metro
- - mp_fnrp_piratas
- - mp_hhk_ballroom
  - mp_mrx_castle
- - mp_onslaught
- - mp_poolday
- - mp_ruins
  - mp_surv_dust2
  - mp_surv_ffc_parkorman
  - mp_surv_town
- - mp_toujane_beta
 
-## Maps with Raygun Error (12):
-Wierdness here.  Could be 'out of dvars' on these maps, or they could be overriding the gametype dvar, so their entry point isn't _survival, where canBuyRaygun is set.
+## Maps to Port to RotU (13):
+These maps likely just need waypoints & tradespawns to port to RotU.
  - mp_ancient_final
+ - mp_burgundy_bulls
  - mp_dust2_classic
  - mp_dust3
  - mp_fnrp_futurama_v3

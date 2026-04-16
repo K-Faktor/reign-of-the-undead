@@ -2325,6 +2325,10 @@ setPlayerSpawns(targetname)
 
 //
 // ROZO legacy functions
+// 
+// (ROZO) Return of Zombie Ops is a zombie modification for Call of Duty 4,
+// it features content from Black Ops Zombie mode as well as from Modern
+// Warfare 3 Survival mode and Ghosts Extinction mode.
 //
 // These are the function calls used for mapping purposes as of ROZO 0.5.
 // They are here for backwards compatibility for old maps.  These functions just

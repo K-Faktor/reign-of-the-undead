@@ -46,8 +46,8 @@ from pathlib import Path
 import signal
 import sys
 import hashlib
-from datetime import datetime
-
+# from datetime import datetime
+from datetime import datetime, timezone
 
 here = Path(__file__).resolve()
 project_default = here.parents[2] if len(here.parents) >= 3 else here.parent
@@ -228,7 +228,8 @@ with the same name but different data.
 
 def get_timestamp():
     # Get current time in UTC, then convert to local timezone
-    utc_now = datetime.datetime.now(datetime.UTC)
+    # utc_now = datetime.datetime.now(datetime.UTC)
+    utc_now = datetime.now(timezone.utc)
     
     # Use America/Chicago for Central Time (automatically handles CDT/CST)
     local_tz = zoneinfo.ZoneInfo("America/Chicago")
@@ -337,6 +338,7 @@ def prepareSummary():
     mapsWithoutAuthors = []
     mapsWithoutImages = []
     mapsWithoutNames = []
+    mapsToPortToRotU = []
     mapName = None
     # Ensure the 'maps' key exists and is a list
     if 'maps' in data and isinstance(data['maps'], list):
@@ -358,6 +360,14 @@ def prepareSummary():
                     mapsWithErrors.append(mapName)
                 if "canBuyRaygun" in map['notes']:
                     mapsWithRaygunErrors.append(mapName)
+
+            if map['works'] == "Partial":
+                if map['tests']['compileErrors'] == 0 and map['tests']['runtimeErrors'] == 0 and \
+                   map['tests']['equipmentShopCount'] == 0 and map['tests']['weaponShopCount'] == 0:
+                    if "Crashes" not in map['notes']:
+                        mapsToPortToRotU.append(mapName)
+
+
 
             ffPath = os.path.join(master_maps_dir, mapName, f"{mapName}.ff")
             if not os.path.isfile(ffPath):
@@ -383,9 +393,15 @@ def prepareSummary():
     summary += "These maps have errors that need to be investigated. Some are errors in the maps, and some are errors in RotU.\n"
     for m in mapsWithErrors: summary += f" - {m}\n"
 
-    summary += f"\n## Maps with Raygun Error ({len(mapsWithRaygunErrors)}):\n"
-    summary += "Wierdness here.  Could be 'out of dvars' on these maps, or they could be overriding the gametype dvar, so their entry point isn't _survival, where canBuyRaygun is set.\n"
-    for m in mapsWithRaygunErrors: summary += f" - {m}\n"
+    summary += f"\n## Maps to Port to RotU ({len(mapsToPortToRotU)}):\n"
+    summary += "These maps likely just need waypoints & tradespawns to port to RotU.\n"
+    for m in mapsToPortToRotU: summary += f" - {m}\n"
+
+    # The raygun bug was fixed, but the cause was the map was a TDM, DR, etc map, that never
+    # loaded zombie stuff or called startGame()
+    # summary += f"\n## Maps with Raygun Error ({len(mapsWithRaygunErrors)}):\n"
+    # summary += "Wierdness here.  Could be 'out of dvars' on these maps, or they could be overriding the gametype dvar, so their entry point isn't _survival, where canBuyRaygun is set.\n"
+    # for m in mapsWithRaygunErrors: summary += f" - {m}\n"
 
 
     summary_file = os.path.join(PROJECT_PATH, 'map_testing', 'READEME.md')
@@ -706,8 +722,7 @@ def main():
         pass
         return
 
-    print(f"In default case")
-    exit(0)
+    # print(f"In default case")
     # - default, no param operation: test all maps not in history,
     #   one map per script invocation
     map_name = getNextMap()
