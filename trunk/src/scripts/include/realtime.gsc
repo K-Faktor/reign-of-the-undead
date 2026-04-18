@@ -31,10 +31,16 @@
     EULA.
 ******************************************************************************/
 
-// Lets us approximate the real time for server_mp log entries.
-// Expect it to drift more and more the longer it has been since you restarted
-// the CoD4 server
 
+/**
+ * @brief Initializes our internal epoch with data injected into command line
+ *
+ * Lets us approximate the real time for server_mp log entries.
+ * Expect it to drift more and more the longer it has been since you restarted
+ * the CoD4 server
+ *
+ * @return Nothing
+ */
 initRealTime()
 {
     // Base Unix timestamp (seconds since 1970-01-01 UTC)
@@ -56,6 +62,12 @@ initRealTime()
     level.realTimeServerStart = getTime() / 1000;   // seconds elapsed since this RotU server started
 }
 
+
+/**
+ * @brief Gets the Unix epoch
+ *
+ * @returns int The Unix epoch, in seconds
+ */
 getRealUnixTime()
 {
     if (!isDefined(level.realTimeBase))
@@ -70,7 +82,9 @@ getRealUnixTime()
 }
 
 /**
- * Returns formatted string: "2026-04-06 18:56:22 CDT"
+ * @brief Gets the current timestamp, as a formatted string
+ *
+ * @returns formatted string: "2026-04-06 18:56:22 CDT"
  */
 getRealDateTimeString()
 {

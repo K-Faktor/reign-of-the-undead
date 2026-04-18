@@ -43,21 +43,25 @@ bootstrapCritical()
     // Ensure thsi can be called safely repeatedly, from the sundry of ways
     // map makers find to hook into our code.
     if ((!isDefined(level.bootstrapped)) || (level.bootstrapped == 0)) {
+        level.developmentStatus = "dev"; // for RotU [dev|prod]        <DEPLOY />
+        initLogging();
+
         // precache items map makers often forget, yet they still try to call
         maps\mp\_umi::precacheCommonItems();
         // precache models for the UMI maps & UMI Editor
         maps\mp\_umiEditor::precacheUmiModels();
 
         // load a few critical items ASAP
+        level.version = "2.2.2-git";
         level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
         level.autoMapTestDone = false;
         level.umiEnabled = (getDvarInt("enable_umi_editor") == 1);
         level.screenshotMode = (getDvarInt("screenshot_mode") == 1);
         level.isDedicated = (getDvarInt("dedicated") == 0);
-        level.developerMode = (getDvarInt("developer") == 1);
+        level.developerMode = (getDvarInt("developer") == 1);    // for Activision/IW
         level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
 
-        noticePrint("_load::bootstrapCritical(): RotU has bootstrapped");
+        log("server", "RotU " + level.version + " has bootstrapped.");
         level.bootstrapped = 1;
     }     
 }
@@ -65,10 +69,10 @@ bootstrapCritical()
 
 main(bScriptgened, bCSVgened, bsgenabled)
 {
-    debugPrint("in _load::main()", "fn", level.nonVerbose);
-    noticePrint("in maps/mp/_load::main()");
-
+    // log() isn't initialized until after bootstrap.
     bootstrapCritical();
+    log("trace", "in _load::main()");
+    log("debug", "in _load::main()");
 
     if ( !isdefined( level.script_gen_dump_reasons ) )
         level.script_gen_dump_reasons = [];

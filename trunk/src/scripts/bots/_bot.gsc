@@ -426,8 +426,8 @@ botMain(bot)
             case 2: // BOT_STATE_STALKING
                 if ((!level.autoMapTestDone) && (level.autoMapTesting)) {
                     level.autoMapTestDone = true;
-                    json = "{\"autoMapTest\": {\"botSpawnedAndStalking\": " + boolToJson(true) + "}}";            
-                    logPrint(json + "\n");
+                    fmt = "|A zombie(bot) player spawned.|, |botSpawnedAndStalking|: true";
+                    log("automaptest", sprintfJson(fmt, ""));
                     iPrintLnBold("Auto Map Test: COMPLETED");
                 }  
                 // stalk now, until state changes

@@ -420,8 +420,8 @@ onPlayerConnect()
             guid = getDvar("admin_forced_guid");
             debugPrint("Listen server: Host player's guid forced to " + guid, "val");
             if (level.autoMapTesting) {
-                json = "{\"autoMapTest\": {\"serverIsUp\": " + boolToJson(true) + "}}";            
-                logPrint(json + "\n");            
+                fmt = "|The server is up.|, |serverIsUp|: true";
+                log("automaptest", sprintfJson(fmt, ""));
             }
         } else if (level.dedicated == "dedicated LAN server") {
             // Do nothing

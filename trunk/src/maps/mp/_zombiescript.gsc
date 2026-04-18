@@ -39,8 +39,7 @@
 
 setGameMode(mode)
 {
-    debugPrint("in _zombiescript::setGameMode()", "fn", level.lowVerbosity);
-    noticePrint("in maps/mp/_zombiescript::setGameMode()");
+    log("trace", "in maps/mp/_zombiescript::setGameMode()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::setGameMode(mode);
@@ -48,8 +47,7 @@ setGameMode(mode)
 
 setPlayerSpawns(targetname)
 {
-    debugPrint("in _zombiescript::setPlayerSpawns()", "fn", level.lowVerbosity);
-    noticePrint("in maps/mp/_zombiescript::setPlayerSpawns()");
+    log("trace", "in maps/mp/_zombiescript::setPlayerSpawns()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::setPlayerSpawns(targetname);
@@ -57,22 +55,21 @@ setPlayerSpawns(targetname)
 
 setWorldVision(vision, transitiontime)
 {
-    debugPrint("in _zombiescript::setWorldVision()", "fn", level.lowVerbosity);
+    log("trace", "in _zombiescript::setWorldVision()");
 
     maps\mp\_umi::setWorldVision(vision, transitiontime);
 }
 
 buildParachutePickup(targetname)
 {
-    debugPrint("in _zombiescript::buildParachutePickup()", "fn", level.lowVerbosity);
+    log("trace", "in _zombiescript::buildParachutePickup()");
 
     maps\mp\_umi::buildParachutePickup(targetname);
 }
 
 buildWeaponPickup(targetname, itemtext, weapon, type)
 {
-    debugPrint("in _zombiescript::buildWeaponPickup()", "fn", level.lowVerbosity);
-    noticePrint("in maps/mp/_zombiescript::buildWeaponPickup()");
+    log("trace", "in maps/mp/_zombiescript::buildWeaponPickup()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::buildWeaponPickup(targetname, itemtext, weapon, type);
@@ -80,8 +77,7 @@ buildWeaponPickup(targetname, itemtext, weapon, type)
 
 buildAmmoStock(targetname, loadtime)
 {
-    debugPrint("in _zombiescript::buildAmmoStock()", "fn", level.nonVerbose);
-    noticePrint("in maps/mp/_zombiescript::buildAmmoStock()");
+    log("trace", "in maps/mp/_zombiescript::buildAmmoStock()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::buildAmmoStock(targetname, loadtime);
@@ -90,8 +86,7 @@ buildAmmoStock(targetname, loadtime)
 // Weaponshop actually
 buildWeaponUpgrade(targetname)
 {
-    debugPrint("in _zombiescript::buildWeaponUpgrade()", "fn", level.nonVerbose);
-    noticePrint("in maps/mp/_zombiescript::buildWeaponUpgrade()");
+    log("trace", "in maps/mp/_zombiescript::buildWeaponUpgrade()");
     
     level.isZombiescript = 1;
     maps\mp\_umi::buildWeaponUpgrade(targetname);
@@ -99,14 +94,14 @@ buildWeaponUpgrade(targetname)
 
 setWeaponHandling(id)
 {
-    debugPrint("in _zombiescript::setWeaponHandling()", "fn", level.lowVerbosity);
+    log("trace", "in _zombiescript::setWeaponHandling()");
 
     maps\mp\_umi::setWeaponHandling(id);
 }
 
 setSpawnWeapons(primary, secondary)
 {
-    debugPrint("in _zombiescript::setSpawnWeapons()", "fn", level.lowVerbosity);
+    log("trace", "in _zombiescript::setSpawnWeapons()");
 
     maps\mp\_umi::setSpawnWeapons(primary, secondary);
 }
@@ -115,8 +110,8 @@ setSpawnWeapons(primary, secondary)
 /// @deprecated
 beginZomSpawning()
 {
-    debugPrint("in _zombiescript::beginZomSpawning()", "fn", level.lowVerbosity);
-    errorPrint(getdvar("mapname") + " calling the deprecated function _zombiescript::beginZomSpawning().\n");
+    log("trace", "in _zombiescript::beginZomSpawning()");
+    log("error", getdvar("mapname") + " calling the deprecated function _zombiescript::beginZomSpawning().");
     //scripts\gamemodes\_onslaught::startSpawning();
 }
 
@@ -124,7 +119,7 @@ beginZomSpawning()
 // Loading spawns for survival mode (incomming waves)
 buildSurvSpawn(targetname, priority)
 {
-    debugPrint("in _zombiescript::buildSurvSpawn()", "fn", level.nonVerbose);
+    log("trace", "in _zombiescript::buildSurvSpawn()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::buildSurvSpawn(targetname, priority);
@@ -133,8 +128,7 @@ buildSurvSpawn(targetname, priority)
 
 startSurvWaves()
 {
-    debugPrint("in _zombiescript::startSurvWaves()", "fn", level.nonVerbose);
-    noticePrint("in maps/mp/_zombiescript::startSurvWaves()");
+    log("trace", "in maps/mp/_zombiescript::startSurvWaves()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::startSurvWaves(); // redirects to maps\mp\_umi::startGame()
@@ -150,8 +144,7 @@ startSurvWaves()
  */
 waittillStart()
 {
-    debugPrint("in _zombiescript::waittillStart()", "fn", level.nonVerbose);
-    noticePrint("in maps/mp/_zombiescript::waittillStart()");
+    log("trace", "in maps/mp/_zombiescript::waittillStart()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::waittillStart(); // redirects to maps\mp\_umi::waitUntilFirstPlayerSpawns();
@@ -159,7 +152,7 @@ waittillStart()
 
 buildBarricade(targetname, parts, health, deathFx, buildFx, dropAll)
 {
-    debugPrint("in _zombiescript::buildBarricade()", "fn", level.lowVerbosity);
+    log("trace", "in _zombiescript::buildBarricade()");
 
     level.isZombiescript = 1;
     maps\mp\_umi::buildBarricade(targetname, parts, health, deathFx, buildFx, dropAll);

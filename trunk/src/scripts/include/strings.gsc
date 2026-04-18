@@ -311,12 +311,40 @@ toUpper(string)
             continue;
         }
         decimal = charToInt(char);
-        upperDecimal = decimal - 32; // 32 is the offset is us ascii between upper and lower case characters
+        upperDecimal = decimal - 32; // 32 is the offset in us ascii between upper and lower case characters
         charUpper = toAscii(upperDecimal);
         upperString += charUpper;
     }
 //     debugPrint(string + ":" + upperString, "val");
     return upperString;
+}
+
+
+/**
+ * @brief Converts an US ASCII string to lower case
+ *
+ * @param string string the string to lowercase
+ *
+ * @returns the lower-cased string
+ */
+toLower(string)
+{
+    debugPrint("in strings::toLower()", "fn", level.nonVerbose);
+
+    lowerString = "";
+    for (i=0; i < string.size; i++) {
+        char = string[i];
+        if (isLower(char)){
+            lowerString += char;
+            continue;
+        }
+        decimal = charToInt(char);
+        lowerDecimal = decimal + 32; // 32 is the offset in us ascii between upper and lower case characters
+        lowerUpper = toAscii(lowerDecimal);
+        lowerString += lowerUpper;
+    }
+//     debugPrint(string + ":" + lowerString, "val");
+    return lowerString;
 }
 
 
@@ -612,6 +640,11 @@ matches(string, token)
             // If the nth character in string matches the first character of token,
             // we have a potential match
             if (string[i] == token[0]) {
+                // Quick length check - this is the fix for end-of-string issues
+                if (i + token.size > string.size) {
+                    continue;   // not enough characters left → can't match
+                }                
+
                 isMatch = true;  // assume it is a match
                 for (j=0; j<token.size; j++) {
                     // is this really a match?
@@ -641,15 +674,13 @@ matches(string, token)
  * @brief Performs sprintf-like variable interpolation
  *
  * @param formatString The string with parameter tokens
- * @param parameter1 string The first parameter to interpolate
- * @param parameter2 string The second parameter to interpolate
- * @param parameter3 string The third parameter to interpolate
- * @param parameter4 string The fourth parameter to interpolate
- * @param parameter5 string The fifth parameter to interpolate
+ * @param p1-p8 string The paramters to interpolate
+ *
+ * $1 gets p1, $4 gets p4
  *
  * @returns the interpolated formatted string
  */
-sprintf(formatString, parameter1, parameter2, parameter3, parameter4, parameter5)
+sprintf(formatString, p1, p2, p3, p4, p5, p6, p7, p8)
 {
     debugPrint("in strings::sprintf()", "fn", level.highVerbosity);
 
@@ -657,65 +688,94 @@ sprintf(formatString, parameter1, parameter2, parameter3, parameter4, parameter5
     count = 1;
     parameters = [];
     interpolatedString = formatString; // Init
-    if (isDefined(parameter1)){
-        if (isString(parameter1)) {
-            parameters[count] = parameter1;
+    if (isDefined(p1)){
+        if (isString(p1)) {
+            parameters[count] = p1;
             count++;
         } else {
             // integer or float
-            parameters[count] = parameter1; //numericToString(parameter0);
+            parameters[count] = p1; //numericToString(parameter0);
             count++;
         }
-        interpolatedString = replace(interpolatedString, "$1", parameter1);
+        interpolatedString = replace(interpolatedString, "$1", p1);
     }
-    if (isDefined(parameter2)){
-        if (isString(parameter2)) {
-            parameters[count] = parameter2;
+    if (isDefined(p2)){
+        if (isString(p2)) {
+            parameters[count] = p2;
             count++;
         } else {
             // integer or float
-            parameters[count] = parameter2; //numericToString(parameter0);
+            parameters[count] = p2; //numericToString(parameter0);
             count++;
         }
-        interpolatedString = replace(interpolatedString, "$2", parameter2);
+        interpolatedString = replace(interpolatedString, "$2", p2);
     }
-    if (isDefined(parameter3)){
-        if (isString(parameter3)) {
-            parameters[count] = parameter3;
+    if (isDefined(p3)){
+        if (isString(p3)) {
+            parameters[count] = p3;
             count++;
         } else {
             // integer or float
-            parameters[count] = parameter3; //numericToString(parameter0);
+            parameters[count] = p3; //numericToString(parameter0);
             count++;
         }
-        interpolatedString = replace(interpolatedString, "$3", parameter3);
+        interpolatedString = replace(interpolatedString, "$3", p3);
     }
-    if (isDefined(parameter4)){
-        if (isString(parameter4)) {
-            parameters[count] = parameter4;
+    if (isDefined(p4)){
+        if (isString(p4)) {
+            parameters[count] = p4;
             count++;
         } else {
             // integer or float
-            parameters[count] = parameter4; //numericToString(parameter0);
+            parameters[count] = p4; //numericToString(parameter0);
             count++;
         }
-        interpolatedString = replace(interpolatedString, "$4", parameter4);
+        interpolatedString = replace(interpolatedString, "$4", p4);
     }
-    if (isDefined(parameter5)){
-        if (isString(parameter5)) {
-            parameters[count] = parameter5;
+    if (isDefined(p5)){
+        if (isString(p5)) {
+            parameters[count] = p5;
             count++;
         } else {
             // integer or float
-            parameters[count] = parameter5; //numericToString(parameter0);
+            parameters[count] = p5; //numericToString(parameter0);
             count++;
         }
-        interpolatedString = replace(interpolatedString, "$5", parameter5);
+        interpolatedString = replace(interpolatedString, "$5", p5);
     }
-
-    //start by finding matches for $
-//     interpolatedString = replace(formatString, "$1", parameter1);
-//     interpolatedString = replace(interpolatedString, "$2", parameter2);
+    if (isDefined(p6)){
+        if (isString(p6)) {
+            parameters[count] = p6;
+            count++;
+        } else {
+            // integer or float
+            parameters[count] = p6; //numericToString(parameter0);
+            count++;
+        }
+        interpolatedString = replace(interpolatedString, "$6", p6);
+    }
+    if (isDefined(p7)){
+        if (isString(p7)) {
+            parameters[count] = p7;
+            count++;
+        } else {
+            // integer or float
+            parameters[count] = p7; //numericToString(parameter0);
+            count++;
+        }
+        interpolatedString = replace(interpolatedString, "$7", p7);
+    }
+    if (isDefined(p8)){
+        if (isString(p8)) {
+            parameters[count] = p8;
+            count++;
+        } else {
+            // integer or float
+            parameters[count] = p8; //numericToString(parameter0);
+            count++;
+        }
+        interpolatedString = replace(interpolatedString, "$8", p8);
+    }
 
     return interpolatedString;
 }

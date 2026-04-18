@@ -351,7 +351,9 @@ mapRotation()
             }
         }
     }
-    debugPrint(index + " voting maps found.", "val");
+    log("server", index + " voting maps found.", false);
+    log("server", countMapNames() + " English master map names found in lookup table.", false);
+
     return maprotation;
 }
 
@@ -404,6 +406,34 @@ newMapItem(mapname, gametype)
 
 
 /**
+ * @brief Gets count of the English map names we have
+ * @internal
+ *
+ * @returns integer number of map names we know about
+ */
+countMapNames()
+{
+    names = "";
+    for (i=1; i<=25; i++) { // 20 should be enough for ~550 maps
+        packed = getDvar( "sv_mapnames" + i );
+        if ((!isDefined(packed)) || (packed == "")) {
+            // noticePrint("Last map name dvar counter: " + int(i-1));  // 1-based counter adjustment
+            break;
+        } else {
+            if (names == "") { // first
+                names = packed;
+            } else {
+                names = names + "," + packed;
+            }
+        }
+    }
+    // tokenize our concatenated list of comma-separated sv_mapnames[N] dvars
+    tokens = strTok(names, ",");
+    return tokens.size;
+}
+
+
+/**
  * @brief Gets the English name of the map
  * @internal
  *
@@ -427,7 +457,7 @@ mapTextName(mapname)
     // show each name lookup takes a single clock tick (reported as 0ms).
     // "4nuketown:4t4 Nuketown,4t4_scrap:Scrap,4t4scrap:Scrap,argel:Argel"
     names = "";
-    for (i=1; i<=20; i++) { // 20 should be enough for ~550 maps
+    for (i=1; i<=25; i++) { // 20 should be enough for ~550 maps
         packed = getDvar( "sv_mapnames" + i );
         if ((!isDefined(packed)) || (packed == "")) {
             // noticePrint("Last map name dvar counter: " + int(i-1));  // 1-based counter adjustment

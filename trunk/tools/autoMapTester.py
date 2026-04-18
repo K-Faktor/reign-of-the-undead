@@ -516,7 +516,7 @@ def testMap(map_name):
 
     # Wait up to 40 seconds
     start_time = time.time()
-    while proc.poll() is None and time.time() - start_time < 40:
+    while proc.poll() is None and time.time() - start_time < 120:
         time.sleep(0.1)
 
     if proc.poll() is None:
@@ -532,18 +532,17 @@ def testMap(map_name):
     if os.path.exists(server_log):
         with open(server_log, 'r') as f:
             log_content = f.read()
-        
-        # Parse JSON snippets
+
+        # Parse JSON snippets from automaptest events
         test_data = {}
         for line in log_content.split('\n'):
-            match = re.search(r'{"autoMapTest":\s*({.*?})}', line)
+            match = re.search(r'{"event":\s*"automaptest".*?"msg":\s*"[^"]*",\s*(.+?)\s*}', line)
             if match:
                 try:
-                    snippet = json.loads(match.group(1))
+                    snippet = json.loads('{' + match.group(1) + '}')
                     test_data.update(snippet)
                 except json.JSONDecodeError:
-                    pass
-        
+                    pass        
     else:
         test_data = {}
 

@@ -43,6 +43,8 @@
 #include scripts\include\hud;
 #include scripts\include\matrix;
 #include scripts\include\utility;
+#include scripts\include\strings;
+#include scripts\include\realtime;
 
 //
 // Unified Mapping Interface (UMI) Public Functions
@@ -927,8 +929,8 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)
 
     shops = strTok(equipmentShops, " ");
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"equipmentShopCount\": " + shops.size + "}}";            
-        logPrint(json + "\n");            
+        fmt = "|Tested equipment shop presence.|, |equipmentShopCount|: $1";
+        log("automaptest", sprintfJson(fmt, shops.size));
     }
     if (!isDefined(level.tradespawns[int(shops[0])])) {
         errorPrint("Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().");
@@ -991,8 +993,8 @@ buildShopsByTargetname(targetname)
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"equipmentShopCount\": " + ents.size + "}}";            
-        logPrint(json + "\n");            
+        fmt = "|Tested equipment shop presence.|, |equipmentShopCount|: $1";
+        log("automaptest", sprintfJson(fmt, ents.size));
     }
     if (ents.size == 0) {
         errorPrint("Map: No equipment shops (entities matching targetname: " + targetname + ") found.");
@@ -1023,8 +1025,8 @@ buildWeaponShopsByTargetname(targetname, loadTime)
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"weaponShopCount\": " + ents.size + "}}";            
-        logPrint(json + "\n");            
+        fmt = "|Tested weapon shop presence.|, |weaponShopCount|: $1";
+        log("automaptest", sprintfJson(fmt, ents.size));
     }
     if (ents.size == 0) {
         errorPrint("Map: No weapon shops (entities matching targetname: " + targetname + ") found.");
@@ -1070,8 +1072,8 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
 
     weapons = strTok(weaponShops, " ");
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"weaponShopCount\": " + weapons.size + "}}";            
-        logPrint(json + "\n");            
+        fmt = "|Tested weapon shop presence.|, |weaponShopCount|: $1";
+        log("automaptest", sprintfJson(fmt, weapons.size));
     }
 
     if (!isDefined(level.tradespawns[int(weapons[0])])) {
@@ -1125,24 +1127,24 @@ loadWaypoints()
     }
     if (waypointsLoaded) {
         waypointType = "external";
-        debugPrint("External waypoints loaded: " + waypointsLoaded, "val", level.lowVerbosity);
+        log("server", "External waypoints loaded: true");
     } else {
-        debugPrint("No external waypoints found, attempting to load internal waypoints.", "val", level.lowVerbosity);
+        log("server", "No external waypoints found, attempting to load internal waypoints.");
     }
     if (!waypointsLoaded) {
         // load internal waypoints
         waypointsLoaded = loadInternalWaypoints();
-        if (waypointsLoaded){
-            debugPrint("Internal waypoints loaded: " + waypointsLoaded, "val", level.lowVerbosity);
+        if (waypointsLoaded) {
+            log("server", "Internal waypoints loaded: true");
             waypointType = "internal";
         } else {
-            debugPrint("No internal waypoints found.", "val", level.lowVerbosity);
+            log("warn", "No internal waypoints found.");
         }
     }
 
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"waypointType\": \"" + waypointType + "\"}}";    
-        logPrint(json + "\n");
+        fmt = "|Waypoints loaded.|, |waypointType|: |$1|";
+        log("automaptest", sprintfJson(fmt, waypointType));
     }    
 
     if (waypointsLoaded) {
@@ -1369,20 +1371,20 @@ validateWaypoints()
         }
 
         if (level.waypointsInvalid) {
-            noticePrint("RotU will not be using the waypoints in this map!");
+            log("warn", "RotU will not be using the waypoints in this map!");
             validStr = "Invalid";
         } else if (fixedWaypoints) {
-            noticePrint("RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!");
+            log("server", "RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!");
             validStr = "Valid, after fixes";
         }
     } else {
-        noticePrint("Waypoints PASSED critical validation tests!");
+        log("server", "Waypoints PASSED critical validation tests!");
         validStr = "Valid";
     }
 
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"waypointsValid\": \"" + validStr + "\", \"waypointCount\": " + level.Wp.size + "}}";    
-        logPrint(json + "\n");
+        fmt = "|Waypoints are valid.|, |waypointsValid|: |$1|, |waypointCount|: $2";
+        log("automaptest", sprintfJson(fmt, validStr, level.Wp.size));
     }    
     waypointQuality();
 }
@@ -1759,6 +1761,7 @@ addPlayerSpawnsByTargetname(targetname, enabled)
     // Do nothing, RotU doesn't need to add player spawns
 }
 
+
 /**
  * @brief UMI builds all barricades of the given targetname in the map
  *
@@ -1774,33 +1777,215 @@ addPlayerSpawnsByTargetname(targetname, enabled)
  */
 buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll)
 {
-    debugPrint("in _umi::buildBarricadesByTargetname()", "fn", level.lowVerbosity);
+    log("trace", "in _umi::buildBarricadesByTargetname()");
 
     if (!isdefined(dropAll)) {dropAll = false;}
 
+    //  ensure we are escaping \n and \t
+    // CoD4 doesn't let you pass undefined parameters
+    fmt = "{|timestamp|: $1, |debug|: |critical|, |map|: |$2|, |fn|: |$3|, |targetname|: |$4|, |partCount|: $5, |health|: $6, |deathFx|: $7, |buildFx|: $8, |dropAll|: $9:b}";
+    temp = sprintfJson(fmt, getRealUnixTime(), level.currentMap, "_umi::buildBarricadesByTargetname", targetname, partCount, health, deathFx, buildFx, dropAll);
+    log("criticalbug", temp);
+
+    if (!isdefined(dropAll)) {dropAll = false;}
+
+    // Need to log all of these function calls, w/params & mapname to a permanent
+    // log to sort out the barricade issues.
+    // See about making a script to `tail -f server_mp.log` and parse it for relevant info.
+    // Same for console_mp.log to make permanent records of runtime errors.
+    noticePrint("Barricade: " + targetname + ", " + partCount + ", " + health + ", " + deathFx + ", " + buildFx);
+
+    if (targetname == "staticbarricade") {return;}
+
+    // Inspecting what we actually have
     ents = getentarray(targetname, "targetname");
+    noticePrint("ents.size: " + ents.size);
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
-        level.barricades[level.barricades.size] = ent;
-        for (j=0; j<partCount; j++) {
-            ent.parts[j] = ent getClosestEntity(ent.target + j);
-            /// @bug if the part isn't defined, try skipping this part
-            if (!isDefined(ent.parts[j])) {
-                logPrint("j: " + j + " jth part is not defined.\n");
-            }
-            ent.parts[j].startPosition = ent.parts[j].origin;
-            ent.parts[j].isBarricade = true;
-            //             buildBarricade("staticbarricade", 4, 400, level.barricadefx,level.barricadefx);
+        if (!isDefined(ent)) {
+            noticePrint("entity : + i + is undefined.");
+            continue;
         }
-        ent.hp = int(health);
-        ent.maxhp = int(health);;
-        ent.partsSize = partCount;
-        ent.deathFx = deathFx;
-        ent.buildFx = buildFx;
-        ent.occupied = false;
-        ent.dropAll = dropAll;
-        ent.isBarricade = true;
-        ent thread scripts\players\_barricades::makeBarricade();
+        level.barricades[level.barricades.size] = ent;
+
+        noticePrint(ent.target);  // on parkorman, 49 barricades, alleged part count is 4, ent.target is 'part'
+        if (isDefined(ent.parts)) {
+            s = ent.parts.size;
+            noticePrint(s);
+            partCount = s;
+        } else {
+            noticePrint("ent has no .parts property");
+            partCount = 1;
+            if (isDefined(ent.origin)) {
+                noticePrint(ent.origin); // ent.origin was (975, 127, -472) on parkorman
+                // ent.origin = (975, 127, -300);
+                plantFlag(ent.origin);
+            }
+        }
+    }
+
+
+    // BUG: Under the original code, 4 maps (that I know of), throw barricade errors:
+    //      undefined is not a field object: (file 'maps/mp/_umi.gsc', line 1790)
+    //          ent.parts[j].startPosition = ent.parts[j].origin;
+    // - mp_surv_ffc_parkorman
+    // - mp_mrx_castle
+    // - mp_surv_dust2
+    // - mp_surv_town
+    // Lomgstanding bug; they were blacklisted.
+    // 
+    // Upon inspection, it seems map makers can't be trusted:
+    //  - to properly count their barricade parts, or
+    //  - to properly give them zero-indexed names 'part0', 'part1', etc
+    // 
+    // Test == 1:
+    //   Approach: store their valid items in new array; use that array to populate the barricade.
+    // 
+    // This was the best approach, but still had issues 'staticbarricade' on parkorman,
+    // which isn't even a real barricade, as a plyer would percieve it.  I think it
+    // is a mapmaker trick to make a mormally non-physical object, like a brush,
+    // have a physical presence--something a player can run into. In that case, it
+    // doesn't seem like we need to do anything with 'staticbarricade' type.
+    //
+    // Test == 2:
+    //  Similar to #1, but was index-counting approach, more fragile.
+
+    test = 0; // original
+    // actual method(s)
+    if (test == 1) {
+        ents = getentarray(targetname, "targetname");
+        noticePrint("ents.size: " + ents.size);
+        for (i=0; i<ents.size; i++) {
+            ent = ents[i];
+            if (!isDefined(ent)) {
+                noticePrint("entity : + i + is undefined.");
+                continue;
+            }
+            level.barricades[level.barricades.size] = ent;
+            temp = [];
+            for (j=0; j<int(partCount + 5); j++) { // inspect well beyond the likely end of the array
+                print(ent.target);
+                testPart = ent getClosestEntity(ent.target + j);
+                if (isDefined(testPart)) {
+                    noticePrint("testPart: " + testPart);
+                    temp[temp.size] = testPart;
+                }         
+                //  && (initialIndex == -1)) {initialIndex = j;}
+                // if ((isDefined(testPart)) && (j >= initialIndex)) {finalIndex = j;}
+                // if (!isDefined(testPart)) {
+                //     continue;
+            }
+
+            partCount = temp.size;
+            for (j=0; j<temp.size; j++) {
+                noticePrint("jth part: " + temp[j]);
+                // noticePrint("ent.target + initialIndex: " + ent.target + index); // for 4 parts, we expect: part0 through part3
+                // entTarget = ent.target + index;
+                ent.parts[j] = temp[j]; // ent getClosestEntity(entTarget);
+                /// @bug if the part isn't defined, try skipping this part
+                // index++;
+                if (!isDefined(ent.parts[j])) {
+                    errorPrint("j: " + j + " jth part, is not defined. partCount: " + partCount + "\n");
+                    continue;
+                }
+                ent.parts[j].startPosition = ent.parts[j].origin;
+                ent.parts[j].isBarricade = true;
+                //             buildBarricade("staticbarricade", 4, 400, level.barricadefx,level.barricadefx);
+            }
+            ent.hp = int(health);
+            ent.maxhp = int(health);;
+            ent.partsSize = partCount;
+            ent.deathFx = deathFx;
+            ent.buildFx = buildFx;
+            ent.occupied = false;
+            ent.dropAll = dropAll;
+            ent.isBarricade = true;
+            // noticePrint("size: " + ent.parts.size);
+            ent thread scripts\players\_barricades::makeBarricade();
+        }
+    }
+    
+    // original test sol'n.  index weirdness, was at -1 because of staticbarricade issues on parkorman
+    if (test == 2) { 
+        ents = getentarray(targetname, "targetname");
+        noticePrint("ents.size: " + ents.size);
+        for (i=0; i<ents.size; i++) {
+            ent = ents[i];
+            if (!isDefined(ent)) {
+                noticePrint("entity : + i + is undefined.");
+                continue;
+            }
+            level.barricades[level.barricades.size] = ent;
+
+            initialIndex = -1;
+            finalIndex = -1;
+            for (j=0; j<int(partCount + 5); j++) { // inspect well beyond the likely end of the array
+                testPartName = ent.target + j;
+                testPart = ent getClosestEntity(ent.target + j);
+                if ((isDefined(testPart)) && (initialIndex == -1)) {initialIndex = j;}
+                if ((isDefined(testPart)) && (j >= initialIndex)) {finalIndex = j;}
+                if (!isDefined(testPart)) {
+                    continue;
+                }
+            }
+            realCount = int((finalIndex - initialIndex) + 1);
+            noticePrint("initialIndex: " + initialIndex + " finalIndex: " + finalIndex + " realCount: " + realCount);
+
+            partCount = realCount;
+            index = initialIndex;
+            for (j=0; j<realCount; j++) { // j is index we'll use to iterate & store it, but we track our own index for finding the parts
+                noticePrint("ent.target + initialIndex: " + ent.target + index); // for 4 parts, we expect: part0 through part3
+                entTarget = ent.target + index;
+                ent.parts[j] = ent getClosestEntity(entTarget);
+                /// @bug if the part isn't defined, try skipping this part
+                index++;
+                if (!isDefined(ent.parts[j])) {
+                    errorPrint("j: " + j + " jth part, " + entTarget + " is not defined. partCount: " + partCount + "\n");
+                    continue;
+                }
+                ent.parts[j].startPosition = ent.parts[j].origin;
+                ent.parts[j].isBarricade = true;
+                //             buildBarricade("staticbarricade", 4, 400, level.barricadefx,level.barricadefx);
+            }
+            ent.hp = int(health);
+            ent.maxhp = int(health);;
+            ent.partsSize = partCount;
+            ent.deathFx = deathFx;
+            ent.buildFx = buildFx;
+            ent.occupied = false;
+            ent.dropAll = dropAll;
+            ent.isBarricade = true;
+            // noticePrint("size: " + ent.parts.size);
+            ent thread scripts\players\_barricades::makeBarricade();
+        }
+    }
+    
+    // original code with bugs
+    if (test == 3) {
+        ents = getentarray(targetname, "targetname");
+        for (i=0; i<ents.size; i++) {
+            ent = ents[i];
+            level.barricades[level.barricades.size] = ent;
+            for (j=0; j<partCount; j++) {
+                ent.parts[j] = ent getClosestEntity(ent.target + j);
+                /// @bug if the part isn't defined, try skipping this part
+                if (!isDefined(ent.parts[j])) {
+                    logPrint("j: " + j + " jth part is not defined.\n");
+                }
+                ent.parts[j].startPosition = ent.parts[j].origin;
+                ent.parts[j].isBarricade = true;
+                //             buildBarricade("staticbarricade", 4, 400, level.barricadefx,level.barricadefx);
+            }
+            ent.hp = int(health);
+            ent.maxhp = int(health);;
+            ent.partsSize = partCount;
+            ent.deathFx = deathFx;
+            ent.buildFx = buildFx;
+            ent.occupied = false;
+            ent.dropAll = dropAll;
+            ent.isBarricade = true;
+            ent thread scripts\players\_barricades::makeBarricade();
+        }
     }
 }
 

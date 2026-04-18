@@ -45,31 +45,8 @@ init()
     level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
     level.autoMapTestDone = false;
     if (level.autoMapTesting) {
-        noticePrint("In auto map testing mode");
+        log("server", "In auto map testing mode");
     }
-
-    debugPrint("Running debug version of rotu_svr_scripts.iwd.", "val");
-    if (level.printFunctionEntryMessages) {
-        debugPrint("Printing function entrance messages", "val");
-    } else {
-        debugPrint("Not printing function entrance messages", "val");
-    }
-    if (level.printValueMessages) {
-        debugPrint("Printing value messages", "val");
-    } else {
-        debugPrint("Not printing value messages", "val");
-    }
-    if (level.printSignalMessages) {
-        debugPrint("Printing signal messages", "val");
-    } else {
-        debugPrint("Not printing signal messages", "val");
-    }
-    if (level.printWarningMessages) {
-        debugPrint("Printing warning messages", "val");
-    } else {
-        debugPrint("Not printing warning messages", "val");
-    }
-    debugPrint("Debug message verbosity set to: " + level.debugVerbosity, "val");
 
     if (!isDefined(game["allies"])) {game["allies"] = "marines";}
     if (!isDefined(game["axis"])) {game["axis"] = "opfor";}
@@ -82,8 +59,9 @@ init()
     level.dedicated = getDvar("dedicated");
 
     currentMap = getdvar("mapname");
+    level.currentMap = currentMap;
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
-    noticePrint("Starting map " + currentMapName + " (" + currentMap + ").");
+    log("server", "Starting map " + currentMapName + " (" + currentMap + ").");
     logMapStartHeader();
 
     thread scripts\server\_settings::init();
@@ -117,7 +95,7 @@ init()
 
     wait 0.5;
  
-    noticePrint("Server is running and waiting for players to connect.");
+    log("server", "Server is running and waiting for players to connect.");
     runTestCode();
 }
 

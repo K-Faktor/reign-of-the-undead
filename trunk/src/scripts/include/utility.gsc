@@ -35,13 +35,21 @@
  */
 
 #include scripts\include\realtime;
+#include scripts\include\strings;
 
-boolToJson(b)
+/*
+ * @brief Inserts a flag into the map at \corigin. Good for debugging.
+ *
+ * @param origin vector The position to place the flag, will be bottom of flagpole.
+ *
+ * @return nothing
+ */
+plantFlag(origin)
 {
-    if (b)
-        return "true";
-    return "false";
+    flag = spawn("script_model", origin);
+    flag setModel("prop_flag_american");  
 }
+
 
 // Call this once at the start of every map / new game
 logMapStartHeader()
@@ -52,23 +60,19 @@ logMapStartHeader()
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
     if (currentMapName == currentMap) {currentMapName = "";}
     if (level.autoMapTesting) {
-        json = "{\"autoMapTest\": {\"mapName\": \"" + currentMap + "\", \"mapEnglishName\": \"" + currentMapName + "\", \"timestamp\": \"" + getRealDateTimeString() + "\"}}";    
-        logPrint(json + "\n");
+        fmt = "|Map Started|, |mapName|: |$1|, |mapEnglishName|: |$2|, |timestamp|: |$3|";
+        log("automaptest", sprintfJson(fmt, currentMap, currentMapName, getRealDateTimeString()));
     }
 
-    logPrint("============================================================\n");
-    logPrint("Map Started: " + getRealDateTimeString() + "\n");
-    logPrint("Map: " + currentMap + "\n");
-    logPrint("============================================================\n");
+    log("pre", "============================================================\n");
+    log("pre", "Map Started: " + getRealDateTimeString() + "\n");
+    log("pre", "Map: " + currentMap + "\n");
+    log("pre", "============================================================\n");
 }
 
-// Use this everywhere for timestamped logs
-logTimestamped(message)
-{
-    logPrint("[" + getRealDateTimeString() + "] " + message + "\n");
-}
 
 /**
+ * @deprecated Forwards to log() until I do a global replace
  * @brief Writes debug messages to logfile specified in g_log dvar
  *
  * @param message string The message to write
@@ -79,35 +83,173 @@ logTimestamped(message)
  */
 debugPrint(message, type, verbosity)
 {
-    if (!isDefined(message)) {
-        errorPrint("utility::debugPrint(message, " + type + ") called with an undefined message");
-        return;
-    }
-    if (!isDefined(verbosity)) {
-        verbosity = 0;
-    }
-
-    printMessage = false;
-
     // Function entry messages
     if ((level.printFunctionEntryMessages) &&
         (type == "fn") &&
-        (verbosity <= level.debugVerbosity)) {printMessage = true;}
+        (verbosity <= level.debugVerbosity))
+    {
+        log("trace", message, false);
+    }
 
     // Variable value messages
-    else if ((level.printValueMessages) && (type == "val")) {printMessage = true;}
+    else if ((level.printValueMessages) && (type == "val")) {
+        log("value", message, false);
+    }
 
     // Signals notified or received
-    else if ((level.printSignalMessages) && (type == "sig")) {printMessage = true;}
-
-    if (printMessage) {
-        message = "Debug: " + message + "\n";
-        LogPrint(message);
+    else if ((level.printSignalMessages) && (type == "sig")) {
+        log("signal", message, false);
     }
 }
 
 
 /**
+ * @brief Initializes our JSON logging; called from bootstrapCritical()
+ *
+ * @returns nothing
+ */
+initLogging()
+{
+    temp = getdvar("sv_hide_log_message");
+    values = strTok(temp, ",");
+
+    level.hideTrace = false;
+    level.hideDebug = false;
+    level.hideValue = false;
+    level.hideSignal = false;
+    level.hidePre = false;
+    for (i=0; i<values.size; i++) {
+        if (trim(toLower(values[i])) == "trace")  {level.hideTrace = true; continue;}
+        if (trim(toLower(values[i])) == "debug")  {level.hideDebug = true; continue;}
+        if (trim(toLower(values[i])) == "value")  {level.hideValue = true; continue;}
+        if (trim(toLower(values[i])) == "signal") {level.hideSignal = true; continue;}
+        if (trim(toLower(values[i])) == "pre")    {level.hidePre = true; continue;}
+    }
+
+    // overrides, for dev convenience; easier than messing w/config files
+    if (level.developmentStatus == "dev") {
+        level.hideTrace = true;
+        level.hideDebug = false;
+        level.hideValue = false;
+        level.hideSignal = true;
+        level.hidePre = false;
+    }
+    
+    log("server", "Running debug version of rotu_svr_scripts.iwd.");
+    suppressed = [];
+    if (level.hideTrace) {suppressed[suppressed.size] = "trace";}
+    if (level.hideDebug) {suppressed[suppressed.size] = "debug";}
+    if (level.hideValue) {suppressed[suppressed.size] = "value";}
+    if (level.hideSignal) {suppressed[suppressed.size] = "signal";}
+    if (level.hidePre) {suppressed[suppressed.size] = "pre";}
+
+    if (suppressed.size == 0) {
+        log("server", "Suppressing no log messsage types. 'bout to get really loud in here. You'd typically want to suppress at least 'trace' and 'signal'.");
+    } else {
+        log("server", "Suppressing messsage types: " + join(suppressed, ", "));
+    }
+}
+
+
+/**
+ * @brief Writes JSON-formatted log messages to logfile specified in g_log dvar
+ *
+ * @param eventType string The type of message. Any of the values in the switch:
+ *                           [value|warn|error|debug|server|criticalbug|...]
+ *
+ * @param message string The message to write
+ * @param includeEpoch bool Include the Unix epoch, i.e. integer seconds?
+ *
+ * @returns nothing
+ */
+log(eventType, message, includeEpoch)
+{
+    // handle undefined eventType
+    if (!isDefined(eventType)) {
+        LogPrint("Error: utility::log() parameter 'eventType' is undefined\n");
+        if (isDefined(message)) {LogPrint("The associated message parameter was: " + message + "\n");}
+    }
+    // handle undefined message
+    if (!isDefined(message)) {
+        LogPrint("Error: utility::log() parameter 'message' is undefined\n");
+        // we will need the stack trace to debug, so force the error regardless
+        LogPrint(message);
+        return;
+    }
+
+    epoch = "";
+    if (!isDefined(includeEpoch)) {includeEpoch = false;}
+    else if (includeEpoch) {epoch = " |epoch|: " + getRealUnixTime() + ",";} 
+
+    temp = "";
+    switch (eventType) {
+    // server status, game state
+    case "server":                      
+        temp = "Notice: {|event|: |server|," + epoch + " " + "|msg|: |" + message + "|}";
+        break;
+    case "trace":
+        if (level.hideTrace) {return;}
+        temp = "Debug:  {|event|: |trace|," + epoch + " " + "|msg|: |" + message + "|}";
+        break;
+    case "bug":
+        temp = "Error: {|event|: |bug|," + epoch + " " + "|msg|: |" + message + "|}";
+        break;
+    case "warn":
+        temp = "Warn:   {|event|: |warn|," + epoch + "   " + "|msg|: |" + message + "|}";
+        break;
+    case "error":
+        temp = "Error: {|event|: |error|," + epoch + " " + "|msg|: |" + message + "|}";
+        break;
+    case "debug":
+        if (level.hideDebug) {return;}
+        temp = "Debug:  {|event|: |debug|," + epoch + "  " + "|msg|: |" + message + "|}";
+        break;
+    case "criticalbug":
+        temp = "Debug:  {|event|: |criticalbug|," + epoch + " " + "|msg|: |" + message + "|}";
+        break;
+    case "value":
+        if (level.hideValue) {return;}
+        temp = "Debug:  {|event|: |value|," + epoch + "  " + "|msg|: |" + message + "|}";
+        break;
+    case "signal":
+        if (level.hideSignal) {return;}
+        temp = "Debug:  {|event|: |signal|," + epoch + " " + "|msg|: |" + message + "|}";
+        break;
+    case "automaptest":
+        temp = "Test:   {|event|: |automaptest|," + epoch + " " + "|msg|: " + message + "}";
+        break;
+    case "pre":
+        if (level.hidePre) {return;}
+        logPrint(message);
+        return;
+    // just show the darn message!
+    case "dev":
+        if (level.developmentStatus == "dev") {
+            temp = "Dev: {|event|: |dev|," + epoch + " " + "|msg|: |" + message + "|}";
+            break;
+        } else {return;}
+    default:
+        temp = "Warn:   Unsupported event type: " + eventType + "   for message: " + message;
+    }
+
+    message = replace(temp, "|", "\"") + "\n";
+    logPrint(message);
+
+}
+
+// Escape a string for JSON.  Unused currently, but we may need it later.
+// escapeString(s)
+// {
+//     s = replace(s, "\\", "\\\\");
+//     s = replace(s, "\"", "\\\"");
+//     s = replace(s, "\n", "\\n");
+//     s = replace(s, "\r", "\\r");
+//     s = replace(s, "\t", "\\t");
+//     return s;
+// }
+
+/**
+ * @deprecated
  * @brief Writes warning messages to logfile specified in g_log dvar
  *
  * @param message string The message to write
@@ -116,19 +258,13 @@ debugPrint(message, type, verbosity)
  */
 warnPrint(message)
 {
-    if (!isDefined(message)) {
-        errorPrint("utility::warnPrint(message) called with an undefined message");
-        return;
-    }
-
-    if (level.printWarningMessages) {
-        message = "Warn: " + message + "\n";
-        LogPrint(message);
-    }
+    // @todo print deprecation notice to find any warnPrint's not ported, *after gloabl replace
+    log("warn", message, false);
 }
 
 
 /**
+ * @deprecated
  * @brief Always writes error messages to logfile specified in g_log dvar
  *
  * @param message string The message to write
@@ -137,20 +273,13 @@ warnPrint(message)
  */
 errorPrint(message)
 {
-    if (!isDefined(message)) {
-        message = "utility::errorPrint(message) called with an undefined message";
-    }
-
-    printMessage = true; // We *always* print error messages
-
-    if (printMessage) {
-        message = "Error: " + message + "\n";
-        LogPrint(message);
-    }
+    // @todo print deprecation notice to find any noticePrint's not ported
+    log("error", message, false);
 }
 
 
 /**
+ * @deprecated
  * @brief Always writes a message to logfile specified in g_log dvar
  * This function is used for messages we always want to write, yet aren't
  * really error messages.
@@ -161,17 +290,112 @@ errorPrint(message)
  */
 noticePrint(message)
 {
-    if (!isDefined(message)) {
-        errorPrint("utility::noticePrint(message) called with an undefined message");
-        return;
-    }
+    // @todo print deprecation notice to find any noticePrint's not ported
+    log("server", message, false);
+}
 
-    printMessage = true; // We *always* print these message
 
-    if (printMessage) {
-        message = "Notice: " + message + "\n";
-        LogPrint(message);
+/**
+ * @brief Performs sprintf-like variable interpolation for JSON strings
+ *
+ * N.B.: For when we need more control that log() gives us
+ *
+ * @param formatString string The string with parameter tokens. Use pipe `|` for double quotes `"`
+ * @param p1-p19 string The parameters to interpolate
+ *
+ * @returns the interpolated JSON-formatted string
+ */
+logJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19)
+{
+    debugPrint("in utility::logJson()", "fn", level.highVerbosity);
+
+    msg = sprintfJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19);
+    logPrint(msg + "\n");
+}
+
+
+/**
+ * @brief Performs sprintf-like variable interpolation for JSON strings
+ *
+ * N.B.: For when we need more control that log() gives us
+ *
+ * @param formatString string The string with parameter tokens. Use pipe `|` for double quotes `"`
+ * @param p1-p19 string The parameters to interpolate
+ *
+ * @returns the interpolated JSON-formatted string
+ */
+sprintfJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19)
+{
+    debugPrint("in utility::sprintfJson()", "fn", level.highVerbosity);
+
+    defaultStr = "";
+    defaultNumeric = 0;
+    defaultBool = "false";
+    // parse parameters
+    count = 1;
+    p = [];
+    p[0] = formatString;
+    p[1] = p1;
+    p[2] = p2;
+    p[3] = p3;
+    p[4] = p4;
+    p[5] = p5;
+    p[6] = p6;
+    p[7] = p7;
+    p[8] = p8;
+    p[9] = p9;
+    p[10] = p10;
+    p[11] = p11;
+    p[12] = p12;
+    p[13] = p13;
+    p[14] = p14;
+    p[15] = p15;
+    p[16] = p16;
+    p[17] = p17;
+    p[18] = p18;
+    p[19] = p19;
+
+    // set any JSON default values
+    interpolatedString = formatString; // Init
+    for (i=1; i<p.size; i++) {
+        if (!isDefined(p[i])) {
+            if (tokenMatchCount(formatString, "$" + i + ":b")) {
+                // found a bool that need a defaults value
+                p[i] = defaultBool;
+            } else if (tokenMatchCount(formatString, "$" + i + ":n")) {
+                // found a bool that need a defaults value
+                p[i] = defaultNumeric;
+            } else {
+                // found a str that need a defaults value
+                p[i] = defaultStr;
+            }
+        } else {
+            if (tokenMatchCount(formatString, "$" + i + ":b")) {
+                // found a bool that need a defaults value
+                if ((p[i] == 0) || (p[i] == "")) {
+                    p[i] = "false";
+                } else {
+                    p[i] = "true";
+                }
+            }
+        }
+
     }
+    // replace all two-digit tokens first, so $1 doesn't mistakenly match $10
+    for (i=10; i<p.size; i++) {
+        interpolatedString = replace(interpolatedString, "$" + i + ":b", p[i]);
+        interpolatedString = replace(interpolatedString, "$" + i + ":n", p[i]);
+        interpolatedString = replace(interpolatedString, "$" + i, p[i]);
+    }
+    // replace all single-digit tokens
+    for (i=1; ((i<11) && (i<p.size)); i++) {
+        interpolatedString = replace(interpolatedString, "$" + i + ":b", p[i]);
+        interpolatedString = replace(interpolatedString, "$" + i + ":n", p[i]);
+        interpolatedString = replace(interpolatedString, "$" + i, p[i]);
+    }
+    // swap out pipes for double quotes
+    interpolatedString = replace(interpolatedString, "|", "\"");
+    return interpolatedString;
 }
 
 
@@ -190,4 +414,3 @@ decimalRgbToColor(red, green, blue)
 
     return (red/255, green/255, blue/255);
 }
-
