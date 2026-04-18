@@ -15,7 +15,7 @@
       "md5Map": "dd0fb719ebb4dbebd89bc40ec8c4f87c mp_4nuketown.ff",
       "md5Load": "c48a69dde15354151ee7f5f839d213de mp_4nuketown_load.ff",
       "md5Iwd": "1086d102027f417762eb3003836285c0 mp_4nuketown.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -49,7 +49,7 @@
       "md5Map": "cfe39a7e23d9e6129d43813de400bdf0 mp_4t4scrap.ff",
       "md5Load": "10da7a6fd844c97352a7473a3310f033 mp_4t4scrap_load.ff",
       "md5Iwd": "b798c1cc22fe9e0247c3c59d82522921 mp_4t4scrap.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -83,7 +83,7 @@
       "md5Map": "d8e258834128689ded06dd450330d749 mp_ancient_final.ff",
       "md5Load": "286e775bc59ba81bd4d5fa6dd3b5fa3a mp_ancient_final_load.ff",
       "md5Iwd": "39c81df4a89132aae05aadf112b3b142 mp_ancient_final.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -151,7 +151,7 @@
       "md5Map": null,
       "md5Load": "05fc9cefecc6399da972eef48348bf11 mp_arkona_osg_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -185,7 +185,7 @@
       "md5Map": "8d022bef2513f63cae521faa135e529b mp_asylum.ff",
       "md5Load": "c61c67acd3e1bfe96775fd1e31e39df9 mp_asylum_load.ff",
       "md5Iwd": "31123e17aeb1f4c1e2cd5d4e35c46ab6 mp_asylum.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -219,7 +219,7 @@
       "md5Map": "dd5f971eccba51f415626616f90c4077 mp_atp.ff",
       "md5Load": "99af3f8d8111019ced35d19fd2b60077 mp_atp_load.ff",
       "md5Iwd": "6f907c17004102ed17e470306b4a8464 mp_atp.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -253,7 +253,7 @@
       "md5Map": "82002a2b916207aca6ef614d3b714ce8 mp_backlot_lt.ff",
       "md5Load": "f17479977c29c36bf708bb31d5fb741b mp_backlot_lt_load.ff",
       "md5Iwd": "c2d2970673b5e0e66613da9507bf30a0 mp_backlot_lt.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -321,7 +321,7 @@
       "md5Map": null,
       "md5Load": "051db74bde02b2fad4f71404f7a1e49b mp_brecourt_v2_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -355,7 +355,7 @@
       "md5Map": "050aeaa74ab96245533fb2b5fa73114c mp_bridge2011.ff",
       "md5Load": "6965ed5fb7b184d21fdd9c620d6b9511 mp_bridge2011_load.ff",
       "md5Iwd": "67304c8eda0690af7df0f1dc148067d7 mp_bridge2011.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -525,7 +525,7 @@
       "md5Map": "e50d28b6036ece6e4dbc7751c8fbff7e mp_burg.ff",
       "md5Load": "7f4c1ce12f254685a160d0835d47e5f6 mp_burg_load.ff",
       "md5Iwd": "223627b8613d09f2a338a7dfccde96a7 mp_burg.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -559,14 +559,14 @@
       "md5Map": "1ce1bda8b659c3c3685d66821775aaf3 mp_burgundy_bulls.ff",
       "md5Load": "52c86e4b694851cfa69f0dc4a10af364 mp_burgundy_bulls_load.ff",
       "md5Iwd": "14d51919cbd1f2ecef3990abaa0bd26b mp_burgundy_bulls.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
-        "gitRevision": "25fe623",
+        "gitRevision": "3f52740",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": false,
-        "timestamp": "2026-04-15 19:57:27 CDT (UTC-5)",
+        "timestamp": "2026-04-15 23:07:39 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 349,
         "waypointType": "external",
@@ -576,7 +576,7 @@
         "runtimeErrors": 0,
         "overallSuccess": false
       },
-      "notes": ""
+      "notes": "Crashes."
     },
     {
       "codeName": "mp_caen",
@@ -593,7 +593,7 @@
       "md5Map": null,
       "md5Load": "aae8af123a666bcb4b409a7bb5014f40 mp_caen_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -627,7 +627,7 @@
       "md5Map": "099706e4c213d26cd7c54c0be48289a5 mp_castle_v1.ff",
       "md5Load": "c74b1b3aed853b8f8c29da9dee1bb3c1 mp_castle_v1_load.ff",
       "md5Iwd": "fd9cb8f12f274886e5c7bc19de2a0de4 mp_castle_v1.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -661,7 +661,7 @@
       "md5Map": "0ad6c139946fc9724c19a70c9cfe2c4c mp_cloud_city.ff",
       "md5Load": "cf9b9868d5e5f213995b11659c8a5e01 mp_cloud_city_load.ff",
       "md5Iwd": "a9dcac54b64ad1884f79420864449739 mp_cloud_city.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -695,7 +695,7 @@
       "md5Map": "f9e182ba40807ad414d4faf9cb824c45 mp_ctan.ff",
       "md5Load": "f10fdc8844a81742f48b8f9423f8f398 mp_ctan_load.ff",
       "md5Iwd": "15577d7958f023cd2a5c529ce0b5f012 mp_ctan.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -763,7 +763,7 @@
       "md5Map": "7919ca2e88bb456ede1849169cc0b2b1 mp_disputed.ff",
       "md5Load": "1492742d8883e4f928cf16c9a315dc86 mp_disputed_load.ff",
       "md5Iwd": "d459e87581025bc244d4896af0905bf2 mp_disputed.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -797,7 +797,7 @@
       "md5Map": "a9d566e35b219a4f4e82fc4e6cad7208 mp_dome.ff",
       "md5Load": "5563db1b08940e81370bba45f9d3a8c6 mp_dome_load.ff",
       "md5Iwd": "c83abab28d391f247c737a599d5a04ee mp_dome.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -831,7 +831,7 @@
       "md5Map": "25d4a2fad8b1cd86fda196ecbf97343b mp_doowntown.ff",
       "md5Load": "ac0d571fe0c2f3ff23edfdfa575054a5 mp_doowntown_load.ff",
       "md5Iwd": "9e33ad7b8b20b851b4a674f5985d43b1 mp_doowntown.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -865,7 +865,7 @@
       "md5Map": "ee6076cf1bd6b6dd7bc0198ca3a0f99e mp_doowood.ff",
       "md5Load": "056e697638a375f2d2e02004de14d64f mp_doowood_load.ff",
       "md5Iwd": "acaae90a43f428a13b29fd6085755085 mp_doowood.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -899,7 +899,7 @@
       "md5Map": "0740ba33cbf946a55ab673f855c2b86c mp_draw.ff",
       "md5Load": "57ceab033bd3c726a3aa9f19ecdd0dc8 mp_draw_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -933,7 +933,7 @@
       "md5Map": "1c2a8ce053bb2f87077f8f27171d0b6b mp_dust2_classic.ff",
       "md5Load": "e4a2306aa58e20f0f128bf557a573a8e mp_dust2_classic_load.ff",
       "md5Iwd": "d6c39e149cfaf332be14cd1c0aaf1e5b mp_dust2_classic.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -967,7 +967,7 @@
       "md5Map": "68331ef1dac7c809c412b7372213c860 mp_dust3.ff",
       "md5Load": "740fad6cbc465c5c66b991ccdb9de6bd mp_dust3_load.ff",
       "md5Iwd": "883d95f8b9c47b741046843556b9316f mp_dust3.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -1001,7 +1001,7 @@
       "md5Map": "9c08eb415ff877f56c21497811e9960f mp_dustcod4.ff",
       "md5Load": "8c85bf9d4e212a77436ef4ccf9a7b073 mp_dustcod4_load.ff",
       "md5Iwd": "81f1f538c2ec8a1a470de0ea945dcf18 mp_dustcod4.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -1069,7 +1069,7 @@
       "md5Map": "d240c17f5fe56c6c29050cfd7363bf74 mp_fabrika.ff",
       "md5Load": "64cfaebcf07c9fe2d9ecbfef0762e48a mp_fabrika_load.ff",
       "md5Iwd": "068a81a2bed7d243ac3ac904e8db36c3 mp_fabrika.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -1103,7 +1103,7 @@
       "md5Map": "b13612e6275ac57bf66f634e78e378a3 mp_fav.ff",
       "md5Load": "6e10886c30cd17fd6e6323938b086fea mp_fav_load.ff",
       "md5Iwd": "70d7a7e4aae5c85789751d0acf4286f6 mp_fav.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -1171,7 +1171,7 @@
       "md5Map": "1738b3c98889cad910fe7c0e636e0c0f mp_firingrange_v2.ff",
       "md5Load": "975de3b73cc1803ab209fd8691e081b2 mp_firingrange_v2_load.ff",
       "md5Iwd": "84753d48d0a04db6fd0cbb8e4d2a5fc7 mp_firingrange_v2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -1545,7 +1545,7 @@
       "md5Map": "2c242508e5379e2995d94ad2aae4b801 mp_fnrp_chocho.ff",
       "md5Load": "5c8cd8673fed31ae32f02961c915cc5a mp_fnrp_chocho_load.ff",
       "md5Iwd": "62a2a6f5f720925bd12740c5b4a3c4a4 mp_fnrp_chocho.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -1817,7 +1817,7 @@
       "md5Map": "5b5fe1d360f04a99b6093104d4299a17 mp_fnrp_futurama_v3.ff",
       "md5Load": "c42adaf8dba586a1c28e7a6b9b6d3fb8 mp_fnrp_futurama_v3_load.ff",
       "md5Iwd": "673362d3387d6c247cb68a4718a13d01 mp_fnrp_futurama_v3.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -2021,7 +2021,7 @@
       "md5Map": "ba1770956bb1c32dc1075f83ceb0c7e6 mp_fnrp_laberinto_v2.ff",
       "md5Load": "2261031dad9582f2e0d074ca1bd84f1a mp_fnrp_laberinto_v2_load.ff",
       "md5Iwd": "adfbbe19415d95e78c4a85425efdfcd5 mp_fnrp_laberinto_v2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -2157,7 +2157,7 @@
       "md5Map": "4d670c4a802592b39ee54711bd3fff0a mp_fnrp_meadow.ff",
       "md5Load": "8f0438d10c9d8c0561dd43dde0edf9a9 mp_fnrp_meadow_load.ff",
       "md5Iwd": "b649ddd7c90629f272630a6294de7d71 mp_fnrp_meadow.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -2191,7 +2191,7 @@
       "md5Map": "2077312091e25496eb23bd70ca0d09d1 mp_fnrp_metro.ff",
       "md5Load": "e5943dbfd25a551c99019538d82b7a25 mp_fnrp_metro_load.ff",
       "md5Iwd": "d8ca457a392546b46581dbfcf60ca6bf mp_fnrp_metro.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -2463,7 +2463,7 @@
       "md5Map": "25af1cc4c2b0a20e8b933e9ae619b75c mp_fnrp_piratas.ff",
       "md5Load": "790396bb2b389c87211c5d02c1db09a1 mp_fnrp_piratas_load.ff",
       "md5Iwd": "a17108ea0c8552efdda41061822f0600 mp_fnrp_piratas.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -2497,7 +2497,7 @@
       "md5Map": "6db9f293a7e05447c0aebad66f1a66bb mp_fnrp_poncho_nite.ff",
       "md5Load": "c4a31c228bba8fbadef62ba3b6185aa0 mp_fnrp_poncho_nite_load.ff",
       "md5Iwd": "9c987f37de1eb12454479bcc0e271c01 mp_fnrp_poncho_nite.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3245,7 +3245,7 @@
       "md5Map": "cdba664b0325165506b4d8a325f21ea9 mp_forsaken_world.ff",
       "md5Load": "8ff2912a4aa012ff69c1bda88e6733f5 mp_forsaken_world_load.ff",
       "md5Iwd": "1555a6b64b401264d909993f469d91b4 mp_forsaken_world.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3313,7 +3313,7 @@
       "md5Map": "e9ebc9290f87c6d5b16f37ab16f5cebb mp_hhk_ballroom.ff",
       "md5Load": "1f69aab3f319cc4f5f765ee8945f2ec0 mp_hhk_ballroom_load.ff",
       "md5Iwd": "d7cab93ba5c71f1d892f40c1e5b06f1e mp_hhk_ballroom.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3347,7 +3347,7 @@
       "md5Map": "27e802214b94e9a0ef0968ff27b4c6b1 mp_highrise.ff",
       "md5Load": "fd4eef48c9b0b016063dc2c4a2a98a0a mp_highrise_load.ff",
       "md5Iwd": "5882277bb541df31d3041c77867df7fd mp_highrise.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3381,7 +3381,7 @@
       "md5Map": "d3f3c231f94bff6e227123cedcac2a6b mp_hospital.ff",
       "md5Load": "e972711e7ec8952bcea625297999f79b mp_hospital_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3415,7 +3415,7 @@
       "md5Map": null,
       "md5Load": "2036bdbf658138f11c36ec51678da599 mp_howling_night_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3449,7 +3449,7 @@
       "md5Map": "609a609e5cbc2ab5fc0c8fb4b2389b32 mp_inv.ff",
       "md5Load": "19b1a3209ea282ecf32507b08e4ff6af mp_inv_load.ff",
       "md5Iwd": "2c69ee78714a5773a8da7da675a2d40d mp_inv.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3483,7 +3483,7 @@
       "md5Map": "03c600415e6f01fe08f040fec3707ec7 mp_karachi.ff",
       "md5Load": "8cd02f12a24e87e54b5ed461f558d6ac mp_karachi_load.ff",
       "md5Iwd": "66a857ffed3a763617ce765fa1d98afc mp_karachi.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3517,7 +3517,7 @@
       "md5Map": "9c86288402694691a68a13e7ea0f2e56 mp_karrak.ff",
       "md5Load": "e2fcb3119d10c6e0df1b57f2175c5a7c mp_karrak_load.ff",
       "md5Iwd": "073c8aadf25dac66fb638a9fc718bae2 mp_karrak.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3551,7 +3551,7 @@
       "md5Map": "ac411bbf0b05ca963e8e4495adc2d52b mp_kowloon.ff",
       "md5Load": "a04e30f83fccc6b95cdbd75e1aea4c69 mp_kowloon_load.ff",
       "md5Iwd": "a6a083452a2d24dbabf5d871730f37c0 mp_kowloon.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3619,7 +3619,7 @@
       "md5Map": "03be789fcf98c39caee30c3ce1431929 mp_lolv2.ff",
       "md5Load": "ac73cd403e2143a18cc04228b6a5039a mp_lolv2_load.ff",
       "md5Iwd": "ff2b10d87ea8da9277ce067f0c26e8cc mp_lolv2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3755,7 +3755,7 @@
       "md5Map": "272bc896307658c3750f7dc7c58e60c6 mp_madhouse_picnic.ff",
       "md5Load": "a47c47b5e03f43ee1012fa4877c4ac4e mp_madhouse_picnic_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3789,7 +3789,7 @@
       "md5Map": "93eea654c343834591c081249d2fa14b mp_madhouse_solace.ff",
       "md5Load": "956ca6fcb72d07aef10ce8e985f11663 mp_madhouse_solace_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -3927,19 +3927,19 @@
       "md5Iwd": "b717e369dda20563fe52239dbf2d1e0e mp_mrx_castle.iwd",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "3f52740",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": true,
-        "timestamp": "2026-04-12 01:44:42 CDT (UTC-5)",
+        "timestamp": "2026-04-16 03:04:38 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 67,
         "waypointType": "internal",
         "weaponShopCount": 1,
         "equipmentShopCount": 1,
         "compileErrors": 0,
-        "runtimeErrors": 9,
+        "runtimeErrors": 0,
         "overallSuccess": true
       },
       "notes": "Runtime errors: undefined is not a field object: (file 'maps/mp/_umi.gsc', line 1790)\nent.parts[j].startPosition = ent.parts[j].origin;  This is barraicades."
@@ -3959,7 +3959,7 @@
       "md5Map": "81dc4ec105c1272e6f1e07e6800db909 mp_mw2_term.ff",
       "md5Load": "1577798160c296405c1cf708316de3ea mp_mw2_term_load.ff",
       "md5Iwd": "f2ed473a7e2b76cd164717791ee1f348 mp_mw2_term.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4027,7 +4027,7 @@
       "md5Map": "7fa46407573120d0843596484ca5c8d6 mp_nuketown.ff",
       "md5Load": "c4dc13a138c5ce16917cc59c2ab82505 mp_nuketown_load.ff",
       "md5Iwd": "4b778e49189c4775245ffe0f197ee29f mp_nuketown.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4265,7 +4265,7 @@
       "md5Map": "50636f1ddfe9bf4cddcc270f3a203caa mp_onslaught.ff",
       "md5Load": "5f2f29daecc0602da38aa22faca155e5 mp_onslaught_load.ff",
       "md5Iwd": "6ad75e130cd695ce4674fa9b7c49ad5f mp_onslaught.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4299,7 +4299,7 @@
       "md5Map": "65f4f66d1d2b862cdf9b67fd4f658f45 mp_outset.ff",
       "md5Load": "ee3ee311a0ea60c8e1bd8979f181fd94 mp_outset_load.ff",
       "md5Iwd": "5ad3283d78c1fb773dab30face6699a0 mp_outset.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4333,7 +4333,7 @@
       "md5Map": "6dcb0eedad4be9d24704fef287ece463 mp_poolday.ff",
       "md5Load": "17b2daf1065241eeb62bd9cb6ab2709b mp_poolday_load.ff",
       "md5Iwd": "9c4175ad52d0d2b2218eb23935c28cce mp_poolday.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4367,7 +4367,7 @@
       "md5Map": null,
       "md5Load": "a3dc635a4502f015d8e7dd62804180f4 mp_prunis_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4401,7 +4401,7 @@
       "md5Map": "4d9c17ddd9655ac8b2a44176dc9cb858 mp_psycho.ff",
       "md5Load": "93269216427d0597c7dde441d5b12ac8 mp_psycho_load.ff",
       "md5Iwd": "d7fdba476609f9b2271cb8d8d191a7ca mp_psycho.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4435,7 +4435,7 @@
       "md5Map": "512785733b31277051d4bff90547612c mp_psycho_day.ff",
       "md5Load": "836e90c18791a20452eecc99b6b09b19 mp_psycho_day_load.ff",
       "md5Iwd": "1bc21bc84684c56e7e33266d5416087f mp_psycho_day.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4639,7 +4639,7 @@
       "md5Map": "99269fece0af6a17ee1d4db1b63f1c6b mp_pulsar_solace.ff",
       "md5Load": "da68d8e3c898d16579ab53b79bae9fcf mp_pulsar_solace_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4741,7 +4741,7 @@
       "md5Map": "f9b17647e75c17227105687fc3c3cbbf mp_redzone.ff",
       "md5Load": "39b69fd1aab9e2d9cfa0c9e95c3d4b1c mp_redzone_load.ff",
       "md5Iwd": "ce5dd7ce9ed6be3e58d23441c2789f6b mp_redzone.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4775,7 +4775,7 @@
       "md5Map": "9b0d5130e2662a9637f9d1abfe936967 mp_roundup.ff",
       "md5Load": "473257e50fa9c2999b234573e2df14ab mp_roundup_load.ff",
       "md5Iwd": "c3c184f641fe236d857c1fbc711ce918 mp_roundup.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4809,7 +4809,7 @@
       "md5Map": "501add22ce48d0175f1a614ce3ae2fd2 mp_ruins.ff",
       "md5Load": "9c885562be9ad022470412c1424834cb mp_ruins_load.ff",
       "md5Iwd": "c8a858a9130f42bfe41f21e0e9f432e3 mp_ruins.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4843,7 +4843,7 @@
       "md5Map": "884cef7a2c6f5b7c19645e008227118d mp_sbase.ff",
       "md5Load": "252f76b0dddc13fb5761f259f50bb624 mp_sbase_load.ff",
       "md5Iwd": "36cb9ef9d96b3bf1bcd55ee719d7cd30 mp_sbase.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4877,7 +4877,7 @@
       "md5Map": "27d4a88b38ab1e5ae254d4c88f8ec604 mp_shipmentx2.ff",
       "md5Load": "b0ec4e1c9e65efeae367dedf595d6dcf mp_shipmentx2_load.ff",
       "md5Iwd": "eb85cc2bb7f6a03ae744664b5e0043c9 mp_shipmentx2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4911,7 +4911,7 @@
       "md5Map": "ec810aa6c15e0f6929b534cfdabf3d76 mp_steamlab.ff",
       "md5Load": "e89f016976232a6ce5dd6c6d5ea8b24d mp_steamlab_load.ff",
       "md5Iwd": "efcbf24c1e0cee7a9925f8baa9351356 mp_steamlab.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -4945,7 +4945,7 @@
       "md5Map": "71fb88b2b73a23338293805c300cf655 mp_stream.ff",
       "md5Load": "5a7f9c436c6027af75190a20980c8262 mp_stream_load.ff",
       "md5Iwd": "068bfa5a8ca7fac42288dad7f73e4355 mp_stream.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5013,7 +5013,7 @@
       "md5Map": "6116ee024098a39d371702df69074d08 mp_summit.ff",
       "md5Load": "bf1466d62ccf9a7dd162d1476fd9f1a7 mp_summit_load.ff",
       "md5Iwd": "0555b1956f15c233bc850130434c2c1a mp_summit.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5047,7 +5047,7 @@
       "md5Map": "f2423456138cf27a9735d34960b3a568 mp_surv_7thstation.ff",
       "md5Load": "bd7ab91c4b6d315bccbbd5279d2a592e mp_surv_7thstation_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5149,7 +5149,7 @@
       "md5Map": "ec7167f804c729b02a8ae8cfc333d854 mp_surv_[bok]hq.ff",
       "md5Load": "50b431216b80401b15e855eb3015ccae mp_surv_[bok]hq_load.ff",
       "md5Iwd": "149c79bd87fb83a960bc1caf20afaf06 mp_surv_[bok]hq.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5183,7 +5183,7 @@
       "md5Map": "64dff4ea54b470080bbae4c3934d9577 mp_surv_aftermath.ff",
       "md5Load": "e9ea79b72362cd9ffb557d96aba41d70 mp_surv_aftermath_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5353,7 +5353,7 @@
       "md5Map": "ed3336493f9f0a1ff143b73631fc9bfb mp_surv_bakaara_d.ff",
       "md5Load": "1aa90aaf8dfb48766a072a9d8d7b78df mp_surv_bakaara_d_load.ff",
       "md5Iwd": "52634c03f14948a6f39efd2c408560cb mp_surv_bakaara_d.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5387,7 +5387,7 @@
       "md5Map": "2751f1caa1ccd00d77dbd2ff1620a73f mp_surv_bakaara_n.ff",
       "md5Load": "658c68588272670e9417a95cb23a21c9 mp_surv_bakaara_n_load.ff",
       "md5Iwd": "9e43c32131c4fd20f2abf79da62cd607 mp_surv_bakaara_n.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5557,7 +5557,7 @@
       "md5Map": "eaa6c63206cf2dec78d8e9abf823eb0b mp_surv_bjwifi_port.ff",
       "md5Load": "ae0c787540f50adcc5abd92edf60fd0c mp_surv_bjwifi_port_load.ff",
       "md5Iwd": "b7a8af2bdf8b4db8262939ab07177d02 mp_surv_bjwifi_port.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5659,7 +5659,7 @@
       "md5Map": "a620affe42230f1517f77fa4c9b1ebd2 mp_surv_boss_road.ff",
       "md5Load": "62fa5bab78065b2c7f583883b249a798 mp_surv_boss_road_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5693,7 +5693,7 @@
       "md5Map": "5c2ec2c0103168a2f619298664ccb563 mp_surv_bridge.ff",
       "md5Load": "ba7d6382a40762bf8e35a5314e040bce mp_surv_bridge_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -5863,7 +5863,7 @@
       "md5Map": "faa64a4b389103e6ddea190872570913 mp_surv_city.ff",
       "md5Load": "5730c7699bc580dfa935088c780c138b mp_surv_city_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6033,7 +6033,7 @@
       "md5Map": null,
       "md5Load": "17dc7c379030089aedf5641dac62d9ec mp_surv_deadly_base_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6067,7 +6067,7 @@
       "md5Map": "4112a5a3f74587550b66b531efa5c106 mp_surv_diabolic.ff",
       "md5Load": "7e2b5df7255c08656c2a752828fb7797 mp_surv_diabolic_load.ff",
       "md5Iwd": "9d84a97225f4589334028316168a17bb mp_surv_diabolic.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6100,22 +6100,22 @@
       "blacklisted": false,
       "md5Map": "d25558ae64886c8c664aa427cee3e86e mp_surv_dust2.ff",
       "md5Load": "679ab052b11449b7d99cddad3977b8ec mp_surv_dust2_load.ff",
-      "md5Iwd": null,
+      "md5Iwd": "",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "3f52740",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": true,
-        "timestamp": "2026-04-12 10:50:03 CDT (UTC-5)",
+        "timestamp": "2026-04-16 03:09:15 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 182,
         "waypointType": "internal",
         "weaponShopCount": 2,
         "equipmentShopCount": 1,
         "compileErrors": 0,
-        "runtimeErrors": 2,
+        "runtimeErrors": 0,
         "overallSuccess": true
       },
       "notes": "Runtime errors.  Barricade issue. undefined is not a field object: (file 'maps/mp/_umi.gsc', line 1790)\nent.parts[j].startPosition = ent.parts[j].origin;"
@@ -6164,27 +6164,27 @@
       "authorContact": "",
       "authorWebsite": "",
       "rating": 4,
-      "works": "Yes",
-      "blacklisted": false,
+      "works": "No",
+      "blacklisted": true,
       "md5Map": "2dd774d98bee0c15710ae3271fa19014 mp_surv_ffc_parkorman.ff",
       "md5Load": "d8e09089478c162fb6bc5479dec9f127 mp_surv_ffc_parkorman_load.ff",
       "md5Iwd": "4e0319e835a7d214b87e19a812f7c00a mp_surv_ffc_parkorman.iwd",
-      "overallSuccess": true,
+      "overallSuccess": false,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "3f52740",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
-        "didStartMap": true,
-        "didSpawnHuman": true,
-        "didSpawnZombie": true,
-        "timestamp": "2026-04-12 10:54:09 CDT (UTC-5)",
-        "waypointsValid": "Valid",
-        "waypointCount": 135,
-        "waypointType": "internal",
-        "weaponShopCount": 3,
-        "equipmentShopCount": 3,
-        "compileErrors": 0,
-        "runtimeErrors": 587,
-        "overallSuccess": true
+        "didStartMap": false,
+        "didSpawnHuman": false,
+        "didSpawnZombie": false,
+        "timestamp": "2026-04-17 21:54:14 CDT (UTC-5)",
+        "waypointsValid": "",
+        "waypointCount": 0,
+        "waypointType": "",
+        "weaponShopCount": 0,
+        "equipmentShopCount": 0,
+        "compileErrors": 1,
+        "runtimeErrors": 0,
+        "overallSuccess": false
       },
       "notes": "Runtime errors.  Barricade issue. undefined is not a field object: (file 'maps/mp/_umi.gsc', line 1790)\nent.parts[j].startPosition = ent.parts[j].origin;"
     },
@@ -6203,7 +6203,7 @@
       "md5Map": "c29a6d20e6fb4aa4274575bac13956b5 mp_surv_fnrp.ff",
       "md5Load": "3b45c39beeef435243782006d01b214b mp_surv_fnrp_load.ff",
       "md5Iwd": "f34eb92d418614ebc6691fd03ff56224 mp_surv_fnrp.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6237,7 +6237,7 @@
       "md5Map": "d0e180474be94f21ab76eb388953162b mp_surv_fnrp_day.ff",
       "md5Load": "55532e9fcbaf910cc582227168d5fb4c mp_surv_fnrp_day_load.ff",
       "md5Iwd": "be96d5afb75f1e9336116f7d6168655d mp_surv_fnrp_day.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6305,7 +6305,7 @@
       "md5Map": "4c75ddf5caed3cce897c653c1e4c0754 mp_surv_fregata.ff",
       "md5Load": "8e9ddf9f8503a1f4f518559f1fc050ed mp_surv_fregata_load.ff",
       "md5Iwd": "3fc265fbe293b19e113c58e866c81d2f mp_surv_fregata.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6441,7 +6441,7 @@
       "md5Map": null,
       "md5Load": null,
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6611,7 +6611,7 @@
       "md5Map": null,
       "md5Load": "5f7798f773f293dd798b7c9941943d70 mp_surv_hive_a_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6645,7 +6645,7 @@
       "md5Map": null,
       "md5Load": "f868400efd4b0638c34c0ef6b9b76c52 mp_surv_hive_b_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6747,7 +6747,7 @@
       "md5Map": "3888904fe984d7711bd3b50c4645a9a2 mp_surv_jakram.ff",
       "md5Load": "78146004f7a9522852eb5d1489358aa7 mp_surv_jakram_load.ff",
       "md5Iwd": "123add18bc3ee6720e9554ab1bf923c9 mp_surv_jakram.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6781,7 +6781,7 @@
       "md5Map": null,
       "md5Load": "8af6e237579e7e0e20b1367ef7157245 mp_surv_kfc_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6815,7 +6815,7 @@
       "md5Map": "15de9e25a4151fd6da13f8b3eaca6c3f mp_surv_killingfield.ff",
       "md5Load": "076f6dcfc2a853bb8773de2158f65ba7 mp_surv_killingfield_load.ff",
       "md5Iwd": "ff837f2b77b3a9b3896012d69c1a3416 mp_surv_killingfield.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -6917,7 +6917,7 @@
       "md5Map": "58f1190f2ff556a9b35b4b3e53c29c2e mp_surv_laboratory.ff",
       "md5Load": "18d080fb2c8e0269d04b8f01c9d26131 mp_surv_laboratory_load.ff",
       "md5Iwd": "27c7bb8a2608a8b09e41cd5fb5f144a6 mp_surv_laboratory.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7155,7 +7155,7 @@
       "md5Map": "918e1d2d55c7f4aa152d052817b519e8 mp_surv_matmata.ff",
       "md5Load": "cf7b034eb2d23e32145d39d646239b58 mp_surv_matmata_load.ff",
       "md5Iwd": "5d40f0c9797510a23a85cacdf3faf002 mp_surv_matmata.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7189,7 +7189,7 @@
       "md5Map": null,
       "md5Load": "5f5888ce0238a3d0cac7a80d86f91526 mp_surv_modern_dust2_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7223,7 +7223,7 @@
       "md5Map": "8975f61fcbf97a2be7be365c510c8be0 mp_surv_moon.ff",
       "md5Load": "3ef4b7d644cd1bb6ee14b27493f6933a mp_surv_moon_load.ff",
       "md5Iwd": "78135b94771bee44d98ec289a636bcaa mp_surv_moon.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7257,7 +7257,7 @@
       "md5Map": "23ebe55d266726f49508c0377ad0d710 mp_surv_moon_mb.ff",
       "md5Load": "44c852369b0a98ced754ffacda60e8ba mp_surv_moon_mb_load.ff",
       "md5Iwd": "bd9b6ac96af7a9fedeec0282852ee4e2 mp_surv_moon_mb.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7427,7 +7427,7 @@
       "md5Map": "141863057dd1157b119ad402bf4c1647 mp_surv_oasis.ff",
       "md5Load": "00293e370f24e07123889d30a695429e mp_surv_oasis_load.ff",
       "md5Iwd": "f9ac6ea4a0525f3b2504dc8e50f3e8aa mp_surv_oasis.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7563,7 +7563,7 @@
       "md5Map": "7e048f089e9c5c831194ca2365ea5d26 mp_surv_overrun.ff",
       "md5Load": "241a982278a358ccae7ed9551da23141 mp_surv_overrun_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7699,7 +7699,7 @@
       "md5Map": "2c2c19df2c8002ad04a62ccb34de9407 mp_surv_plaza.ff",
       "md5Load": "80430839410a8fc8e9e1a3de7ef0ef4d mp_surv_plaza_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7733,7 +7733,7 @@
       "md5Map": "36776e486cd3531c116137f929d4e184 mp_surv_ponyri_factory.ff",
       "md5Load": "7f2bab5879fbac2e62e36b696a702198 mp_surv_ponyri_factory_load.ff",
       "md5Iwd": "02f858254ec5cd04f6ce846bb68e3d1a mp_surv_ponyri_factory.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7801,7 +7801,7 @@
       "md5Map": "3c59082ae83783642e08833d116c4c8e mp_surv_river.ff",
       "md5Load": "fbf59da55b798954a4c446d8d8c217f5 mp_surv_river_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -7904,7 +7904,7 @@
       "md5Load": "341f919705860e93865000ee1e3a84e4 mp_surv_seatown_load.ff",
       "md5Iwd": "16b4fcf70b2305f4e9eb17bdcf3347b8 mp_surv_seatown.iwd",
       "notes": "Crashes",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8005,7 +8005,7 @@
       "md5Map": "4e01b5dd837117ab090a9dcab3305836 mp_surv_sir2.ff",
       "md5Load": "89269fcf9723b3f9b64141e31d7dfa52 mp_surv_sir2_load.ff",
       "md5Iwd": "394e0a8ba7bddbdeef4c0b38e4e69da9 mp_surv_sir2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8039,7 +8039,7 @@
       "md5Map": "3a9ca0b29723bb583efd46285bd9766e mp_surv_site.ff",
       "md5Load": "6c82807bad41a4af8605f3dcac812fcf mp_surv_site_load.ff",
       "md5Iwd": "74c3e8aa0137c6049242822e76448f59 mp_surv_site.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8277,7 +8277,7 @@
       "md5Map": "bd22c781497a825d278c8ce3ae5128af mp_surv_ssc_1999.ff",
       "md5Load": "16fb1f20f6fbc03d635139157c6b3bcf mp_surv_ssc_1999_load.ff",
       "md5Iwd": "88f960461f76e2d586606687d108011d mp_surv_ssc_1999.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8413,7 +8413,7 @@
       "md5Map": "7d808cd9a362ef1857d1e8694c01b34e mp_surv_swamp.ff",
       "md5Load": "464fcdb3b862131b44623e22dd9c239b mp_surv_swamp_load.ff",
       "md5Iwd": null,
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8481,7 +8481,7 @@
       "md5Map": "391e1dc6c3a3aaad68f1e314b6dbc833 mp_surv_toujane.ff",
       "md5Load": "8cb6e93ec3fdb3a242d48295eb7136a3 mp_surv_toujane_load.ff",
       "md5Iwd": "39efdbafbb4de740190e8a29a00e5e56 mp_surv_toujane.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8514,23 +8514,23 @@
       "blacklisted": false,
       "md5Map": "0a811bf3b643dfe5f5b2591baee9afcb mp_surv_town.ff",
       "md5Load": "e5fb718e283bf57ab6ae5ee83df1221c mp_surv_town_load.ff",
-      "md5Iwd": null,
+      "md5Iwd": "",
       "notes": "Runtime errors.  Barricade issue. undefined is not a field object: (file 'maps/mp/_umi.gsc', line 1790)\nent.parts[j].startPosition = ent.parts[j].origin;.  old note: buggy, maybe many script errors, and it sucks, so do not use",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "63181be",
+        "gitRevision": "3f52740",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": true,
-        "timestamp": "2026-04-12 12:48:11 CDT (UTC-5)",
+        "timestamp": "2026-04-16 03:10:39 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 144,
         "waypointType": "internal",
         "weaponShopCount": 4,
         "equipmentShopCount": 4,
         "compileErrors": 0,
-        "runtimeErrors": 3,
+        "runtimeErrors": 0,
         "overallSuccess": true
       }
     },
@@ -8652,7 +8652,7 @@
       "md5Load": "f322a4ea2241b28ae751bc00e347fd84 mp_surv_trikxmas_load.ff",
       "md5Iwd": "9cfe9e3b36313c443f37a8b2a0bc7622 mp_surv_trikxmas.iwd",
       "notes": "Crashes. Has 'Unexpected Text' error in map's effect file.  Looks like they put comments where comments aren't allowed. See console_mp.log",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8753,7 +8753,7 @@
       "md5Map": "c10fd281f32ff09b7e248648ddacf280 mp_surv_vacant.ff",
       "md5Load": "738a1ef0cfe512565614a14d6983d7eb mp_surv_vacant_load.ff",
       "md5Iwd": "cecf5d5f4592fd48423b9d92359024e4 mp_surv_vacant.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8787,7 +8787,7 @@
       "md5Map": "4140231a53d8a3344b0c567be902aee8 mp_surv_vault.ff",
       "md5Load": "01f06f13f2162fde14ebb10db0b36708 mp_surv_vault_load.ff",
       "md5Iwd": "161d07b2c85528a502d8aa74b007ca6c mp_surv_vault.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8855,7 +8855,7 @@
       "md5Map": "e1e7d265546ede55e0ec4551489442ca mp_surv_villa2r2.ff",
       "md5Load": "2befbbf160be8600abbcac02f9d3d756 mp_surv_villa2r2_load.ff",
       "md5Iwd": "6b9e53c314dfbed42e9851554e18639b mp_surv_villa2r2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -8923,7 +8923,7 @@
       "md5Map": "0506f4911123b05d35edbb510ee2625c mp_surv_villar2.ff",
       "md5Load": "f389fa94eafbbddd41ec40de818b3e0b mp_surv_villar2_load.ff",
       "md5Iwd": "197c41fab4869ded4ebd073525bfac68 mp_surv_villar2.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -9059,7 +9059,7 @@
       "md5Map": "46107f1278938f5e443aa9569d506c7a mp_surv_winter_bo.ff",
       "md5Load": "cb4196f2da82c1e880646af11ecd46f3 mp_surv_winter_bo_load.ff",
       "md5Iwd": "a865aa1bcd17dfce38a60d594df40ac3 mp_surv_winter_bo.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -9161,7 +9161,7 @@
       "md5Map": "fcc8e5b2d0092f3407cf0ba199c9601c mp_toujane_beta.ff",
       "md5Load": "0b5aee98ae8768c412b2deca983eb8f2 mp_toujane_beta_load.ff",
       "md5Iwd": "0d50bc4f3ca26deb830f7fb2c919373c mp_toujane_beta.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "25fe623",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
@@ -9195,7 +9195,7 @@
       "md5Map": "8b8320a47f6480fce08bcdee575735f4 mp_vukovar.ff",
       "md5Load": "82405c91adb22cda3456cc3eab3ba9de mp_vukovar_load.ff",
       "md5Iwd": "b3710dbd24397f71a08e4a2afa066f4e mp_vukovar.iwd",
-      "overallSuccess": false,
+      "overallSuccess": true,
       "tests": {
         "gitRevision": "63181be",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
