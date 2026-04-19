@@ -45,7 +45,7 @@ init()
     level.autoMapTesting = (getDvarInt("rotu_auto_map_test") == 1);
     level.autoMapTestDone = false;
     if (level.autoMapTesting) {
-        log("server", "In auto map testing mode");
+        log("server", "msg|In auto map testing mode||");
     }
 
     if (!isDefined(game["allies"])) {game["allies"] = "marines";}
@@ -61,7 +61,7 @@ init()
     currentMap = getdvar("mapname");
     level.currentMap = currentMap;
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
-    log("server", "Starting map " + currentMapName + " (" + currentMap + ").");
+    log("server", "msg|Starting map " + currentMapName + " (" + currentMap + ").||");
     logMapStartHeader();
 
     thread scripts\server\_settings::init();
@@ -95,7 +95,7 @@ init()
 
     wait 0.5;
  
-    log("server", "Server is running and waiting for players to connect.");
+    log("server", "msg|Server is running and waiting for players to connect.||");
     runTestCode();
 }
 

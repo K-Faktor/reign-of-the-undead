@@ -929,8 +929,8 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)
 
     shops = strTok(equipmentShops, " ");
     if (level.autoMapTesting) {
-        fmt = "|Tested equipment shop presence.|, |equipmentShopCount|: $1";
-        log("automaptest", sprintfJson(fmt, shops.size));
+        fmt = "msg|Tested equipment shop presence.||equipmentShopCount|$1:||";
+        log("automaptest", sprintfLog(fmt, shops.size));
     }
     if (!isDefined(level.tradespawns[int(shops[0])])) {
         errorPrint("Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().");
@@ -993,8 +993,8 @@ buildShopsByTargetname(targetname)
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
-        fmt = "|Tested equipment shop presence.|, |equipmentShopCount|: $1";
-        log("automaptest", sprintfJson(fmt, ents.size));
+        fmt = "msg|Tested equipment shop presence.||equipmentShopCount|$1:n||";
+        log("automaptest", sprintfLog(fmt, ents.size));
     }
     if (ents.size == 0) {
         errorPrint("Map: No equipment shops (entities matching targetname: " + targetname + ") found.");
@@ -1025,8 +1025,8 @@ buildWeaponShopsByTargetname(targetname, loadTime)
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
-        fmt = "|Tested weapon shop presence.|, |weaponShopCount|: $1";
-        log("automaptest", sprintfJson(fmt, ents.size));
+        fmt = "msg|Tested weapon shop presence.||weaponShopCount|$1:n||";
+        log("automaptest", sprintfLog(fmt, ents.size));
     }
     if (ents.size == 0) {
         errorPrint("Map: No weapon shops (entities matching targetname: " + targetname + ") found.");
@@ -1072,8 +1072,8 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
 
     weapons = strTok(weaponShops, " ");
     if (level.autoMapTesting) {
-        fmt = "|Tested weapon shop presence.|, |weaponShopCount|: $1";
-        log("automaptest", sprintfJson(fmt, weapons.size));
+        fmt = "msg|Tested weapon shop presence.||weaponShopCount|$1n||";
+        log("automaptest", sprintfLog(fmt, weapons.size));
     }
 
     if (!isDefined(level.tradespawns[int(weapons[0])])) {
@@ -1129,22 +1129,22 @@ loadWaypoints()
         waypointType = "external";
         log("server", "External waypoints loaded: true");
     } else {
-        log("server", "No external waypoints found, attempting to load internal waypoints.");
+        log("server", "msg|No external waypoints found, attempting to load internal waypoints.||");
     }
     if (!waypointsLoaded) {
         // load internal waypoints
         waypointsLoaded = loadInternalWaypoints();
         if (waypointsLoaded) {
-            log("server", "Internal waypoints loaded: true");
+            log("server", "msg|Internal waypoints loaded: true||");
             waypointType = "internal";
         } else {
-            log("warn", "No internal waypoints found.");
+            log("warn", "msg|No internal waypoints found.||");
         }
     }
 
     if (level.autoMapTesting) {
-        fmt = "|Waypoints loaded.|, |waypointType|: |$1|";
-        log("automaptest", sprintfJson(fmt, waypointType));
+        fmt = "msg|Waypoints loaded.||waypointType|$1||";
+        log("automaptest", sprintfLog(fmt, waypointType));
     }    
 
     if (waypointsLoaded) {
@@ -1378,13 +1378,13 @@ validateWaypoints()
             validStr = "Valid, after fixes";
         }
     } else {
-        log("server", "Waypoints PASSED critical validation tests!");
+        log("server", "msg|Waypoints PASSED critical validation tests!||");
         validStr = "Valid";
     }
 
     if (level.autoMapTesting) {
-        fmt = "|Waypoints are valid.|, |waypointsValid|: |$1|, |waypointCount|: $2";
-        log("automaptest", sprintfJson(fmt, validStr, level.Wp.size));
+        fmt = "msg|Waypoints are valid.||waypointsValid|$1||waypointCount|$2:n";
+        log("automaptest", sprintfLog(fmt, validStr, level.Wp.size));
     }    
     waypointQuality();
 }
@@ -1781,13 +1781,10 @@ buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dro
 
     if (!isdefined(dropAll)) {dropAll = false;}
 
-    //  ensure we are escaping \n and \t
-    // CoD4 doesn't let you pass undefined parameters
-    fmt = "{|timestamp|: $1, |debug|: |critical|, |map|: |$2|, |fn|: |$3|, |targetname|: |$4|, |partCount|: $5, |health|: $6, |deathFx|: $7, |buildFx|: $8, |dropAll|: $9:b}";
-    temp = sprintfJson(fmt, getRealUnixTime(), level.currentMap, "_umi::buildBarricadesByTargetname", targetname, partCount, health, deathFx, buildFx, dropAll);
+    fmt = "msg|Barricade bug. Mapmaker's assertions||epoch|$1:n||map|$2||fn|$3||targetname|$4||partCount|$5:n||health|$6:n||deathFx|$7:n||buildFx|$8:n||dropAll|$9:b||";
+    temp = sprintfLog(fmt, getRealUnixTime(), level.currentMap, "_umi::buildBarricadesByTargetname", targetname, partCount, health, deathFx, buildFx, dropAll);
     log("criticalbug", temp);
 
-    if (!isdefined(dropAll)) {dropAll = false;}
 
     // Need to log all of these function calls, w/params & mapname to a permanent
     // log to sort out the barricade issues.

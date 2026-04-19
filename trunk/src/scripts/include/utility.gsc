@@ -51,7 +51,12 @@ plantFlag(origin)
 }
 
 
-// Call this once at the start of every map / new game
+/**
+ * @brief Logs information about the mao being loaded
+ *        Call once at map start.
+ *
+ * @returns nothing
+ */
 logMapStartHeader()
 {
     initRealTime();
@@ -60,46 +65,14 @@ logMapStartHeader()
     currentMapName = scripts\server\_mapvoting22::mapTextName(currentMap);
     if (currentMapName == currentMap) {currentMapName = "";}
     if (level.autoMapTesting) {
-        fmt = "|Map Started|, |mapName|: |$1|, |mapEnglishName|: |$2|, |timestamp|: |$3|";
-        log("automaptest", sprintfJson(fmt, currentMap, currentMapName, getRealDateTimeString()));
+        fmt = "msg|Map Started||mapName|$1||mapEnglishName|$2||timestamp|$3||";
+        log("automaptest", sprintfLog(fmt, currentMap, currentMapName, getRealDateTimeString()));
     }
 
     log("pre", "============================================================\n");
     log("pre", "Map Started: " + getRealDateTimeString() + "\n");
     log("pre", "Map: " + currentMap + "\n");
     log("pre", "============================================================\n");
-}
-
-
-/**
- * @deprecated Forwards to log() until I do a global replace
- * @brief Writes debug messages to logfile specified in g_log dvar
- *
- * @param message string The message to write
- * @param type string The type of debug message ["fn"|"val"]
- * @param verbosity integer The verbosity level [0-3].  0 is low verbosity, 3 is high verbosity
- *
- * @returns nothing
- */
-debugPrint(message, type, verbosity)
-{
-    // Function entry messages
-    if ((level.printFunctionEntryMessages) &&
-        (type == "fn") &&
-        (verbosity <= level.debugVerbosity))
-    {
-        log("trace", message, false);
-    }
-
-    // Variable value messages
-    else if ((level.printValueMessages) && (type == "val")) {
-        log("value", message, false);
-    }
-
-    // Signals notified or received
-    else if ((level.printSignalMessages) && (type == "sig")) {
-        log("signal", message, false);
-    }
 }
 
 
@@ -135,7 +108,7 @@ initLogging()
         level.hidePre = false;
     }
     
-    log("server", "Running debug version of rotu_svr_scripts.iwd.");
+    log("server", "msg|Running debug version of rotu_svr_scripts.iwd.||");
     suppressed = [];
     if (level.hideTrace) {suppressed[suppressed.size] = "trace";}
     if (level.hideDebug) {suppressed[suppressed.size] = "debug";}
@@ -144,10 +117,96 @@ initLogging()
     if (level.hidePre) {suppressed[suppressed.size] = "pre";}
 
     if (suppressed.size == 0) {
-        log("server", "Suppressing no log messsage types. 'bout to get really loud in here. You'd typically want to suppress at least 'trace' and 'signal'.");
+        log("server", "msg|Suppressing no log messsage types. 'bout to get really loud in here. You'd typically want to suppress at least 'trace' and 'signal'.||");
     } else {
-        log("server", "Suppressing messsage types: " + join(suppressed, ", "));
+        log("server", "msg|Suppressing messsage types: " + join(suppressed, ", ") + "||");
     }
+}
+
+
+/**
+ * @brief Converts internal pipe-encoded JSON into valid a JSON object of key:value pairs
+ *
+ * @param encodedJson string The string with parameter tokens.
+ *                           Use single pipe | as a separator between key and value.
+ *                           Use double pipe || as a separator between key:value pairs.
+ *                           Append ':n" to a value to designate it as Numeric, and ':b" for boolean
+ *                        
+ *                           Ex.: "key1|value1:n||key2|value2:b||"
+ *
+ * @returns string A valid JSON object with the message ready to be printed to the g_log
+ */
+tokenizeMessage(encodedJson)
+{
+    // logPrint(encodedJson + "\n");
+    buf = "";
+    pairs = split(encodedJson, "||");  // strTok() is too greedy, and can only handle a single-char replcement str
+    if (!isDefined(pairs)) {logPrint("pairs is undefined. Bailing\n"); return;}
+    
+    // for (i=0; i<pairs.size; i++) {
+    //     logPrint("pair: " + pairs[i] + "\n");
+    // }
+
+    for (i=0; i<pairs.size; i++) {
+        pair = pairs[i];
+        tokens = strTok(pair, "|");
+        if (!isDefined(tokens)) {logPrint("tokens is undefined. Bailing\n"); return;}
+        k = tokens[0];
+        if (!isDefined(k)) {logPrint("k is undefined. Bailing\n"); return;}
+        // logPrint("k: " + k + "\n");
+
+        v = tokens[1];
+        if (!isDefined(v)) {logPrint("v is undefined. Bailing\n"); return;}
+        // logPrint("v: " + v + "\n");
+
+        // All | as separators are removed now.
+        // Now we will add them back as quote placeholders.
+        k = "|" + k + "|";                          // all keys are strings that need quotes
+        if (endsWith(v, ":b")) {
+            // format as JSON bool, no quotes
+            v = getSubStr(v, 0, v.size - 2);
+            if (v == "0") {v = "false";}
+            else if (v == "1") {v = "true";}
+        } else if (endsWith(v, ":n")) {
+            // format as JSON numeric, no quotes
+            v = getSubStr(v, 0, v.size - 2);
+        } else {
+            // format as JSON string, w/quotes
+            v = "|" + v + "|";
+            v = replace(v, "\n", "\\n");
+            v = replace(v, "\t", "\\t");
+            v = replace(v, "\"", "\\\"");
+        }
+
+        // everything is properly quoted now, start building the JSON
+        if (i == pairs.size - 1) {
+            // last pair, no trailing comma or space
+            buf += k + ": " + v;
+        } else {
+            buf += k + ": " + v + ", ";
+        }
+    }
+
+    // nice alignment to the msg in server_mp.log
+    parts = split(buf, "|msg|");
+    if (!isDefined(parts[0])) {
+        logPrint("BUG: no |msg| in string to split() at, so can't rightPad()\n"); 
+    } else {
+        a = rightPad(parts[0], " ", 20); // 24
+        buf = a + "|msg|" + parts[1];
+    }
+    buf = "{" + buf + "}";
+
+    // now replace | with real quotes
+    buf = replace(buf, "|", "\"") + "\n";
+    return buf;
+}
+
+
+// Will be deperecated ASAP
+// convenience function to wrap existing *old* debug calls with the req'd JSON tokens
+wrap(msg){
+    return "msg|" + msg + "||";
 }
 
 
@@ -157,7 +216,7 @@ initLogging()
  * @param eventType string The type of message. Any of the values in the switch:
  *                           [value|warn|error|debug|server|criticalbug|...]
  *
- * @param message string The message to write
+ * @param message string The pipe-encoded JSON message to write
  * @param includeEpoch bool Include the Unix epoch, i.e. integer seconds?
  *
  * @returns nothing
@@ -179,44 +238,77 @@ log(eventType, message, includeEpoch)
 
     epoch = "";
     if (!isDefined(includeEpoch)) {includeEpoch = false;}
-    else if (includeEpoch) {epoch = " |epoch|: " + getRealUnixTime() + ",";} 
+    else if (includeEpoch) {
+        epoch = "epoch|" + getRealUnixTime() + "||";
+    } 
 
     temp = "";
-    switch (eventType) {
-    // server status, game state
+    switch (eventType) {    // server status, game state
+        // assert: first token of each snippet is a key, with no leading sep character
+        // assert: last token of each snippet is a value, and ends with ||
+        //         Example:   pre = "event|criticalbug||";
     case "server":                      
-        temp = "Notice: {|event|: |server|," + epoch + " " + "|msg|: |" + message + "|}";
+        pre = "event|server||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Notice: " + tokenizeMessage(temp);
         break;
     case "trace":
         if (level.hideTrace) {return;}
-        temp = "Debug:  {|event|: |trace|," + epoch + " " + "|msg|: |" + message + "|}";
+        pre = "event|trace||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Debug:  " + tokenizeMessage(temp);
         break;
     case "bug":
-        temp = "Error: {|event|: |bug|," + epoch + " " + "|msg|: |" + message + "|}";
+        pre = "event|bug||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Error: " + tokenizeMessage(temp);
         break;
     case "warn":
-        temp = "Warn:   {|event|: |warn|," + epoch + "   " + "|msg|: |" + message + "|}";
+        pre = "event|warn||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Warn:   " + tokenizeMessage(temp);
         break;
     case "error":
-        temp = "Error: {|event|: |error|," + epoch + " " + "|msg|: |" + message + "|}";
+        pre = "event|error||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Error: " + tokenizeMessage(temp);
         break;
     case "debug":
         if (level.hideDebug) {return;}
-        temp = "Debug:  {|event|: |debug|," + epoch + "  " + "|msg|: |" + message + "|}";
+        pre = "event|debug||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Debug:  " + tokenizeMessage(temp);
         break;
     case "criticalbug":
-        temp = "Debug:  {|event|: |criticalbug|," + epoch + " " + "|msg|: |" + message + "|}";
+        pre = "event|criticalbug||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Debug:  " + tokenizeMessage(temp);
         break;
     case "value":
         if (level.hideValue) {return;}
-        temp = "Debug:  {|event|: |value|," + epoch + "  " + "|msg|: |" + message + "|}";
+        pre = "event|value||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Debug:  " + tokenizeMessage(temp);
         break;
     case "signal":
-        if (level.hideSignal) {return;}
-        temp = "Debug:  {|event|: |signal|," + epoch + " " + "|msg|: |" + message + "|}";
+        pre = "event|signal||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Debug:  " + tokenizeMessage(temp);
         break;
     case "automaptest":
-        temp = "Test:   {|event|: |automaptest|," + epoch + " " + "|msg|: " + message + "}";
+        pre = "event|automaptest||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Test:   " + tokenizeMessage(temp);
         break;
     case "pre":
         if (level.hidePre) {return;}
@@ -225,17 +317,19 @@ log(eventType, message, includeEpoch)
     // just show the darn message!
     case "dev":
         if (level.developmentStatus == "dev") {
-            temp = "Dev: {|event|: |dev|," + epoch + " " + "|msg|: |" + message + "|}";
+            pre = "event|dev||";
+            if (includeEpoch) {pre += epoch;}
+            temp = pre + message;
+            temp = "Dev:   " + tokenizeMessage(temp);
             break;
         } else {return;}
     default:
         temp = "Warn:   Unsupported event type: " + eventType + "   for message: " + message;
     }
 
-    message = replace(temp, "|", "\"") + "\n";
-    logPrint(message);
-
+    logPrint(temp);
 }
+
 
 // Escape a string for JSON.  Unused currently, but we may need it later.
 // escapeString(s)
@@ -248,6 +342,39 @@ log(eventType, message, includeEpoch)
 //     return s;
 // }
 
+
+/**
+ * @deprecated Forwards to log() until I do a global replace
+ * @brief Writes debug messages to logfile specified in g_log dvar
+ *
+ * @param message string The message to write
+ * @param type string The type of debug message ["fn"|"val"]
+ * @param verbosity integer The verbosity level [0-3].  0 is low verbosity, 3 is high verbosity
+ *
+ * @returns nothing
+ */
+debugPrint(message, type, verbosity)
+{
+    // Function entry messages
+    if ((level.printFunctionEntryMessages) &&
+        (type == "fn") &&
+        (verbosity <= level.debugVerbosity))
+    {
+        log("trace", wrap(message), false);
+    }
+
+    // Variable value messages
+    else if ((level.printValueMessages) && (type == "val")) {
+        log("value", wrap(message), false);
+    }
+
+    // Signals notified or received
+    else if ((level.printSignalMessages) && (type == "sig")) {
+        log("signal", wrap(message), false);
+    }
+}
+
+
 /**
  * @deprecated
  * @brief Writes warning messages to logfile specified in g_log dvar
@@ -259,7 +386,7 @@ log(eventType, message, includeEpoch)
 warnPrint(message)
 {
     // @todo print deprecation notice to find any warnPrint's not ported, *after gloabl replace
-    log("warn", message, false);
+    log("warn", wrap(message), false);
 }
 
 
@@ -274,7 +401,7 @@ warnPrint(message)
 errorPrint(message)
 {
     // @todo print deprecation notice to find any noticePrint's not ported
-    log("error", message, false);
+    log("error", wrap(message), false);
 }
 
 
@@ -291,48 +418,29 @@ errorPrint(message)
 noticePrint(message)
 {
     // @todo print deprecation notice to find any noticePrint's not ported
-    log("server", message, false);
+    log("server", wrap(message), false);
 }
 
 
 /**
- * @brief Performs sprintf-like variable interpolation for JSON strings
+ * @brief Performs sprintf-like variable interpolation for JSON log strings
  *
- * N.B.: For when we need more control that log() gives us
+ * @param formatString string The string with parameter tokens.
+ *                            Use single pipe | as a separator between key and value.
+ *                            Use double pipe || as a separator between key:value pairs.
+ *                            Append ':n" to a value to designate it as Numeric, and ':b" for boolean
+ *                        
+ *                            Ex.: "key1|value1:n||key2|value2:b||"
  *
- * @param formatString string The string with parameter tokens. Use pipe `|` for double quotes `"`
  * @param p1-p19 string The parameters to interpolate
  *
  * @returns the interpolated JSON-formatted string
  */
-logJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19)
+sprintfLog(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19)
 {
-    debugPrint("in utility::logJson()", "fn", level.highVerbosity);
+    debugPrint("in utility::sprintfLog()", "fn", level.highVerbosity);
 
-    msg = sprintfJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19);
-    logPrint(msg + "\n");
-}
-
-
-/**
- * @brief Performs sprintf-like variable interpolation for JSON strings
- *
- * N.B.: For when we need more control that log() gives us
- *
- * @param formatString string The string with parameter tokens. Use pipe `|` for double quotes `"`
- * @param p1-p19 string The parameters to interpolate
- *
- * @returns the interpolated JSON-formatted string
- */
-sprintfJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19)
-{
-    debugPrint("in utility::sprintfJson()", "fn", level.highVerbosity);
-
-    defaultStr = "";
-    defaultNumeric = 0;
-    defaultBool = "false";
-    // parse parameters
-    count = 1;
+    // We are *just* doing interpolation here, no quoting, no default values
     p = [];
     p[0] = formatString;
     p[1] = p1;
@@ -355,47 +463,16 @@ sprintfJson(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13
     p[18] = p18;
     p[19] = p19;
 
-    // set any JSON default values
     interpolatedString = formatString; // Init
-    for (i=1; i<p.size; i++) {
-        if (!isDefined(p[i])) {
-            if (tokenMatchCount(formatString, "$" + i + ":b")) {
-                // found a bool that need a defaults value
-                p[i] = defaultBool;
-            } else if (tokenMatchCount(formatString, "$" + i + ":n")) {
-                // found a bool that need a defaults value
-                p[i] = defaultNumeric;
-            } else {
-                // found a str that need a defaults value
-                p[i] = defaultStr;
-            }
-        } else {
-            if (tokenMatchCount(formatString, "$" + i + ":b")) {
-                // found a bool that need a defaults value
-                if ((p[i] == 0) || (p[i] == "")) {
-                    p[i] = "false";
-                } else {
-                    p[i] = "true";
-                }
-            }
-        }
-
-    }
     // replace all two-digit tokens first, so $1 doesn't mistakenly match $10
     for (i=10; i<p.size; i++) {
-        interpolatedString = replace(interpolatedString, "$" + i + ":b", p[i]);
-        interpolatedString = replace(interpolatedString, "$" + i + ":n", p[i]);
         interpolatedString = replace(interpolatedString, "$" + i, p[i]);
     }
     // replace all single-digit tokens
     for (i=1; ((i<11) && (i<p.size)); i++) {
-        interpolatedString = replace(interpolatedString, "$" + i + ":b", p[i]);
-        interpolatedString = replace(interpolatedString, "$" + i + ":n", p[i]);
         interpolatedString = replace(interpolatedString, "$" + i, p[i]);
     }
-    // swap out pipes for double quotes
-    interpolatedString = replace(interpolatedString, "|", "\"");
-    return interpolatedString;
+    return interpolatedString;    
 }
 
 

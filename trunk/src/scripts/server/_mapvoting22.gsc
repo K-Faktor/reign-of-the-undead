@@ -351,8 +351,8 @@ mapRotation()
             }
         }
     }
-    log("server", index + " voting maps found.", false);
-    log("server", countMapNames() + " English master map names found in lookup table.", false);
+    log("server", "msg|" + index + " voting maps found.||", false);
+    log("server", "msg|" + countMapNames() + " English master map names found in lookup table.||", false);
 
     return maprotation;
 }

@@ -361,10 +361,10 @@ onPlayerConnect()
         // for (i=0; i<string.size; i++) {
         // if ((tokenMatchCount(self.name, "bot") > 0) && isNumeric(self.name[3])) {
         // if (!self.isBot) {
-        log("server", self.name + " has joined the game for the first time");
+        log("server", "msg|" + self.name + " has joined the game for the first time||");
         // }
     } else {
-        log("server", self.name + " has previously joined this game");
+        log("server", "msg|" + self.name + " has previously joined this game||");
         self.hasPreviouslyJoined = true;
     }
 
@@ -1437,14 +1437,14 @@ spawnPlayer(preserveState)
     self.isChangingClass = false;
     level.alivePlayers++;
     level.activePlayers++;
-    log("value", self.name + ": sessionstate: " + self.sessionstate);
-    log("value", self.name + ": sessionteam: " + self.sessionteam);
+    log("value", "msg|" + self.name + ": sessionstate: " + self.sessionstate + "||");
+    log("value", "msg|" + self.name + ": sessionteam: " + self.sessionteam + "||");
     self notify("spawned_player");
-    log("debug", "Spawned " + self.name);
+    log("debug", "msg|Spawned " + self.name + "||");
 
     if (level.autoMapTesting) {
-        fmt = "|A human player spawned.|, |humanPlayerSpawned|: true";
-        log("automaptest", sprintfJson(fmt, ""));
+        fmt = "msg|A human player spawned.||humanPlayerSpawned|true:b||";
+        log("automaptest", sprintfLog(fmt, ""));
     }
 }
 

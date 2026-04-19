@@ -61,7 +61,7 @@ bootstrapCritical()
         level.developerMode = (getDvarInt("developer") == 1);    // for Activision/IW
         level.developerScriptEnabled = (getDvarInt("developer_script") == 1);
 
-        log("server", "RotU " + level.version + " has bootstrapped.");
+        log("server", "msg|RotU " + level.version + " has bootstrapped.||");
         level.bootstrapped = 1;
     }     
 }
@@ -71,8 +71,8 @@ main(bScriptgened, bCSVgened, bsgenabled)
 {
     // log() isn't initialized until after bootstrap.
     bootstrapCritical();
-    log("trace", "in _load::main()");
-    log("debug", "in _load::main()");
+    log("trace", "msg|in _load::main()||");
+    log("debug", "msg|in _load::main()||");
 
     if ( !isdefined( level.script_gen_dump_reasons ) )
         level.script_gen_dump_reasons = [];

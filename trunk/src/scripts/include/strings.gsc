@@ -498,6 +498,34 @@ trim(string)
 
 
 /**
+ * @brief Returns true if haystack ends with search
+ *        Works safely even if search is longer than haystack
+ */
+endsWith(haystack, search)
+{
+    if (!isDefined(haystack) || !isDefined(search))
+        return false;
+
+    if (search.size == 0)
+        return true;                    // empty string is suffix of everything
+
+    if (haystack.size < search.size)
+        return false;
+
+    // Compare the ending part of haystack with search
+    start = haystack.size - search.size;
+
+    for (i = 0; i < search.size; i++)
+    {
+        if (haystack[start + i] != search[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+/**
  * @brief Removes leading and trailing spaces, and collapses internal spaces
  *
  * @param string string the string to collapse
@@ -816,8 +844,16 @@ rightPad(string, paddingCharacter, length)
 {
     debugPrint("in strings::rightPad()", "fn", level.lowVerbosity);
 
+    if (!isDefined(string)) {logPrint("param string is undefined\n"); return string;}
+    if (!isDefined(paddingCharacter)) {logPrint("param paddingCharacter is undefined\n"); return paddingCharacter;}
+    if (!isDefined(length)) {logPrint("param length is undefined\n"); return length;}
+
+    count = 0;
+    limit = 80;
     while (string.size < length) {
         string += paddingCharacter;
+        count++;
+        if (count > limit) {return string;}
     }
     return string;
 }
