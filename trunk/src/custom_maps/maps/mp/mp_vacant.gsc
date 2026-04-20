@@ -35,8 +35,7 @@
 
 main()
 {
-    /// Tag::BlacklistedMap exceeds limit of 1000 xmodels, crashes server
-    /// @bug exceeds limit of 1000 xmodels, crashes server
+   /// @bug exceeds limit of 1000 xmodels, crashes server
     maps\mp\mp_vacant_fx::main();
     maps\createart\mp_vacant_art::main();
     maps\mp\_load::main();

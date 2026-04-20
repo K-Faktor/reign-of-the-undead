@@ -557,7 +557,13 @@ barrelDeath()
     }
 }
 
-
+/**
+ * @brief Does damage to a destructible barricade or barrel
+ *
+ * @param damage integer The amount of damage to do
+ *
+ * @returns nothing
+ */
 doBarricadeDamage(damage)
 {
     debugPrint("in _barricades::doBarricadeDamage()", "fn", level.nonVerbose);
@@ -566,7 +572,9 @@ doBarricadeDamage(damage)
         self.hp -= damage;
         if (self.hp < 0) {self.hp = 0;}
 
-        newPart = self.partsSize -  int(((self.hp -1)  / self.maxhp) * self.partsSize + 1);
+        // N.B. newPart & workingPart are integer array indexes, so we damage by array index,
+        // not by destructible part's .targetname property, so 'part1' being at index 0 isn't a problem.
+        newPart = self.partsSize - int(((self.hp - 1)  / self.maxhp) * self.partsSize + 1);
 
         while (self.workingPart != newPart) {
             if (isdefined(self.deathFx)) {
@@ -620,11 +628,23 @@ restorePart()
 }
 
 
-
+/**
+ * @brief Lowers a 'destroyed' barricade part 128 units over 1 second
+ *
+ * @returns nothing
+ */
 removePart()
 {
     debugPrint("in _barricades::removePart()", "fn", level.lowVerbosity);
 
+    // moveto( <new_position>, <move_time>, <acceleration_time>, <deceleration_time> )
     self moveto(self.origin + (0, 0, -128), 1, .1, 0);
     wait 1;
+    // I understand the 'destroyed' animation over 1 second, but why are we not
+    // then further moving it? -128 might just drop it into the room below on
+    // multi-level maps. When we restore, we just snap it back to its (saved)
+    // original position, so it doesn't really matter if we keep it *very* far
+    // away: I'm thinking like y = -10000 units, perhaps limited by map extents?
+    self moveto(self.origin + (0, 0, -5000), 0, 0, 0);
+    wait 0.05;
 }

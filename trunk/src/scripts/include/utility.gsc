@@ -320,7 +320,7 @@ log(eventType, message, includeEpoch)
             pre = "event|dev||";
             if (includeEpoch) {pre += epoch;}
             temp = pre + message;
-            temp = "Dev:   " + tokenizeMessage(temp);
+            temp = "Dev:    " + tokenizeMessage(temp);
             break;
         } else {return;}
     default:
