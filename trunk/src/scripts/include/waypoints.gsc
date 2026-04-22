@@ -35,6 +35,7 @@
 #include scripts\include\data;
 #include scripts\include\utility;
 #include scripts\include\realtime;
+#include scripts\include\stack;
 
 /**
  * @brief Initializes waypoints
@@ -608,26 +609,6 @@ debugIsPathClear(from, to, ignoreEntity)
 }
 
 
-// sortCandidatesByDistance(staticIndex)
-// {
-//     // Simple bubble sort is fine — k is only 3
-//     arr = level.static[staticIndex];
-//     for (i = 0; i < arr.size - 1; i++) {
-//         for (j = 0; j < arr.size - i - 1; j++) {
-//             if (arr[j].distanceSquared > arr[j+1].distanceSquared) {
-//                 // swap
-//                 tempDist = arr[j].distanceSquared;
-//                 tempNode = arr[j].node;
-//                 arr[j].distanceSquared = arr[j+1].distanceSquared;
-//                 arr[j].node = arr[j+1].node;
-//                 arr[j+1].distanceSquared = tempDist;
-//                 arr[j+1].node = tempNode;
-//             }
-//         }
-//     }
-// }
-
-
 /**
  * @brief Performs a Nearest Neighbor search on the k-dimensional waypoint tree
  *
@@ -655,10 +636,6 @@ kdWaypointNearestNeighbors(root, origin, staticIndex, parent, depth)
 
     if (!isDefined(depth)) {depth = 0;}
 
-    // // === NEW: Sort the candidate list once so the k-th distance is tight from the start ===
-    // // This makes sure the hint (if present) immediately improves pruning
-    // sortCandidatesByDistance(staticIndex);   // we'll define this helper below
-
     k = level.static[staticIndex].size; // find k closest waypoints
     r = 3;                              // our waypoints are in R^3
     axis = depth % r;                   // cycle the axis each recursion
@@ -668,7 +645,6 @@ kdWaypointNearestNeighbors(root, origin, staticIndex, parent, depth)
     if (axis == 0) {dim = "x";}
     else if (axis == 1) {dim = "y";}
     else if (axis == 2) {dim = "z";}
-    id = root.id;
     originDim = origin[axis];
     nodeDim = level.Wp[root.id].origin[axis];
     dimDelta = nodeDim - originDim;
@@ -742,6 +718,157 @@ kdWaypointNearestNeighbors(root, origin, staticIndex, parent, depth)
     }
     return;
 }
+
+
+/**
+ * @brief Performs a Nearest Neighbor search on the k-dimensional waypoint tree
+ *
+ * ***Iterative***
+ *
+ * @param root node The node to begin the search at
+ * @param origin the point we want to find the closest waypoint to
+ * @param staticIndex integer the index in level.static that will hold the bestDistance
+ *
+ * This is an interative implementation of the same recursive function, just
+ * faster because it avoids the function packing & unpacking overhead used
+ * in recursion.
+ *
+ * The number of nearest neighbors found is determined by the size of the
+ * level.static[staticIndex] array
+ *
+ * @returns nothing
+ */
+kdWaypointNearestNeighborsIterative(root, origin, staticIndex)
+{
+    // 10th most-called function (2% of all function calls).
+    // Do *not* put a function entrance debugPrint statement here!
+
+    // Iterative version of kdWaypointNearestNeighbors (exact same logic, same node visit order,
+    // same pruning decisions, same k-best updates). Use this to compare performance / correctness
+    // against the recursive version.
+
+    if (!isDefined(root)) {
+        return;
+    }
+
+    k = level.static[staticIndex].size; // number of neighbors we are searching for
+    r = 3;                              // waypoints are in R^3
+
+    // Stack that simulates the recursion "call frames" for backtracking.
+    // Each frame holds the node we have already visited and the information needed
+    // to decide whether its "other" child needs to be explored later.
+    pathStack = scripts\include\stack::new();
+
+    current = root;
+    currentDepth = 0;
+
+    limit = 500;
+    count = 0;
+    while (true) {
+        if (count > limit) {return;} // safety
+        count++;
+        /**
+         * Go DOWN the preferred path (exactly like the first
+         * recursive call in the original function).
+         * We update the k-best list at every node we touch.
+         */
+        while (isDefined(current)) {
+            // Copy of the original "update best" block
+            distance = distanceSquared(level.Wp[current.id].origin, origin);
+            level.kdTreeNodeVisitCount++;
+
+            j = k - 1;
+            if (distance < level.static[staticIndex][j].distanceSquared) {
+                // we have a new closer distance, sort it into the array
+                // potential infinite loop at 55k calls/frame, cod4 kills thread
+                while ((j > 0) && (distance < level.static[staticIndex][j-1].distanceSquared)) {
+                    level.static[staticIndex][j].distanceSquared = level.static[staticIndex][j-1].distanceSquared;
+                    level.static[staticIndex][j].node = level.static[staticIndex][j-1].node;
+                    j--;
+                }
+                level.static[staticIndex][j].distanceSquared = distance;
+                level.static[staticIndex][j].node = current;
+                level.static[staticIndex][k] = undefined;
+            }
+
+            // Compute axis and dimDelta (same math as the recursive version)
+            axis = currentDepth % r;
+            originDim = origin[axis];
+            nodeDim = level.Wp[current.id].origin[axis];
+            dimDelta = nodeDim - originDim;
+
+            // Push a frame so we can backtrack later and decide about the "other" child
+            frame = spawnStruct();
+            frame.node = current;
+            frame.depth = currentDepth;
+            frame.dimDelta = dimDelta;
+            pathStack push(frame);
+
+            // Move to the preferred child (exactly as recursive version)
+            if (dimDelta > 0) {
+                current = current.leftChild;
+            } else {
+                current = current.rightChild;
+            }
+            currentDepth++;
+        }
+
+        /**
+         * Backtrack up the path and check the "other" branch
+         * for each node (exactly the unwind logic from the
+         * original recursive function).
+         */
+        while (pathStack size() > 0) {
+            // Pop the top frame (this is the node we are now considering for its other child)
+            frame = pathStack pop();
+
+            dimDelta = frame.dimDelta;
+            nodeForCheck = frame.node;
+
+            // Copy of the original dimDistance and checkOtherBranch logic from recirsive
+            if (dimDelta < 0) {
+                dimDistance = dimDelta * -1;
+            } else {
+                dimDistance = dimDelta;
+            }
+            dimDistance = dimDistance * dimDistance;    // squared
+
+            checkOtherBranch = false;
+            for (j = 0; j < level.static[staticIndex].size; j++) {
+                if (level.static[staticIndex][j].distanceSquared > dimDistance) {
+                    checkOtherBranch = true;
+                    break;
+                }
+            }
+
+            if (checkOtherBranch) {
+                otherChild = undefined;
+                // Hypersphere crosses the splitting plane, so recurse into other branch to search for
+                // a potentially closer node
+                if (dimDelta > 0) {
+                    otherChild = nodeForCheck.rightChild;
+                } else {
+                    otherChild = nodeForCheck.leftChild;
+                }
+
+                if (isDefined(otherChild)) {
+                    // Instead of recursing, we jump back to the "down" phase with this new subtree
+                    current = otherChild;
+                    currentDepth = frame.depth + 1;
+                    break;   // exit the backtrack loop and let the outer while restart the down phase
+                }
+            }
+            // hypersphere doesn't intersect hyperplane, so we can rule out this node's
+            // other branch as potentially containing a closer waypoint
+        }
+
+        // If stack is empty, we are done
+        if (pathStack size() == 0 && !isDefined(current)) {
+            break;
+        }
+    }
+}
+
 
 /**
  * @brief Prints the k-dimensional tree to the server log
@@ -882,24 +1009,17 @@ findWaypointExtents()
  * @returns array of integers representing the indices of the nearest waypoint(s)
  */
 nearestWaypoints(origin, n, hintWp) {
-    // KD Tree (Recursive) is always good, but on modern hardware, direct iteration is
-    // better on small waypoint maps.  They break even at about 500 waypoints.
-    // BFS is always a dog; it also suffers from the problem of not being able
-    // to guarantee an answer (if the bot is further away from \chintWp than \cdepth.)
+    // KD Tree (Iterative) is always good, but on modern hardware, direct iteration is
+    // better on small waypoint maps.  They break even at about 250 waypoints.
 
     // Use KD Tree on large maps, else direct iteration
     // TODO: only build the KD Tree at map load if we are going to use it
-    // TODO: see about an iterative implementation of KD Tree Nearest N Neighbors
-    //       search, as I suspect it would be more competitive with iteration
-    //       without all the function packing of recursion.
-    if (level.Wp.size > 500) {
+    if (level.Wp.size > 250) {
         level.useKdWaypointTree = true;
-        return nearestWaypointsKD(origin, n);
+        return nearestWaypointsKDIterative(origin, n);
     } else {
         return nearestWaypointsIteration(origin, n);
     }
-    // // A dog; kept only for completeness
-    // return nearestWaypointsBFS(origin, n, hintWp);
 }
 
 
@@ -933,6 +1053,53 @@ nearestWaypointsKD(origin, n)
     }
     count = level.kdTreeNodeVisitCount;
     kdWaypointNearestNeighbors(level.kdWpTree, origin, index);
+    nodesThisCall = level.kdTreeNodeVisitCount - count;
+
+    // prepare results
+    results = [];
+    for (i=0; i<n; i++) {
+        results[i] = level.static[index][i].node.id;
+    }
+
+    // recycle the static member
+    level.static[index] = 0;
+    level.staticStack[level.staticStack.size] = index;
+
+    return results;
+}
+
+
+/** @private Call nearestWaypoints() from code
+ * @brief Finds the nearest waypoint(s) to an arbitrary point
+ *
+ *        Uses the k-dimensional waypoint tree.
+ *
+ * @param origin vector representing the 3D point to find the nearest waypoint to
+ * @param n integer Return n nearest waypoints to the \c origin
+ *
+ * @returns array of integers representing the indices of the nearest waypoint(s)
+ */
+nearestWaypointsKDIterative(origin, n)
+{
+    // 10th most-called function (2% of all function calls).
+    // Do *not* put a function entrance debugPrint statement here!
+
+    if (!isDefined(n)) {n = 3;}
+
+    // get an available static member
+    index = availableStatic();
+    level.static[index] = [];
+
+    // original
+    for (i=0; i<n; i++) {
+        best = spawnStruct();
+        best.node = 0;
+        best.distanceSquared = (-1 * (n - i)) + level.MAX_INT;   // 2147483647, 32-bit ints
+        level.static[index][level.static[index].size] = best;
+    }
+    count = level.kdTreeNodeVisitCount;
+    // new (iterative):
+    kdWaypointNearestNeighborsIterative(level.kdWpTree, origin, index);
     nodesThisCall = level.kdTreeNodeVisitCount - count;
 
     // prepare results
@@ -1188,7 +1355,7 @@ nearestWaypointsTest(n, useMapExtents)
 
         // kd-tree method
         level.useKdWaypointTree = true;
-        kdWaypoints = nearestWaypoints(origin, k);
+        kdWaypoints = nearestWaypointsKDIterative(origin, k);
 
         right++;
         for (j=0; j<k; j++) {
@@ -1230,24 +1397,34 @@ nearestWaypointsTimedTest()
 {
     log("dev", "msg|Starting nearestWaypointsTimedTest||");
 
-    n = 8500;
+    n = 50000;
     // On map with 129 waypoints (mp_surv_gold_rush), in <50ms:
-    // KD Tree (Recursive): 30,000 worked, 32,500 didn't
-    // Iteration: 60,000 worked, 62,500 didn't
+    // KD Tree (Iterative): 42,500 worked, 45,000 didn't
+    // KD Tree (Recursive): 52,500 worked, 55,000 didn't
+    // Iteration: 62,500 worked, 65,000 didn't
     // BFS: 10,000 worked, 12,500 didn't
 
+    // On map with 286 waypoints (mp_bsf_backlot), in <50ms:
+    // KD Tree (Iterative): 30,000 worked, 32,500 didn't
+    // KD Tree (Recursive): 35,000 worked, 37,500 did once
+    // Iteration: 30,000 worked, 35,000 didn't
+    // BFS: 40,000 worked, 50,000 didn't
+
     // On map with 573 waypoints (mp_surv_isle), in <50ms:
+    // KD Tree (Iterative): 22,500 worked, 25,000 didn't
     // KD Tree (Recursive): 15,500 worked, 16,500 didn't
     // Iteration: 16,500 worked, 17,500 didn't
     // BFS: 6,000 worked, 7,500 didn't
 
     // On map with 1076 waypoints (mp_fart_house_v2), in <50ms:
+    // KD Tree (Iterative): 22,500 worked, 25,000 didn't
     // KD Tree (Recursive): 15,000 worked, 15,500 only worked once
     // Iteration: 8,500 worked, 9,500 didn't
     // BFS: 7,500 worked, 8,500 didn't
     useMapExtents = true;
-    testBFS = true;
+    testBFS = false;
     testKD = false;
+    testKD_Iteration = false;
     testIteration = false;
 
     start = getTime();  //ms
@@ -1273,6 +1450,11 @@ nearestWaypointsTimedTest()
             origin = origin * (1,1,0); // zero out y-axis
             level.useKdWaypointTree = true;
             kdWaypoints = nearestWaypointsKD(origin, k);
+        } else if (testKD_Iteration) {
+            origin = random3dPoint(useMapExtents);   // if true, generate points within 3D volume covered by waypoints
+            origin = origin * (1,1,0); // zero out y-axis
+            level.useKdWaypointTree = true;
+            kdWaypoints = nearestWaypointsKDIterative(origin, k);
         }
     }
     end = getTime(); //ms
@@ -1282,7 +1464,9 @@ nearestWaypointsTimedTest()
     } else if (testIteration) {
         log("dev", sprintfLog("msg|Timed Test: Iteration||count|$1:n||elapsed|$2:n", n, elapsed));
     } else if (testKD) {
-        log("dev", sprintfLog("msg|Timed Test: K-D Tree||count|$1:n||elapsed|$2:n", n, elapsed));
+        log("dev", sprintfLog("msg|Timed Test: K-D Tree (Recursive)||count|$1:n||elapsed|$2:n", n, elapsed));
+    } else if (testKD_Iteration) {
+        log("dev", sprintfLog("msg|Timed Test: K-D Tree (Iterative)||count|$1:n||elapsed|$2:n", n, elapsed));
     }
 }
 
@@ -1350,6 +1534,8 @@ randomWaypointPairIndices()
     return pair;
 }
 
+
+// @todo: test bidriectional A*
 /**
  * @brief Finds the best path between two waypoints
  *
@@ -1417,11 +1603,11 @@ AStarNew(startWp, goalWp, validateWaypoints)
             path = "";
             while (x.parent.wpIdx != -1) {
                 path = path + x.wpIdx + " ";
-                pathNodes[pathNodes.size] = x.wpIdx; // push the node onto the stack
+                pathNodes[pathNodes.size] = x.wpIdx; 
                 // process the next node
                 x = x.parent;
             }
-            if (pathNodes.size == 0) {
+            if (pathNodes.size == 0) { 
                 // Can't happen, unless perhaps a map-maker screws up the waypoints
                 // and creates unreachable nodes
                 errorPrint("AStarNew(" + startWp + ", " + goalWp + ") on map " + getdvar("mapname") + " failed to find a path.");
@@ -1590,11 +1776,11 @@ ListExists(list, n, listSize)
 
 /**
  * @brief Finds the best path between two waypoints
- * @deprecated This function is only used for comparing with better A* implemetations
+ * @deprecated
  *
- * This is the original A* algorithm from Bipo/Pezbots.  It is terribly inefficient
- * and a complete waste of resources, and as such, it should never be used.  For anything.
- * Ever. Except maybe to compare it to a better A* implementation.
+ * This was the original A* algorithm from Bipo/Pezbots.  It was terribly inefficient
+ * and a complete waste of resources, so it was deprecated, and now, removed. Now it
+ * forwards to AStarNew(), which is itself now on the chopping block.
  *
  * @param startWp integer The index of the waypoint to begin the path at
  * @param goalWp integer The index of the waypoint to where the path ends
@@ -1603,137 +1789,6 @@ ListExists(list, n, listSize)
  */
 AStarOriginal(startWp, goalWp)
 {
-    // 20th most-called function (0.4% of all function calls).
-    // Do *not* put a function entrance debugPrint statement here!
-
-    pQOpen = [];
-    pQSize = 0;
-    closedList = [];
-    listSize = 0;
-    s = spawnstruct();
-    s.g = 0; //start node
-    s.h = distance(level.Wp[startWp].origin, level.Wp[goalWp].origin);
-    s.f = s.g + s.h;
-    s.wpIdx = startWp;
-    s.parent = spawnstruct();
-    s.parent.wpIdx = -1;
-
-    //push s on Open
-    pQOpen[pQSize] = spawnstruct();
-    pQOpen[pQSize] = s; //push s on Open
-    pQSize++;
-
-    //while Open is not empty
-    while (!PQIsEmpty(pQOpen, pQSize))
-    {
-        //pop node n from Open  // n has the lowest f
-        n = pQOpen[0];
-        highestPriority = level.MAX_INT; // 2147483647, 32-bit ints
-        bestNode = -1;
-        for (i=0; i<pQSize; i++) {
-            if (pQOpen[i].f < highestPriority) {
-                bestNode = i;
-                highestPriority = pQOpen[i].f;
-            }
-        }
-
-        if (bestNode != -1) {
-            n = pQOpen[bestNode];
-            //remove node from queue
-            for (i=bestNode; i<pQSize-1; i++) {
-                pQOpen[i] = pQOpen[i+1];
-            }
-            pQSize--;
-        } else {
-            return -1;
-        }
-
-        //if n is a goal node; construct path, return success
-        if (n.wpIdx == goalWp) {
-            x = n;
-            for (z = 0; z < 1000; z++) {
-                parent = x.parent;
-                if(parent.parent.wpIdx == -1) {return x.wpIdx;}
-                //                 line(level.Wp[x.wpIdx].origin, level.Wp[parent.wpIdx].origin, (0,1,0));
-                x = parent;
-            }
-            return -1;
-        }
-
-        //for each successor nc of n
-        for (i=0; i<level.Wp[n.wpIdx].linkedCount; i++) {
-            //newg = n.g + cost(n,nc)
-            newg = n.g + distance(level.Wp[n.wpIdx].origin, level.Wp[level.Wp[n.wpIdx].linked[i].ID].origin);
-
-            //if nc is in Open or Closed, and nc.g <= newg then skip
-            if (PQExists(pQOpen, level.Wp[n.wpIdx].linked[i].ID, pQSize)) {
-                //find nc in open
-                nc = spawnstruct();
-                for(p = 0; p < pQSize; p++) {
-                    if (pQOpen[p].wpIdx == level.Wp[n.wpIdx].linked[i].ID) {
-                        nc = pQOpen[p];
-                        break;
-                    }
-                }
-                if (nc.g <= newg) {continue;}
-            } else {
-                if (ListExists(closedList, level.Wp[n.wpIdx].linked[i].ID, listSize)) {
-                    //find nc in closed list
-                    nc = spawnstruct();
-                    for (p=0; p<listSize; p++) {
-                        if (closedList[p].wpIdx == level.Wp[n.wpIdx].linked[i].ID) {
-                            nc = closedList[p];
-                            break;
-                        }
-                    }
-
-                    if(nc.g <= newg) {continue;}
-                }
-            }
-            //             nc.parent = n
-            //             nc.g = newg
-            //             nc.h = GoalDistEstimate( nc )
-            //             nc.f = nc.g + nc.h
-
-            nc = spawnstruct();
-            nc.parent = spawnstruct();
-            nc.parent = n;
-            nc.g = newg;
-            nc.h = distance(level.Wp[level.Wp[n.wpIdx].linked[i].ID].origin, level.Wp[goalWp].origin);
-            nc.f = nc.g + nc.h;
-            nc.wpIdx = level.Wp[n.wpIdx].linked[i].ID;
-
-            //if nc is in Closed,
-            if (ListExists(closedList, nc.wpIdx, listSize)) {
-                //remove it from Closed
-                deleted = false;
-                for (p=0; p<listSize; p++) {
-                    if(closedList[p].wpIdx == nc.wpIdx) {
-                        for(x = p; x < listSize-1; x++) {
-                            closedList[x] = closedList[x+1];
-                        }
-                        deleted = true;
-                        break;
-                    }
-                    if (deleted) {break;}
-                }
-                listSize--;
-            }
-
-            //if nc is not yet in Open,
-            if (!PQExists(pQOpen, nc.wpIdx, pQSize)) {
-                //push nc on Open
-                pQOpen[pQSize] = spawnstruct();
-                pQOpen[pQSize] = nc;
-                pQSize++;
-            }
-        }
-
-        //Done with children, push n onto Closed
-        if (!ListExists(closedList, n.wpIdx, listSize)) {
-            closedList[listSize] = spawnstruct();
-            closedList[listSize] = n;
-            listSize++;
-        }
-    }
+    pathStack = AStarNew(startWp, goalWp, false);
+    return pathStack pop();
 }
