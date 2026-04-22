@@ -530,6 +530,7 @@ wander(bot)
         if (!(bot.pathStack isEmpty())) {
             stackEmptyCount = 0;
             // Process ONE waypoint per iteration
+            bot.lastKnownWp = bot.myWaypoint;
             bot.nextWp = bot.pathStack pop();
 
             bot.pathType = pathType(bot.myWaypoint, bot.nextWp);
@@ -1828,7 +1829,7 @@ canSeeTarget(bot, target)
 normalPath(bot)
 {
     if (bot.isFollowingWaypoints) {
-        noticePrint("In normalPath(), .isFollowingWaypoints is true");
+        // noticePrint("In normalPath(), .isFollowingWaypoints is true");
         // since we are following waypoints, we assume no solid objects or obstructions
 
         // make animation frame such that frame distance is about 18 inches.
@@ -1847,13 +1848,13 @@ normalPath(bot)
         // position = level.Wp[bot.myWaypoint].origin;
         position = bot.origin;
         distance = distance(level.Wp[bot.myWaypoint].origin, level.Wp[bot.nextWp].origin);
-        noticePrint("frameDistance: " + frameDistance + " distance: " + distance);
+        // noticePrint("frameDistance: " + frameDistance + " distance: " + distance);
         count = 0;
         while (distance > frameDistance) {
             count++;
             distance = distance - frameDistance;
             position = position + (direction * frameDistance);
-            position = self findGround(position);
+            position = bot findGround(position);
             time = frameCount * 0.05;
             bot enqueueMovement(bot, position, time, facing);
         }
@@ -1912,13 +1913,17 @@ botPathfindWaypointsNew(bot) {
             bot bestTarget(bot);
         }
         bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
+        bot.lastKnownWp = bot.myWaypoint;   // prob. deprecated, as unhelpful to Kd Tree & Iteration
+
         bot.targetWp = nearestWaypoints(bot.targetedPlayer.origin, 1)[0];
+        // bots will cooperatively set lastKnownWp on their target player
+        bot.targetedPlayer.lastKnownWp = bot.targetWp;
         if (bot.myWaypoint == bot.targetWp) {
-            noticePrint("At target!"); // we should be melee'ing before we get here
+            log("dev", "msg|At target, should be melee or in pursuit by now||");
             return;
         } else {
             bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
-            bot.pathStack print("2045: bot " + bot.index + " initialization path");
+            bot.pathStack print("1927: bot " + bot.index + " initialization path");
             if (bot.pathStack isEmpty()) {
                 warnPrint("bot.pathStack is undefined, we couldn't find a path. Would be a BUG.");
                 debugPrint("Call was AStarNew(" + bot.myWaypoint + ", " + bot.targetWp + ")");
@@ -2327,8 +2332,8 @@ executeMovementQueue(bot)
 {
     bot endon("state_changed");    
 
-    debugPrint("in _bot::executeMovementQueue()", "fn", level.highVerbosity);
-    noticePrint("2533: in _bot::executeMovementQueue()");
+    log("trace", "msg|in _bot::executeMovementQueue()||");
+    // noticePrint("2533: in _bot::executeMovementQueue()");
 
     bot endon("disconnect");
     bot endon("death");
@@ -2341,7 +2346,7 @@ executeMovementQueue(bot)
 
     if (isdefined(bot.bestTarget)) {movingToName = bot.bestTarget.name;}
     else {movingToName = bot.closestTarget.name;}
-    noticePrint("2624: Target waypoint position for player: " + movingToName + " " + level.Wp[bot.targetWp].origin);
+    // noticePrint("2624: Target waypoint position for player: " + movingToName + " " + level.Wp[bot.targetWp].origin);
 
     // noticePrint("Moving!");
     // iPrintLnBold("Moving to target " + bot.targetedPlayer.name);
@@ -2370,7 +2375,7 @@ executeMovementQueue(bot)
         bot.mover moveTo(position, time, 0, 0); // internally-threaded
         bot.mover waittill("movedone");
         endStep = bot.mover.origin;
-        noticePrint("2563: Bot " + bot.index + " Step Pos (from, to): " + beginStep + " -> " + endStep);
+        // noticePrint("2563: Bot " + bot.index + " Step Pos (from, to): " + beginStep + " -> " + endStep);
         bot.movement.first++;
     }
     // we have executed all the queued movement orders, so reset the queue
@@ -2704,6 +2709,8 @@ killed(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psO
     wait 1;
     self.hasSpawned = false;
     level.botsAlive -= 1;
+    self.lastKnownWp = undefined;
+    self.targetslastKnownWp = undefined;
 
     makeBotAvailable(self);
 //     noticePrint("zombie killed, making bot available");

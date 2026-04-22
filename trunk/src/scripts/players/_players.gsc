@@ -37,6 +37,7 @@
 #include scripts\include\utility;
 #include scripts\include\strings;
 #include scripts\include\array;
+#include scripts\include\waypoints;
 
 init()
 {

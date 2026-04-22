@@ -200,6 +200,7 @@ instantiateBots(botCount)
                 attemptCount = 0;
             }
         } else {attemptCount = 0;}
+        if (i % 10 == 0) {wait 0.05;} // breathing room
     }
 
     if (failedCount != 0) {

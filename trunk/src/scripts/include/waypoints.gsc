@@ -34,6 +34,7 @@
 // WAYPOINTS AND PATHFINDING
 #include scripts\include\data;
 #include scripts\include\utility;
+#include scripts\include\realtime;
 
 /**
  * @brief Initializes waypoints
@@ -68,7 +69,7 @@ initializeWaypoints()
     if (!isDefined(level.savedAStarCalls)) {level.savedAStarCalls = 0;}
 
     // level thread printAStarData();
-    nearestWaypointsTest(100, true);
+    thread nearestWaypointsTest(100, true);
 }
 
 /**
@@ -606,6 +607,27 @@ debugIsPathClear(from, to, ignoreEntity)
     } // end while
 }
 
+
+// sortCandidatesByDistance(staticIndex)
+// {
+//     // Simple bubble sort is fine — k is only 3
+//     arr = level.static[staticIndex];
+//     for (i = 0; i < arr.size - 1; i++) {
+//         for (j = 0; j < arr.size - i - 1; j++) {
+//             if (arr[j].distanceSquared > arr[j+1].distanceSquared) {
+//                 // swap
+//                 tempDist = arr[j].distanceSquared;
+//                 tempNode = arr[j].node;
+//                 arr[j].distanceSquared = arr[j+1].distanceSquared;
+//                 arr[j].node = arr[j+1].node;
+//                 arr[j+1].distanceSquared = tempDist;
+//                 arr[j+1].node = tempNode;
+//             }
+//         }
+//     }
+// }
+
+
 /**
  * @brief Performs a Nearest Neighbor search on the k-dimensional waypoint tree
  *
@@ -633,6 +655,10 @@ kdWaypointNearestNeighbors(root, origin, staticIndex, parent, depth)
 
     if (!isDefined(depth)) {depth = 0;}
 
+    // // === NEW: Sort the candidate list once so the k-th distance is tight from the start ===
+    // // This makes sure the hint (if present) immediately improves pruning
+    // sortCandidatesByDistance(staticIndex);   // we'll define this helper below
+
     k = level.static[staticIndex].size; // find k closest waypoints
     r = 3;                              // our waypoints are in R^3
     axis = depth % r;                   // cycle the axis each recursion
@@ -647,6 +673,7 @@ kdWaypointNearestNeighbors(root, origin, staticIndex, parent, depth)
     nodeDim = level.Wp[root.id].origin[axis];
     dimDelta = nodeDim - originDim;
 
+    // original
     // distance from current node to the search point
     distance = distanceSquared(level.Wp[root.id].origin, origin);
     level.kdTreeNodeVisitCount++;
@@ -845,80 +872,295 @@ findWaypointExtents()
     }
 }
 
-/**
- * @brief Finds the nearest waypoint(s) to an arbitrary point
- *
- * Uses the k-dimensional waypoint tree when it exists, otherwise falls back to using brute-force
+
+/*
+ * @brief Gets the nearest N waypoint to a given position
  *
  * @param origin vector representing the 3D point to find the nearest waypoint to
  * @param n integer Return n nearest waypoints to the \c origin
  *
  * @returns array of integers representing the indices of the nearest waypoint(s)
  */
-nearestWaypoints(origin, n)
+nearestWaypoints(origin, n, hintWp) {
+    // KD Tree (Recursive) is always good, but on modern hardware, direct iteration is
+    // better on small waypoint maps.  They break even at about 500 waypoints.
+    // BFS is always a dog; it also suffers from the problem of not being able
+    // to guarantee an answer (if the bot is further away from \chintWp than \cdepth.)
+
+    // Use KD Tree on large maps, else direct iteration
+    // TODO: only build the KD Tree at map load if we are going to use it
+    // TODO: see about an iterative implementation of KD Tree Nearest N Neighbors
+    //       search, as I suspect it would be more competitive with iteration
+    //       without all the function packing of recursion.
+    if (level.Wp.size > 500) {
+        level.useKdWaypointTree = true;
+        return nearestWaypointsKD(origin, n);
+    } else {
+        return nearestWaypointsIteration(origin, n);
+    }
+    // // A dog; kept only for completeness
+    // return nearestWaypointsBFS(origin, n, hintWp);
+}
+
+
+/** @private Call nearestWaypoints() from code
+ * @brief Finds the nearest waypoint(s) to an arbitrary point
+ *
+ *        Uses the k-dimensional waypoint tree.
+ *
+ * @param origin vector representing the 3D point to find the nearest waypoint to
+ * @param n integer Return n nearest waypoints to the \c origin
+ *
+ * @returns array of integers representing the indices of the nearest waypoint(s)
+ */
+nearestWaypointsKD(origin, n)
 {
     // 10th most-called function (2% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
     if (!isDefined(n)) {n = 3;}
 
-    if (level.useKdWaypointTree) { // be intelligent :-)
-        // kd-tree method
-        // get an available static member
-        index = availableStatic();
-        level.static[index] = [];
-        for (i=0; i<n; i++) {
-            best = spawnStruct();
-            best.node = 0;
-            best.distanceSquared = (-1 * (n - i)) + level.MAX_INT;   // 2147483647, 32-bit ints
-            level.static[index][level.static[index].size] = best;
-        }
+    // get an available static member
+    index = availableStatic();
+    level.static[index] = [];
 
-        kdWaypointNearestNeighbors(level.kdWpTree, origin, index);
-        results = [];
-        for (i=0; i<n; i++) {
-            results[i] = level.static[index][i].node.id;
-        }
-
-        // recycle the static member
-        level.static[index] = 0;
-        level.staticStack[level.staticStack.size] = index;
-    } else {    // use brute-force
-        closest = [];
-        // ensure the initial array is sorted
-        for (i=0; i<n; i++) {
-            waypoint = spawnStruct();
-            waypoint.id = -1;
-            waypoint.distanceSquared = (-1 * (n - i)) + level.MAX_INT;   // 2147483647, 32-bit ints
-            closest[closest.size] = waypoint;
-        }
-
-        // brute-force method
-        for (i=0; i<level.WpCount; i++) {
-            distance = distanceSquared(origin, level.Wp[i].origin);
-            if (distance >= closest[n-1].distanceSquared) {continue;}
-
-            j = n - 1;
-            // Starting at the right end of the array, shift elements larger than
-            // newValue to the right until we are where newValue belongs, then put newValue
-            // there.
-            while ((j > 0) && (distance < closest[j-1].distanceSquared)) {
-                closest[j].distanceSquared = closest[j-1].distanceSquared;
-                closest[j].id = closest[j-1].id;
-                j--;
-            }
-            closest[j].distanceSquared = distance;
-            closest[j].id = i;
-            closest[n] = undefined;
-        }
-        results = [];
-        for (i=0; i<n; i++) {
-            results[i] = closest[i].id;
-        }
+    // original
+    for (i=0; i<n; i++) {
+        best = spawnStruct();
+        best.node = 0;
+        best.distanceSquared = (-1 * (n - i)) + level.MAX_INT;   // 2147483647, 32-bit ints
+        level.static[index][level.static[index].size] = best;
     }
+    count = level.kdTreeNodeVisitCount;
+    kdWaypointNearestNeighbors(level.kdWpTree, origin, index);
+    nodesThisCall = level.kdTreeNodeVisitCount - count;
+
+    // prepare results
+    results = [];
+    for (i=0; i<n; i++) {
+        results[i] = level.static[index][i].node.id;
+    }
+
+    // recycle the static member
+    level.static[index] = 0;
+    level.staticStack[level.staticStack.size] = index;
 
     return results;
 }
+
+
+/** @private Call nearestWaypoints() from code
+ * @brief Finds the nearest waypoint(s) to an arbitrary point
+ *
+ *        Uses direct iteration.
+ *
+ * @param origin vector representing the 3D point to find the nearest waypoint to
+ * @param n integer Return n nearest waypoints to the \c origin
+ *
+ * @returns array of integers representing the indices of the nearest waypoint(s)
+ */
+nearestWaypointsIteration(origin, n)
+{
+    closest = [];
+    // ensure the initial array is sorted
+    for (i=0; i<n; i++) {
+        waypoint = spawnStruct();
+        waypoint.id = -1;
+        waypoint.distanceSquared = (-1 * (n - i)) + level.MAX_INT;   // 2147483647, 32-bit ints
+        closest[closest.size] = waypoint;
+    }
+
+    // brute-force method
+    for (i=0; i<level.WpCount; i++) {
+        distance = distanceSquared(origin, level.Wp[i].origin);
+        if (distance >= closest[n-1].distanceSquared) {continue;}
+
+        j = n - 1;
+        // If we have new closest wwaypoint, insert it into closeest[], in order
+        // Starting at the right end of the array, shift elements larger than
+        // newValue to the right until we are where newValue belongs, then put newValue
+        // there.
+        while ((j > 0) && (distance < closest[j-1].distanceSquared)) {
+            closest[j].distanceSquared = closest[j-1].distanceSquared;
+            closest[j].id = closest[j-1].id;
+            j--;
+        }
+        closest[j].distanceSquared = distance;
+        closest[j].id = i;
+        closest[n] = undefined;
+    }
+    results = [];
+    for (i=0; i<n; i++) {
+        results[i] = closest[i].id;
+    }
+    return results;
+}
+
+
+/** @private Call nearestWaypoints() from code
+ * @brief Finds the nearest waypoint(s) to an arbitrary point
+ *
+ *        Uses BFS (Breadth First Search.  It is a dog, don't use it.
+ *
+ * @param origin vector representing the 3D point to find the nearest waypoint to
+ * @param n integer Return n nearest waypoints to the \c origin
+ * @param hintWp integer The index in level.Wp[] of the last known nearest waypiont
+ *
+ * @returns array of integers representing the indices of the nearest waypoint(s)
+ */
+nearestWaypointsBFS(origin, n, hintWp)
+{
+    if (!isDefined(n)) {
+        n = 3;
+    }
+
+    if (!isDefined(hintWp)) {
+        log("dev", "msg|hintWp is undefined, falling back to K-D Tree||");
+        return nearestWaypointsKD(origin, n);   // fallback to K-D Tree
+    }
+    dist = distanceSquared(origin, level.Wp[hintWp].origin);
+    if (dist > 2000000) { // 1000 units squared
+        log("dev", "msg|hintWp is too far away, falling back to K-D Tree||");
+        return nearestWaypointsKD(origin, n);   // fallback to K-D Tree
+    }
+
+    // log("dev", "msg|Attempting BFS graph search||");
+    index = availableStatic();
+    level.static[index] = [];
+
+    // Pre-fill with worst possible scores (same style you already use)
+    for (i=0; i<n; i++) {
+        best = spawnStruct();
+        best.node = 0;
+        best.distanceSquared = (-1 * (n - i)) + level.MAX_INT;
+        level.static[index][level.static[index].size] = best;
+    }
+
+    // Seed with hintWp + its direct neighbors
+    insertCandidate(index, hintWp, origin);
+
+    if (isDefined(level.Wp[hintWp].linked)) {
+        for (i=0; i<level.Wp[hintWp].linked.size; i++) {
+            childWp = level.Wp[hintWp].linked[i].ID;
+            if (childWp != hintWp)
+                insertCandidate(index, childWp, origin);
+        }
+    }
+
+    // BFS using index pointer instead of popping from front
+    queue = [];
+    visited = [];
+    queue[0] = hintWp;
+    visited[0] = hintWp;
+    head = 0;                    // pointer to front of queue
+    tail = 1;                    // next free slot in queue
+    maxDepth = 3;                // 2 or 3 is usually plenty
+    currentDepth = 0;
+    nodesThisLevel = 1;
+
+    limit = 50;
+    count = 0;
+    while ((head < tail) && (currentDepth < maxDepth)) {
+        count++;
+        sizeThisLevel = nodesThisLevel;
+        nodesThisLevel = 0;
+
+        for (i=0; i<sizeThisLevel; i++) {
+            currentWp = queue[head];
+            head++;
+
+            if (!isDefined(level.Wp[currentWp].linked))
+                continue;
+
+            for (j=0; j<level.Wp[currentWp].linked.size; j++) {
+                childWp = level.Wp[currentWp].linked[j].ID;
+
+                // check if already visited
+                alreadyVisited = false;
+                for (k=0; k<visited.size; k++) {
+                    if (visited[k] == childWp) {
+                        alreadyVisited = true;
+                        break;
+                    }
+                }
+
+                if (alreadyVisited) {
+                    continue;
+                }
+
+                visited[visited.size] = childWp;
+                insertCandidate(index, childWp, origin);
+
+                queue[tail] = childWp;
+                tail++;
+                nodesThisLevel++;
+            }
+        }
+        currentDepth++;
+        if (count > limit) {
+            log("dev", "msg|Bailing on while() in nearestWaypoints_local()||");
+            break;
+        }        
+    }
+
+    // Extract the top N results
+    results = [];
+    for (i=0; i<n; i++) {
+        if (isDefined(level.static[index][i])) {
+            results[i] = level.static[index][i].node.id;
+        } else {
+            break;
+        }
+    }
+
+    // Recycle static slot
+    level.static[index] = 0;
+    level.staticStack[level.staticStack.size] = index;
+
+    // log("dev", sprintfLog("msg|BFS results||size|$1||closetWP|$2||", results.size, results[0]));
+
+    return results;
+}
+
+
+/** @private
+ * @brief Helper for nearesWaypointsBFS()
+ *
+ * @returns nothing
+ */
+insertCandidate(staticIndex, wpId, origin)
+{
+    if (!isDefined(level.Wp[wpId])) {
+        return;
+    }
+
+    dist = distanceSquared(origin, level.Wp[wpId].origin);
+    arr = level.static[staticIndex];
+    k = arr.size;
+
+    j = k - 1;
+    if (dist >= arr[j].distanceSquared) {
+        return;   // not good enough
+    }
+
+    // shift larger elements right
+    limit = 50;
+    count = 0;
+    while ((j > 0) && (dist < arr[j-1].distanceSquared)) {
+        count++;
+        arr[j].distanceSquared = arr[j-1].distanceSquared;
+        arr[j].node = arr[j-1].node;
+        j--;
+        if (count > limit) {
+            break;
+            log("dev", "msg|Bailing on while() in insertCandidate()||");
+        }
+    }
+
+    arr[j].distanceSquared = dist;
+    arr[j].node = level.Wp[wpId];
+}
+
 
 /**
  * @brief Tests the validity and compares the results from NN search and brute-force
@@ -930,6 +1172,7 @@ nearestWaypoints(origin, n)
  */
 nearestWaypointsTest(n, useMapExtents)
 {
+    log("dev", "msg|Starting nearestWaypointsTest||");
     right = 0;
     wrong = 0;
     percentageRight = 0;
@@ -972,6 +1215,77 @@ nearestWaypointsTest(n, useMapExtents)
     noticePrint("Average node visitations (kdtree): (" + level.kdTreeNodeVisitCount / n + ")");
     noticePrint("-------------------------------------------------------------------------------");
 }
+
+
+/*
+ * @brief Tests how many iterations of nearestNeighbors() waypoint search can
+ *        be perfomed in a single frame (0.05ms).
+ *
+ *        'Success' for a given algorithm & n is two log messages in server_mp.log,
+ *        Search for 'Timed', should be 2 instances.  Failure is just one instance. 
+ *
+ * @returns nothing
+ */
+nearestWaypointsTimedTest()
+{
+    log("dev", "msg|Starting nearestWaypointsTimedTest||");
+
+    n = 8500;
+    // On map with 129 waypoints (mp_surv_gold_rush), in <50ms:
+    // KD Tree (Recursive): 30,000 worked, 32,500 didn't
+    // Iteration: 60,000 worked, 62,500 didn't
+    // BFS: 10,000 worked, 12,500 didn't
+
+    // On map with 573 waypoints (mp_surv_isle), in <50ms:
+    // KD Tree (Recursive): 15,500 worked, 16,500 didn't
+    // Iteration: 16,500 worked, 17,500 didn't
+    // BFS: 6,000 worked, 7,500 didn't
+
+    // On map with 1076 waypoints (mp_fart_house_v2), in <50ms:
+    // KD Tree (Recursive): 15,000 worked, 15,500 only worked once
+    // Iteration: 8,500 worked, 9,500 didn't
+    // BFS: 7,500 worked, 8,500 didn't
+    useMapExtents = true;
+    testBFS = true;
+    testKD = false;
+    testIteration = false;
+
+    start = getTime();  //ms
+    wait 0.05;
+    k = 3;
+    for (i=0; i<n; i++) {
+        if (testBFS) {
+            a = 1;
+            b = 1;
+            if (i % 2 == 0) {a = -1;}
+            if (i % 4 == 0) {b = -1;}
+            hintWp = randomInt(level.Wp.size);
+            offset = (a * randomInt(800), b * randomInt(800), 0);
+            wporigin = level.Wp[hintWp].origin;
+            origin = wporigin + offset;
+            nearestWaypointsBFS(origin, k, hintWp);
+        } else if (testIteration) {
+            origin = random3dPoint(useMapExtents);   // if true, generate points within 3D volume covered by waypoints
+            origin = origin * (1,1,0); // zero out y-axis
+            waypoints = nearestWaypointsIteration(origin, k);
+        } else if (testKD) {
+            origin = random3dPoint(useMapExtents);   // if true, generate points within 3D volume covered by waypoints
+            origin = origin * (1,1,0); // zero out y-axis
+            level.useKdWaypointTree = true;
+            kdWaypoints = nearestWaypointsKD(origin, k);
+        }
+    }
+    end = getTime(); //ms
+    elapsed = end - start;
+    if (testBFS) {
+        log("dev", sprintfLog("msg|Timed Test: BFS||count|$1:n||elapsed|$2:n", n, elapsed));
+    } else if (testIteration) {
+        log("dev", sprintfLog("msg|Timed Test: Iteration||count|$1:n||elapsed|$2:n", n, elapsed));
+    } else if (testKD) {
+        log("dev", sprintfLog("msg|Timed Test: K-D Tree||count|$1:n||elapsed|$2:n", n, elapsed));
+    }
+}
+
 
 /**
  * @brief Writes some data to the server log about A* performance

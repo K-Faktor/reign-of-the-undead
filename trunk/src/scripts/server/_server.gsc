@@ -32,6 +32,7 @@
 ******************************************************************************/
 
 #include scripts\include\utility;
+#include scripts\include\waypoints;
 
 // called from maps\mp\gametypes\surv::Callback_StartGameType()
 init()
@@ -94,7 +95,8 @@ init()
     thread verifyRconPassword();
 
     wait 0.5;
- 
+
+    // thread nearestWaypointsTimedTest(); // dev testing only
     log("server", "msg|Server is running and waiting for players to connect.||");
     runTestCode();
 }

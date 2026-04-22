@@ -929,7 +929,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)
 
     shops = strTok(equipmentShops, " ");
     if (level.autoMapTesting) {
-        fmt = "msg|Tested equipment shop presence.||equipmentShopCount|$1:||";
+        fmt = "msg|Tested equipment shop presence.||equipmentShopCount|$1:n||";
         log("automaptest", sprintfLog(fmt, shops.size));
     }
     if (!isDefined(level.tradespawns[int(shops[0])])) {
@@ -1116,7 +1116,8 @@ convertToNativeWaypoints()
 
 loadWaypoints()
 {
-    debugPrint("in _umi::loadWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::loadWaypoints()||");
+    log("dev", "msg|in _umi::loadWaypoints()||");
 
     waypointsLoaded = false;
     waypointType = "None";
@@ -1127,7 +1128,7 @@ loadWaypoints()
     }
     if (waypointsLoaded) {
         waypointType = "external";
-        log("server", "External waypoints loaded: true");
+        log("server", "msg|External waypoints loaded: true||");
     } else {
         log("server", "msg|No external waypoints found, attempting to load internal waypoints.||");
     }
@@ -1371,10 +1372,10 @@ validateWaypoints()
         }
 
         if (level.waypointsInvalid) {
-            log("warn", "RotU will not be using the waypoints in this map!");
+            log("warn", "msg|RotU will not be using the waypoints in this map!||");
             validStr = "Invalid";
         } else if (fixedWaypoints) {
-            log("server", "RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!");
+            log("server", "msg|RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!||");
             validStr = "Valid, after fixes";
         }
     } else {
