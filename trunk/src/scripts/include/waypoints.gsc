@@ -36,6 +36,8 @@
 #include scripts\include\utility;
 #include scripts\include\realtime;
 #include scripts\include\stack;
+// #include scripts\include\int_stack;
+#include scripts\include\priority_queue;
 
 /**
  * @brief Initializes waypoints
@@ -1535,7 +1537,281 @@ randomWaypointPairIndices()
 }
 
 
-// @todo: test bidriectional A*
+/**
+ * @brief Finds the best path between two waypoints. Bidirectional implementation of A*
+ *
+ * @param startWp integer The index of the waypoint to begin the path at
+ * @param goalWp integer The index of the waypoint to where the path ends
+ * @param validateWaypoints boolean If true, validate the map's waypoints instead of finding a path
+ *
+ * @returns An integer stack of up to the first five waypoints in the path
+ */
+biDirectionalAStar(startWp, goalWp, validateWaypoints)
+{
+    level.astarCalls++;
+    if (!isDefined(validateWaypoints)) validateWaypoints = false;
+    if (startWp == goalWp) {
+        pathStack = [];
+        pathStack[0] = startWp;
+        return pathStack;
+    }
+
+    // Forward search structures
+    openF = scripts\include\priority_queue::pqNew("openF");
+    closedF = scripts\include\priority_queue::pqNew("closedF");
+
+    // Backward search structures
+    openB = scripts\include\priority_queue::pqNew("openB");
+    closedB = scripts\include\priority_queue::pqNew("closedB");
+
+    // Forward start node
+    sF = spawnstruct();
+    sF.g = 0;
+    sF.h = distance(level.Wp[startWp].origin, level.Wp[goalWp].origin);
+    sF.f = sF.g + sF.h;
+    level.astarDistanceCalls++;
+    sF.wpIdx = startWp;
+    sF.parent = spawnstruct();
+    sF.parent.wpIdx = -1;
+
+    openF pqInsert(sF, sF.f);
+
+    // Backward start node (goal as "start" for backward)
+    sB = spawnstruct();
+    sB.g = 0;
+    sB.h = distance(level.Wp[goalWp].origin, level.Wp[startWp].origin);
+    sB.f = sB.g + sB.h;
+    level.astarDistanceCalls++;
+    sB.wpIdx = goalWp;
+    sB.parent = spawnstruct();
+    sB.parent.wpIdx = -1;
+
+    openB pqInsert(sB, sB.f);
+
+    meetWp = -1;
+    meetFromF = 0;
+    meetFromB = 0;
+
+    while (openF pqSize() > 0 && openB pqSize() > 0)
+    {
+        // Expand Forward
+        nF = openF pqPop();
+        if (!isDefined(nF)) {break;}
+
+        // Check if this node was reached by backward search
+        if (closedB pqWaypointExists(nF.wpIdx) || openB pqWaypointExists(nF.wpIdx)) {
+            meetWp = nF.wpIdx;
+            // shove the meet node back into closedF so we can find it there
+            // later when we need to walk it's parents to recover the
+            // actual path
+            closedF pqInsert(nF, nF.f);            
+            break;
+        }
+
+        // Expand forward neighbors
+        for (i=0; i<level.Wp[nF.wpIdx].linkedCount; i++) {
+            ncIdx = level.Wp[nF.wpIdx].linked[i].ID;
+            if (isDefined(level.Wp[nF.wpIdx].distance)) {
+                dist = level.Wp[nF.wpIdx].distance[i];
+            } else {
+                dist = distance(level.Wp[nF.wpIdx].origin, level.Wp[ncIdx].origin);
+            }
+            newg = nF.g + dist;
+
+            // Skip if better path already known
+            openNode = openF pqGetNodeByWaypoint(ncIdx);
+            closedNode = closedF pqGetNodeByWaypoint(ncIdx);
+            if (((isDefined(openNode) && openNode.g <= newg)) ||
+                ((isDefined(closedNode) && closedNode.g <= newg)))
+            {
+                continue;
+            }
+
+            nc = spawnstruct();
+            nc.parent = nF;
+            nc.g = newg;
+            nc.h = distance(level.Wp[ncIdx].origin, level.Wp[goalWp].origin);
+            level.astarDistanceCalls++;
+            nc.f = nc.g + nc.h;
+            nc.wpIdx = ncIdx;
+
+            // Remove from closedF if present
+            closedF pqRemoveByWaypoint(ncIdx);
+
+            if (!(openF pqWaypointExists(ncIdx))) {
+                openF pqInsert(nc, nc.f);
+            } else {
+                // update if better (simple replace for now). WHAT???
+                // this fn call makes no sense -- can't do anything with it
+                // how is it better?  How to find the item to update?
+                // UpdatePQ(openF, nc, sizeF);
+                // doing nothing here seem to work just fine.
+            }
+        }
+
+        // Add to closedF
+        if (!(closedF pqWaypointExists(nF.wpIdx))) {
+            closedF pqInsert(nF, nF.f); //missing priority?
+        }
+
+        if (meetWp != -1) {break;}
+
+        // Expand Backward
+        nB = openB pqPop();
+
+        if (closedF pqWaypointExists(nB.wpIdx) || openF pqWaypointExists(nB.wpIdx)) {
+            meetWp = nB.wpIdx;
+            // shove the meet node back into closedB so we can find it there
+            // later when we need to walk it's parents to recover the
+            // actual path
+            closedB pqInsert(nB, nB.f);
+            logPrint("Found meetWp & node from backwards; this node already in forwards\n");
+            break;
+        }
+
+        // Backward neighbors = reverse links
+        for (i = 0; i < level.Wp[nB.wpIdx].linkedCount; i++)
+        {
+            ncIdx = level.Wp[nB.wpIdx].linked[i].ID;
+            // cost calculation (same as forward)
+            if (isDefined(level.Wp[nB.wpIdx].distance)) {
+                dist = level.Wp[nB.wpIdx].distance[i];
+            } else {
+                dist = distance(level.Wp[nB.wpIdx].origin, level.Wp[ncIdx].origin);
+            }
+            newg = nB.g + dist;
+
+            openNode = openB pqGetNodeByWaypoint(ncIdx);
+            closedNode = closedB pqGetNodeByWaypoint(ncIdx);
+            if (((isDefined(openNode) && openNode.g <= newg)) ||
+                ((isDefined(closedNode) && closedNode.g <= newg)))
+            {
+                continue;
+            }
+
+            nc = spawnstruct();
+            nc.parent = nB;
+            nc.g = newg;
+            nc.h = distance(level.Wp[ncIdx].origin, level.Wp[startWp].origin);
+            level.astarDistanceCalls++;
+            nc.f = nc.g + nc.h;
+            nc.wpIdx = ncIdx;
+
+            closedB pqRemoveByWaypoint(ncIdx);
+
+            if (!(openB pqWaypointExists(ncIdx))) {
+                openB pqInsert(nc, nc.f);
+            }
+
+        }
+
+        if (!(closedB pqWaypointExists(nB.wpIdx))) {
+            closedB pqInsert(nB, nB.f);
+        }
+    }
+
+    if (meetWp == -1) {
+        log("error", sprintfLog("msg|biDirectionalAStar($1, $2) failed to find a path.", startWp, goalWp));
+        if (validateWaypoints) {return undefined;}
+        return []; //-1;
+    }
+
+    // === Reconstruct path ===
+    logPrint("meetWp: " + meetWp + "\n");
+    // Forward path: start -> meet
+    pathF = [];
+    // We need to find the meetNode in either the closed or open
+    // forward lists, so we can walk up it's parent tree
+    // It *should* be in the closed list
+    meetNode = closedF pqGetNodeByWaypoint(meetWp);
+    if (!isDefined(meetNode)) {
+        meetNode = openF pqGetNodeByWaypoint(meetWp);
+    }
+    if (!isDefined(meetNode)) {
+        // closedF has the correct first few waypoints, in order
+        logPrint("meetWp: " + meetWp + " not found in closedF (nor openF), so we can't get the parents from closedF.\n");
+    }
+    currentNode = meetNode;
+
+    while (isDefined(currentNode) && currentNode.parent.wpIdx != -1) {
+        pathF[pathF.size] = currentNode.wpIdx;
+        currentNode = currentNode.parent;
+    }
+    pathF[pathF.size] = startWp; // add start
+    buf = "[ ";
+    for (i=0; i<pathF.size; i++) {
+        buf += pathF[i] + ", ";
+    }
+    buf += " ]\n";
+    logPrint("pathF (un-reversed): " + buf);
+    // reverse it so it's start -> ... -> meet
+    pathF = reverseArray(pathF);
+    pathF[pathF.size-1] = undefined;
+
+
+    // Backward path: goal -> meet, then reverse to meet -> goal
+    pathB = [];
+    meetNode = closedB pqGetNodeByWaypoint(meetWp);
+    if (!isDefined(meetNode)) {
+        meetNode = openB pqGetNodeByWaypoint(meetWp);
+    }
+    currentNode = meetNode;
+
+    if (!isDefined(meetNode)) {
+        logPrint("meetWp: " + meetWp + " not found in closedB (nor openB), so we can't get the parents from closedB.\n");
+    }
+
+    while (isDefined(currentNode) && currentNode.parent.wpIdx != -1) {
+        pathB[pathB.size] = currentNode.wpIdx;
+        currentNode = currentNode.parent;
+    }
+    pathB[pathB.size] = goalWp;
+    // pathB = ReverseArray(pathB); // now meet -> ... -> goal (remove duplicate meet if needed)
+    buf = "[ ";
+    for (i=0; i<pathB.size; i++) {
+        buf += pathB[i] + ", ";
+    }
+    buf += " ]\n";
+    logPrint("pathB (un-reversed): " + buf);
+    pathB = reverseArray(pathB);
+    pathB[pathB.size-1] = undefined;
+    pathB = reverseArray(pathB);
+
+    // Combine (remove duplicate meet node)
+    fullPath = [];
+    for (i = 0; i < pathF.size; i++) {fullPath[fullPath.size] = pathF[i];}
+    fullPath[fullPath.size] = meetWp;
+    for (i = 0; i < pathB.size; i++) {fullPath[fullPath.size] = pathB[i];} // skip first (meet)
+
+    // Return up to 8 nodes near the start (same as original)
+    pathStack = [];
+    if (fullPath.size > 12) {startIdx = fullPath.size - 12;}
+    else {startIdx = 0;}
+    index = 0;
+    for (i = startIdx; i < fullPath.size; i++) {
+        pathStack[index] = fullPath[i];
+        index++;
+    }
+
+    if (validateWaypoints) {
+        // I think for consistency with AStarNew() this should be the
+        // combined full, final, path
+        return []; //closedF;
+    }
+    return pathStack;
+}
+
+
+reverseArray(arr)
+{
+    results = [];
+    for (i=arr.size-1; i>=0; i--) {
+        results[results.size] = arr[i];
+    }
+    return results;
+}
+
+
 /**
  * @brief Finds the best path between two waypoints
  *
@@ -1547,10 +1823,27 @@ randomWaypointPairIndices()
  */
 AStarNew(startWp, goalWp, validateWaypoints)
 {
+    ans = biDirectionalAStar(startWp, goalWp, false);
+    if (isDefined(ans.size)) {
+        buf = "biDirectionalAStar("+startWp+", " + goalWp + ") path: [";
+        for (i=0; i<ans.size; i++) {
+            buf += ans[i] + ", ";
+        }
+        buf += "]\n";
+        logPrint(buf);
+    } else if (ans == -1) {
+        // failed to find path
+    }
+    // logPrint(ans + "\n");
+
     // 20th most-called function (0.4% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
     level.astarCalls++;
     if (!isDefined(validateWaypoints)) {validateWaypoints = false;}
+
+    // G === cost from start node to current node
+    // H === heuristic (est) cost from current node to goal node. We use distance, as the crow flies.
+    // F === Sum of accumulated cost + estimated cost remaining to goal. A* selects path that minimizes F.
 
     pathNodes = [];
 
@@ -1559,25 +1852,26 @@ AStarNew(startWp, goalWp, validateWaypoints)
     closedList = [];
     listSize = 0;
     s = spawnstruct();
-    s.g = 0; //start node
-    s.h = distance(level.Wp[startWp].origin, level.Wp[goalWp].origin);
-    level.astarDistanceCalls++;
+    s.g = 0; //start node 
+    s.h = distance(level.Wp[startWp].origin, level.Wp[goalWp].origin); 
     s.f = s.g + s.h;
+    level.astarDistanceCalls++;
     s.wpIdx = startWp;
     s.parent = spawnstruct();
     s.parent.wpIdx = -1;
 
     // push s on Open
-    pQOpen[pQSize] = spawnstruct();
+    // pQOpen[pQSize] = spawnstruct();
     pQOpen[pQSize] = s; //push s on Open
     pQSize++;
 
     // while Open is not empty
     while (pQSize > 0) {
         //pop node n from Open  // n has the lowest f
-        n = pQOpen[0];
+        // n = pQOpen[0];
         highestPriority = level.MAX_INT; // 2147483647, 32-bit ints
         bestNode = -1;
+        // checking every item in "queue" for smallest F; very not queue-like
         for (i=0; i<pQSize; i++) {
             if (pQOpen[i].f < highestPriority) {
                 bestNode = i;
@@ -1585,6 +1879,7 @@ AStarNew(startWp, goalWp, validateWaypoints)
             }
         }
 
+        // removing best node from queue, moving all items right of it one space to the left
         if (bestNode != -1) {
             n = pQOpen[bestNode];
             //remove node from queue

@@ -188,15 +188,15 @@ ensureCapacity(requestedCapacity)
     }
 }
 
-/**
- * NOT IMPLEMENTED - Do Not Implement
- *
- * This generic class will hold, potentially, unprintable data types, like ents and structs.
- * Trying to implement printing whatever object ends up in the stack is begging for disaster.
- *
- * @returns nothing
- */
-print()
-{
-    return;
-}
+// /**
+//  * NOT IMPLEMENTED - Do Not Implement
+//  *
+//  * This generic class will hold, potentially, unprintable data types, like ents and structs.
+//  * Trying to implement printing whatever object ends up in the stack is begging for disaster.
+//  *
+//  * @returns nothing
+//  */
+// print()
+// {
+//     return;
+// }
