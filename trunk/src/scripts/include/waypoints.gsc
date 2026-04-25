@@ -76,9 +76,7 @@ initializeWaypoints()
 }
 
 /**
- * @brief Creates pseudo-static members, since QuakeC doens't include them
- *
- * Tsk, tsk, Mr. Carmack.
+ * @brief Creates pseudo-static members, since GSC doens't include them
  *
  * @returns nothing
  */
@@ -1332,7 +1330,7 @@ insertCandidate(staticIndex, wpId, origin)
 
 
 /**
- * @brief Tests the validity and compares the results from NN search and brute-force
+ * @brief Tests the validity of K-D Tree and compares the results from NN search and brute-force
  *
  * @param n integer the number of random 3D points fo find the nearest waypoint for
  * @param useMapExtents boolean limit search points to points *within* the 3D volume subtended by the waypoints?
@@ -1341,11 +1339,22 @@ insertCandidate(staticIndex, wpId, origin)
  */
 nearestWaypointsTest(n, useMapExtents)
 {
-    log("dev", "msg|Starting nearestWaypointsTest||");
+    level.useKdWaypointTree = false;
+    if (level.Wp.size > 250) {
+        level.useKdWaypointTree = true;
+        log("validate", "msg|Starting K-D Tree nearestWaypointsTest||");
+    } else {
+        log("server", "msg|Map has < 250 waypoints. Using direct iteration, so skipping K-D Tree testing.||");
+        return;
+    }
+
     right = 0;
     wrong = 0;
     percentageRight = 0;
     treeSize = level.nodes;
+
+
+    if (n == 0) { n = 1;} // divide by zero protection
 
     for (i=0; i<n; i++) {
         origin = random3dPoint(useMapExtents);   // if true, generate points within 3D volume covered by waypoints
@@ -1371,18 +1380,13 @@ nearestWaypointsTest(n, useMapExtents)
 
     // results
     percentageRight = (right / n) * 100;
+    avgVisitationCount = level.kdTreeNodeVisitCount / n;
 
-    noticePrint("-------------------------------------------------------------------------------");
-    noticePrint("Waypoint Count: " + level.Wp.size + " Tree Size: " + treeSize);
-    if (useMapExtents) {
-        noticePrint("Tested " + n + " random 3D points within the map extents.");
-    } else {
-        noticePrint("Tested " + n + " random 3D points.");
-    }
-    noticePrint("Accuracy (right, wrong): (" + right + ", " + wrong + ") " + percentageRight + " percent correct.");
-    noticePrint("Total node visitations (kdtree): (" + level.kdTreeNodeVisitCount + ")");
-    noticePrint("Average node visitations (kdtree): (" + level.kdTreeNodeVisitCount / n + ")");
-    noticePrint("-------------------------------------------------------------------------------");
+    log("validate", "msg|-------------------------------------------------------------------------------");
+    fmt = "msg|K-D Tree NearestNeighbor Test||waypointCount|$1:n||treeSize|$2:n||useMapExtents|$3:b||";
+    fmt += "rightCount|$4:n||wrongCount|$5:n||accuracyPercentage|$6:n||nodeVisitations|$7:n||avgNodeVisitations|$8:n||";
+    log("validate", sprintfLog(fmt, level.Wp.size, treeSize, useMapExtents, right, wrong, percentageRight, level.kdTreeNodeVisitCount, avgVisitationCount));
+    log("validate", "msg|-------------------------------------------------------------------------------||");
 }
 
 
@@ -1517,6 +1521,7 @@ validateAStar(n)
     noticePrint("A* validity (right, wrong): (" + right + ", " + wrong + ")");
 }
 
+
 /**
  * @brief Generate a random pair of waypoints
  *
@@ -1539,12 +1544,28 @@ randomWaypointPairIndices()
 
 /**
  * @brief Finds the best path between two waypoints. Bidirectional implementation of A*
+ * 
+ *        Should be 2-4x faster than normal A*, with the higher-end of that range being
+ *        maps with high waypoint counts.
  *
  * @param startWp integer The index of the waypoint to begin the path at
  * @param goalWp integer The index of the waypoint to where the path ends
  * @param validateWaypoints boolean If true, validate the map's waypoints instead of finding a path
  *
- * @returns An integer stack of up to the first five waypoints in the path
+ * @returns If \cvalidateWaypoints is false:
+ *
+ *          An integer array of up to the first eight waypoints in the path. It excludes
+ *          the startWp, and is sorted to be pushed onto a stack from left to right,
+ *          so the nextWp winds up at the top of the stack, ready to be pop()'d.
+ *
+ *          Returns -1 if it is unable to find a path.
+ *
+ *          If \cvalidateWaypoints is true:
+ *
+ *          Returns integer array closedList which contains the waypoints we succesfully
+ *          passed through finding the path, so validateWaypoints() can mark them as tested.
+ *
+ *          Returns undefined if it is unable to find a path
  */
 biDirectionalAStar(startWp, goalWp, validateWaypoints)
 {
@@ -1641,10 +1662,6 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
             if (!(openF pqWaypointExists(ncIdx))) {
                 openF pqInsert(nc, nc.f);
             } else {
-                // update if better (simple replace for now). WHAT???
-                // this fn call makes no sense -- can't do anything with it
-                // how is it better?  How to find the item to update?
-                // UpdatePQ(openF, nc, sizeF);
                 // doing nothing here seem to work just fine.
             }
         }
@@ -1665,7 +1682,7 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
             // later when we need to walk it's parents to recover the
             // actual path
             closedB pqInsert(nB, nB.f);
-            logPrint("Found meetWp & node from backwards; this node already in forwards\n");
+            // logPrint("Found meetWp & node from backwards; this node already in forwards\n");
             break;
         }
 
@@ -1713,23 +1730,20 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
     if (meetWp == -1) {
         log("error", sprintfLog("msg|biDirectionalAStar($1, $2) failed to find a path.", startWp, goalWp));
         if (validateWaypoints) {return undefined;}
-        return []; //-1;
+        return -1;
     }
 
-    // === Reconstruct path ===
-    logPrint("meetWp: " + meetWp + "\n");
+    // Reconstruct path
     // Forward path: start -> meet
     pathF = [];
-    // We need to find the meetNode in either the closed or open
-    // forward lists, so we can walk up it's parent tree
-    // It *should* be in the closed list
+    // We need to find the meetNode in the closed
+    // forward list, so we can walk up it's parent tree
     meetNode = closedF pqGetNodeByWaypoint(meetWp);
     if (!isDefined(meetNode)) {
         meetNode = openF pqGetNodeByWaypoint(meetWp);
     }
     if (!isDefined(meetNode)) {
-        // closedF has the correct first few waypoints, in order
-        logPrint("meetWp: " + meetWp + " not found in closedF (nor openF), so we can't get the parents from closedF.\n");
+        log("warn", sprintfLog("meetWp: $1 not found in closedF, so we can't get the parents from closedB.", meetWp));
     }
     currentNode = meetNode;
 
@@ -1738,18 +1752,15 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
         currentNode = currentNode.parent;
     }
     pathF[pathF.size] = startWp; // add start
-    buf = "[ ";
-    for (i=0; i<pathF.size; i++) {
-        buf += pathF[i] + ", ";
-    }
-    buf += " ]\n";
-    logPrint("pathF (un-reversed): " + buf);
-    // reverse it so it's start -> ... -> meet
-    pathF = reverseArray(pathF);
-    pathF[pathF.size-1] = undefined;
+    // buf = "[ ";
+    // for (i=0; i<pathF.size; i++) {
+    //     buf += pathF[i] + ", ";
+    // }
+    // buf += " ]\n";
+    // logPrint("pathF (un-reversed): " + buf);
 
 
-    // Backward path: goal -> meet, then reverse to meet -> goal
+    // Backward path: goal -> meet
     pathB = [];
     meetNode = closedB pqGetNodeByWaypoint(meetWp);
     if (!isDefined(meetNode)) {
@@ -1758,7 +1769,7 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
     currentNode = meetNode;
 
     if (!isDefined(meetNode)) {
-        logPrint("meetWp: " + meetWp + " not found in closedB (nor openB), so we can't get the parents from closedB.\n");
+        log("warn", sprintfLog("meetWp: $1 not found in closedB, so we can't get the parents from closedB.", meetWp));
     }
 
     while (isDefined(currentNode) && currentNode.parent.wpIdx != -1) {
@@ -1766,49 +1777,77 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
         currentNode = currentNode.parent;
     }
     pathB[pathB.size] = goalWp;
-    // pathB = ReverseArray(pathB); // now meet -> ... -> goal (remove duplicate meet if needed)
-    buf = "[ ";
-    for (i=0; i<pathB.size; i++) {
-        buf += pathB[i] + ", ";
-    }
-    buf += " ]\n";
-    logPrint("pathB (un-reversed): " + buf);
-    pathB = reverseArray(pathB);
-    pathB[pathB.size-1] = undefined;
-    pathB = reverseArray(pathB);
+    // buf = "[ ";
+    // for (i=0; i<pathB.size; i++) {
+    //     buf += pathB[i] + ", ";
+    // }
+    // buf += " ]\n";
+    // logPrint("pathB (un-reversed): " + buf);
 
-    // Combine (remove duplicate meet node)
     fullPath = [];
-    for (i = 0; i < pathF.size; i++) {fullPath[fullPath.size] = pathF[i];}
-    fullPath[fullPath.size] = meetWp;
-    for (i = 0; i < pathB.size; i++) {fullPath[fullPath.size] = pathB[i];} // skip first (meet)
+    for (i=pathB.size-1; i>=0; i--) {
+        fullPath[fullPath.size] = pathB[i];
+    }
+    for (i=1; i<pathF.size; i++) {
+        fullPath[fullPath.size] = pathF[i];
+    }
+    // buf = "[ ";
+    // for (i=0; i<fullPath.size; i++) {
+    //     buf += fullPath[i] + ", ";
+    // }
+    // buf += " ]\n";
+    // logPrint("fullPath: " + buf);
 
     // Return up to 8 nodes near the start (same as original)
-    pathStack = [];
-    if (fullPath.size > 12) {startIdx = fullPath.size - 12;}
+    N = 8;
+    newPath = [];
+    if (fullPath.size > N) {startIdx = fullPath.size - N;}
     else {startIdx = 0;}
     index = 0;
-    for (i = startIdx; i < fullPath.size; i++) {
-        pathStack[index] = fullPath[i];
+    for (i=startIdx; i<fullPath.size; i++) {
+        newPath[index] = fullPath[i];
         index++;
     }
 
+    compatPath = [];
+    if (fullPath.size > N) {startIdx = fullPath.size - N - 1;}
+    else {startIdx = 0;}
+    index = 0;
+    for (i=startIdx; i<fullPath.size-1; i++) {
+        compatPath[index] = fullPath[i];
+        index++;
+    }
+
+    // buf = "[ ";
+    // for (i=0; i<newPath.size; i++) {
+    //     buf += newPath[i] + ", ";
+    // }
+    // buf += " ]\n";
+    // logPrint("newPath: " + buf);
+
+    // buf = "[ ";
+    // for (i=0; i<compatPath.size; i++) {
+    //     buf += compatPath[i] + ", ";
+    // }
+    // buf += " ]\n";
+    // logPrint("compatPath: " + buf);
+
     if (validateWaypoints) {
-        // I think for consistency with AStarNew() this should be the
-        // combined full, final, path
-        return []; //closedF;
+        // this is the combined closedF & closedB node lists; duplication in combined
+        // list is OK, validateWaypoints() just flags it as checked
+        // expects a list of nodes, not indexes
+        closedCombined = [];
+        for (i=0; i<closedF pqSize(); i++) {
+            closedCombined[closedCombined.size] = closedF pqPop();
+        }
+        for (i=0; i<closedB pqSize(); i++) {
+            closedCombined[closedCombined.size] = closedB pqPop();
+        }
+        return closedCombined;
     }
-    return pathStack;
-}
-
-
-reverseArray(arr)
-{
-    results = [];
-    for (i=arr.size-1; i>=0; i--) {
-        results[results.size] = arr[i];
-    }
-    return results;
+    // return fullPath;    // entire path, w/start & end
+    // return newPath;     // N nodes, stack ready, with start, and maybe w/ end
+    return compatPath;  // exactly as AStarNew(): N nodes, stack ready, w/o start, and maybe w/ end
 }
 
 
@@ -1819,21 +1858,34 @@ reverseArray(arr)
  * @param goalWp integer The index of the waypoint to where the path ends
  * @param validateWaypoints boolean If true, validate the map's waypoints instead of finding a path
  *
- * @returns An integer stack of up to the first five waypoints in the path
+ * @returns If \cvalidateWaypoints is false:
+ *
+ *          An integer array of up to the first eight waypoints in the path. It excludes
+ *          the startWp, and is sorted to be pushed onto a stack from left to right,
+ *          so the nextWp winds up at the top of the stack, ready to be pop()'d.
+ *
+ *          Returns -1 if it is unable to find a path.
+ *
+ *          If \cvalidateWaypoints is true:
+ *
+ *          Returns integer array closedList which contains the waypoints we succesfully
+ *          passed through finding the path, so validateWaypoints() can mark them as tested.
+ *
+ *          Returns undefined if it is unable to find a path
  */
 AStarNew(startWp, goalWp, validateWaypoints)
 {
-    ans = biDirectionalAStar(startWp, goalWp, false);
-    if (isDefined(ans.size)) {
-        buf = "biDirectionalAStar("+startWp+", " + goalWp + ") path: [";
-        for (i=0; i<ans.size; i++) {
-            buf += ans[i] + ", ";
-        }
-        buf += "]\n";
-        logPrint(buf);
-    } else if (ans == -1) {
-        // failed to find path
-    }
+    // ans = biDirectionalAStar(startWp, goalWp, false);
+    // if (isDefined(ans.size)) {
+    //     buf = "biDirectionalAStar("+startWp+", " + goalWp + ") path: [";
+    //     for (i=0; i<ans.size; i++) {
+    //         buf += ans[i] + ", ";
+    //     }
+    //     buf += "]\n";
+    //     logPrint(buf);
+    // } else if (ans == -1) {
+    //     // failed to find path
+    // }
     // logPrint(ans + "\n");
 
     // 20th most-called function (0.4% of all function calls).
@@ -1861,14 +1913,11 @@ AStarNew(startWp, goalWp, validateWaypoints)
     s.parent.wpIdx = -1;
 
     // push s on Open
-    // pQOpen[pQSize] = spawnstruct();
     pQOpen[pQSize] = s; //push s on Open
     pQSize++;
 
     // while Open is not empty
     while (pQSize > 0) {
-        //pop node n from Open  // n has the lowest f
-        // n = pQOpen[0];
         highestPriority = level.MAX_INT; // 2147483647, 32-bit ints
         bestNode = -1;
         // checking every item in "queue" for smallest F; very not queue-like
@@ -1888,7 +1937,7 @@ AStarNew(startWp, goalWp, validateWaypoints)
             }
             pQSize--;
         } else {
-            errorPrint("AStarNew(" + startWp + ", " + goalWp + ") on map " + getdvar("mapname") + " failed to find a path.");
+            log("error", sprintfLog("msg|AStarNew($1, $2) on map $3 failed to find a path.||", startWp, goalWp, getdvar("mapname")));
             return -1;
         }
 
@@ -1905,23 +1954,23 @@ AStarNew(startWp, goalWp, validateWaypoints)
             if (pathNodes.size == 0) { 
                 // Can't happen, unless perhaps a map-maker screws up the waypoints
                 // and creates unreachable nodes
-                errorPrint("AStarNew(" + startWp + ", " + goalWp + ") on map " + getdvar("mapname") + " failed to find a path.");
+                log("error", sprintfLog("msg|AStarNew($1, $2) on map $3 failed to find a path.||", startWp, goalWp, getdvar("mapname")));
                 if (validateWaypoints) {return undefined;}
                 return -1;
             }
 
             // grab up to 8 nodes to return as a stack
-            pathStack = [];
+            pathList = [];
             start = pathNodes.size - 8;     // return up to five nodes
             if (start < 0) {start = 0;}     // don't fall off the front of the array
             index = 0;
             for (i=start; i<pathNodes.size; i++) {
-                pathStack[index] = pathNodes[i];
+                pathList[index] = pathNodes[i];
                 index++;
             }
 
             if (validateWaypoints) {return closedList;}
-            return pathStack;
+            return pathList;
         }
 
         //for each successor nc of n
@@ -1958,10 +2007,6 @@ AStarNew(startWp, goalWp, validateWaypoints)
                 }
                 if ((ncFound) && (nc.g <= newg)) {continue;}
             }
-//             nc.parent = n
-//             nc.g = newg
-//             nc.h = GoalDistEstimate( nc )
-//             nc.f = nc.g + nc.h
 
             nc = spawnstruct();
             nc.parent = spawnstruct();
@@ -1995,7 +2040,7 @@ AStarNew(startWp, goalWp, validateWaypoints)
         }
 
         //Done with children, push n onto Closed
-        if (!ListExists(closedList, n.wpIdx, listSize)) {
+        if (!PQExists(closedList, n.wpIdx, listSize)) {
             closedList[listSize] = spawnstruct();
             closedList[listSize] = n;
             listSize++;
@@ -2004,6 +2049,7 @@ AStarNew(startWp, goalWp, validateWaypoints)
     // we failed!
     if (validateWaypoints) {return undefined;}
 }
+
 
 /**
  * @brief Determines if an array is empty
@@ -2014,7 +2060,8 @@ AStarNew(startWp, goalWp, validateWaypoints)
  *
  * @returns boolean indicating whether the array is empty or not
  */
-PQIsEmpty(Q, QSize)
+// PQIsEmpty(Q, QSize)
+PQIsEmpty(QSize)
 {
     /// Why are we passing in Q if we aren't using it?
     // 5th most-called function (5% of all function calls).
@@ -2046,28 +2093,6 @@ PQExists(Q, n, QSize)
     return false;
 }
 
-/**
- * @brief Determines if an element is in an array
- * N.B. This function is identical to PQExists(Q, n, QSize), but I'm leaving
- * it here for the AStarOriginal() function.
- *
- * @param list the array to inspect
- * @param n the element to search for
- * @param listSize the size of the array
- *
- * @returns boolean indicating whether the element is in the array or not
- */
-ListExists(list, n, listSize)
-{
-    // 1st most-called function (26% of all function calls).
-    // Do *not* put a function entrance debugPrint statement here!
-
-    for (i=0; i<listSize; i++) {
-        if (list[i].wpIdx == n) {return true;}
-    }
-
-    return false;
-}
 
 /**
  * @brief Finds the best path between two waypoints
@@ -2084,6 +2109,7 @@ ListExists(list, n, listSize)
  */
 AStarOriginal(startWp, goalWp)
 {
-    pathStack = AStarNew(startWp, goalWp, false);
-    return pathStack pop();
+    list = AStarNew(startWp, goalWp, false);
+    // AStarNew() returns a list ready to be pushed onto a stack, but not a stack
+    return list[list.size - 1];
 }

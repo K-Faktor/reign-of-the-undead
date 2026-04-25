@@ -1294,7 +1294,7 @@ loadWaypointLinkDistances()
  */
 validateWaypoints()
 {
-    debugPrint("in _umi::validateWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::validateWaypoints()||");
 
     if (!isDefined(level.astarCalls)) {level.astarCalls = 0;}
     if (!isDefined(level.astarDistanceCalls)) {level.astarDistanceCalls = 0;}
@@ -1306,11 +1306,23 @@ validateWaypoints()
     invalidWaypoints = [];
     count = 0;
     fromWp = undefined;
+    fixedWaypoints = false;
+    validStr = "";
+
+    // handle unlinked waypoints first
+    for (i=0; i<level.Wp.size; i++) {
+        if (!isDefined(level.Wp[i].linked)) {
+            log("error", sprintfLog("msg|Unlinked Waypoint: $1 at: $2||", i, level.Wp[i].origin));
+            deleteUnlinkedWaypoint(i);
+            fixedWaypoints = true;
+        }
+    }
 
     for (i=0; i<level.Wp.size; i++) {
         wps[i] = 0; // boolean
     }
 
+    // only use wp with children as a fromWp
     for (i=0; i<level.Wp.size; i++) {
         if (isDefined(level.Wp[i].linked)) {
             fromWp = i;
@@ -1319,14 +1331,15 @@ validateWaypoints()
     }
     if (!isDefined(fromWp)) {
         level.waypointsInvalid = true;
-        errorPrint("Map " + getdvar("mapname") + " has no valid waypoints!");
+        log("error", sprintfLog("msg|Map $1 has no valid waypoints!||", getdvar("mapname")));
         return;
     }
 
     toWp = level.Wp.size - 1;
     while ((visited.size < wps.size) && (count < 150)) {
         count++;
-        closed = scripts\include\waypoints::AStarNew(fromWp, toWp, true);
+        // closed = scripts\include\waypoints::AStarNew(fromWp, toWp, true);
+        closed = scripts\include\waypoints::biDirectionalAStar(fromWp, toWp, true);
         if (!isDefined(closed)) {
             // didn't find a path
             invalidWaypoints[invalidWaypoints.size] = toWp;
@@ -1353,40 +1366,38 @@ validateWaypoints()
     }
 
     if (count == 150) {
-        warnPrint("Waypoint validation was stopped for performance reasons before it finished.");
-        warnPrint("There may be invalid waypoints that aren't noted.");
+        log("warn", "msg|Waypoint validation was stopped for performance reasons before it finished.||");
+        log("warn", "msg|There may be invalid waypoints that aren't noted.||");
     }
-    validStr = "";
-    fixedWaypoints = false;
-    if (invalidWaypoints.size > 0) {
-        errorPrint("Map " + getdvar("mapname") + " has invalid waypoints!");
-        for (i=0; i<invalidWaypoints.size; i++) {
-            if (!isDefined(level.Wp[invalidWaypoints[i]].linked)) {
-                errorPrint("Unlinked Waypoint: " + invalidWaypoints[i] + " at: " +  level.Wp[invalidWaypoints[i]].origin);
-                deleteUnlinkedWaypoint(invalidWaypoints[i]);
-                fixedWaypoints = true;
-            } else {
-                errorPrint("Waypoint: " + invalidWaypoints[i] + " at: " +  level.Wp[invalidWaypoints[i]].origin + " is part of a linked section not linked to the other section.");
-                level.waypointsInvalid = true;
-            }
-        }
 
-        if (level.waypointsInvalid) {
-            log("warn", "msg|RotU will not be using the waypoints in this map!||");
-            validStr = "Invalid";
-        } else if (fixedWaypoints) {
-            log("server", "msg|RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!||");
-            validStr = "Valid, after fixes";
+    if (invalidWaypoints.size > 0) {
+        log("error", sprintfLog("msg|Map $1 has invalid waypoints!||", getdvar("mapname")));
+        for (i=0; i<invalidWaypoints.size; i++) {
+            log("error", sprintfLog("msg|Waypoint: $1 at: $2 is part of a linked section not linked to the other section.||", invalidWaypoints[i], level.Wp[invalidWaypoints[i]].origin));
+            level.waypointsInvalid = true;
         }
+    }
+
+    if (level.waypointsInvalid) {
+        log("warn", "msg|RotU will not be using the waypoints in this map!||");
+        validStr = "Invalid";
+    } else if (fixedWaypoints) {
+        log("server", "msg|RotU sucessfully deleted unlinked waypoints from memory, but the waypoints should still be fixed!||");
+        validStr = "Valid, after fixes";
     } else {
         log("server", "msg|Waypoints PASSED critical validation tests!||");
         validStr = "Valid";
     }
 
-    if (level.autoMapTesting) {
+    type = "validate";
+    if (level.autoMapTesting) {type = "automaptest";}     
+    if (level.waypointsInvalid) {
+        fmt = "msg|Waypoints are invalid.||waypointsValid|$1||waypointCount|$2:n";
+    } else {
         fmt = "msg|Waypoints are valid.||waypointsValid|$1||waypointCount|$2:n";
-        log("automaptest", sprintfLog(fmt, validStr, level.Wp.size));
-    }    
+    }
+    log(type, sprintfLog(fmt, validStr, level.Wp.size));
+
     waypointQuality();
 }
 

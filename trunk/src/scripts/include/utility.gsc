@@ -192,7 +192,7 @@ tokenizeMessage(encodedJson)
     if (!isDefined(parts[0])) {
         logPrint("BUG: no |msg| in string to split() at, so can't rightPad()\n"); 
     } else {
-        a = rightPad(parts[0], " ", 20); // 24
+        a = rightPad(parts[0], " ", 21); // 24
         buf = a + "|msg|" + parts[1];
     }
     buf = "{" + buf + "}";
@@ -276,7 +276,7 @@ log(eventType, message, includeEpoch)
         pre = "event|error||";
         if (includeEpoch) {pre += epoch;}
         temp = pre + message;
-        temp = "Error: " + tokenizeMessage(temp);
+        temp = "Error:  " + tokenizeMessage(temp);
         break;
     case "debug":
         if (level.hideDebug) {return;}
@@ -303,6 +303,12 @@ log(eventType, message, includeEpoch)
         if (includeEpoch) {pre += epoch;}
         temp = pre + message;
         temp = "Debug:  " + tokenizeMessage(temp);
+        break;
+    case "validate":
+        pre = "event|validate||";
+        if (includeEpoch) {pre += epoch;}
+        temp = pre + message;
+        temp = "Test:   " + tokenizeMessage(temp);
         break;
     case "automaptest":
         pre = "event|automaptest||";

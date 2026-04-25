@@ -1904,7 +1904,7 @@ botPathfindWaypointsNew(bot) {
         wait 1;
     }    
     if (!isdefined(bot.pathStack)) {
-        warnPrint("bot.pathStack is undefined. Should had been defined at spawning.");
+        log("warn", "msg|bot.pathStack is undefined. Should had been defined at spawning.");
         return;
     }
     if (bot.pathStack isEmpty()) {
@@ -1922,11 +1922,13 @@ botPathfindWaypointsNew(bot) {
             log("dev", "msg|At target, should be melee or in pursuit by now||");
             return;
         } else {
-            bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
+            bot.pathStack pushMany(biDirectionalAStar(bot.myWaypoint, bot.targetWp));
+            // bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
             bot.pathStack print("1927: bot " + bot.index + " initialization path");
             if (bot.pathStack isEmpty()) {
-                warnPrint("bot.pathStack is undefined, we couldn't find a path. Would be a BUG.");
-                debugPrint("Call was AStarNew(" + bot.myWaypoint + ", " + bot.targetWp + ")");
+                log("warn", "msg|bot.pathStack is undefined; we couldn't find a path. Would be a BUG.||");
+                log("bug", sprintfLog("msg|Call was biDirectionalAStar($1, $2)||", bot.myWaypoint, bot.targetWp));
+                // debugPrint("Call was AStarNew(" + bot.myWaypoint + ", " + bot.targetWp + ")");
                 return;
             }
             // save the target wp we used for the A* call

@@ -60,19 +60,9 @@ pqNew(name)
  */
 pqInsert(item, priority)
 {
-    // if (self.name == "openF") {
-    //     logPrint("Inserting item.wpIdx: " + item.wpIdx + " priority: " + priority + "\n");
-    // }
-
     // find insertion point (lowest f first)
     insertIdx = self.data.size;     // default: append
-    // if (self.name == "openF") {
-    //     log("dev", sprintfLog("msg|pq pre-insert||name|$2||size|$1||", self.data.size, self.name));
-    // }
     for (i=0; i<self.data.size; i++) {
-        // if (self.name == "openF") {
-        //     log("dev", sprintfLog("msg|(i=0; i<$1; i++)", self.data.size));
-        // }
         if (self.data[i].priority > priority) {   // found spot for smaller priority
             insertIdx = i;
             break;
@@ -86,11 +76,13 @@ pqInsert(item, priority)
 
     self.data[insertIdx] = item;
     self.data[insertIdx].priority = priority;
-    if ((self.name == "openF") || (self.name == "openB") || (self.name == "closedF") || (self.name == "closedB")) {
-        // log("dev", sprintfLog("msg|pq post-insert||name|$2||size|$1||", self.data.size, self.name));
-        logPrint(self.name + ": Inserted: " + priority + "\n");
-        // self pqPrintPriority();
-        self pqPrintWaypoints();
+    if (false) {
+        if ((self.name == "openF") || (self.name == "openB") || (self.name == "closedF") || (self.name == "closedB")) {
+            // log("dev", sprintfLog("msg|pq post-insert||name|$2||size|$1||", self.data.size, self.name));
+            logPrint(self.name + ": Inserted: " + priority + "\n");
+            // self pqPrintPriority();
+            self pqPrintWaypoints();
+        }
     }
 }
 pqSize()
@@ -108,11 +100,13 @@ pqPop()
         self.data[i-1] = self.data[i]; // shift anything remaining to the left
     }
     self.data[self.data.size-1] =  undefined;
-    if ((self.name == "openF") || (self.name == "openB") || (self.name == "closedF") || (self.name == "closedB")) {
-        // log("dev", sprintfLog("msg|pop()'d item||name|$2||size|$1||", self.data.size, self.name));
-        logPrint(self.name + ": Pop'd: " + item.priority + "\n");
-        // self pqPrintPriority();
-        self pqPrintWaypoints();
+    if (false) {
+        if ((self.name == "openF") || (self.name == "openB") || (self.name == "closedF") || (self.name == "closedB")) {
+            // log("dev", sprintfLog("msg|pop()'d item||name|$2||size|$1||", self.data.size, self.name));
+            logPrint(self.name + ": Pop'd: " + item.priority + "\n");
+            // self pqPrintPriority();
+            self pqPrintWaypoints();
+        }
     }
 
     return item;
