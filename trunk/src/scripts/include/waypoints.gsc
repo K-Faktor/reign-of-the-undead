@@ -1846,10 +1846,163 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
         return closedCombined;
     }
     // return fullPath;    // entire path, w/start & end
+    smoothed = getSmoothedPath(fullPath);
     // return newPath;     // N nodes, stack ready, with start, and maybe w/ end
     return compatPath;  // exactly as AStarNew(): N nodes, stack ready, w/o start, and maybe w/ end
 }
 
+
+/**
+ * @brief Catmull-Rom spline point at parameter t (0..1) between p1 and p2, using p0 and p3 as handles
+ *
+ *        Formulated by Edwin Catmull and Raphael Rom, 1974.
+ *        https://doi.org/10.1016%2FB978-0-12-079050-0.50020-5
+ *
+ * @param p0 vector The position vector of the first waypoint (real)
+ * @param p1 vector The position vector of the second waypoint (interpolated)
+ * @param p2 vector The position vector of the third waypoint (real)
+ * @param p3 vector The position vector of the fourth waypoint (interpolated)
+ * @param t float The parameter (mathematical sense) t (0..1)
+ *
+ * @returns vector The smoothed position for this sample
+ */
+CatmullRomPoint(p0, p1, p2, p3, t)
+{
+    // good candidate for no "trace" statement
+
+    // parameter weights
+    t2 = t * t;
+    t3 = t2 * t;
+    
+    // scaling factors
+    b0 = (-1*t3 + 2*t2 - t) * 0.5;
+    b1 = (3*t3 - 5*t2 + 2) * 0.5;
+    b2 = (-3*t3 + 4*t2 + t) * 0.5;
+    b3 = (t3 - t2) * 0.5;
+    
+    // scale and sum each input vector
+    return b0*p0 + b1*p1 + b2*p2 + b3*p3;
+}
+
+
+/**
+ * @brief Sample a full smooth path from a waypoint array
+ *
+ * @param pathList array The list of waypoint indexes in pathStack
+ * @param samplesPerSegment integer How many points to use for smoothing
+ *                                  path between waypoints
+ *
+ * @returns vector array The list of smoothed positions for this pathStack
+ */
+getSmoothedPath(pathList, samplesPerSegment)
+{
+    smoothPath = [];
+    if (!isDefined(samplesPerSegment)) {samplesPerSegment = 4;}  // (4 = low, 10-12 = very smooth)
+
+    // we need 3 points, including currentWp, to interpolate 2 midpoint 'waypoints'
+    n = pathList.size;
+    if (n < 3) {return undefined;}
+
+    interpolated = [];
+
+    // adding midpoints as fake waypoints between waypoints 1-2 & 2-3, so we can do
+    // path-smoothing if we have as few as 2 waypoints + our nearest waypoint
+    a = level.Wp[pathList[pathList.size-1]].origin;
+    b = level.Wp[pathList[pathList.size-2]].origin;
+    midpoint1 = a + (0.5 * (b - a));
+    a = level.Wp[pathList[pathList.size-2]].origin;
+    b = level.Wp[pathList[pathList.size-3]].origin;
+    midpoint2 = a + (0.5 * (b - a));
+
+    interpolated[0] = level.Wp[pathList[pathList.size-1]].origin;
+    interpolated[1] = midpoint1;
+    interpolated[2] = level.Wp[pathList[pathList.size-2]].origin;
+    interpolated[3] = midpoint2;
+    // tack on any remaining real waypoints
+    for (i=pathList.size-3; i>=0; i--) {
+        interpolated[interpolated.size] = level.Wp[pathList[i]].origin;
+    }
+
+    noised = [];
+    for (i=0; i<interpolated.size; i++) {
+        if (i == 0) {
+            noised[i] = interpolated[i]; // do not add noise to 1st point
+        }
+        // Generate noise only for X and Y (-15 to +15)
+        noiseX = randomFloatRange(-15, 15);
+        noiseY = randomFloatRange(-15, 15);
+        noised[i] = interpolated[i] + (noiseX, noiseY, 0);
+    }
+
+    n = noised.size;    
+    if (n < 4) {return undefined;} // too short, just return
+    
+    for(i=0; i<n-1; i++) {
+        // Pick the four points with safe boundary handling
+        if (i == 0) {
+            p0 = noised[0];           // duplicate first point
+        } else {
+            p0 = noised[i-1];
+        }
+        
+        p1 = noised[i];
+        p2 = noised[i+1];
+        
+        if (i + 2 < n) {
+            p3 = noised[i+2];
+        } else {
+            p3 = noised[n-1];         // duplicate last point
+        }
+
+        // Generate points along this segment
+        for(s = 0; s < samplesPerSegment; s++) {
+            t = s / (samplesPerSegment * 1.0);   // force float division
+            point = CatmullRomPoint(p0, p1, p2, p3, t);
+            smoothPath[smoothPath.size] = point;
+        }
+    }
+
+    if (true) {
+        // ugly hack around CoD4's logging line character limit; as we build the JSON,
+        // dump it to g_log whenever it exceeds 200 characters.
+        logPrint("#CatmullRomStart\n");
+        json = "{\"name\": \"CatmullRom\", \"original\": [";
+        for (i=0; i<pathList.size; i++) {
+            json += "[" + level.Wp[pathList[i]].origin[0] +", " + level.Wp[pathList[i]].origin[1] +", " + level.Wp[pathList[i]].origin[2]+"]";
+            if (json.size > 200) {logPrint(json + "\n"); json = "";}
+            if (i<pathList.size-1) {
+                json += ", ";
+            }
+        }
+        json += "], ";
+        json += "\"midpoints\": [";
+        json += "[" + midpoint1[0] +", " + midpoint1[1] +", " + midpoint1[2]+"],";
+        json += "[" + midpoint2[0] +", " + midpoint2[1] +", " + midpoint2[2]+"]";
+        json += "], ";
+        if (json.size > 200) {logPrint(json + "\n"); json = "";}
+        json += "\"noised\": [";
+        for (i=0; i<noised.size; i++) {
+            json += "[" + noised[i][0] +", " + noised[i][1] +", " + noised[i][2]+"]";
+            if (json.size > 200) {logPrint(json + "\n"); json = "";}
+            if (i<noised.size-1) {
+                json += ", ";
+            }
+        }
+        json += "], ";
+        json += "\"smoothPath\": [";
+        for (i=0; i<smoothPath.size; i++) {
+            json += "[" + smoothPath[i][0] +", " + smoothPath[i][1] +", " + smoothPath[i][2]+"]";
+            if (json.size > 200) {logPrint(json + "\n"); json = "";}
+            if (i<smoothPath.size-1) {
+                json += ", ";
+            }
+        }
+        json += "]}";
+        logPrint(json + "\n");
+        logPrint("#CatmullRomEnd\n");
+    }
+    return smoothPath;    
+}
 
 /**
  * @brief Finds the best path between two waypoints
