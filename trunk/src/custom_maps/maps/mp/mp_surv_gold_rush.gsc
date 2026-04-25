@@ -78,7 +78,6 @@ main()
     buildZombieSpawnByTargetname("spawngroup1", 1);
     buildZombieSpawnByTargetname("spawngroup2", 1);
     buildZombieSpawnByTargetname("spawngroup3", 1);
-    buildZombieSpawnByTargetname("spawngroup4", 1);
 
     startGame();
 }

@@ -1518,13 +1518,13 @@ buildZombieSpawnsByClassname(classname)
  */
 buildZombieSpawnByTargetname(targetname, priority)
 {
-    debugPrint("in _umi::buildZombieSpawnByTargetname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildZombieSpawnByTargetname()||");
 
     if (!isDefined(priority)) {priority = 1;}
 
     spawns = getentarray(targetname, "targetname");
     if (spawns.size == 0) {
-        errorPrint("Map: No zombie spawn point (entity matching targetname: " + targetname + ") found.");
+        log("error", "msg|Map: No zombie spawn point matching targetname: " + targetname + ") found.||");
         return;
     }
 
@@ -2264,7 +2264,7 @@ buildWeaponUpgrade(targetname)
  */
 buildSurvSpawn(targetname, priority)
 {
-    debugPrint("in _umi::buildSurvSpawn()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildSurvSpawn()||");
 
     buildZombieSpawnByTargetname(targetname, priority);
 }

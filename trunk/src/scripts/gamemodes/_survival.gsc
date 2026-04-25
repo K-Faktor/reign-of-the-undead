@@ -131,10 +131,11 @@ buildWaveOrder()
         level.waveOrder[0] = "regular";
     }
 
-    debugPrint("Total waves is: " + level.totalWaves, "val");
+    buf = "";
     for (i=0; i<level.waveOrder.size; i++) {
-        debugPrint("Wave [" + i + "] is " + level.waveOrder[i], "val");
+        buf += "zombieType_wave" + int(i+1) + "|" + level.waveOrder[i] + "||";
     }
+    log("server", sprintfLog("msg|Configured game waves.||waveCount|$1||" + buf, level.totalWaves));
 }
 
 dvarDefault(dvar, def)
@@ -482,7 +483,7 @@ survivorDown()
  */
 startRegularWave()
 {
-    debugPrint("in _survival::startRegularWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::startRegularWave()||");
 
     level endon( "game_ended" );
     level.intermission = 1;
@@ -515,7 +516,7 @@ startRegularWave()
     scripts\players\_players::resetSpawning();
     level.intermission = 0;
 
-    noticePrint("[" + getRealDateTimeString() + "] Beginning wave " + level.currentWave + ": regular zombies");
+    log("server", sprintfLog("msg|Beginning wave $1: regular zombies||timestamp|$2||", level.currentWave, getRealDateTimeString()));
 
     // Start bringing in the ZOMBIES!!!
     level notify("start_monitoring");
@@ -564,7 +565,7 @@ startRegularWave()
  */
 startSpecialWave(type)
 {
-    debugPrint("in _survival::startSpecialWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::startSpecialWave()||");
 
     level endon( "game_ended" );
 
@@ -668,7 +669,7 @@ startSpecialWave(type)
     scripts\players\_players::resetSpawning();
     level.intermission = 0;
 
-    noticePrint("[" + getRealDateTimeString() + "] Beginning wave " + level.currentWave + ": " + level.waveType + " zombies");
+    log("server", sprintfLog("msg|Beginning wave $1: $3 zombies||timestamp|$2||", level.currentWave, getRealDateTimeString(), level.waveType));
 
     // Start bringing in the ZOMBIES!!!
     level notify("start_monitoring");
