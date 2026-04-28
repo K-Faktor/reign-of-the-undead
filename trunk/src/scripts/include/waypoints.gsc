@@ -1893,30 +1893,42 @@ CatmullRomPoint(p0, p1, p2, p3, t)
  *
  * @returns vector array The list of smoothed positions for this pathStack
  */
-getSmoothedPath(pathList, samplesPerSegment, steps)
+getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
 {
-    smoothPath = [];
+    // @todo pathId is for JSON debug ID.   Not every path has all 3 elements we chart,
+    // so we need to aggregate the debug JSON around a common ID so they all
+    // match up. Implement in the JSON output, then update the python
+    // to parse *all* the paths debug data, aggregated by id, with a cmdline option
+    // to display data for a specific pathId.
+    smoothPath = [];    // array of segments, as a stack
+    segment = [];       // array of positions this segment, as a stack
 
-    if (isDefined(steps)) {
-        log("dev", "msg|adding steps to smoothedPath||");
-        for (i=0; i<steps.size; i++) {
-            smoothPath[smoothPath.size] =  steps[i];
-            log("dev", sprintfLog("msg|step:||stepOrigin|$1||", steps[i]));
-        }
-    }
+    logPrint("pathList.size: " + pathList.size + "\n");
+
+    // if (isDefined(steps)) {
+    //     log("dev", "msg|adding steps to smoothedPath||");
+    //     for (i=0; i<steps.size; i++) {
+    //         smoothPath[smoothPath.size] =  steps[i];
+    //         log("dev", sprintfLog("msg|step:||stepOrigin|$1||", steps[i]));
+    //     }
+    // }
 
     if (!isDefined(samplesPerSegment)) {samplesPerSegment = 5;}  // (4 = low, 10-12 = very smooth)
 
     // we need 3 points, including currentWp, to interpolate 2 midpoint 'waypoints'
     n = pathList.size;
     if (n < 3) {
-        rev = [];
-        index = 0;
-        for (i=smoothPath.size-1; i>-0; i--) {
-            rev[index] = smoothPath[i];
-            index++;
+        // too small for anything, just return our 'getTo' positions & waypoint origins
+        if (isDefined(steps)) {
+            for (i=0; i<steps.size; i++) {
+                segment[segment.size] =  steps[i];
+            }
         }
-        return rev;
+        for (i=pathList.size-1; i>-0; i--) {
+            segment[segment.size] =  level.Wp[pathList[i]].origin;
+        }
+        smoothPath[smoothPath.size] = reverseArray(segment);
+        return smoothPath;
     }
 
     interpolated = [];
@@ -1952,17 +1964,8 @@ getSmoothedPath(pathList, samplesPerSegment, steps)
         noised[i] = interpolated[i] + (noiseX, noiseY, 0);
     }
 
-    n = noised.size;    
-    if (n < 4) {
-        rev = [];
-        index = 0;
-        for (i=smoothPath.size-1; i>-0; i--) {
-            rev[index] = smoothPath[i];
-            index++;
-        }
-        return rev;
-    }
-    
+    n = noised.size;      
+    // logPrint("noised.size: " + noised.size + "\n");
     for(i=0; i<n-1; i++) {
         // Pick the four points with safe boundary handling
         if (i == 0) {
@@ -1980,20 +1983,55 @@ getSmoothedPath(pathList, samplesPerSegment, steps)
             p3 = noised[n-1];         // duplicate last point
         }
 
+        if ((i == 2) || (i >= 4)) {
+            // logPrint("segment.size: " + segment.size + " i: " + i + "\n");
+            smoothPath[smoothPath.size] = reverseArray(segment);
+            // align segments with real waypoints
+            segment = [];
+        }
+        if (i == 0) {
+            // append steps[] to get to first waypoint, if any to array
+            if (isDefined(steps)) {
+                // log("dev", "msg|adding steps to segment||");
+                for (j=0; j<steps.size; j++) {
+                    segment[segment.size] =  steps[j];
+                    // log("dev", sprintfLog("msg|step:||stepOrigin|$1||", steps[i]));
+                }
+            }
+        }
+
         // Generate points along this segment
-        for(s = 0; s < samplesPerSegment; s++) {
-            t = s / (samplesPerSegment * 1.0);   // force float division
+        for (s=0; s<samplesPerSegment; s++) {   // default samples
+            t = s / (samplesPerSegment * 1.0);  // force float division
             point = CatmullRomPoint(p0, p1, p2, p3, t);
             position = scripts\bots\_bot::findGround(point);
             // no exponential notation around 0
             if ((position[2] < 0.125) && (position[2] > -0.125)) {position = position * (1,1,0);}
-            smoothPath[smoothPath.size] = position;
+            segment[segment.size] = position;
         }
     }
-    final = level.Wp[pathList[0]].origin;
-    smoothPath[smoothPath.size] = final;
+    if (i == n-1) {
+        final = level.Wp[pathList[0]].origin;
+        segment[segment.size] = final;
+        smoothPath[smoothPath.size] = reverseArray(segment);
+    }
+
+    // logPrint("smoothPath.size: " + smoothPath.size + "\n");
+    newSmoothPath = reverseArray(smoothPath);
+    // logPrint("newSmoothPath.size: " + newSmoothPath.size + "\n");
+    // smoothPath should now be an array of arrays, organized as a stack of stacks
 
     if (true) {
+        // rebuild old smoothPath array solely for printing as JSON
+        smoothPath = [];
+        for (i=newSmoothPath.size-1; i>=0; i--) {
+            segment = newSmoothPath[i];
+            // logPrint("segment.size: " + segment.size + "\n");
+            for (j=segment.size-1; j>=0; j--) {
+                smoothPath[smoothPath.size] = segment[j];
+            }
+        }
+
         // ugly hack around CoD4's logging line character limit; as we build the JSON,
         // dump it to g_log whenever it exceeds 200 characters.
         logPrint("#CatmullRomStart\n");
@@ -2032,16 +2070,18 @@ getSmoothedPath(pathList, samplesPerSegment, steps)
         logPrint(json + "\n");
         logPrint("#CatmullRomEnd\n");
     }
-    rev = [];
-    index = 0;
-    for (i=smoothPath.size-1; i>-0; i--) {
-        rev[index] = smoothPath[i];
-        index++;
-    }
-    return rev;
-    // return smoothPath;    
+
+    return newSmoothPath;    
 }
 
+reverseArray(arr)
+{
+    result = [];
+    for (i=arr.size-1; i>=0; i--) {
+        result[result.size] = arr[i];
+    }
+    return result;
+}
 
 /**
  * @brief Finds the best path between two waypoints

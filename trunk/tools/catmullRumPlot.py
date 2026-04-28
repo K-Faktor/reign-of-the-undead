@@ -50,6 +50,8 @@ waypoints = None
 def extract_catmullrom_json(filename: str):
     global getToBestWaypointData, waypoints
     raw_json = ""
+    waypoint_json = ""
+    getToBestWaypointData_json = ""
 
     """Find the first line with {"name": "CatmullRom", read it + next line, clean and parse."""
     with open(filename, 'r', encoding='utf-8') as f:
@@ -99,12 +101,13 @@ def extract_catmullrom_json(filename: str):
         print(f"JSON parse error: {e}")
         print("Raw concatenated string:", waypoint_json)
 
-    try:
-        getToBestWaypointData = json.loads(getToBestWaypointData_json)
-        print(f"✅ Successfully parsed first CatmullRom data from server_mp.log lines ending at {i+1}")
-    except json.JSONDecodeError as e:
-        print(f"JSON parse error: {e}")
-        print("Raw concatenated string:", getToBestWaypointData_json)
+    if getToBestWaypointData_json is not None:
+        try:
+            getToBestWaypointData = json.loads(getToBestWaypointData_json)
+            print(f"✅ Successfully parsed first CatmullRom data from server_mp.log lines ending at {i+1}")
+        except json.JSONDecodeError as e:
+            print(f"JSON parse error: {e}")
+            print("Raw concatenated string:", getToBestWaypointData_json)
 
     try:
         data = json.loads(json_str)
@@ -147,28 +150,29 @@ def plot_paths(data):
 
     centroid = True
     if centroid:
-        meta = getToBestWaypointData["getToBestWaypointData"]
-        getToBestWaypointData
-        if "origin" in meta:
-            x = meta["origin"][0]
-            y = meta["origin"][1]
-            ax.scatter(x, y, color='yellow', s=80, zorder=7,  marker='X', label='Spawn')  # dots
-        if "centroid" in meta:
-            x = meta["centroid"][0]
-            y = meta["centroid"][1]
-            ax.scatter(x, y, color='pink', s=80, zorder=7, marker='X', label='Centroid')  # dots
-        if "bestWpPos" in meta:
-            x = meta["bestWpPos"][0]
-            y = meta["bestWpPos"][1]
-            ax.scatter(x, y, color='purple', s=80, zorder=7, marker='X', label='FirstWp')  # dots
-        if "nextWpPos" in meta:
-            x = meta["nextWpPos"][0]
-            y = meta["nextWpPos"][1]
-            ax.scatter(x, y, color='grey', s=80, zorder=7, marker='X', label='SecondWp')  # dots
-        if "cornerPos" in meta:
-            x = meta["cornerPos"][0]
-            y = meta["cornerPos"][1]
-            ax.scatter(x, y, color='brown', s=80, zorder=7, marker='X', label='Proj Point')  # dots
+        if getToBestWaypointData is not None:
+            meta = getToBestWaypointData["getToBestWaypointData"]
+            getToBestWaypointData
+            if "origin" in meta:
+                x = meta["origin"][0]
+                y = meta["origin"][1]
+                ax.scatter(x, y, color='yellow', s=80, zorder=7,  marker='X', label='Spawn')  # dots
+            if "centroid" in meta:
+                x = meta["centroid"][0]
+                y = meta["centroid"][1]
+                ax.scatter(x, y, color='pink', s=80, zorder=7, marker='X', label='Centroid')  # dots
+            if "bestWpPos" in meta:
+                x = meta["bestWpPos"][0]
+                y = meta["bestWpPos"][1]
+                ax.scatter(x, y, color='purple', s=80, zorder=7, marker='X', label='FirstWp')  # dots
+            if "nextWpPos" in meta:
+                x = meta["nextWpPos"][0]
+                y = meta["nextWpPos"][1]
+                ax.scatter(x, y, color='grey', s=80, zorder=7, marker='X', label='SecondWp')  # dots
+            if "cornerPos" in meta:
+                x = meta["cornerPos"][0]
+                y = meta["cornerPos"][1]
+                ax.scatter(x, y, color='brown', s=80, zorder=7, marker='X', label='Proj Point')  # dots
     else:
 # origin": [2379.55, 1934.11, 0.125], "wp1Pos": [2412.82, 1966.39, 0.125], "wp2Pos": [2271.89, 1824.94, 6.125], "wp3Pos": [2529.21, 1851.47, 0.125], "bestWpPos": [2271.89, 1824.94, 6.125]')
         d = waypoints["bestWaypointData"]
