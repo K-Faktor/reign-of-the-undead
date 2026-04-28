@@ -1686,7 +1686,7 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
             break;
         }
 
-        // Backward neighbors = reverse links
+        // Backward neighbors
         for (i = 0; i < level.Wp[nB.wpIdx].linkedCount; i++)
         {
             ncIdx = level.Wp[nB.wpIdx].linked[i].ID;
@@ -1846,9 +1846,8 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
         return closedCombined;
     }
     // return fullPath;    // entire path, w/start & end
-    smoothed = getSmoothedPath(fullPath);
-    // return newPath;     // N nodes, stack ready, with start, and maybe w/ end
-    return compatPath;  // exactly as AStarNew(): N nodes, stack ready, w/o start, and maybe w/ end
+    return newPath;     // N nodes, stack ready, with start, and maybe w/ end
+    // return compatPath;  // exactly as AStarNew(): N nodes, stack ready, w/o start, and maybe w/ end
 }
 
 
@@ -1894,14 +1893,31 @@ CatmullRomPoint(p0, p1, p2, p3, t)
  *
  * @returns vector array The list of smoothed positions for this pathStack
  */
-getSmoothedPath(pathList, samplesPerSegment)
+getSmoothedPath(pathList, samplesPerSegment, steps)
 {
     smoothPath = [];
-    if (!isDefined(samplesPerSegment)) {samplesPerSegment = 4;}  // (4 = low, 10-12 = very smooth)
+
+    if (isDefined(steps)) {
+        log("dev", "msg|adding steps to smoothedPath||");
+        for (i=0; i<steps.size; i++) {
+            smoothPath[smoothPath.size] =  steps[i];
+            log("dev", sprintfLog("msg|step:||stepOrigin|$1||", steps[i]));
+        }
+    }
+
+    if (!isDefined(samplesPerSegment)) {samplesPerSegment = 5;}  // (4 = low, 10-12 = very smooth)
 
     // we need 3 points, including currentWp, to interpolate 2 midpoint 'waypoints'
     n = pathList.size;
-    if (n < 3) {return undefined;}
+    if (n < 3) {
+        rev = [];
+        index = 0;
+        for (i=smoothPath.size-1; i>-0; i--) {
+            rev[index] = smoothPath[i];
+            index++;
+        }
+        return rev;
+    }
 
     interpolated = [];
 
@@ -1922,11 +1938,13 @@ getSmoothedPath(pathList, samplesPerSegment)
     for (i=pathList.size-3; i>=0; i--) {
         interpolated[interpolated.size] = level.Wp[pathList[i]].origin;
     }
+    log("warn", sprintfLog("msg|Path data||pathList.size|$1||interpolated.size|$2||", pathList.size, interpolated.size));
 
     noised = [];
     for (i=0; i<interpolated.size; i++) {
-        if (i == 0) {
-            noised[i] = interpolated[i]; // do not add noise to 1st point
+        if ((i == 0) || (i == interpolated.size - 1)) {
+            noised[i] = interpolated[i]; // do not add noise to 1st or last points
+            continue;
         }
         // Generate noise only for X and Y (-15 to +15)
         noiseX = randomFloatRange(-15, 15);
@@ -1935,7 +1953,15 @@ getSmoothedPath(pathList, samplesPerSegment)
     }
 
     n = noised.size;    
-    if (n < 4) {return undefined;} // too short, just return
+    if (n < 4) {
+        rev = [];
+        index = 0;
+        for (i=smoothPath.size-1; i>-0; i--) {
+            rev[index] = smoothPath[i];
+            index++;
+        }
+        return rev;
+    }
     
     for(i=0; i<n-1; i++) {
         // Pick the four points with safe boundary handling
@@ -1958,9 +1984,14 @@ getSmoothedPath(pathList, samplesPerSegment)
         for(s = 0; s < samplesPerSegment; s++) {
             t = s / (samplesPerSegment * 1.0);   // force float division
             point = CatmullRomPoint(p0, p1, p2, p3, t);
-            smoothPath[smoothPath.size] = point;
+            position = scripts\bots\_bot::findGround(point);
+            // no exponential notation around 0
+            if ((position[2] < 0.125) && (position[2] > -0.125)) {position = position * (1,1,0);}
+            smoothPath[smoothPath.size] = position;
         }
     }
+    final = level.Wp[pathList[0]].origin;
+    smoothPath[smoothPath.size] = final;
 
     if (true) {
         // ugly hack around CoD4's logging line character limit; as we build the JSON,
@@ -2001,8 +2032,16 @@ getSmoothedPath(pathList, samplesPerSegment)
         logPrint(json + "\n");
         logPrint("#CatmullRomEnd\n");
     }
-    return smoothPath;    
+    rev = [];
+    index = 0;
+    for (i=smoothPath.size-1; i>-0; i--) {
+        rev[index] = smoothPath[i];
+        index++;
+    }
+    return rev;
+    // return smoothPath;    
 }
+
 
 /**
  * @brief Finds the best path between two waypoints

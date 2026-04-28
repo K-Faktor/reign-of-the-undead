@@ -44,7 +44,11 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv              # apt install python3-dotenv
 import os
 
+getToBestWaypointData = None
+waypoints = None
+
 def extract_catmullrom_json(filename: str):
+    global getToBestWaypointData, waypoints
     raw_json = ""
 
     """Find the first line with {"name": "CatmullRom", read it + next line, clean and parse."""
@@ -52,6 +56,22 @@ def extract_catmullrom_json(filename: str):
         lines = f.readlines()
 
     readData = False
+
+    for i, line in enumerate(lines):
+        if 'bestWaypointData' in line:
+            line = line.strip()
+            line = re.sub(r'^[\d:\s]+ ', '', line).strip()
+            waypoint_json = line
+            break
+
+    for i, line in enumerate(lines):
+        if 'getToBestWaypointData' in line:
+            line = line.strip()
+            line = re.sub(r'^[\d:\s]+ ', '', line).strip()
+            getToBestWaypointData_json = line
+            break
+
+
     for i, line in enumerate(lines):
         if '#CatmullRomStart' in line:
             readData = True
@@ -73,6 +93,20 @@ def extract_catmullrom_json(filename: str):
         json_str += '}'
 
     try:
+        waypoints = json.loads(waypoint_json)
+        print(f"✅ Successfully parsed first CatmullRom data from server_mp.log lines ending at {i+1}")
+    except json.JSONDecodeError as e:
+        print(f"JSON parse error: {e}")
+        print("Raw concatenated string:", waypoint_json)
+
+    try:
+        getToBestWaypointData = json.loads(getToBestWaypointData_json)
+        print(f"✅ Successfully parsed first CatmullRom data from server_mp.log lines ending at {i+1}")
+    except json.JSONDecodeError as e:
+        print(f"JSON parse error: {e}")
+        print("Raw concatenated string:", getToBestWaypointData_json)
+
+    try:
         data = json.loads(json_str)
         print(f"✅ Successfully parsed first CatmullRom data from server_mp.log lines ending at {i+1}")
         return data
@@ -81,6 +115,8 @@ def extract_catmullrom_json(filename: str):
         print("Raw concatenated string:", json_str[:500])
         sys.exit(1)
     
+
+
     print("Could not find any line containing 'CatmullRom'")
     sys.exit(1)
 
@@ -108,6 +144,56 @@ def plot_paths(data):
     # from mpl_toolkits.mplot3d import Axes3D
     # ax = fig.add_subplot(111, projection='3d')
     # ax.plot(x, y, z, 'b-')   # etc.
+
+    centroid = True
+    if centroid:
+        meta = getToBestWaypointData["getToBestWaypointData"]
+        getToBestWaypointData
+        if "origin" in meta:
+            x = meta["origin"][0]
+            y = meta["origin"][1]
+            ax.scatter(x, y, color='yellow', s=80, zorder=7,  marker='X', label='Spawn')  # dots
+        if "centroid" in meta:
+            x = meta["centroid"][0]
+            y = meta["centroid"][1]
+            ax.scatter(x, y, color='pink', s=80, zorder=7, marker='X', label='Centroid')  # dots
+        if "bestWpPos" in meta:
+            x = meta["bestWpPos"][0]
+            y = meta["bestWpPos"][1]
+            ax.scatter(x, y, color='purple', s=80, zorder=7, marker='X', label='FirstWp')  # dots
+        if "nextWpPos" in meta:
+            x = meta["nextWpPos"][0]
+            y = meta["nextWpPos"][1]
+            ax.scatter(x, y, color='grey', s=80, zorder=7, marker='X', label='SecondWp')  # dots
+        if "cornerPos" in meta:
+            x = meta["cornerPos"][0]
+            y = meta["cornerPos"][1]
+            ax.scatter(x, y, color='brown', s=80, zorder=7, marker='X', label='Proj Point')  # dots
+    else:
+# origin": [2379.55, 1934.11, 0.125], "wp1Pos": [2412.82, 1966.39, 0.125], "wp2Pos": [2271.89, 1824.94, 6.125], "wp3Pos": [2529.21, 1851.47, 0.125], "bestWpPos": [2271.89, 1824.94, 6.125]')
+        d = waypoints["bestWaypointData"]
+        if "origin" in d:
+        # if ["bestWaypointData"]"origin" in waypoints:
+            x = d["origin"][0]
+            y = d["origin"][1]
+            ax.scatter(x, y, color='yellow', s=80, zorder=7,  marker='X', label='Spawn')  # dots
+        if "wp1Pos" in d:
+            x = d["wp1Pos"][0]
+            y = d["wp1Pos"][1]
+            ax.scatter(x, y, color='pink', s=80, zorder=7, marker='X', label='wp1Pos')  # dots
+        if "wp2Pos" in d:
+            x = d["wp2Pos"][0]
+            y = d["wp2Pos"][1]
+            ax.scatter(x, y, color='purple', s=80, zorder=7, marker='X', label='wp2Pos')  # dots
+        if "wp3Pos" in d:
+            x = d["wp3Pos"][0]
+            y = d["wp3Pos"][1]
+            ax.scatter(x, y, color='grey', s=80, zorder=7, marker='X', label='wp3Pos')  # dots
+        if "bestWpPos" in d:
+            x = d["bestWpPos"][0]
+            y = d["bestWpPos"][1]
+            ax.scatter(x, y, color='grey', s=80, zorder=7, marker='*', label='bestWpPos')  # dots
+
 
     # 1. Original path - Blue dots + connecting lines
     if "original" in data:
@@ -155,5 +241,8 @@ if __name__ == "__main__":
     mod_path = os.getenv("MOD_PATH")
     server_log = os.path.join(mod_path, "server_mp.log") 
     
+    # waypoints = json.loads('{"origin": [2800, 680, 102.125], "wp1Pos": [2833.39, 705.005, 102.125], "wp2Pos": [2821.61, 543.46, 102.125], "wp3Pos": [2634.59, 702.665, 110.125], "bestWpPos": [2634.59, 702.665, 110.125]}')
+    # meta = json.loads('{"origin": [2800, 680, 102.125], "centroid": [2745.43, 694.15, 102.125], "distance": 167.147, "nextWpPos": [2403.39, 706.648, 110.125], "bestWpPos": [2634.59, 702.665, 110.125], "cornerPos": [2801.71, 699.786, 110.125]}')
     data = extract_catmullrom_json(server_log)
     plot_paths(data)
+

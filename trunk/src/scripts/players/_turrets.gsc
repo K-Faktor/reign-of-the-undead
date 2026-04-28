@@ -1480,7 +1480,7 @@ abs(number)
 }
 
 
-/**
+/** @todo move to a new vectors class
  * @brief Computes the angle between two vectors
  *
  * @param a The first vector

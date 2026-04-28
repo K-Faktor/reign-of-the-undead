@@ -369,7 +369,7 @@ botMain(bot)
     level endon("game_ended");
 
     wait 1.2; // wait until bot is standing up before he starts to move
-    // how many control ticks has the bot been alivee?
+    // how many control ticks has the bot been alive?
     // each tick is level.zomInterval second, i.e. 0.2 seconds, or 4 frames.
     bot.tickCount = 0;
     bot.stateTickCount = 0;
@@ -506,7 +506,8 @@ wander(bot)
     while (1)
     {
         // Get a fresh path if our stack is empty
-        if (!isDefined(bot.pathStack) || bot.pathStack isEmpty()) {
+        // if (!isDefined(bot.pathStack) || bot.pathStack isEmpty()) {
+        if ((!isDefined(bot.smoothedPath)) || (bot.smoothedPath.size == 0)) {
             stackEmptyCount++;
             getPath(bot);                    // This loads bot.pathStack internally
             // bot.pathStack print("New path loaded");
@@ -527,13 +528,23 @@ wander(bot)
             }
         }
 
-        if (!(bot.pathStack isEmpty())) {
+        if ((isDefined(bot.smoothedPath)) && (bot.smoothedPath.size > 0)) {
+        // if (!(bot.pathStack isEmpty())) {
             stackEmptyCount = 0;
             // Process ONE waypoint per iteration
             bot.lastKnownWp = bot.myWaypoint;
             bot.nextWp = bot.pathStack pop();
 
+            // @todo force normal for now.  will need to split A* paths into 'normal' sections,
+            // and 'special' sections
+            if (!isDefined(bot.myWaypoint)) {
+                log("dev", "msg|541: bot.myWaypoint is undefined||");
+            }
+            if (!isDefined(bot.nextWp)) {
+                log("dev", "msg|544: bot.nextWp is undefined||");
+            }
             bot.pathType = pathType(bot.myWaypoint, bot.nextWp);
+            // bot.pathType = level.PATH_NORMAL;
 
             // === Handle different path types ===
             if (bot.pathType == level.PATH_CLAMPED) {
@@ -1089,6 +1100,146 @@ zeroGuard(divisor, replacement, reference) {
     return ret;
 }
 
+
+/**
+ * @brief Of the 3 waypoints nearest us, find the one closest to desired position
+ *
+ *        We can't guarantee we always start on a waypoint, so make sure we
+ *        choose our first waypoint as the nearest one that doesn't make us get
+ *        further away from our goal, usu. our target. Choose last waypoint
+ *
+ * @param entityPosition vector The position entity is currently at
+ * @param goalPosition vector The position we want to get to
+ *
+ * @returns integer The index of the best waypoint
+ */
+getBestWaypoint(entityPosition, goalPosition)
+{
+    // no trace log statement here
+
+    // of the three wp nearest entity, best one is one closest to target
+    waypoints = nearestWaypoints(entityPosition, 3);
+    a = undefined;
+    bestDistance = level.MAX_INT;
+    for (i=0; i<waypoints.size; i++) {
+        dist = distanceSquared(goalPosition, level.Wp[waypoints[i]].origin);
+        if (dist < bestDistance) {
+            bestDistance = dist;
+            a = waypoints[i];
+        }
+    }
+    best = a;
+    temp = sprintfLog("{\"bestWaypointData\": {\"origin\": $1, \"wp1Pos\": $2, \"wp2Pos\": $3, \"wp3Pos\": $4, \"bestWpPos\": $5}}", posToJson(entityPosition), posToJson(level.Wp[waypoints[0]].origin), posToJson(level.Wp[waypoints[1]].origin), posToJson(level.Wp[waypoints[2]].origin), posToJson(level.Wp[best].origin));
+    logPrint(temp + "\n");
+
+    return best;
+}
+
+/**
+ * @brief Intelligently move to the first waypoint
+ *        To avoid backtracking, we determine wether it is better to go to the first
+ *        waypoint, or to the second waypoint.  We then compute two movements such
+ *        that we approach the waypoint from an angle that minimizes variance with our
+ *        departure angle from that waypoint, so the movement is smooth.
+ *
+ * @returns vector array A list of two positions to move to to get us to the first waypoint.
+ *                       Returns undefined if we are already very close to the first waypoint.
+ */
+getToBestWaypoint(bot)
+{
+    res = [];
+    distance = distance(bot.origin, level.Wp[bot.myWaypoint].origin);
+    logPrint("distance: " + distance + "\n");
+    if (distance < 10) {
+        // close enough, do nothing
+        log("dev", "msg|Close enough to first waypoint, doing nothing||");
+        return undefined;
+    } else {
+        centroid = (0, 0, 0);
+        proj_point = (0, 0, 0);
+        
+        // positions of the first and second waypoints in our path
+        secondPathPos = level.Wp[bot.nPathList[bot.nPathList.size-2]].origin;
+        firstPathPos  = level.Wp[bot.nPathList[bot.nPathList.size-1]].origin;
+
+        // unit vector in the direction we want to be heading along path
+        firstToSecond = secondPathPos - firstPathPos;
+        normFirstToSecond = vectorNormalize(firstToSecond);
+
+        currentToFirst  = firstPathPos  - bot.origin;
+        currentToSecond = secondPathPos - bot.origin;
+
+        theta = scripts\players\_turrets::angleBetweenTwoVectors(normFirstToSecond, currentToFirst);
+        if (theta < 90) {
+            log("dev", "msg|Can move to first waypoint without backtracking; doing so.||");
+            // logPrint("theta: " + theta + "\n");
+            
+            u = currentToFirst * -1;                    // now bot -> firstPathPos
+            proj_vec = projection_of_u_onto_v(u, normFirstToSecond);   // displacement only
+            proj_point = firstPathPos + proj_vec;       // actual world position on the line
+
+            // centroid of triangle: bot, first waypoint, projected foot
+            centroid = (firstPathPos + bot.origin + proj_point) * (1.0/3.0);
+        } 
+        else {
+            log("dev", "msg|Can't move to first waypoint without backtracking; checking second waypoint.||");
+            theta2 = scripts\players\_turrets::angleBetweenTwoVectors(normFirstToSecond, currentToSecond);
+            // logPrint("theta2: " + theta2 + "\n");
+            if (theta2 < 90) {
+                log("dev", "msg|Can move to second waypoint without backtracking; doing so.||");
+
+                u = currentToSecond * -1;                   // now bot -> secondPathPos
+                proj_vec = projection_of_u_onto_v(u, firstToSecond);   // works with non-unit too
+                proj_point = secondPathPos + proj_vec;      // actual world position on the line
+
+                // centroid of triangle: bot, second waypoint, projected foot
+                centroid = (proj_point + bot.origin + secondPathPos) * (1.0/3.0);
+
+                // we are going to 2nd wp, update nPathList & bot.myWaypoint
+                bot.nPathList[bot.nPathList.size-1] = undefined;
+                bot.myWaypoint = bot.nPathList[bot.nPathList.size-1];
+
+                // Do I need to pop() here?
+                bot.pathStack pop();
+            }
+        }
+        pos = findGround(centroid);
+        // no exponential notation around 0
+        if ((pos[2] < 0.125) && (pos[2] > -0.125)) {pos = pos * (1,1,0);}
+        temp = sprintfLog("{\"getToBestWaypointData\": {\"origin\": $1, \"centroid\": $2, \"distance\": $3, \"nextWpPos\": $4, \"bestWpPos\": $5, \"cornerPos\": $6}}", posToJson(bot.origin), posToJson(pos), distance, posToJson(secondPathPos), posToJson(firstPathPos), posToJson(proj_point));
+        logPrint(temp + "\n");
+        res[res.size] = pos;
+        res[res.size] = level.Wp[bot.myWaypoint].origin;
+    }
+    return res;
+}
+
+// @todo move into vector class
+// vector projection function
+projection_of_u_onto_v(u, v)
+{
+    if (!isDefined(v) || v == (0,0,0)) {
+        return (0,0,0);  // avoid divide-by-zero
+    }
+
+    dotUV = vectordot(u, v);
+    dotVV = vectordot(v, v);
+    scalar = dotUV / dotVV;
+
+    // Scale v by the scalar (no extra functions needed)
+    proj = (v[0] * scalar, v[1] * scalar, v[2] * scalar);
+    logPrint("proj_u_onto_v: " + proj + " u: " + u + " v: " + v + "\n");
+    return proj;
+}
+
+// @todo rename vectorToJson, move to utility.gsc
+posToJson(pos)
+{
+    return "[" + pos[0] +", " + pos[1] +", " + pos[2]+"]";
+}
+
+
+// other than bulletTrace(), should probably port to something like getToBestWaypoint()
 getOnPath(bot)
 {
     directDistance = distance(bot.origin, level.Wp[bot.nextWp].origin);
@@ -1831,6 +1982,31 @@ normalPath(bot)
     if (bot.isFollowingWaypoints) {
         // noticePrint("In normalPath(), .isFollowingWaypoints is true");
         // since we are following waypoints, we assume no solid objects or obstructions
+        if (bot.speed == 0) {
+            bot.speed = 30; // sensible default for divide by zero protection
+            log("bug", "msg|bot.speed is 0. Setting to 30 for divide by zero protection.  Fix the bug.||");
+        }
+
+        if (bot.pathStack size() == 0) {
+            log("bug", "msg|bot.pathStack size() is 0. Why are we in normalPath() with nowhere to go?||");
+            if (!isDefined(bot.smoothedPath)) {
+                // this happens when bot.pathStack is a single node, so no smoothing
+                log("warn", "msg|bot.smoothedPath is undefined when bot.pathStack size() is 0||");
+                return;
+            } else {
+                log("warn", "msg|bot.smoothedPath.size is " + bot.smoothedPath.size + "||");
+            }
+        }
+
+
+        log("dev", "msg|bot.pathStack size() is " + bot.pathStack size() + "||");
+        if (!isDefined(bot.smoothedPath)) {
+            // this happens when bot.pathStack is a single node, so no smoothing
+            log("warn", "msg|bot.smoothedPath is undefined||");
+            return;
+        } else {
+            log("warn", "msg|bot.smoothedPath.size is " + bot.smoothedPath.size + "||");
+        }
 
         // make animation frame such that frame distance is about 18 inches.
         frameCount = int(level.BOT_MOVE_DISTANCE / bot.speed / 0.05);
@@ -1842,24 +2018,93 @@ normalPath(bot)
         }
         frameDistance = bot.speed * (0.05 * frameCount);
 
-        direction = vectorNormalize(level.Wp[bot.nextWp].origin - level.Wp[bot.myWaypoint].origin);
-        facing = vectorToAngles(direction);
+        // we have Catmull-Rom set up for 4 points per waypoint link
+        initial = bot.origin;
+        final = bot.origin;
+        smoothedCount = 0;
+        // BUG: the first two smoothed points may be just getting us to the first waypoint.
+        //      we really need to run them as part of the first node, else we are usually off-by-two,
+        //      and run out of pathStack with two smoothed movements remaining.
+        // BUG: the first two waypoints each have an interpolated wp, so they should be 8, not 4
+        if (bot.interpolatedCount > 0) {
+            segmentsThisWp = 10;
+            bot.interpolatedCount--;
+        } else {segmentsThisWp = 5;}
 
-        // position = level.Wp[bot.myWaypoint].origin;
-        position = bot.origin;
-        distance = distance(level.Wp[bot.myWaypoint].origin, level.Wp[bot.nextWp].origin);
-        // noticePrint("frameDistance: " + frameDistance + " distance: " + distance);
-        count = 0;
-        while (distance > frameDistance) {
-            count++;
-            distance = distance - frameDistance;
-            position = position + (direction * frameDistance);
-            position = bot findGround(position);
-            time = frameCount * 0.05;
-            bot enqueueMovement(bot, position, time, facing);
+        while (smoothedCount < segmentsThisWp) {
+            if (!isDefined(bot.smoothedPath)) {
+                // this happens when bot.pathStack is a single node, so no smoothing
+                log("error", "msg|about to have a bot.smoothedPath is undefined error.||");
+            }
+        // for (i=bot.smoothedPath.size-1; i>bot.smoothedPath.size-5; i--) {
+            final = bot.smoothedPath[bot.smoothedPath.size-1];
+            if (!isDefined(final)) {
+                log("error", sprintfLog("msg|1962:||bot.origin|$1||bot final origin|$2||", bot.origin, initial));  // initial is the last enqueued 'final'
+                log("dev", sprintfLog("msg|1963:||bot.targetWp|$1||bot.targetWp.origin|$2||", bot.targetWp, level.Wp[bot.targetWp].origin));
+                log("dev", sprintfLog("msg|1964:||bot.myWaypint|$1||bot.myWaypint.origin|$2||", bot.myWaypoint, level.Wp[bot.myWaypoint].origin));
+                i = bot.nPathList[0];
+                log("dev", sprintfLog("msg|1966:||final wp|$1||final wp origin|$2||", i, level.Wp[i].origin));
+                return;
+            }
+            // log("error", sprintfLog("msg|1969:||bot.origin|$1||bot final origin|$2||", bot.origin, initial));  // initial is the last enqueued 'final'
+            // log("dev", sprintfLog("msg|1970:||bot.targetWp|$1||bot.targetWp.origin|$2||", bot.targetWp, level.Wp[bot.targetWp].origin));
+            // log("dev", sprintfLog("msg|1971:||bot.myWaypint|$1||bot.myWaypint.origin|$2||", bot.myWaypoint, level.Wp[bot.myWaypoint].origin));
+            // i = bot.nPathList[0];
+            // log("dev", sprintfLog("msg|1973:||final wp|$1||final wp origin|$2||", i, level.Wp[i].origin));
+
+
+
+            direction = vectorNormalize(final - initial);
+            facing = vectorToAngles(direction);
+
+            position = initial;
+            distance = distance(initial, final);
+
+            log("dev", sprintfLog("msg|Move data||initial|$1||final|$2||distance|$3||frameDistance|$4||", initial, final, distance, frameDistance));
+
+            queueCount = 0;
+            // enqueues movement for one smoothed path, or 1/4 of a waypoint link
+            // while (distance > frameDistance) {
+            while (distance > 10) { // close enough?
+                queueCount++;
+                distance = distance - frameDistance;
+                position = position + (direction * frameDistance);
+                position = bot findGround(position);
+                time = frameCount * 0.05;
+                bot enqueueMovement(bot, position, time, facing);
+            }
+            log("dev", "msg|1996: Movements Enqueued||queueCount|" + queueCount + "||");
+            // time = distance / bot.speed;
+
+            initial = final;
+            bot.smoothedPath[bot.smoothedPath.size-1] = undefined;
+            smoothedCount++;
+            log("dev", "msg|Smoothed segment processed||smoothedCount|" + smoothedCount + "||");
+
         }
-        noticePrint(count + " movements enqueued.");
-        time = distance / bot.speed;
+
+        // BUG: we still have 7 smoothedPath elements here, when we call for a new A*.
+        // I think that is the last 2 wp in the path, minus the hop from last smoothed point to the last wp.
+        log("warn", "msg|2008: End of method: bot.smoothedPath.size is " + bot.smoothedPath.size + "||");
+
+        // direction = vectorNormalize(level.Wp[bot.nextWp].origin - level.Wp[bot.myWaypoint].origin);
+        // facing = vectorToAngles(direction);
+
+        // // position = level.Wp[bot.myWaypoint].origin;
+        // position = bot.origin;
+        // distance = distance(level.Wp[bot.myWaypoint].origin, level.Wp[bot.nextWp].origin);
+        // // noticePrint("frameDistance: " + frameDistance + " distance: " + distance);
+        // count = 0;
+        // while (distance > frameDistance) {
+        //     count++;
+        //     distance = distance - frameDistance;
+        //     position = position + (direction * frameDistance);
+        //     position = bot findGround(position);
+        //     time = frameCount * 0.05;
+        //     bot enqueueMovement(bot, position, time, facing);
+        // }
+        // noticePrint(count + " movements enqueued.");
+        // time = distance / bot.speed;
     } else {
         noticePrint("In computeMovement(), but .isFollowingWaypoints is false!");
     }
@@ -1907,24 +2152,33 @@ botPathfindWaypointsNew(bot) {
         log("warn", "msg|bot.pathStack is undefined. Should had been defined at spawning.");
         return;
     }
-    if (bot.pathStack isEmpty()) {
+    // if (bot.pathStack isEmpty()) {
+    if ((!isDefined(bot.smoothedPath)) || (bot.smoothedPath.size == 0)) {
         // I need myWaypoint, and a targetWp (which means I need a target)
         if (!isDefined(bot.targetedPlayer)) {
             bot bestTarget(bot);
         }
-        bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
+        // bot.myWaypoint = nearestWaypoints(bot.origin, 1)[0];
+        bot.myWaypoint = getBestWaypoint(bot.origin, bot.targetedPlayer.origin);
         bot.lastKnownWp = bot.myWaypoint;   // prob. deprecated, as unhelpful to Kd Tree & Iteration
 
-        bot.targetWp = nearestWaypoints(bot.targetedPlayer.origin, 1)[0];
+        bot.targetWp = getBestWaypoint(bot.targetedPlayer.origin, bot.origin);
         // bots will cooperatively set lastKnownWp on their target player
         bot.targetedPlayer.lastKnownWp = bot.targetWp;
         if (bot.myWaypoint == bot.targetWp) {
             log("dev", "msg|At target, should be melee or in pursuit by now||");
             return;
         } else {
-            bot.pathStack pushMany(biDirectionalAStar(bot.myWaypoint, bot.targetWp));
+            bot.nPathList = biDirectionalAStar(bot.myWaypoint, bot.targetWp); // new: fist N waypoints, icl. myWaypoint
+            bot.pathStack pushMany(bot.nPathList);
+            bot.pathStack pop(); // toss away myWaypoint for compat w/existing code
+            bot.interpolatedCount = 2;
+            steps = bot getToBestWaypoint(bot);
+            bot.smoothedPath = getSmoothedPath(bot.nPathList, 5, steps);
+            // @todo we really need to know how many steps are in each segment
+
             // bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
-            bot.pathStack print("1927: bot " + bot.index + " initialization path");
+            bot.pathStack print("1931: bot " + bot.index + " initialization path");
             if (bot.pathStack isEmpty()) {
                 log("warn", "msg|bot.pathStack is undefined; we couldn't find a path. Would be a BUG.||");
                 log("bug", sprintfLog("msg|Call was biDirectionalAStar($1, $2)||", bot.myWaypoint, bot.targetWp));
@@ -2652,11 +2906,9 @@ killed(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psO
                 break;
                 default:
                     players = level.players;
-                    noticePrint(players.size);
                     for (i=0; i<players.size; i++) {
                         if (!isDefined(players[i])) {continue;}
                         if (players[i].isBot) {continue;}
-                        noticePrint(players[i].name);
                         if (attacker != players[i]) { // if attacker is not iteration player
                             if ((!players[i].isDown) &&     // if iteration player isn't down && was close enough to be damaged due to attacker
                                 (distance(self.origin, players[i].origin) < 150)) {

@@ -364,6 +364,7 @@ spawnZombie(zombieType, spawnpoint, bot)
     // bot.pathNodes = [];
     bot.pathStack = scripts\include\int_stack::new();
     bot.myWaypoint = undefined;
+    bot.smoothedPath = undefined;
     bot.goalWp = undefined;
     bot.nextWp = undefined;
     if (level.zombieAiDevelopment) {
