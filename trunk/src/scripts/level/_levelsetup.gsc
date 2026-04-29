@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _levelsetup::init()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _levelsetup::init()||");
 
     // Do nothing
 }

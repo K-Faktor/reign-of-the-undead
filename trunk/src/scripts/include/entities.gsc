@@ -63,7 +63,7 @@ damageEnt(eInflictor, eAttacker, iDamage, sMeansOfDeath, sWeapon, damagepos, dam
 
 getClosestEntity(targetname, type)
 {
-    debugPrint("in entities::getClosestEntity()", "fn", level.lowVerbosity);
+    log("trace", "msg|in entities::getClosestEntity()||");
 
     if (!isdefined(type)) {type = "targetname";}
 
@@ -84,7 +84,7 @@ getClosestEntity(targetname, type)
 
 getClosestPlayer()
 {
-    debugPrint("in entities::getClosestPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in entities::getClosestPlayer()||");
 
     ents = level.players;
     nearestEnt = undefined;
@@ -161,7 +161,7 @@ getClosestTarget()
 
 getRandomEntity(targetname)
 {
-    debugPrint("in entities::getRandomEntity()", "fn", level.lowVerbosity);
+    log("trace", "msg|in entities::getRandomEntity()||");
 
     ents = getentarray(targetname, "targetname");
     if (ents.size > 0) {
@@ -171,7 +171,7 @@ getRandomEntity(targetname)
 
 getRandomTdmSpawn()
 {
-    debugPrint("in entities::getRandomTdmSpawn()", "fn", level.lowVerbosity);
+    log("trace", "msg|in entities::getRandomTdmSpawn()||");
 
     currentSpawns = getentarray("mp_tdm_spawn", "classname");
     return currentSpawns[randomint(currentSpawns.size)];

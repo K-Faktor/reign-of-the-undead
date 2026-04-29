@@ -62,7 +62,7 @@ onPlayerConnect()
 
 updateDamageFeedbackSound()
 {
-    debugPrint("in _damagefeedback::updateDamageFeedbackSound()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _damagefeedback::updateDamageFeedbackSound()||");
 
     if (!isPlayer(self)) {return;}
 

@@ -99,7 +99,7 @@ giveBarrel(type)
 
 makeBarricade()
 {
-    debugPrint("in _barricades::makeBarricade()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _barricades::makeBarricade()||");
 
     self.bar_type = 0;
     self.workingPart = 0;
@@ -605,7 +605,7 @@ doBarricadeDamage(damage)
 
 restorePart()
 {
-    debugPrint("in _barricades::restorePart()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _barricades::restorePart()||");
 
     if (self.workingPart > 0) {
         self.workingPart -= 1;
@@ -635,7 +635,7 @@ restorePart()
  */
 removePart()
 {
-    debugPrint("in _barricades::removePart()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _barricades::removePart()||");
 
     // moveto( <new_position>, <move_time>, <acceleration_time>, <deceleration_time> )
     self moveto(self.origin + (0, 0, -128), 1, .1, 0);

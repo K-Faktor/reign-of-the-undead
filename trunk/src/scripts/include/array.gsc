@@ -55,7 +55,7 @@
  */
 quicksort(data, first, n)
 {
-    debugPrint("in array::quicksort()", "fn", level.lowVerbosity);
+    log("trace", "msg|in array::quicksort()||");
 
     /// Life would be so much easier if we could pass function parameters by reference
     if (n < 15) {
@@ -120,7 +120,7 @@ quicksort(data, first, n)
  */
 insertionsort(data, first, n)
 {
-    debugPrint("in array::insertionsort()", "fn", level.lowVerbosity);
+    log("trace", "msg|in array::insertionsort()||");
 
     for (i=first + 1; i<n; i++) {
         // data[i] is added in the sorted sequence data[0, .. i-1]

@@ -114,7 +114,7 @@ fadeout(time)
 
 fadein(time, alpha)
 {
-    debugPrint("in hud::fadein()", "fn", level.lowVerbosity);
+    log("trace", "msg|in hud::fadein()||");
 
     self.alpha = 0;
     self fadeOverTime( time );
@@ -181,7 +181,7 @@ bar_setscale(scale, color)
 
 destroyProgressBar()
 {
-    debugPrint("in hud::destroyProgressBar()", "fn", level.lowVerbosity);
+    log("trace", "msg|in hud::destroyProgressBar()||");
 
     if (isDefined(self.bar_bg)) {self.bar_bg destroy();}
     if (isDefined(self.bar_fg)) {self.bar_fg destroy();}
@@ -269,7 +269,7 @@ updateHealthHud(delta)
 
 screenFlash(color, time, alpha)
 {
-    debugPrint("in hud::screenFlash()", "fn", level.lowVerbosity);
+    log("trace", "msg|in hud::screenFlash()||");
 
     whitescreen = newclientHudElem(self);
     whitescreen.sort = -2;

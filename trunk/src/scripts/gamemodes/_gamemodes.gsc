@@ -133,7 +133,7 @@ loadGameMode(mode)
 /// @deprecated
 loadScriptedMode()
 {
-    debugPrint("in _gamemodes::loadScriptedMode()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _gamemodes::loadScriptedMode()||");
 
     // Scripted mode doesn't do much
 
@@ -141,7 +141,7 @@ loadScriptedMode()
 
 loadOnslaughtMode()
 {
-    debugPrint("in _gamemodes::loadOnslaughtMode()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _gamemodes::loadOnslaughtMode()||");
 
     level.currentPlayer = 0;
 }
@@ -249,7 +249,7 @@ buildZomTypes(preset)
 
 getDefaultWeight(type)
 {
-    debugPrint("in _gamemodes::getDefaultWeight()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _gamemodes::getDefaultWeight()||");
 
     switch (type) {
         case "zombie":
@@ -276,7 +276,7 @@ getDefaultWeight(type)
 
 addSpawnType(type)
 {
-    debugPrint("in _gamemodes::addSpawnType()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _gamemodes::addSpawnType()||");
 
     weight = getDefaultWeight(type);
     level.zom_spawntypes_weightotal += weight;
@@ -740,7 +740,7 @@ showMovieStyleCredit(label, credits)
 
 playEndSound()
 {
-    debugPrint("in _gamemodes::playEndSound()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _gamemodes::playEndSound()||");
 
     playSoundOnPlayers("zom_outro");
 }
@@ -755,7 +755,7 @@ playCreditsSound()
 
 playSoundOnPlayers(sound)
 {
-    debugPrint("in _gamemodes::playSoundOnPlayers()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _gamemodes::playSoundOnPlayers()||");
 
     for (i=0; i<level.players.size; i++) {
         level.players[i] playLocalSound(sound);

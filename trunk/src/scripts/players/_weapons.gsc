@@ -179,7 +179,7 @@ initPlayerWeapons()
  */
 checkWeaponFlash(weapon)
 {
-    debugPrint("in _weapons::checkWeaponFlash()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::checkWeaponFlash()||");
 
     if ((isPistol(weapon)) ||
         (weapon == "none") ||
@@ -258,7 +258,7 @@ canRestoreAmmo(weapon)
  */
 canRestoreAmmoByAmmoBoxes(weapon)
 {
-    debugPrint("in _weapons::canRestoreAmmoByAmmoBoxes()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::canRestoreAmmoByAmmoBoxes()||");
 
     if ((weapon == "helicopter_mp") ||  // helicopter_mp is the medkit
         (weapon == "m14_reflex_mp") ||  // m14_reflex_mp is the ammo box
@@ -362,7 +362,7 @@ watchWeaponUsage()
 
 thunderBlast(dam, realdam, bot)
 {
-    debugPrint("in _weapons::thunderBlast()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::thunderBlast()||");
 
     direction = (0,0,0);
     if (realdam >= bot.health) {
@@ -388,7 +388,7 @@ thunderBlast(dam, realdam, bot)
 
 removeEntOnDowned(ent)
 {
-    debugPrint("in _weapons::removeEntOnDowned()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::removeEntOnDowned()||");
 
     self endon( "end_firing" );
     self waittill("downed");
@@ -399,7 +399,7 @@ removeEntOnDowned(ent)
 
 removeEntOnDeath(ent)
 {
-    debugPrint("in _weapons::removeEntOnDeath()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::removeEntOnDeath()||");
 
     self endon( "end_firing" );
     self waittill("death");
@@ -409,7 +409,7 @@ removeEntOnDeath(ent)
 
 removeEntOnDisconnect(ent)
 {
-    debugPrint("in _weapons::removeEntOnDisconnect()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::removeEntOnDisconnect()||");
 
     self endon( "end_firing" );
     self waittill("death");
@@ -418,7 +418,7 @@ removeEntOnDisconnect(ent)
 
 minigunQuake()
 {
-    debugPrint("in _weapons::minigunQuake()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::minigunQuake()||");
 
     self endon( "death" );
     self endon( "downed" );
@@ -433,7 +433,7 @@ minigunQuake()
 
 alertTillEndFiring()
 {
-    debugPrint("in _weapons::alertTillEndFiring()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::alertTillEndFiring()||");
 
     self endon("death");
     self endon("disconnect");
@@ -632,7 +632,7 @@ isSMG(weapon)
  */
 isExplosive(weapon)
 {
-    debugPrint("in _weapons::isExplosive()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::isExplosive()||");
 
     if (weapon=="c4_mp") {return true;}
     if (weapon=="claymore_mp") {return true;}
@@ -1011,7 +1011,7 @@ triggerThrowable()
 
 waitAndDetonate(delay)
 {
-    debugPrint("in _weapons::waitAndDetonate()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::waitAndDetonate()||");
 
     self endon("death");
     wait delay;
@@ -1052,7 +1052,7 @@ playC4Effects()
 
 c4Damage()
 {
-    debugPrint("in _weapons::c4Damage()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _weapons::c4Damage()||");
 
     self endon( "death" );
 

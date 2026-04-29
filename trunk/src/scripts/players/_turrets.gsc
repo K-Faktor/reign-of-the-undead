@@ -577,7 +577,7 @@ giveMinigunTurret(turret)
 /// Only used for development
 primarySectorLaser(turret)
 {
-    debugPrint("in _turrets::primarySectorLaser()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _turrets::primarySectorLaser()||");
 
     self endon("death");
     self endon("disconnect");
@@ -1490,7 +1490,7 @@ abs(number)
  */
 angleBetweenTwoVectors(a, b)
 {
-    debugPrint("in _turrets::angleBetweenTwoVectors()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _turrets::angleBetweenTwoVectors()||");
 
     aDotB = vectorDot(a, b);
     magnitudeA = length(a);

@@ -115,7 +115,7 @@ cleanupDeadLocks()
  */
 warnPlayer(admin, reason)
 {
-    debugPrint("in _adminCommands::warnPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::warnPlayer()||");
 
     if(isDefined(self)) {
         message = self.name + " ^7got warned on this server. ^3Reason: " + reason + ".";
@@ -199,7 +199,7 @@ warnPlayer(admin, reason)
  */
 removeOneWarning(admin)
 {
-    debugPrint("in _adminCommands::removeOneWarning()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::removeOneWarning()||");
 
     if(isDefined(self)) {
         self.pers["generalWarnings"]--;
@@ -224,7 +224,7 @@ removeOneWarning(admin)
  */
 removeOneLanguageWarning(admin)
 {
-    debugPrint("in _adminCommands::removeOneLanguageWarning()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::removeOneLanguageWarning()||");
 
     if(isDefined(self)) {
         self.pers["badLanguageWarnings"]--;
@@ -249,7 +249,7 @@ removeOneLanguageWarning(admin)
  */
 removeAllWarnings(admin)
 {
-    debugPrint("in _adminCommands::removeAllWarnings()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::removeAllWarnings()||");
 
     if(isDefined(self)) {
         self.pers["badLanguageWarnings"] = 0;
@@ -276,7 +276,7 @@ removeAllWarnings(admin)
  */
 demotePlayer(admin)
 {
-    debugPrint("in _adminCommands::demotePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::demotePlayer()||");
 
     if(isDefined(self)) {
         rankTaken = false;
@@ -399,7 +399,7 @@ demotePlayer(admin)
  */
 promotePlayer(admin)
 {
-    debugPrint("in _adminCommands::promotePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::promotePlayer()||");
 
     if(isDefined(self)) {
         rankGiven = false;
@@ -451,7 +451,7 @@ promotePlayer(admin)
  */
 restorePlayersPrimaryWeapon(admin)
 {
-    debugPrint("in _adminCommands::restorePlayersPrimaryWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::restorePlayersPrimaryWeapon()||");
 
     if(isDefined(self)) {
         if (isDefined(self.primary) && self.primary != "none") {
@@ -485,7 +485,7 @@ restorePlayersPrimaryWeapon(admin)
  */
 restorePlayersSidearm(admin)
 {
-    debugPrint("in _adminCommands::restorePlayersSidearm()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::restorePlayersSidearm()||");
 
     if(isDefined(self)) {
         if (isDefined(self.secondary) && self.secondary != "none") {
@@ -541,7 +541,7 @@ givePlayerUpgradePoints(admin)
  */
 banPlayer(admin, reason)
 {
-    debugPrint("in _adminCommands::banPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::banPlayer()||");
 
     if(isDefined(self)) {
         message = self.name + " ^7got banned on this server. ^3Reason: " + reason + ".";
@@ -575,7 +575,7 @@ banPlayer(admin, reason)
  */
 kickPlayer(admin, reason)
 {
-    debugPrint("in _adminCommands::kickPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::kickPlayer()||");
 
     if(isDefined(self)) {
         message = self.name + " ^7got kicked on this server. ^3Reason: " + reason + ".";
@@ -624,7 +624,7 @@ kickPlayer(admin, reason)
  */
 temporarilyBanPlayer(admin, reason)
 {
-    debugPrint("in _adminCommands::temporarilyBanPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::temporarilyBanPlayer()||");
 
     if(isDefined(self)) {
         message = self.name + " ^7got temporarily banned on this server. ^3Reason: " + reason + ".";
@@ -659,7 +659,7 @@ temporarilyBanPlayer(admin, reason)
  */
 killZombies(admin)
 {
-    debugPrint("in _adminCommands::killZombies()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::killZombies()||");
 
     count = 0;
     for (i=0; i<level.bots.size; i++)
@@ -684,7 +684,7 @@ killZombies(admin)
  */
 finishWave(admin)
 {
-    debugPrint("in _adminCommands::finishWave()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::finishWave()||");
 
     // don't create more bots
     level.playWave = false;
@@ -710,7 +710,7 @@ finishWave(admin)
  */
 restartWave(admin)
 {
-    debugPrint("in _adminCommands::restartWave()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::restartWave()||");
 
     // don't create more bots
     level.playWave = false;
@@ -739,7 +739,7 @@ restartWave(admin)
  */
 restartMap(admin)
 {
-    debugPrint("in _adminCommands::restartMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::restartMap()||");
 
     noticePrint("Admin " + admin.name + " restarted the map.");
 
@@ -756,7 +756,7 @@ restartMap(admin)
  */
 finishMap(admin)
 {
-    debugPrint("in _adminCommands::finishMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::finishMap()||");
 
     // don't create more bots
     level.playWave = false;
@@ -785,7 +785,7 @@ finishMap(admin)
  */
 changeMap(admin, newMap)
 {
-    debugPrint("in _adminCommands::changeMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::changeMap()||");
 
     if (validateMap(newMap)) {
         noticePrint("Admin " + admin.name + " changed the map to " + newMap);
@@ -802,7 +802,7 @@ changeMap(admin, newMap)
  */
 validateMap(mapname)
 {
-    debugPrint("in _adminCommands::validateMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::validateMap()||");
 
     for (i=0; i<level.mapList.size; i++) {
         if (level.mapList[i].name == mapname) {return true;}
@@ -820,7 +820,7 @@ validateMap(mapname)
  */
 dropPlayerWeapon(admin)
 {
-    debugPrint("in _adminCommands::dropPlayerWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::dropPlayerWeapon()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1017,7 +1017,7 @@ healingAura(admin)
  */
 disarmPlayer(admin)
 {
-    debugPrint("in _adminCommands::disarmPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::disarmPlayer()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1039,7 +1039,7 @@ disarmPlayer(admin)
  */
 takePlayersCurrentWeapon(admin)
 {
-    debugPrint("in _adminCommands::takePlayersCurrentWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::takePlayersCurrentWeapon()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1062,7 +1062,7 @@ takePlayersCurrentWeapon(admin)
  */
 healPlayer(admin)
 {
-    debugPrint("in _adminCommands::healPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::healPlayer()||");
 
     if(isDefined(self) && self.isAlive && self.health != self.maxhealth )
     {
@@ -1106,7 +1106,7 @@ curePlayer(admin)
  */
 spawnPlayer(admin)
 {
-    debugPrint("in _adminCommands::spawnPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::spawnPlayer()||");
 
     if (self.isSpectating) {
         // choose one of the unrestricted classes to spawn the player as
@@ -1144,7 +1144,7 @@ spawnPlayer(admin)
  */
 bouncePlayer(admin)
 {
-    debugPrint("in _adminCommands::bouncePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::bouncePlayer()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1175,7 +1175,7 @@ bouncePlayer(admin)
  */
 doBounce(newPosition, power)
 {
-    debugPrint("in _adminCommands::doBounce()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::doBounce()||");
 
     // save original health
     health = self.health;
@@ -1198,7 +1198,7 @@ doBounce(newPosition, power)
  */
 kickRestore()
 {
-    debugPrint("in _adminCommands::kickRestore()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::kickRestore()||");
 
     self endon( "disconnect" );
     wait .05;
@@ -1213,7 +1213,7 @@ kickRestore()
  */
 restoreFallDamageMinHeight()
 {
-    debugPrint("in _adminCommands::restoreFallDamageMinHeight()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::restoreFallDamageMinHeight()||");
 
     self endon( "disconnect" );
 
@@ -1244,7 +1244,7 @@ restoreFallDamageMinHeight()
  */
 teleportPlayerToSpawn(admin)
 {
-    debugPrint("in _adminCommands::teleportPlayerToSpawn()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::teleportPlayerToSpawn()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1267,7 +1267,7 @@ teleportPlayerToSpawn(admin)
  */
 teleportPlayerToAdmin(location, admin)
 {
-    debugPrint("in _adminCommands::teleportPlayerToAdmin()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::teleportPlayerToAdmin()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1289,7 +1289,7 @@ teleportPlayerToAdmin(location, admin)
  */
 teleportPlayerForward(admin)
 {
-    debugPrint("in _adminCommands::teleportPlayerForward()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::teleportPlayerForward()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1317,7 +1317,7 @@ teleportPlayerForward(admin)
  */
 downPlayer(admin)
 {
-    debugPrint("in _adminCommands::downPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::downPlayer()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1389,7 +1389,7 @@ revivePlayer(admin)
  */
 explodePlayer(admin)
 {
-    debugPrint("in _adminCommands::explodePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminCommands::explodePlayer()||");
 
     if(isDefined(self) && self.isAlive)
     {

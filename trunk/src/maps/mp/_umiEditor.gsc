@@ -2017,7 +2017,7 @@ devEmplaceEquipmentShop()
  */
 devDrawLaser(color, origin, direction)
 {
-    debugPrint("in _umiEditor::devDrawLaser()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umiEditor::devDrawLaser()||");
 
     if (color == "red") {
         playFx(level.redLaserSight, origin, direction);

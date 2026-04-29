@@ -105,7 +105,7 @@ watchCmd()
  */
 killZombies()
 {
-    debugPrint("in _rconInterface::killZombies()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rconInterface::killZombies()||");
 
     scripts\server\_adminCommands::killZombies(level.rconAdmin);
 }
@@ -119,7 +119,7 @@ killZombies()
  */
 boomPlayer(args)
 {
-    debugPrint("in _rconInterface::boomPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rconInterface::boomPlayer()||");
 
     players = getentarray("player", "classname");
     for (i=0; i<players.size; i++) {
@@ -139,7 +139,7 @@ boomPlayer(args)
  */
 changeMap(args)
 {
-    debugPrint("in _rconInterface::changeMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rconInterface::changeMap()||");
 
     mapname = args[0];
     if (scripts\server\_adminCommands::validateMap(mapname)) {
@@ -157,7 +157,7 @@ changeMap(args)
  */
 restartMap()
 {
-    debugPrint("in _rconInterface::restartMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rconInterface::restartMap()||");
 
     scripts\server\_adminCommands::restartMap(level.rconAdmin);
 }
@@ -169,7 +169,7 @@ restartMap()
  */
 finishMap()
 {
-    debugPrint("in _rconInterface::finishMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rconInterface::finishMap()||");
 
     scripts\server\_adminCommands::finishMap(level.rconAdmin);
 }

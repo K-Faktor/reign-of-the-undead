@@ -77,7 +77,7 @@ onOpenAdminMenuRequest()
  */
 watchForAdminSpectatorOpenMenuRequests()
 {
-    debugPrint("in _adminInterface::watchForAdminSpectatorOpenMenuRequests()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::watchForAdminSpectatorOpenMenuRequests()||");
 
     self endon("disconnect");
 
@@ -148,7 +148,7 @@ watchAdminMenuData()
  */
 validateSelectedPlayer()
 {
-    debugPrint("in _adminInterface::validateSelectedPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::validateSelectedPlayer()||");
 
     if (!isDefined(self.selectedPlayerEntityNumber)) {return false;}
 
@@ -363,7 +363,7 @@ onCloseAdminMenu()
  */
 onNoPermissions()
 {
-    debugPrint("in _adminInterface::onNoPermissions()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::onNoPermissions()||");
 
     self thread ACPNotify( "You don't have permission to use this command.", 3 );
 }
@@ -632,7 +632,7 @@ watchAdminMenuResponses()
  */
 intPlayerNumber(stringPlayerNumber)
 {
-    debugPrint("in _adminInterface::intPlayerNumber()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::intPlayerNumber()||");
 
     debugPrint("stringPlayerNumber: " + stringPlayerNumber, "val");
     if (!isDefined(level.players)) {
@@ -891,7 +891,7 @@ isLocked(player, adminName, commandName)
  */
 warnPlayer(playerEntityNumber, reason)
 {
-    debugPrint("in _adminInterface::warnPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::warnPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canWarnPlayer) {onNoPermissions(); return;}
@@ -929,7 +929,7 @@ warnPlayer(playerEntityNumber, reason)
  */
 banPlayer(playerEntityNumber, reason)
 {
-    debugPrint("in _adminInterface::banPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::banPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canBanPlayer) {onNoPermissions(); return;}
@@ -966,7 +966,7 @@ banPlayer(playerEntityNumber, reason)
  */
 removeOneWarning(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::removeOneWarning()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::removeOneWarning()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRemovePlayerWarnings) {onNoPermissions(); return;}
@@ -995,7 +995,7 @@ removeOneWarning(playerEntityNumber)
  */
 removeOneLanguageWarning(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::removeOneLanguageWarning()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::removeOneLanguageWarning()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRemovePlayerWarnings) {onNoPermissions(); return;}
@@ -1025,7 +1025,7 @@ removeOneLanguageWarning(playerEntityNumber)
  */
 removeAllWarnings(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::removeAllWarnings()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::removeAllWarnings()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRemovePlayerWarnings) {onNoPermissions(); return;}
@@ -1054,7 +1054,7 @@ removeAllWarnings(playerEntityNumber)
  */
 demotePlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::demotePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::demotePlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRank) {onNoPermissions(); return;}
@@ -1083,7 +1083,7 @@ demotePlayer(playerEntityNumber)
  */
 promotePlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::promotePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::promotePlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRank) {onNoPermissions(); return;}
@@ -1112,7 +1112,7 @@ promotePlayer(playerEntityNumber)
  */
 restorePlayersPrimaryWeapon(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::restorePlayersPrimaryWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::restorePlayersPrimaryWeapon()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRestoreWeapons) {onNoPermissions(); return;}
@@ -1141,7 +1141,7 @@ restorePlayersPrimaryWeapon(playerEntityNumber)
  */
 restorePlayersSidearm(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::restorePlayersSidearm()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::restorePlayersSidearm()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRestoreWeapons) {onNoPermissions(); return;}
@@ -1195,7 +1195,7 @@ givePlayerUpgradePoints(playerEntityNumber)
  */
 kickPlayer(playerEntityNumber, reason)
 {
-    debugPrint("in _adminInterface::kickPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::kickPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canKickPlayer) {onNoPermissions(); return;}
@@ -1228,7 +1228,7 @@ kickPlayer(playerEntityNumber, reason)
  */
 temporarilyBanPlayer(playerEntityNumber, reason)
 {
-    debugPrint("in _adminInterface::temporarilyBanPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::temporarilyBanPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canBanPlayer) {onNoPermissions(); return;}
@@ -1258,7 +1258,7 @@ temporarilyBanPlayer(playerEntityNumber, reason)
  */
 killZombies()
 {
-    debugPrint("in _adminInterface::killZombies()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::killZombies()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canKillZombies) {onNoPermissions(); return;}
@@ -1277,7 +1277,7 @@ killZombies()
  */
 restartWave()
 {
-    debugPrint("in _adminInterface::restartWave()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::restartWave()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRestart) {onNoPermissions(); return;}
@@ -1296,7 +1296,7 @@ restartWave()
  */
 restartMap()
 {
-    debugPrint("in _adminInterface::restartMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::restartMap()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRestart) {onNoPermissions(); return;}
@@ -1318,7 +1318,7 @@ restartMap()
  */
 finishWave()
 {
-    debugPrint("in _adminInterface::finishWave()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::finishWave()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canFinish) {onNoPermissions(); return;}
@@ -1337,7 +1337,7 @@ finishWave()
  */
 finishMap()
 {
-    debugPrint("in _adminInterface::finishMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::finishMap()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canFinish) {onNoPermissions(); return;}
@@ -1357,7 +1357,7 @@ finishMap()
  */
 changeMap()
 {
-    debugPrint("in _adminInterface::changeMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::changeMap()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canChangeMap) {onNoPermissions(); return;}
@@ -1377,7 +1377,7 @@ changeMap()
  */
 applyMapFilter()
 {
-    debugPrint("in _adminInterface::applyMapFilter()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::applyMapFilter()||");
 
     if(!isDefined(level.changeMapFilter)) {level.changeMapFilter = "";}
 
@@ -1404,7 +1404,7 @@ applyMapFilter()
  */
 onOpenChangeMap()
 {
-    debugPrint("in _adminInterface::onOpenChangeMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::onOpenChangeMap()||");
 
     if(!isDefined(level.changeMapLockedBy)) {level.changeMapLockedBy = "";}
 
@@ -1426,7 +1426,7 @@ onOpenChangeMap()
  */
 onCancelChangeMap()
 {
-    debugPrint("in _adminInterface::onCancelChangeMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::onCancelChangeMap()||");
 
     level.changeMapFilter = "";
     self setClientDvar("admin_changemap_filter", level.changeMapFilter);
@@ -1442,7 +1442,7 @@ onCancelChangeMap()
  */
 changeMapUpdateFilter(character)
 {
-    debugPrint("in _adminInterface::changeMapUpdateFilter()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::changeMapUpdateFilter()||");
 
     level.changeMapFilter += character;
     applyMapFilter();
@@ -1455,7 +1455,7 @@ changeMapUpdateFilter(character)
  */
 changeMapFilterBackspace()
 {
-    debugPrint("in _adminInterface::changeMapFilterBackspace()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::changeMapFilterBackspace()||");
 
     newFilter = "";
     for (i=0; i<level.changeMapFilter.size - 1; i++) {
@@ -1477,7 +1477,7 @@ changeMapFilterBackspace()
  */
 buildFilteredMapsString(maps)
 {
-    debugPrint("in _adminInterface::buildFilteredMapsString()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::buildFilteredMapsString()||");
 
     tokens = [];
     for (i=0; i<maps.size; i++) {
@@ -1527,7 +1527,7 @@ buildFilteredMapsString(maps)
  */
 filterMaps(filter)
 {
-    debugPrint("in _adminInterface::filterMaps()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::filterMaps()||");
 
     debugPrint("Filtering maps for " + filter, "val");
     filteredMaps = [];
@@ -1552,7 +1552,7 @@ filterMaps(filter)
  */
 dropPlayerWeapon(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::dropPlayerWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::dropPlayerWeapon()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canDropPlayerWeapon) {onNoPermissions(); return;}
@@ -1587,7 +1587,7 @@ dropPlayerWeapon(playerEntityNumber)
  */
 toggleAdminSessionVisibility()
 {
-    debugPrint("in _adminInterface::toggleAdminSessionVisibility()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::toggleAdminSessionVisibility()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.isAdmin) {onNoPermissions(); return;}
@@ -1604,7 +1604,7 @@ toggleAdminSessionVisibility()
  */
 showAdminSession()
 {
-    debugPrint("in _adminInterface::showAdminSession()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::showAdminSession()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.isAdmin) {onNoPermissions(); return;}
@@ -1641,7 +1641,7 @@ showAdminSession()
  */
 hideAdminSession()
 {
-    debugPrint("in _adminInterface::hideAdminSession()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::hideAdminSession()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.isAdmin) {onNoPermissions(); return;}
@@ -1758,7 +1758,7 @@ displayAdminCommandFeedback(message)
  */
 disarmPlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::disarmPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::disarmPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canDisarmPlayer) {onNoPermissions(); return;}
@@ -1793,7 +1793,7 @@ disarmPlayer(playerEntityNumber)
  */
 takePlayersCurrentWeapon(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::takePlayersCurrentWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::takePlayersCurrentWeapon()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canTakePlayerWeapon) {onNoPermissions(); return;}
@@ -1827,7 +1827,7 @@ takePlayersCurrentWeapon(playerEntityNumber)
  */
 healPlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::healPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::healPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canHealPlayer) {onNoPermissions(); return;}
@@ -1902,7 +1902,7 @@ curePlayer(playerEntityNumber)
  */
 spawnPlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::spawnPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::spawnPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canSpawnPlayer) {onNoPermissions(); return;}
@@ -1938,7 +1938,7 @@ spawnPlayer(playerEntityNumber)
  */
 bouncePlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::bouncePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::bouncePlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canBouncePlayer) {onNoPermissions(); return;}
@@ -1971,7 +1971,7 @@ bouncePlayer(playerEntityNumber)
  */
 teleportPlayerToSpawn(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::teleportPlayerToSpawn()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::teleportPlayerToSpawn()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canTeleportPlayer) {onNoPermissions(); return;}
@@ -2004,7 +2004,7 @@ teleportPlayerToSpawn(playerEntityNumber)
  */
 teleportPlayerToAdmin(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::teleportPlayerToAdmin()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::teleportPlayerToAdmin()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canTeleportPlayer) {onNoPermissions(); return;}
@@ -2037,7 +2037,7 @@ teleportPlayerToAdmin(playerEntityNumber)
  */
 teleportPlayerForward(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::teleportPlayerForward()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::teleportPlayerForward()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canTeleportPlayer) {onNoPermissions(); return;}
@@ -2070,7 +2070,7 @@ teleportPlayerForward(playerEntityNumber)
  */
 downPlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::downPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::downPlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canDownPlayer) {onNoPermissions(); return;}
@@ -2144,7 +2144,7 @@ revivePlayer(playerEntityNumber)
  */
 explodePlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::explodePlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _adminInterface::explodePlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canBoomPlayer) {onNoPermissions(); return;}

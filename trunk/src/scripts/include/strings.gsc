@@ -172,7 +172,7 @@ charToInt(character)
  */
 isAlpha(character)
 {
-    debugPrint("in strings::isAlpha()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::isAlpha()||");
 
     if (character.size > 1) {return -1;}
 
@@ -192,7 +192,7 @@ isAlpha(character)
  */
 isUpper(character)
 {
-    debugPrint("in strings::isUpper()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::isUpper()||");
 
     if (character.size > 1) {return -1;}
 
@@ -230,7 +230,7 @@ isLower(character)
  */
 isNumeric(character)
 {
-    debugPrint("in strings::isNumeric()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::isNumeric()||");
 
     if (character.size > 1) {return -1;}
 
@@ -249,7 +249,7 @@ isNumeric(character)
  */
 isAlphaNumeric(character)
 {
-    debugPrint("in strings::isAlphaNumeric()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::isAlphaNumeric()||");
 
     if (character.size > 1) {return -1;}
 
@@ -271,7 +271,7 @@ isAlphaNumeric(character)
  */
 isSymbol(character)
 {
-    debugPrint("in strings::isSymbol()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::isSymbol()||");
 
     if (character.size > 1) {return -1;}
     return !isAlphaNumeric(character);
@@ -472,7 +472,7 @@ tokenMatchCount(string, token)
  */
 trim(string)
 {
-    debugPrint("in strings::trim()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::trim()||");
 
     // trim leading spaces
     for (i=0; i<string.size; i++) {
@@ -534,7 +534,7 @@ endsWith(haystack, search)
  */
 collapse(string)
 {
-    debugPrint("in strings::collapse()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::collapse()||");
 
     string = trim(string);
 
@@ -623,7 +623,7 @@ split(string, token)
 /// unused, under development
 newMatchTask(beginIndex, endIndex, type)
 {
-    debugPrint("in strings::newMatchTask()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::newMatchTask()||");
 
     task = spawnstruct();
     task.beginIndex = beginIndex;
@@ -842,7 +842,7 @@ leftPad(string, paddingCharacter, length)
  */
 rightPad(string, paddingCharacter, length)
 {
-    debugPrint("in strings::rightPad()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::rightPad()||");
 
     if (!isDefined(string)) {logPrint("param string is undefined\n"); return string;}
     if (!isDefined(paddingCharacter)) {logPrint("param paddingCharacter is undefined\n"); return paddingCharacter;}
@@ -860,7 +860,7 @@ rightPad(string, paddingCharacter, length)
 
 numericToString(numeric, precision)
 {
-    debugPrint("in strings::numericToString()", "fn", level.lowVerbosity);
+    log("trace", "msg|in strings::numericToString()||");
 
     isInteger = false;
     if (Int(numeric) == numeric) {isInteger = true;}

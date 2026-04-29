@@ -114,7 +114,7 @@ precache()
 
 mystery_box(box)
 {
-    debugPrint("in _mysterybox::mystery_box()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mysterybox::mystery_box()||");
 
     weapon = spawn( "script_model", box.origin + (0,0,20) );
     weapon.angles = (0,(box.angles[1] + 90),0);
@@ -138,7 +138,7 @@ mystery_box(box)
 
 createRandomItem(player, lastNum)
 {
-    debugPrint("in _mysterybox::createRandomItem()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mysterybox::createRandomItem()||");
 
     if (isdefined(lastNum))
     {
@@ -172,7 +172,7 @@ createRandomItem(player, lastNum)
 
 deleteOverTime(time)
 {
-    debugPrint("in _mysterybox::deleteOverTime()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mysterybox::deleteOverTime()||");
 
     self endon("death");
     wait time;

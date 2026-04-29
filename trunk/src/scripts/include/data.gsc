@@ -50,7 +50,7 @@ atoi(string)
 
 removeFromArray(array, item)
 {
-    debugPrint("in data::removeFromArray()", "fn", level.lowVerbosity);
+    log("trace", "msg|in data::removeFromArray()||");
 
     for (i=0; i<array.size; i++) {
         if (array[i] == item) {
@@ -66,7 +66,7 @@ removeFromArray(array, item)
 
 dissect(string)
 {
-    debugPrint("in data::dissect()", "fn", level.lowVerbosity);
+    log("trace", "msg|in data::dissect()||");
 
     ret = [];
     index = -1;

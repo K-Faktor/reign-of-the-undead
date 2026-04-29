@@ -42,7 +42,7 @@ init()
 
 map_rotate()
 {
-    debugPrint("in _maprotation::map_rotate()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _maprotation::map_rotate()||");
 
     nextmap = scripts\server\_maps::getNextMap();
     if (isDefined(nextmap)) {

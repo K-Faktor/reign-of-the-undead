@@ -96,7 +96,7 @@ restoreData()
 
 debugStatsTable()
 {
-    debugPrint("in _persistence::debugStatsTable()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _persistence::debugStatsTable()||");
 
     for (i=0; i<2500; i++) {
         debugPrint(tableLookup("mp/playerStatsTable.csv", 0, i, 0) + ":" + tableLookup("mp/playerStatsTable.csv", 0, i, 1), "val");
@@ -152,7 +152,7 @@ Adds the passed value to the value of the named stat
 */
 statAdd(dataName, value)
 {
-    debugPrint("in _persistence::statAdd()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _persistence::statAdd()||");
 
     //if ( !level.rankedMatch )
     //  return;

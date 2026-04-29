@@ -38,7 +38,7 @@ main()
 {
     // source the settings the debug system depends on
     initializeDebugSystem();
-    debugPrint("in war::main()", "fn", level.lowVerbosity);
+    log("trace", "msg|in war::main()||");
     noticePrint("in war::main()");
 
     if (getDvar("mapname") == "mp_background") {return;} // this isn't required...
@@ -51,7 +51,7 @@ main()
 
 Callback_StartGameType()
 {
-    debugPrint("in war::Callback_StartGameType()", "fn", level.lowVerbosity);
+    log("trace", "msg|in war::Callback_StartGameType()||");
 
     thread scripts\server\_server::init();
     thread precacheDefault();

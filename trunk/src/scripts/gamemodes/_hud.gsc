@@ -367,7 +367,7 @@ timer(time, label, glowcolor, text)
 
 glowMessage(label, text, glowcolor, duration, speed, size, sound)
 {
-    debugPrint("in _hud::glowMessage()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _hud::glowMessage()||");
 
     self endon("disconnect");
 
@@ -433,7 +433,7 @@ overlayMessage(label, text, glowcolor, size)
 
 showGlowMessage(label, text, glowcolor, duration, speed, size)
 {
-    debugPrint("in _hud::showGlowMessage()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _hud::showGlowMessage()||");
 
     self.hud_message.elemType = "font";
     self.hud_message.font = "objective";

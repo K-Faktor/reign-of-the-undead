@@ -488,7 +488,7 @@ onAdminConnect(admin)
 
 getPlayer(playerEntityNumber, pickingType)
 {
-    debugPrint("in adminCommon::getPlayer()", "fn", level.lowVerbosity);
+    log("trace", "msg|in adminCommon::getPlayer()||");
 
     if (pickingType == "number") {
         return getPlayerByEntityNumber(playerEntityNumber);
@@ -505,7 +505,7 @@ getPlayer(playerEntityNumber, pickingType)
  */
 getPlayerByEntityNumber(playerEntityNumber)
 {
-    debugPrint("in adminCommon::getPlayerByEntityNumber()", "fn", level.lowVerbosity);
+    log("trace", "msg|in adminCommon::getPlayerByEntityNumber()||");
 
     players = level.players;
     for (i = 0; i < players.size; i++) {
@@ -523,7 +523,7 @@ getPlayerByEntityNumber(playerEntityNumber)
  */
 getPlayerByShortGuid(shortGuid)
 {
-    debugPrint("in adminCommon::getPlayerByShortGuid()", "fn", level.lowVerbosity);
+    log("trace", "msg|in adminCommon::getPlayerByShortGuid()||");
 
     players = level.players;
     for (i = 0; i < players.size; i++) {
@@ -541,7 +541,7 @@ getPlayerByShortGuid(shortGuid)
  */
 getPlayerNumberByShortGuid(shortGuid)
 {
-    debugPrint("in adminCommon::getPlayerNumberByShortGuid()", "fn", level.lowVerbosity);
+    log("trace", "msg|in adminCommon::getPlayerNumberByShortGuid()||");
 
     players = level.players;
     for (i = 0; i < players.size; i++) {
@@ -559,7 +559,7 @@ getPlayerNumberByShortGuid(shortGuid)
  */
 getPlayerIndexByNum(playerEntityNumber)
 {
-    debugPrint("in adminCommon::getPlayerIndexByNum()", "fn", level.lowVerbosity);
+    log("trace", "msg|in adminCommon::getPlayerIndexByNum()||");
 
     players = level.players;
     for (i = 0; i < players.size; i++) {
@@ -581,7 +581,7 @@ getPlayerIndexByNum(playerEntityNumber)
  */
 informAllPlayersOfAdminAction(player, color, message)
 {
-    debugPrint("in adminCommon::informAllPlayersOfAdminAction()", "fn", level.lowVerbosity);
+    log("trace", "msg|in adminCommon::informAllPlayersOfAdminAction()||");
 
     switch(color) {
     case "positive": // green messages

@@ -1014,7 +1014,7 @@ pushout(org)
 
 zomAreaDamage(range)
 {
-    debugPrint("in _bots::zomAreaDamage()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _bots::zomAreaDamage()||");
 
     for (i=0; i<=level.players.size; i++) {
         target = level.players[i];
@@ -1054,7 +1054,7 @@ checkForBarricade(targetposition)
 {
     // 11th most-called function (2% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
-    debugPrint("in _bots::checkForBarricade()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _bots::checkForBarricade()||");
 
     for (i=0; i<level.barricades.size; i++) {
         ent = level.barricades[i];

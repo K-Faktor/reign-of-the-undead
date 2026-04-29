@@ -34,7 +34,7 @@
 
 difficulty(dif)
 {
-    debugPrint("in _difficulty::difficulty()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _difficulty::difficulty()||");
 
     switch (dif) {
         case 5:

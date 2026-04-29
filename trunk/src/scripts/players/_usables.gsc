@@ -76,7 +76,7 @@ addUsable(ent, type, hintstring, distance)
 
 removeUsable(ent)
 {
-    debugPrint("in _usables::removeUsable()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::removeUsable()||");
 
     for (i=0; i<level.players.size; i++) {
         player = level.players[i];
@@ -197,7 +197,7 @@ checkForUsableObjects()
 
 watchUsablesData()
 {
-    debugPrint("in _usables::watchUsablesData()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::watchUsablesData()||");
 
     while(!isDefined(level.players)) {
         debugPrint("Waiting for level.players to be defined", "val");
@@ -229,7 +229,7 @@ watchUsablesData()
 
 printLevelUsablesData()
 {
-    debugPrint("in _usables::printLevelUsablesData()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::printLevelUsablesData()||");
 
     if (level.useObjects.size == 0) {return;}
     header = "name           canUse isPlayer  occupied   origin                range   type        hintstring";
@@ -261,7 +261,7 @@ printLevelUsablesData()
 
 printPlayerUsablesData()
 {
-    debugPrint("in _usables::printPlayerUsablesData()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::printPlayerUsablesData()||");
     self endon("disconnect");
 
     while (1) {
@@ -365,7 +365,7 @@ canUseObj(obj)
 
 usableUse()
 {
-    debugPrint("in _usables::usableUse()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::usableUse()||");
 
     self setclientdvar("ui_hintstring", "");
     if (isDefined(self.curEnt)) {
@@ -532,7 +532,7 @@ usableAbort()
 
 restoreBarricadeInTime(time)
 {
-    debugPrint("in _usables::restoreBarricadeInTime()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::restoreBarricadeInTime()||");
 
     self endon("death");
     self endon("disconnect");
@@ -546,7 +546,7 @@ restoreBarricadeInTime(time)
 
 restoreBarricade()
 {
-    debugPrint("in _usables::restoreBarricade()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::restoreBarricade()||");
 
     if (self.curEnt scripts\players\_barricades::restorePart())
     self scripts\players\_players::incUpgradePoints(3*level.dvar["game_rewardscale"]);
@@ -639,7 +639,7 @@ finishRevive(player, startCovering)
 
 ammoInTime(time)
 {
-    debugPrint("in _usables::ammoInTime()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _usables::ammoInTime()||");
 
     self endon("death");
     self endon("disconnect");

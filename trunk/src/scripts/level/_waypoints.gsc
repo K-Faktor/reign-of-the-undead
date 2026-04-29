@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _waypoints::init()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _waypoints::init()||");
 
     // Do nothing
 }

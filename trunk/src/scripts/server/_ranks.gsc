@@ -85,7 +85,7 @@ loadPlayerRank()
 
 addGuid(rank_title, guid)
 {
-    debugPrint("in _ranks::addGuid()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _ranks::addGuid()||");
 
     for (i=1; i<level.rank.size; i++) {
         if (IsSubStr(rank_title, level.rank[i].title)) {
@@ -97,7 +97,7 @@ addGuid(rank_title, guid)
 
 addRank(title, power, icon)
 {
-    debugPrint("in _ranks::addRank()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _ranks::addRank()||");
 
     struct = spawnstruct();
     struct.ID = level.rank.size;

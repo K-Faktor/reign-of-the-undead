@@ -289,7 +289,7 @@ finishDvar(type, dvar, val)
  */
 dvarChoice(type, dvar, def, values)
 {
-    debugPrint("in _settings::dvarChoice()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _settings::dvarChoice()||");
 
     var = type + "_" + dvar;
     val = getDvar(var);

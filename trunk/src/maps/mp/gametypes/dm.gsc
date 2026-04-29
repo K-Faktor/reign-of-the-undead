@@ -39,7 +39,7 @@ main()
     // source the settings the debug system depends on
     initializeDebugSystem();
     scripts\include\constants::init();
-    debugPrint("in dm::main()", "fn", level.lowVerbosity);
+    log("trace", "msg|in dm::main()||");
 
     noticePrint("in dm::main()");
 
@@ -53,7 +53,7 @@ main()
 
 Callback_StartGameType()
 {
-    debugPrint("in dm::Callback_StartGameType()", "fn", level.lowVerbosity);
+    log("trace", "msg|in dm::Callback_StartGameType()||");
 
     thread scripts\server\_server::init();
     thread precacheDefault();

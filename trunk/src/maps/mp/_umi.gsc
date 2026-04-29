@@ -1109,7 +1109,7 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
  */
 convertToNativeWaypoints()
 {
-    debugPrint("in _umi::convertToNativeWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::convertToNativeWaypoints()||");
 
     loadWaypoints();
 }
@@ -1160,7 +1160,7 @@ loadWaypoints()
 
 loadInternalWaypoints()
 {
-    debugPrint("in _umi::loadInternalWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::loadInternalWaypoints()||");
 
     level.Wp = [];
     level.WpCount = 0;
@@ -1198,7 +1198,7 @@ loadInternalWaypoints()
 
 loadExternalWaypoints()
 {
-    debugPrint("in _umi::loadExternalWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::loadExternalWaypoints()||");
 
     if (level.waypoints.size == 0) {
         errorPrint("Map: No external waypoints found!");
@@ -1752,7 +1752,7 @@ isSpawnpointOk(origin)
  */
 addPlayerSpawnsByClassname(classname, enabled)
 {
-    debugPrint("in _umi::addPlayerSpawnsByClassname()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::addPlayerSpawnsByClassname()||");
 
     // Do nothing, RotU doesn't need to add player spawns
 }
@@ -1768,7 +1768,7 @@ addPlayerSpawnsByClassname(classname, enabled)
  */
 addPlayerSpawnsByTargetname(targetname, enabled)
 {
-    debugPrint("in _umi::addPlayerSpawnsByTargetname()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::addPlayerSpawnsByTargetname()||");
 
     // Do nothing, RotU doesn't need to add player spawns
 }
@@ -1879,7 +1879,7 @@ buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dro
  */
 buildBarricadesByClassname(classname, partCount, health, deathFx, buildFx, dropAll)
 {
-    debugPrint("in _umi::buildBarricadesByClassname()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::buildBarricadesByClassname()||");
 
     // Do nothing, RotU builds barricades by targetname
 }
@@ -1897,7 +1897,7 @@ buildBarricadesByClassname(classname, partCount, health, deathFx, buildFx, dropA
  */
 buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType)
 {
-    debugPrint("in _umi::buildWeaponPickupByTargetname()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::buildWeaponPickupByTargetname()||");
 
     ents = getentarray(targetname, "targetname");
     for (i=0; i<ents.size; i++) {
@@ -1921,7 +1921,7 @@ buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType)
  */
 buildWeaponPickupByClassname(classname, itemText, weapon, weaponType)
 {
-    debugPrint("in _umi::buildWeaponPickupByClassname()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::buildWeaponPickupByClassname()||");
 
     // Do nothing, RotU doesn't build pickup weapons by classname
 }
@@ -1936,7 +1936,7 @@ buildWeaponPickupByClassname(classname, itemText, weapon, weaponType)
  */
 setPreferBtdWaypoints(value)
 {
-    debugPrint("in _umi::setPreferBtdWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setPreferBtdWaypoints()||");
 
     level.preferBtdWaypoints = value;
 }
@@ -1993,7 +1993,7 @@ precacheCommonItems()
  */
 waitUntilFirstPlayerSpawns()
 {
-    debugPrint("in _umi::waitUntilFirstPlayerSpawns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::waitUntilFirstPlayerSpawns()||");
 
     // NOTE: Some maps call this method almost *immediately*, thus giving RotU
     // almost no time to get itself set up.  So we ensure we bootstrap a few
@@ -2130,7 +2130,7 @@ deleteNearbyEntities(origin, maximumDistance2D, maxDeltaHeight)
  */
 preferBtdWaypoints()
 {
-    debugPrint("in _umi::preferBtdWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::preferBtdWaypoints()||");
 
     if (isDefined(level.preferBtdWaypoints)) {return level.preferBtdWaypoints;}
     else {return false;}
@@ -2144,7 +2144,7 @@ preferBtdWaypoints()
  */
 isUmiMap()
 {
-    debugPrint("in _umi::isUmiMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::isUmiMap()||");
 
     /// @todo implement me
     return false;
@@ -2159,7 +2159,7 @@ isUmiMap()
  */
 privateGuessModName()
 {
-    debugPrint("in _umi::privateGuessModName()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::privateGuessModName()||");
 
     return "rotu";
 }
@@ -2276,7 +2276,7 @@ buildSurvSpawn(targetname, priority)
  */
 waittillStart()
 {
-    debugPrint("in _umi::waittillStart()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::waittillStart()||");
 
     waitUntilFirstPlayerSpawns();
 }
@@ -2307,7 +2307,7 @@ startSurvWaves()
  */
 buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)
 {
-    debugPrint("in _umi::buildBarricade()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::buildBarricade()||");
 
     buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll);
 }
@@ -2324,7 +2324,7 @@ buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)
  */
 buildWeaponPickup(targetname, itemText, weapon, weaponType)
 {
-    debugPrint("in _umi::buildWeaponPickup()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::buildWeaponPickup()||");
 
     buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType);
 }
@@ -2332,7 +2332,7 @@ buildWeaponPickup(targetname, itemText, weapon, weaponType)
 /// rotu unused ?
 setWeaponHandling(id)
 {
-    debugPrint("in _umi::setWeaponHandling()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setWeaponHandling()||");
 
     level.onGiveWeapons = id;
 }
@@ -2340,7 +2340,7 @@ setWeaponHandling(id)
 /// rotu unused ?
 setSpawnWeapons(primary, secondary)
 {
-    debugPrint("in _umi::setSpawnWeapons()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setSpawnWeapons()||");
 
     level.spawnPrimary = primary;
     level.spawnSecondary = secondary;
@@ -2349,7 +2349,7 @@ setSpawnWeapons(primary, secondary)
 /// rotu unused ?
 buildParachutePickup(targetname)
 {
-    debugPrint("in _umi::buildParachutePickup()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::buildParachutePickup()||");
 
     ents = getentarray(targetname, "targetname");
     //for (i=0; i<ents.size; i++)
@@ -2359,7 +2359,7 @@ buildParachutePickup(targetname)
 /// rotu unused ?
 setWorldVision(vision, transitiontime)
 {
-    debugPrint("in _umi::setWorldVision()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setWorldVision()||");
 
     visionSetNaked(vision, transitiontime);
     level.vision = vision;
@@ -2368,7 +2368,7 @@ setWorldVision(vision, transitiontime)
 /// rotu unused ?
 setGameMode(mode)
 {
-    debugPrint("in _umi::setGameMode()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setGameMode()||");
 
     level.gameMode = mode;
     waittillframeend;
@@ -2377,7 +2377,7 @@ setGameMode(mode)
 /// rotu unused ?
 setPlayerSpawns(targetname)
 {
-    debugPrint("in _umi::setPlayerSpawns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setPlayerSpawns()||");
 
     level.playerspawns = targetname;
 }
@@ -2438,7 +2438,7 @@ placeShops(weapons, shops)
  */
 convertWaypoints()
 {
-    debugPrint("in _umi::convertWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::convertWaypoints()||");
 
     convertToNativeWaypoints();
 }
@@ -2452,42 +2452,42 @@ convertWaypoints()
  */
 zombieDefaultTarget(origin)
 {
-    debugPrint("in _umi::zombieDefaultTarget()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::zombieDefaultTarget()||");
 
     // Do nothing, RotU doesn't need to set default targets for zombies
 }
 
 mapThink()
 {
-    debugPrint("in _umi::mapThink()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::mapThink()||");
 
     // Do nothing, ROZO internal function
 }
 
 setPlayerModels()
 {
-    debugPrint("in _umi::setPlayerModels()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::setPlayerModels()||");
 
     // Do nothing, ROZO internal function
 }
 
 getFreeStruct(structs, additional)
 {
-    debugPrint("in _umi::getFreeStruct()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::getFreeStruct()||");
 
     // Do nothing, ROZO internal function
 }
 
 addDefaultPlayerSpawns(swap)
 {
-    debugPrint("in _umi::addDefaultPlayerSpawns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::addDefaultPlayerSpawns()||");
 
     // Do nothing, RotU doesn't need to add default player spawns
 }
 
 addPlayerSpawns(classname, enabled)
 {
-    debugPrint("in _umi::addPlayerSpawns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _umi::addPlayerSpawns()||");
 
     // Do nothing, RotU doesn't need to add player spawns
 }

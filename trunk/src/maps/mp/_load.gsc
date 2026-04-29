@@ -196,7 +196,7 @@ main(bScriptgened, bCSVgened, bsgenabled)
 
 exploder_load(trigger)
 {
-    debugPrint("in _load::exploder_load()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _load::exploder_load()||");
 
     level endon( "killexplodertridgers" + trigger.script_exploder );
     trigger waittill( "trigger" );
@@ -349,7 +349,7 @@ setupExploders()
 
 lanterns()
 {
-    debugPrint("in _load::lanterns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _load::lanterns()||");
 
     if (!isdefined(level._effect["lantern_light"]))
         level._effect["lantern_light"]  = loadfx("props/glow_latern");
@@ -358,7 +358,7 @@ lanterns()
 
 script_gen_dump_checksaved()
 {
-    debugPrint("in _load::script_gen_dump_checksaved()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _load::script_gen_dump_checksaved()||");
 
     signatures = getarraykeys( level.script_gen_dump );
     for ( i = 0;i < signatures.size;i ++ )
@@ -372,7 +372,7 @@ script_gen_dump_checksaved()
 
 script_gen_dump()
 {
-    debugPrint("in _load::script_gen_dump()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _load::script_gen_dump()||");
 
     // initialize scriptgen dump
      /#
@@ -556,7 +556,7 @@ script_gen_dump()
 
 script_gen_csvdumpprintln(file, signature)
 {
-    debugPrint("in _load::script_gen_csvdumpprintln()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _load::script_gen_csvdumpprintln()||");
 
     prefix = undefined;
     writtenprefix = undefined;
@@ -679,7 +679,7 @@ script_gen_csvdumpprintln(file, signature)
 
 script_gen_dumpprintln(file, string)
 {
-    debugPrint("in _load::script_gen_dumpprintln()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _load::script_gen_dumpprintln()||");
 
     // printing to file is optional
     if ( file == -1 || !level.bScriptgened )

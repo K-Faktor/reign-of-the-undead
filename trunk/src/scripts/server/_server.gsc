@@ -162,7 +162,7 @@ showDevelopmentConsoleMessages()
 
 readLogMessages()
 {
-    debugPrint("in _server::readLogMessages()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _server::readLogMessages()||");
     /// To use the file commands, we need to be inside /# ... #/ tags
     /#
 

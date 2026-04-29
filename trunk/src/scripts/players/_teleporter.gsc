@@ -50,7 +50,7 @@ init()
 
 giveTeleporter()
 {
-    debugPrint("in _teleporter::giveTeleporter()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::giveTeleporter()||");
 
     self.carryObj = spawn("script_model", (0,0,0));
     self.carryObj.origin = self.origin + (0,0,32) + AnglesToForward(self.angles)*48;
@@ -76,7 +76,7 @@ giveTeleporter()
 
 onDeath()
 {
-    debugPrint("in _teleporter::onDeath()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::onDeath()||");
 
     self waittill("death");
     level.teles_held -= 1;
@@ -85,7 +85,7 @@ onDeath()
 
 placeTele()
 {
-    debugPrint("in _teleporter::placeTele()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::placeTele()||");
 
     wait 1;
     while (1)
@@ -116,7 +116,7 @@ placeTele()
  */
 deploy()
 {
-    debugPrint("in _teleporter::deploy()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::deploy()||");
 
     self endon("disconnect");
     self endon("death");
@@ -167,7 +167,7 @@ deploy()
 */
 spawnTeleporter(origin, angles, spawnDelay)
 {
-    debugPrint("in _teleporter::spawnTeleporter()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::spawnTeleporter()||");
 
     if(!isDefined(angles)) {angles = (0,0,0);}
     if(!isDefined(spawnDelay)) {spawnDelay = .05;}
@@ -224,7 +224,7 @@ spawnTeleporter(origin, angles, spawnDelay)
 
 destroyInTime(time)
 {
-    debugPrint("in _teleporter::destroyInTime()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::destroyInTime()||");
 
     wait time;
     level scripts\players\_usables::removeUsable(self);
@@ -235,7 +235,7 @@ destroyInTime(time)
 
 teleOut( teleporter, origin, angles )
 {
-    debugPrint("in _teleporter::teleOut()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::teleOut()||");
 
     self endon("disconnect");
     self endon("death");
@@ -273,7 +273,7 @@ teleOut( teleporter, origin, angles )
 
 enableTele(time)
 {
-    debugPrint("in _teleporter::enableTele()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _teleporter::enableTele()||");
 
     wait time;
     self.canTeleport = true;

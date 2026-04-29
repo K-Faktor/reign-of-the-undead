@@ -36,49 +36,49 @@
 
 placeShops(weapon, shop)
 {
-    debugPrint("in _map_utils::placeShops()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::placeShops()||");
 
     maps\mp\_umi::placeShops(weapon, shop);
 }
 
 addDefaultZombieSpawns()
 {
-    debugPrint("in _map_utils::addDefaultZombieSpawns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::addDefaultZombieSpawns()||");
 
     maps\mp\_umi::addDefaultZombieSpawns();
 }
 
 addDefaultPlayerSpawns()
 {
-    debugPrint("in _map_utils::addDefaultPlayerSpawns()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::addDefaultPlayerSpawns()||");
 
     // Do nothing
 }
 
 zombieDefaultTarget(position)
 {
-    debugPrint("in _map_utils::zombieDefaultTarget()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::zombieDefaultTarget()||");
 
     // Do Nothing
 }
 
 convertWaypoints()
 {
-    debugPrint("in _map_utils::convertWaypoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::convertWaypoints()||");
 
     maps\mp\_umi::convertWaypoints();
 }
 
 setPlayerModels()
 {
-    debugPrint("in _map_utils::setPlayerModels()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::setPlayerModels()||");
 
     // Do Nothing
 }
 
 mapThink()
 {
-    debugPrint("in _map_utils::mapThink()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _map_utils::mapThink()||");
 
     // Do Nothing
 }

@@ -1201,7 +1201,7 @@ enoughPlayersAlive()
 
 spawnPlayerWhenMorePlayersAreAlive()
 {
-    debugPrint("in _players::spawnPlayerWhenMorePlayersAreAlive()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _players::spawnPlayerWhenMorePlayersAreAlive()||");
 
     self endon("disconnect");
     level endon("game_ended");
@@ -1601,7 +1601,7 @@ joinSpectator()
 
 spawnSpectator(origin, angles)
 {
-    debugPrint("in _players::spawnSpectator()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _players::spawnSpectator()||");
 
     self notify("spawned");
 

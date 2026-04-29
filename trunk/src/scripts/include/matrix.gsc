@@ -47,7 +47,7 @@
  */
 eye(n)
 {
-    debugPrint("in matrix::eye()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::eye()||");
 
     identity = zeros(n, n);
     for (i=0; i<n; i++) {
@@ -67,7 +67,7 @@ eye(n)
  */
 value(matrix, row, column)
 {
-    debugPrint("in matrix::value()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::value()||");
 
     // translate the row, column to array indices
     rowAddress = row - 1;
@@ -97,7 +97,7 @@ value(matrix, row, column)
  */
 setValue(matrix, row, column, data)
 {
-    debugPrint("in matrix::setValue()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::setValue()||");
 
     // translate the row, column to array indices
     rowAddress = row - 1;
@@ -122,7 +122,7 @@ setValue(matrix, row, column, data)
  */
 rowVector(data)
 {
-    debugPrint("in matrix::rowVector()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::rowVector()||");
 
     matrix = spawnStruct();
     matrix.rowCount = 1;
@@ -147,7 +147,7 @@ rowVector(data)
  */
 columnVector(data)
 {
-    debugPrint("in matrix::columnVector()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::columnVector()||");
 
     matrix = spawnStruct();
     matrix.rowCount = data.size;
@@ -173,7 +173,7 @@ columnVector(data)
  */
 zeros(m, n)
 {
-    debugPrint("in matrix::zeros()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::zeros()||");
 
     matrix = spawnStruct();
     matrix.rowCount = m;
@@ -202,7 +202,7 @@ zeros(m, n)
  */
 ones(m, n)
 {
-    debugPrint("in matrix::ones()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::ones()||");
 
     matrix = spawnStruct();
     matrix.rowCount = m;
@@ -229,7 +229,7 @@ ones(m, n)
  */
 transpose(matrix)
 {
-    debugPrint("in matrix::transpose()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::transpose()||");
 
     // set up a matrix to hold the transposition
     transposedMatrix = spawnStruct();
@@ -265,7 +265,7 @@ transpose(matrix)
  */
 augment(matrix, augment)
 {
-    debugPrint("in matrix::augment()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::augment()||");
 
     if (!isDefined(augment)) {augment = zeros(matrix.rowCount, 1);}
 
@@ -298,7 +298,7 @@ augment(matrix, augment)
  */
 appendMatrix(A, B)
 {
-    debugPrint("in matrix::appendMatrix()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::appendMatrix()||");
 
     if (A.columnCount != B.columnCount) {
         errorPrint("Matrices to be appended must have the same number of columns.");
@@ -343,7 +343,7 @@ appendMatrix(A, B)
  */
 scalarMultiplication(matrix, scalar)
 {
-    debugPrint("in matrix::scalarMultiplication()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::scalarMultiplication()||");
 
     for (i=0; i<matrix.rowCount; i++) {
         for (j=0; j<matrix.columnCount; j++) {
@@ -364,7 +364,7 @@ scalarMultiplication(matrix, scalar)
  */
 addMatrices(A, B)
 {
-    debugPrint("in matrix::addMatrices()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::addMatrices()||");
 
     if ((A.rowCount != B.rowCount) || (A.columnCount != B.columnCount)) {
         errorPrint("You cannot add matrices of different sizes.");
@@ -390,7 +390,7 @@ addMatrices(A, B)
  */
 matrixMultiply(A, B)
 {
-    debugPrint("in matrix::matrixMultiply()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::matrixMultiply()||");
 
     if (A.columnCount != B.rowCount) {
         errorPrint("Dimension mis-match.  The number of columns of A must match the number of rows of B.");
@@ -432,7 +432,7 @@ matrixMultiply(A, B)
  */
 matrixPower(A, k)
 {
-    debugPrint("in matrix::matrixPower()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::matrixPower()||");
 
     if (A.rowCount != A.columnCount) {
         errorPrint("Matrix isn't square.");
@@ -467,7 +467,7 @@ matrixPower(A, k)
  */
 determinant(A)
 {
-    debugPrint("in matrix::determinant()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::determinant()||");
 
     if (A.rowCount != A.columnCount) {
         errorPrint("Matrix isn't square.");
@@ -566,7 +566,7 @@ determinant(A)
  */
 isInvertible(A)
 {
-    debugPrint("in matrix::isInvertible()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::isInvertible()||");
 
     if (A.rowCount != A.columnCount) {
         return false;
@@ -601,7 +601,7 @@ isInvertible(A)
  */
 countPivots(matrix)
 {
-    debugPrint("in matrix::countPivots()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::countPivots()||");
 
     /// @internal, so indices are zero-indexed
     pivotCount = 0;
@@ -627,7 +627,7 @@ countPivots(matrix)
  */
 inverseMatrix(A)
 {
-    debugPrint("in matrix::inverseMatrix()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::inverseMatrix()||");
 
     if(!isInvertible(A)) {return undefined;}
 
@@ -672,7 +672,7 @@ inverseMatrix(A)
  */
 partition(matrix, rows, columns)
 {
-    debugPrint("in matrix::partition()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::partition()||");
 
     if (rows == ":") {
         // want all rows
@@ -745,7 +745,7 @@ partition(matrix, rows, columns)
  */
 printMatrix(matrix)
 {
-    debugPrint("in matrix::printMatrix()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::printMatrix()||");
 
     line = "";
     lines = "Matrix (" + matrix.rowCount + " x " + matrix.columnCount + "):\n";
@@ -774,7 +774,7 @@ printMatrix(matrix)
  */
 stringToIntegerMatrix(string)
 {
-    debugPrint("in matrix::stringToIntegerMatrix()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::stringToIntegerMatrix()||");
 
     matrix = spawnStruct();
     matrix.data = [];
@@ -820,7 +820,7 @@ stringToIntegerMatrix(string)
  */
 scaleRow(matrix, scalar, row)
 {
-    debugPrint("in matrix::scaleRow()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::scaleRow()||");
 
     /// @internal, so row is zero-indexed
     for (j=0; j<matrix.columnCount; j++) {
@@ -841,7 +841,7 @@ scaleRow(matrix, scalar, row)
  */
 scaleAddRow(matrix, scalar, k, n)
 {
-    debugPrint("in matrix::scaleAddRow()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::scaleAddRow()||");
 
     /// @internal, so row is zero-indexed
     for (j=0; j<matrix.columnCount; j++) {
@@ -861,7 +861,7 @@ scaleAddRow(matrix, scalar, k, n)
  */
 swapRows(matrix, k, n)
 {
-    debugPrint("in matrix::swapRows()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::swapRows()||");
 
     /// @internal, so row is zero-indexed
     for (j=0; j<matrix.columnCount; j++) {
@@ -881,7 +881,7 @@ swapRows(matrix, k, n)
  */
 ref(matrix)
 {
-    debugPrint("in matrix::ref()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::ref()||");
 
     pivotRow = 0;
     pivotColumn = 0;
@@ -926,7 +926,7 @@ ref(matrix)
  */
 rref(matrix)
 {
-    debugPrint("in matrix::rref()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::rref()||");
 
     pivotRow = matrix.rowCount - 1;
     pivotColumn = 0;
@@ -973,7 +973,7 @@ rref(matrix)
  */
 findBackwardPivot(matrix, row)
 {
-    debugPrint("in matrix::findBackwardPivot()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::findBackwardPivot()||");
 
     /// @internal, so indices are zero-indexed
 
@@ -1005,7 +1005,7 @@ findBackwardPivot(matrix, row)
  */
 solve(A, b)
 {
-    debugPrint("in matrix::solve()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::solve()||");
 
     matrix = augment(A, b);
 
@@ -1026,7 +1026,7 @@ solve(A, b)
  */
 findForwardPivot(matrix, row, column)
 {
-    debugPrint("in matrix::findForwardPivot()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::findForwardPivot()||");
 
     /// @internal, so indices are zero-indexed
 
@@ -1069,7 +1069,7 @@ findForwardPivot(matrix, row, column)
  */
 max(a, b)
 {
-    debugPrint("in matrix::max()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::max()||");
 
     if (a > b) {return a;}
     else {return b;}
@@ -1086,7 +1086,7 @@ max(a, b)
  */
 matrixCross(A, B)
 {
-    debugPrint("in matrix::matrixCross()", "fn", level.lowVerbosity);
+    log("trace", "msg|in matrix::matrixCross()||");
 
     /// @internal, so indices are zero-indexed
 

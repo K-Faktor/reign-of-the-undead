@@ -548,7 +548,7 @@ loadStealthPassiveAbility(ability)
  */
 loadMedicPrimaryAbility(ability)
 {
-    debugPrint("in _abilities::loadMedicPrimaryAbility()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::loadMedicPrimaryAbility()||");
 
     switch (ability) {
         case "AB1": // Medkit
@@ -721,7 +721,7 @@ loadEngineerPassiveAbility(ability)
  */
 loadScoutPrimaryAbility(ability)
 {
-    debugPrint("in _abilities::loadScoutPrimaryAbility()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::loadScoutPrimaryAbility()||");
 
     switch (ability) {
         case "AB1": // Quick Escape
@@ -746,7 +746,7 @@ loadScoutPrimaryAbility(ability)
  */
 loadScoutPassiveAbility(ability)
 {
-    debugPrint("in _abilities::loadScoutPassiveAbility()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::loadScoutPassiveAbility()||");
 
     switch (ability) {
         case "AB1": // Scouting
@@ -801,7 +801,7 @@ rechargeSpecial(delta)
  */
 watchMedkits()
 {
-    debugPrint("in _abilities::watchMedkits()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::watchMedkits()||");
 
     self endon("reset_abilities");
     self endon("downed");
@@ -851,7 +851,7 @@ watchAmmobox()
  */
 kitFX()
 {
-    debugPrint("in _abilities::kitFX()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::kitFX()||");
 
     wait 1;
     if (isDefined(self)) {
@@ -868,7 +868,7 @@ kitFX()
  */
 restoreKit(time)
 {
-    debugPrint("in _abilities::restoreKit()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::restoreKit()||");
 
     self endon("reset_abilities");
     self endon("downed");
@@ -944,7 +944,7 @@ beAmmobox(time)
  */
 beMedkit(medic)
 {
-    debugPrint("in _abilities::beMedkit()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::beMedkit()||");
 
     time = medic.medkitTime;
     wait 2;
@@ -988,7 +988,7 @@ beMedkit(medic)
  */
 medkitMedicine(medic)
 {
-    debugPrint("in _abilities::medkitMedicine()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::medkitMedicine()||");
 
     iprintln("^2"+self.name+"^2's infection has been cured by " + medic.name + "'s medicine");
     self scripts\players\_infection::cureInfection();
@@ -1444,7 +1444,7 @@ resetSpecial()
  */
 healingAura(time)
 {
-    debugPrint("in _abilities::healingAura()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::healingAura()||");
 
     self endon("disconnect");
     self endon("killed_player");
@@ -1650,7 +1650,7 @@ healPlayer(player, amount)
  */
 rewardForHealing(amount)
 {
-    debugPrint("in _abilities::rewardForHealing()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::rewardForHealing()||");
 
     if (amount > 0) {return int((amount+10)/10);}
     else {return 0;}
@@ -1665,7 +1665,7 @@ rewardForHealing(amount)
  */
 restoreAmmoMagazine(player)
 {
-    debugPrint("in _abilities::restoreAmmoMagazine()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::restoreAmmoMagazine()||");
 
     weapon = player getcurrentweapon();
 
@@ -1915,7 +1915,7 @@ doAmmoSpecial()
  */
 doEscape(time)
 {
-    debugPrint("in _abilities::doEscape()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _abilities::doEscape()||");
 
     // Override any existing trance
     if (self.inTrance) {

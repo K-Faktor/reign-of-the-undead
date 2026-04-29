@@ -122,7 +122,7 @@ init()
 
 isRegisteredEvent(type)
 {
-    debugPrint("in _rank::isRegisteredEvent()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::isRegisteredEvent()||");
 
     if (isDefined(level.scoreInfo[type])) {return true;}
     else {return false;}
@@ -144,7 +144,7 @@ getScoreInfoValue(type)
 
 getScoreInfoLabel(type)
 {
-    debugPrint("in _rank::getScoreInfoLabel()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getScoreInfoLabel()||");
 
     return (level.scoreInfo[type]["label"]);
 }
@@ -179,56 +179,56 @@ getRankInfoFull(rankId)
 
 getRankInfoIcon(rankId, prestigeId)
 {
-    debugPrint("in _rank::getRankInfoIcon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoIcon()||");
 
     return tableLookup( "mp/rankIconTable.csv", 0, rankId, prestigeId+1 );
 }
 
 getRankInfoUnlockWeapon(rankId)
 {
-    debugPrint("in _rank::getRankInfoUnlockWeapon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoUnlockWeapon()||");
 
     return tableLookup( "mp/ranktable.csv", 0, rankId, 8 );
 }
 
 getRankInfoUnlockPerk(rankId)
 {
-    debugPrint("in _rank::getRankInfoUnlockPerk()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoUnlockPerk()||");
 
     return tableLookup( "mp/ranktable.csv", 0, rankId, 9 );
 }
 
 getRankInfoUnlockChallenge(rankId)
 {
-    debugPrint("in _rank::getRankInfoUnlockChallenge()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoUnlockChallenge()||");
 
     return tableLookup( "mp/ranktable.csv", 0, rankId, 10 );
 }
 
 getRankInfoUnlockFeature(rankId)
 {
-    debugPrint("in _rank::getRankInfoUnlockFeature()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoUnlockFeature()||");
 
     return tableLookup( "mp/ranktable.csv", 0, rankId, 15 );
 }
 
 getRankInfoUnlockCamo(rankId)
 {
-    debugPrint("in _rank::getRankInfoUnlockCamo()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoUnlockCamo()||");
 
     return tableLookup( "mp/ranktable.csv", 0, rankId, 11 );
 }
 
 getRankInfoUnlockAttachment(rankId)
 {
-    debugPrint("in _rank::getRankInfoUnlockAttachment()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoUnlockAttachment()||");
 
     return tableLookup( "mp/ranktable.csv", 0, rankId, 12 );
 }
 
 getRankInfoLevel(rankId)
 {
-    debugPrint("in _rank::getRankInfoLevel()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getRankInfoLevel()||");
 
     return int( tableLookup( "mp/ranktable.csv", 0, rankId, 13 ) );
 }
@@ -340,7 +340,7 @@ onPlayerSpawned()
 
 roundUp(floatVal)
 {
-    debugPrint("in _rank::roundUp()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::roundUp()||");
 
     if (int( floatVal ) != floatVal) {return int(floatVal+1);}
     else {return int(floatVal);}
@@ -452,7 +452,7 @@ giveRankXP(type, value)
 
 setPrestige(newPrestige)
 {
-    debugPrint("in _rank::setPrestige()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::setPrestige()||");
 
     if (true) {return;} // for disabling function
     if (newPrestige > level.maxPrestige) {return;}
@@ -474,7 +474,7 @@ setPrestige(newPrestige)
 
 prestigeUp()
 {
-    debugPrint("in _rank::prestigeUp()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::prestigeUp()||");
 
     //if (self.rankHacker)
     //return;
@@ -516,7 +516,7 @@ prestigeUp()
 
 resetRank(delay)
 {
-    debugPrint("in _rank::resetRank()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::resetRank()||");
 
     self endon("disconnect");
     wait delay;
@@ -617,7 +617,7 @@ updateRankAnnounceHUD()
 
 endGameUpdate()
 {
-    debugPrint("in _rank::endGameUpdate()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::endGameUpdate()||");
 
     player = self;
 }
@@ -706,7 +706,7 @@ getRankForXp(xpVal)
 
 getSPM()
 {
-    debugPrint("in _rank::getSPM()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::getSPM()||");
 
     rankLevel = (self getRank() % 61) + 1;
     return 3 + (rankLevel * 0.5);
@@ -792,7 +792,7 @@ increaseDemerits(amount, reason)
  */
 decreaseRankPoints(amount)
 {
-    debugPrint("in _rank::decreaseRankPoints()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::decreaseRankPoints()||");
 
     if(!isDefined(self)) {return;}
 
@@ -900,7 +900,7 @@ decreaseRankPoints(amount)
 
 demotionAnnouncement(newRankId)
 {
-    debugPrint("in _rank::demotionAnnouncement()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _rank::demotionAnnouncement()||");
 
     if(!isDefined(self)) {return;}
 

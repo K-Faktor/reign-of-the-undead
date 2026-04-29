@@ -132,7 +132,7 @@ getHitLocHeight(sHitLoc)
 
 drop(origin, drop)
 {
-    debugPrint("in physics::drop()", "fn", level.lowVerbosity);
+    log("trace", "msg|in physics::drop()||");
 
     trace = bulletTrace(origin, origin + (0,0,-1 * drop), false, self);
 
@@ -156,7 +156,7 @@ dropPlayer(origin, drop)
 
 vectorscale(vector, scale)
 {
-    debugPrint("in physics::vectorscale()", "fn", level.lowVerbosity);
+    log("trace", "msg|in physics::vectorscale()||");
 
     return vector * scale;
 }

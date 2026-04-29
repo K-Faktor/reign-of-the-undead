@@ -118,7 +118,7 @@ applyMapFixes()
 
 getMaprotation()
 {
-    debugPrint("in _maps::getMaprotation()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _maps::getMaprotation()||");
 
     level.currentmap = getdvar("mapname");
 
@@ -163,7 +163,7 @@ getMaprotation()
 
 getNextMap()
 {
-    debugPrint("in _maps::getNextMap()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _maps::getNextMap()||");
 
     level.currentmap = getdvar("mapname");
     for (i=0; i<level.maprotation.size; i++)

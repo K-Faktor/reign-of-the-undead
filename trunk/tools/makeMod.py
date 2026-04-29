@@ -40,6 +40,7 @@ builds and the common build/install workflows.
 import argparse
 import hashlib
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -166,6 +167,10 @@ def build_non_debug_script_file(source_file: Path, dest_file: Path):
             elif "//" in line and "<debug />" in line:
                 remove_line = True
             elif line.lstrip().startswith("debugPrint("):
+                remove_line = True
+            elif line.lstrip().startswith("log(\"debug\""):
+                remove_line = True
+            elif line.lstrip().startswith("log(\"dev\""):
                 remove_line = True
             if remove_line:
                 line = "\n"
@@ -679,7 +684,7 @@ def quality_check(root_dir: Path):
             print(f"Warning: Unable to read {file_path}: {exc}")
             continue
         
-        if not ("Copyright (c) 2010-2013 Reign of the Undead Team" in content and
+        if not ("Copyright (c) 2010-2026 Reign of the Undead Team" in content and
                 'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND' in content):
             rel = file_path.relative_to(root_dir)
             license_issues.append(str(rel))
@@ -703,13 +708,13 @@ def quality_check(root_dir: Path):
                 for line_num, line in enumerate(fh, 1):
                     rel = file_path.relative_to(root_dir)
                     if "@todo" in line.lower():
-                        todo_items.append(f"{rel}:{line_num}")
+                        todo_items.append(f"{rel}:{line_num}  {line.strip()}")
                     if "@bug" in line.lower():
-                        bug_items.append(f"{rel}:{line_num}")
+                        bug_items.append(f"{rel}:{line_num}  {line.strip()}")
                     if "@deprecated" in line.lower():
-                        deprecated_items.append(f"{rel}:{line_num}")
+                        deprecated_items.append(f"{rel}:{line_num}  {line.strip()}")
                     if "hack:" in line.lower():
-                        hack_items.append(f"{rel}:{line_num}")
+                        hack_items.append(f"{rel}:{line_num}  {line.strip()}")
                     if "fixme" in line.lower():
                         fixme_items.append(f"{rel}:{line_num}")
         except Exception:
@@ -719,17 +724,17 @@ def quality_check(root_dir: Path):
     print("\n--- Quality Report ---")
     print(f"Files with license issues:     {len(license_issues)}")
     if license_issues:
-        for item in license_issues[:5]:
+        for item in license_issues[:20]:
             print(f"  - {item}")
-        if len(license_issues) > 5:
-            print(f"  ... and {len(license_issues) - 5} more")
+        if len(license_issues) > 20:
+            print(f"  ... and {len(license_issues) - 20} more")
     
     print(f"Files with tab characters:     {len(tab_issues)}")
     if tab_issues:
-        for item in tab_issues[:5]:
+        for item in tab_issues[:20]:
             print(f"  - {item}")
-        if len(tab_issues) > 5:
-            print(f"  ... and {len(tab_issues) - 5} more")
+        if len(tab_issues) > 20:
+            print(f"  ... and {len(tab_issues) - 20} more")
     
     print(f"@todo items found:             {len(todo_items)}")
     print(f"@bug items found:              {len(bug_items)}")

@@ -114,7 +114,7 @@ blacklistedMaps()
  */
 noneOfTheAboveWon()
 {
-    debugPrint("in _mapvoting22::noneOfTheAboveWon()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mapvoting22::noneOfTheAboveWon()||");
 
     level notify("none_of_the_above_won");
 
@@ -364,7 +364,7 @@ mapRotation()
  */
 newMapItem(mapname, gametype)
 {
-    debugPrint("in _mapvoting22::newMapItem()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mapvoting22::newMapItem()||");
 
     map = spawnstruct();
 
@@ -438,7 +438,7 @@ countMapNames()
  */
 mapTextName(mapname)
 {
-    debugPrint("in _mapvoting22::mapTextName()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mapvoting22::mapTextName()||");
 
     textName = "";
 
@@ -868,7 +868,7 @@ voteForPreviousMap()
  */
 changePlayerVote(mapIndex, difference)
 {
-    debugPrint("in _mapvoting22::changePlayerVote()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mapvoting22::changePlayerVote()||");
 
     if (mapIndex == -1) {return;}
 
@@ -897,7 +897,7 @@ changePlayerVote(mapIndex, difference)
  */
 votersText(mapIndex)
 {
-    debugPrint("in _mapvoting22::votersText()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mapvoting22::votersText()||");
 
     players = level.players;
     votersPlayerNames = [];
@@ -1192,7 +1192,7 @@ updateWinningMap()
  */
 winningMapIndex()
 {
-    debugPrint("in _mapvoting22::winningMapIndex()", "fn", level.lowVerbosity);
+    log("trace", "msg|in _mapvoting22::winningMapIndex()||");
 
     mostvotes = level.votingMaps[0].votes;
     winningMapIndex = 0;
