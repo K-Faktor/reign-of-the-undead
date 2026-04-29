@@ -43,7 +43,7 @@
  */
 initZomModels()
 {
-    debugPrint("in _types::initZomModels()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::initZomModels()||");
 
     level.zom_models = [];
     addZomModel("zombie_all", "izmb_zombie1_body", "izmb_zombie2_head");
@@ -75,7 +75,7 @@ initZomModels()
  */
 addZomModel(type, body, head)
 {
-    debugPrint("in _types::addZomModel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::addZomModel()||");
 
     if (isdefined(level.zom_models[type])) {
         size = level.zom_models[type].size;
@@ -161,7 +161,7 @@ loadAnimTree(type)
  */
 initZomTypes()
 {
-    debugPrint("in _types::initZomTypes()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::initZomTypes()||");
 
     level.zom_types = [];
     addZomType("zombie", "zombie", "zombie", "zombie",        18, 46, 20,  96, 40,   200, .8, 1, 1, 0.075); // Default zombie
@@ -200,7 +200,7 @@ initZomTypes()
  */
 addZomType(name, modelType, animTree, soundType, walkSpeed, runSpeed, meleeSpeed, meleeRange, damage, maxHealth, meleeTime, sprintOnly, isBipedal, infectionChance)
 {
-    debugPrint("in _types::addZomType()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::addZomType()||");
 
     struct = spawnstruct();
     level.zom_types[name] = struct;
@@ -231,7 +231,7 @@ addZomType(name, modelType, animTree, soundType, walkSpeed, runSpeed, meleeSpeed
  */
 getBlurForSpecialWave(type)
 {
-    debugPrint("in _types::getBlurForSpecialWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::getBlurForSpecialWave()||");
 
     switch (type) {
         case "burning":         // Fall through
@@ -255,7 +255,7 @@ getBlurForSpecialWave(type)
  */
 getAmbientForSpecialWave(type)
 {
-    debugPrint("in _types::getAmbientForSpecialWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::getAmbientForSpecialWave()||");
 
     switch (type) {
         case "burning":         // Fall through
@@ -287,7 +287,7 @@ getAmbientForSpecialWave(type)
  */
 getFogForSpecialWave(type)
 {
-    debugPrint("in _types::getFogForSpecialWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::getFogForSpecialWave()||");
 
     switch (type) {
         case "toxic":
@@ -310,7 +310,7 @@ getFogForSpecialWave(type)
  */
 getVisionForSpecialWave(type)
 {
-    debugPrint("in _types::getVisionForSpecialWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::getVisionForSpecialWave()||");
 
     switch (type) {
         case "burning":         // Fall through
@@ -336,7 +336,7 @@ getVisionForSpecialWave(type)
  */
 getFxForSpecialWave(type)
 {
-    debugPrint("in _types::getFxForSpecialWave()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::getFxForSpecialWave()||");
 
     switch (type) {
         case "burning":         // Fall through
@@ -461,7 +461,7 @@ onSpawn(type)
  */
 bossSpecialAttack()
 {
-    debugPrint("in _types::bossSpecialAttack()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::bossSpecialAttack()||");
 
     self endon("death");
     wait 3;
@@ -480,7 +480,7 @@ bossSpecialAttack()
  */
 doSpecialAttack()
 {
-    debugPrint("in _types::doSpecialAttack()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::doSpecialAttack()||");
 
     for (i=0; i<level.players.size; i++) {
         if (level.players[i].isAlive) {
@@ -497,7 +497,7 @@ doSpecialAttack()
  */
 manyBossesSpecialAttack()
 {
-    debugPrint("in _types::manyBossesSpecialAttack()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::manyBossesSpecialAttack()||");
 
     self endon("death");
     self endon("boss_fake_death");
@@ -517,7 +517,7 @@ manyBossesSpecialAttack()
  */
 cyclopsSpecialAttack()
 {
-    debugPrint("in _types::cyclopsSpecialAttack()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::cyclopsSpecialAttack()||");
 
     self endon("death");
     wait randomint(10);
@@ -534,7 +534,7 @@ cyclopsSpecialAttack()
  */
 doCyclopsSpecialAttack()
 {
-    debugPrint("in _types::doCyclopsSpecialAttack()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::doCyclopsSpecialAttack()||");
 
     for (i=0; i<level.players.size; i++) {
         if (level.players[i].isAlive) {
@@ -554,7 +554,7 @@ doCyclopsSpecialAttack()
  */
 deleteKillBall(time)
 {
-    debugPrint("in _types::deleteKillBall()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::deleteKillBall()||");
 
     self endon("death");
     wait time;
@@ -570,7 +570,7 @@ deleteKillBall(time)
  */
 killBall(player)
 {
-    debugPrint("in _types::killBall()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::killBall()||");
 
     // Spawn a moving kill ball
     offset = (0,0,40);
@@ -726,7 +726,7 @@ onDamage(type, sMeansOfDeath, sWeapon, iDamage, eAttacker)
  */
 nextBossStatus()
 {
-    debugPrint("in _types::nextBossStatus()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::nextBossStatus()||");
 
     if (!level.bossDoExplosives && !level.bossDoPrimary && !level.bossDoSidearm && !level.bossDoMelee) {
         if (level.waveType == "boss") {
@@ -884,7 +884,7 @@ onCorpse(type)
  */
 toxicCloud(origin, time)
 {
-    debugPrint("in _types::toxicCloud()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::toxicCloud()||");
 
     ent = spawn("script_origin", origin);
     playfx(level.toxicFX, origin);
@@ -917,7 +917,7 @@ toxicCloud(origin, time)
  */
 unEntoxicate(time)
 {
-    debugPrint("in _types::unEntoxicate()", "fn", level.nonVerbose);
+    log("trace", "msg|in _types::unEntoxicate()||");
 
     self endon("death");
     self endon("disconnect");

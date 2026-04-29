@@ -35,7 +35,7 @@
 
 init()
 {
-    debugPrint("in _weapons::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::init()||");
 
     level.onGiveWeapons = -1;
     level.spawnPrimary = "none";
@@ -163,7 +163,7 @@ isSpecialWeap(weapon)
 
 initPlayerWeapons()
 {
-    debugPrint("in _weapons::initPlayerWeapons()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::initPlayerWeapons()||");
 
     self.primary = "none";
     self.secondary = "none";
@@ -197,7 +197,7 @@ checkWeaponFlash(weapon)
 
 givePlayerWeapons()
 {
-    debugPrint("in _weapons::givePlayerWeapons()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::givePlayerWeapons()||");
 
     self.primary = self.persData.primary;
     self.secondary = self.persData.secondary;
@@ -233,7 +233,7 @@ givePlayerWeapons()
  */
 canRestoreAmmo(weapon)
 {
-    debugPrint("in _weapons::canRestoreAmmo()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::canRestoreAmmo()||");
 
     if ((weapon == "helicopter_mp") ||  // helicopter_mp is the medkit
         (weapon == "m14_reflex_mp") ||  // m14_reflex_mp is the ammo box
@@ -277,7 +277,7 @@ canRestoreAmmoByAmmoBoxes(weapon)
 
 watchWeaponUsage()
 {
-    debugPrint("in _weapons::watchWeaponUsage()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::watchWeaponUsage()||");
 
     self endon("death");
     self endon("disconnect");
@@ -457,7 +457,7 @@ alertTillEndFiring()
 /// @deprecated
 watchWeaponSwitching()
 {
-    debugPrint("in _weapons::watchWeaponSwitching()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::watchWeaponSwitching()||");
 
     self endon("death");
     self endon("disconnect");
@@ -479,7 +479,7 @@ watchWeaponSwitching()
  */
 swapWeapons(type, weapon)
 {
-    debugPrint("in _weapons::swapWeapons()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::swapWeapons()||");
 
     switch (type) {
     case "primary":
@@ -682,7 +682,7 @@ isSilenced(weapon)
 
 watchClaymores()
 {
-    debugPrint("in _weapons::watchClaymores()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::watchClaymores()||");
 
     self endon("disconnect");
     self endon("spawned");      // end this instance before a respawn
@@ -714,7 +714,7 @@ watchClaymores()
  */
 playClaymoreEffects()
 {
-    debugPrint("in _weapons::playClaymoreEffects()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::playClaymoreEffects()||");
 
     self endon("death");
 
@@ -738,7 +738,7 @@ playClaymoreEffects()
 
 claymoreDetonation()
 {
-    debugPrint("in _weapons::claymoreDetonation()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::claymoreDetonation()||");
 
     // self is claymore
     self endon("death");
@@ -803,7 +803,7 @@ waitUntilExplosivesEmplaced()
  */
 deleteEntityOnPlayerDeath(entity)
 {
-    debugPrint("in _weapons::deleteEntityOnPlayerDeath()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::deleteEntityOnPlayerDeath()||");
 
     self waittill("death");
     wait .05;
@@ -818,7 +818,7 @@ deleteEntityOnPlayerDeath(entity)
  */
 rebuildPlayersEmplacedExplosives()
 {
-    debugPrint("in _weapons::rebuildPlayersEmplacedExplosives()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::rebuildPlayersEmplacedExplosives()||");
 
     self endon("disconnect");
     self endon("death");
@@ -891,7 +891,7 @@ shouldAffectClaymore(claymore)
  */
 deleteExplosivesOnDisconnect()
 {
-    debugPrint("in _weapons::deleteExplosivesOnDisconnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::deleteExplosivesOnDisconnect()||");
 
     self endon("death");
     self endon("spawned");      // end this instance before a respawn
@@ -921,7 +921,7 @@ deleteExplosivesOnDisconnect()
 
 watchC4()
 {
-    debugPrint("in _weapons::watchC4()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::watchC4()||");
 
     self endon("death");
     self endon("disconnect");
@@ -949,7 +949,7 @@ watchC4()
 
 watchTnt()
 {
-    debugPrint("in _weapons::watchTnt()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::watchTnt()||");
 
     /// We can't endon "death" because it gets emmitted whan a player-zombie is killed
     self endon("disconnect");
@@ -978,7 +978,7 @@ watchTnt()
 
 triggerThrowable()
 {
-    debugPrint("in _weapons::triggerThrowable()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::triggerThrowable()||");
 
     self endon("death");
     self endon("disconnect");
@@ -1111,7 +1111,7 @@ c4Damage()
 
 resetC4ExplodeThisFrame()
 {
-    debugPrint("in _weapons::resetC4ExplodeThisFrame()", "fn", level.nonVerbose);
+    log("trace", "msg|in _weapons::resetC4ExplodeThisFrame()||");
 
     wait .05;
     level.c4explodethisframe = false;

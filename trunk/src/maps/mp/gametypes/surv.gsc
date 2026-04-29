@@ -43,9 +43,8 @@
 main()
 {
     // source the settings the debug system depends on
-    initializeDebugSystem();
+    // initializeDebugSystem();  // @deprecated, once all od debug statements are removed
     scripts\include\constants::init();
-    debugPrint("in surv::main()", "fn", level.nonVerbose);
 
     // Used to let maps know what mod is trying to load them
     level.modName = "rotu";
@@ -60,7 +59,7 @@ main()
 
 Callback_StartGameType()
 {
-    debugPrint("in surv::Callback_StartGameType()", "fn", level.nonVerbose);
+    log("trace", "msg|in surv::Callback_StartGameType()||");
 
     thread scripts\server\_server::init();
     thread precacheDefault();
@@ -68,7 +67,7 @@ Callback_StartGameType()
 
 precacheDefault()
 {
-    debugPrint("in surv::precacheDefault()", "fn", level.nonVerbose);
+    log("trace", "msg|in surv::precacheDefault()||");
 
     precachemodel("tag_origin");
     preCacheShader("white");

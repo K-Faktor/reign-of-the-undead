@@ -34,7 +34,7 @@
 
 init()
 {
-    debugPrint("in _damagefeedback::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _damagefeedback::init()||");
 
     precacheShader("damage_feedback");
     precacheShader("damage_feedback_j");
@@ -44,7 +44,7 @@ init()
 
 onPlayerConnect()
 {
-    debugPrint("in _damagefeedback::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _damagefeedback::onPlayerConnect()||");
 
     for(;;) {
         level waittill("connected", player);

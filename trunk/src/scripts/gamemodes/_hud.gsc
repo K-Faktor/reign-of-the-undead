@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _hud::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::init()||");
 
     level.waveHUD = 0;
     level.waveHUD_Killed = 0;
@@ -49,7 +49,7 @@ init()
 
 precache()
 {
-    debugPrint("in _hud::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::precache()||");
 
     precachestring(&"ZOMBIE_STREAK");
     precachestring(&"ZOMBIE_NEWWAVE");
@@ -68,7 +68,7 @@ precache()
 
 createTeamObjpoint(origin, shader, alpha)
 {
-    debugPrint("in _hud::createTeamObjpoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::createTeamObjpoint()||");
 
     objPoint = newHudElem();
 
@@ -93,7 +93,7 @@ createTeamObjpoint(origin, shader, alpha)
 
 onPlayerConnect()
 {
-    debugPrint("in _hud::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::onPlayerConnect()||");
 
     self.announceHUD = 0;
     self.announceIndex = 0;
@@ -112,7 +112,7 @@ onPlayerConnect()
 
 addTimer(label, string, time)
 {
-    debugPrint("in _hud::addTimer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::addTimer()||");
 
     self endon("death");
     self endon("disconnect");
@@ -179,7 +179,7 @@ addTimer(label, string, time)
 
 removeTimers()
 {
-    debugPrint("in _hud::removeTimers()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::removeTimers()||");
 
     for (i=0; i<self.hud_timers.size; i++) {
         if (isdefined(self.hud_timers[i])) {self.hud_timers[i].hud_timer destroy();}
@@ -190,7 +190,7 @@ removeTimers()
 
 bar(color, initial, y)
 {
-    debugPrint("in _hud::bar()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::bar()||");
 
     self endon("disconnect");
 
@@ -249,7 +249,7 @@ bar_setscale(scale, color)
 
 progressBar(time)
 {
-    debugPrint("in _hud::progressBar()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::progressBar()||");
 
     self endon("disconnect");
 
@@ -303,7 +303,7 @@ progressBar(time)
 
 timer(time, label, glowcolor, text)
 {
-    debugPrint("in _hud::timer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::timer()||");
 
     level.globalHUD = 1;
     if (time < 2) {time = 2;}
@@ -403,7 +403,7 @@ glowMessage(label, text, glowcolor, duration, speed, size, sound)
 
 overlayMessage(label, text, glowcolor, size)
 {
-    debugPrint("in _hud::overlayMessage()", "fn", level.nonVerbose);
+    log("trace", "msg|in _hud::overlayMessage()||");
 
     hud_message = newHudElem();
     hud_message.elemType = "font";

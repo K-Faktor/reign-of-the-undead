@@ -493,7 +493,7 @@ sprintfLog(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13,
  */
 decimalRgbToColor(red, green, blue)
 {
-    debugPrint("in utility::decimalRgbToColor()", "fn", level.nonVerbose);
+    log("trace", "msg|in utility::decimalRgbToColor()||");
 
     return (red/255, green/255, blue/255);
 }

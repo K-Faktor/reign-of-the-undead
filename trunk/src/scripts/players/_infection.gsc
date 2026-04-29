@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _infection::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::init()||");
 
     precache();
     level.becomingZombieDemeritSize = getDvarInt("surv_becoming_a_zombie_demerit_size");
@@ -45,7 +45,7 @@ init()
 
 precache()
 {
-    debugPrint("in _infection::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::precache()||");
 
     preCacheShellShock("infection");    // infection overlay
     precacheHeadIcon("icon_infection"); // infected headicon
@@ -60,7 +60,7 @@ precache()
  */
 cureInfection()
 {
-    debugPrint("in _infection::cureInfection()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::cureInfection()||");
 
     self.infected = false;
     self notify("infection_cured");
@@ -78,7 +78,7 @@ cureInfection()
  */
 goInfected()
 {
-    debugPrint("in _infection::goInfected()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::goInfected()||");
 
     self endon("infection_cured");
     self endon("disconnect");
@@ -128,7 +128,7 @@ goInfected()
  */
 startDamaging()
 {
-    debugPrint("in _infection::startDamaging()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::startDamaging()||");
 
     self endon("infection_cured");
     self endon("disconnect");
@@ -165,7 +165,7 @@ startDamaging()
  */
 waitGoZombie()
 {
-    debugPrint("in _infection::waitGoZombie()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::waitGoZombie()||");
 
     self endon("disconnect");
     self endon("death");
@@ -187,7 +187,7 @@ waitGoZombie()
  */
 playerGoZombie()
 {
-    debugPrint("in _infection::playerGoZombie()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::playerGoZombie()||");
 
     self endon("disconnect");
     self endon("death");
@@ -283,7 +283,7 @@ playerGoZombie()
  */
 createKillZombieObjective()
 {
-    debugPrint("in _infection::createKillZombieObjective()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::createKillZombieObjective()||");
 
     self endon("disconnect");
     /// We can't endon "death" because it gets emmitted whan a player-zombie is killed
@@ -307,7 +307,7 @@ createKillZombieObjective()
  */
 deleteKillZombieObjective()
 {
-    debugPrint("in _infection::deleteKillZombieObjective()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::deleteKillZombieObjective()||");
 
     self endon("disconnect");
     /// We can't endon "death" because it gets emmitted whan a player-zombie is killed
@@ -342,7 +342,7 @@ deleteKillZombieObjective()
  */
 getNextAvailableObjectiveIndex()
 {
-    debugPrint("in _infection::getNextAvailableObjectiveIndex()", "fn", level.nonVerbose);
+    log("trace", "msg|in _infection::getNextAvailableObjectiveIndex()||");
 
     for (index=0; index<level.objectiveIndexAvailability.size; index++) {
         if (level.objectiveIndexAvailability[index] == 1) {

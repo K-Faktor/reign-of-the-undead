@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _gamemodes::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::init()||");
 
     thread scripts\gamemodes\_hud::init();
     thread scripts\gamemodes\_upgradables::init();
@@ -80,7 +80,7 @@ init()
 
 dropSpawns()
 {
-    debugPrint("in _gamemodes::dropSpawns()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::dropSpawns()||");
 
     TDMSpawns = getentarray("mp_tdm_spawn", "classname");
 
@@ -101,7 +101,7 @@ dropSpawns()
 
 initGameMode()
 {
-    debugPrint("in _gamemodes::initGameMode()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::initGameMode()||");
 
     if (!isdefined(level.gameMode))
     level.gameMode = level.dvar["surv_defaultmode"]; // Default gamemode
@@ -112,7 +112,7 @@ initGameMode()
 
 loadGameMode(mode)
 {
-    debugPrint("in _gamemodes::loadGameMode()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::loadGameMode()||");
 
     switch(mode) {
         case "waves_special":
@@ -148,7 +148,7 @@ loadOnslaughtMode()
 
 loadSurvivalMode(mode)
 {
-    debugPrint("in _gamemodes::loadSurvivalMode()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::loadSurvivalMode()||");
 
     level.survMode = mode;
     level.survSpawns = [];
@@ -158,7 +158,7 @@ loadSurvivalMode(mode)
 
 buildZomTypes(preset)
 {
-    debugPrint("in _gamemodes::buildZomTypes()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::buildZomTypes()||");
 
     debugPrint("loading zombie types: " + preset, "val");
 
@@ -319,7 +319,7 @@ getRandomSpecialType()
 
 loadDifficulty(difficulty)
 {
-    debugPrint("in _gamemodes::loadDifficulty()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::loadDifficulty()||");
 
     switch (difficulty) {
         case 1:
@@ -350,7 +350,7 @@ loadDifficulty(difficulty)
 
 monitorDifficulty()
 {
-    debugPrint("in _gamemodes::monitorDifficulty()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::monitorDifficulty()||");
 
     level endon("stop_monitoring");
     thread resumeMonitoring();
@@ -382,7 +382,7 @@ monitorDifficulty()
 
 resumeMonitoring()
 {
-    debugPrint("in _gamemodes::resumeMonitoring()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::resumeMonitoring()||");
 
     level waittill("stop_monitoring");
     thread monitorDifficulty();
@@ -390,7 +390,7 @@ resumeMonitoring()
 
 endMap(endReasontext, showcredits)
 {
-    debugPrint("in _gamemodes::endMap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::endMap()||");
 
     if (!isdefined(showcredits)) {
         // Game was lost
@@ -507,7 +507,7 @@ endMap(endReasontext, showcredits)
 
 buildMovieCreditText()
 {
-    debugPrint("in _gamemodes::buildMovieCreditText()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::buildMovieCreditText()||");
 
     labels = [];
     credits = [];
@@ -628,7 +628,7 @@ buildMovieCreditText()
  */
 buildCenteredCreditText()
 {
-    debugPrint("in _gamemodes::buildCenteredCreditText()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::buildCenteredCreditText()||");
 
     // N.B. manually padded string, because we don't have font metrics
     credits  = "        Thanks for playing Rotu 2.2.2-git!\n";
@@ -639,7 +639,7 @@ buildCenteredCreditText()
 
 showCenteredCredit(credit, scale)
 {
-    debugPrint("in _gamemodes::showCenteredCredit()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::showCenteredCredit()||");
 
     creditTimePerNewline = 0.3;     // how long to show credit per newline in credits
     creditHeightPerNewline = 20;    // base height of each credit line in pixels
@@ -679,7 +679,7 @@ showCenteredCredit(credit, scale)
  */
 showMovieStyleCredit(label, credits)
 {
-    debugPrint("in _gamemodes::showMovieStyleCredit()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::showMovieStyleCredit()||");
 
     scale = 1.8;                    // font scale, 1.4 is minimum cod4 accepts w/o errors
     creditTimePerNewline = 0.3;     // how long to show credit per newline in credits
@@ -747,7 +747,7 @@ playEndSound()
 
 playCreditsSound()
 {
-    debugPrint("in _gamemodes::playCreditsSound()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::playCreditsSound()||");
 
     AmbientStop(0);
     AmbientPlay("ambient_tank" , 1);
@@ -764,7 +764,7 @@ playSoundOnPlayers(sound)
 
 freezePlayerForRoundEnd()
 {
-    debugPrint("in _gamemodes::freezePlayerForRoundEnd()", "fn", level.nonVerbose);
+    log("trace", "msg|in _gamemodes::freezePlayerForRoundEnd()||");
 
     self closeMenu();
     self closeInGameMenu();

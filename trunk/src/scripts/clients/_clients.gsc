@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _clients::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _clients::init()||");
 
     precache();
 
@@ -48,14 +48,14 @@ init()
 
 precache()
 {
-    debugPrint("in _clients::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _clients::precache()||");
 
     precacheStatusIcon("hud_status_connecting");
 }
 
 SetupCallbacks()
 {
-    debugPrint("in _clients::SetupCallbacks()", "fn", level.nonVerbose);
+    log("trace", "msg|in _clients::SetupCallbacks()||");
 
     level.callbackPlayerConnect = ::Callback_PlayerConnect;
     level.callbackPlayerDisconnect = ::Callback_PlayerDisconnect;
@@ -65,7 +65,7 @@ SetupCallbacks()
 
 catchBot()
 {
-    debugPrint("in _clients::catchBot()", "fn", level.nonVerbose);
+    log("trace", "msg|in _clients::catchBot()||");
 
     clientNum = self getEntityNumber();
 
@@ -97,7 +97,7 @@ catchBot()
 
 Callback_PlayerConnect()
 {
-    debugPrint("in _clients::Callback_PlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _clients::Callback_PlayerConnect()||");
 
     self.isBot = false;
 
@@ -161,7 +161,7 @@ Callback_PlayerConnect()
 
 Callback_PlayerDisconnect()
 {
-    debugPrint("in _clients::Callback_PlayerDisconnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _clients::Callback_PlayerDisconnect()||");
 
     if (self.isBot || !self.hasBegun) {return;}
 

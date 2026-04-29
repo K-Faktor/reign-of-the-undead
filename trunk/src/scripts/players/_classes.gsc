@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _classes::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::init()||");
 
     level.player_stat_rank["soldier"] = 430;
     level.player_stat_rank["stealth"] = 431;
@@ -48,7 +48,7 @@ init()
 
 getSkillpoints(rank)
 {
-    debugPrint("in _classes::getSkillpoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::getSkillpoints()||");
 
     modRank = rank + 110 * self.pers["prestige"];
     if (!level.dvar["game_class_ranks"]) {
@@ -98,7 +98,7 @@ getSkillpoints(rank)
  */
 skillPointsNotify(points)
 {
-    debugPrint("in _classes::skillPointsNotify()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::skillPointsNotify()||");
 
     if (points > 0) {
         if (!isdefined(self.skillPointsHud)) {
@@ -128,7 +128,7 @@ skillPointsNotify(points)
 
 increaseClassRank(type)
 {
-    debugPrint("in _classes::increaseClassRank()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::increaseClassRank()||");
 
     if (!level.dvar["game_class_ranks"]) {return ;}
 
@@ -153,7 +153,7 @@ increaseClassRank(type)
  */
 pickClass(class)
 {
-    debugPrint("in _classes::pickClass()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::pickClass()||");
 
     // The class they chose isn't enabled anymore.  Update UI, have them pick another
     if(!isClassEnabled(class)) {
@@ -185,7 +185,7 @@ pickClass(class)
  */
 isValidClass(class)
 {
-    debugPrint("in _classes::isValidClass()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::isValidClass()||");
 
     if ((class == "soldier") || (class == "stealth") || (class == "armored") ||
         (class == "scout") || (class == "medic") || (class == "engineer"))
@@ -302,7 +302,7 @@ enableClasses()
  */
 monitorEnabledClasses()
 {
-    debugPrint("in _classes::monitorEnabledClasses()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::monitorEnabledClasses()||");
 
     self endon("menu_changeclass_allies_closed");
     self endon("disconnect");
@@ -316,7 +316,7 @@ monitorEnabledClasses()
 
 pickSecondary(ability)
 {
-    debugPrint("in _classes::pickSecondary()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::pickSecondary()||");
 
     if (self.class != "none") {
         rank = self getClassRank(self.class);
@@ -337,7 +337,7 @@ pickSecondary(ability)
  */
 acceptClass(forceSpawn)
 {
-    debugPrint("in _classes::acceptClass()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::acceptClass()||");
 
     if (!isDefined(forceSpawn)) {forceSpawn = false;}
 
@@ -526,7 +526,7 @@ acceptClass(forceSpawn)
 
 getClassRank(class)
 {
-    debugPrint("in _classes::getClassRank()", "fn", level.nonVerbose);
+    log("trace", "msg|in _classes::getClassRank()||");
 
     if (!level.dvar["game_class_ranks"]) {return 29;}
     else {return self getStat(level.player_stat_rank[class]);}

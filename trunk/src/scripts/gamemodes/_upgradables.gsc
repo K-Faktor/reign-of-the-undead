@@ -35,7 +35,7 @@
 
 init()
 {
-    debugPrint("in _upgradables::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _upgradables::init()||");
 
     // Set default primary and secondary weapons for the classes if none were set
     // in the config files
@@ -309,7 +309,7 @@ init()
  */
 doUpgrade(weaponType)
 {
-    debugPrint("in _upgradables::doUpgrade()", "fn", level.nonVerbose);
+    log("trace", "msg|in _upgradables::doUpgrade()||");
 
     // get integer portion of the dvar name of next weapon upgrade
     upgradeIndex = self.unlock[weaponType] + 1;

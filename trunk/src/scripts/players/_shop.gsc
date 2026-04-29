@@ -35,7 +35,7 @@
 
 playerSetupShop()
 {
-    debugPrint("in _shop::playerSetupShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _shop::playerSetupShop()||");
 
     //self.points = level.dvar["game_startpoints"];
     self.support_level = 0;
@@ -60,7 +60,7 @@ playerSetupShop()
 
 processResponse(response)
 {
-    debugPrint("in _shop::processResponse()", "fn", level.nonVerbose);
+    log("trace", "msg|in _shop::processResponse()||");
 
     // Always hold back enough points so the player can buy an infection cure
     cureHoldback = level.dvar["shop_item3_costs"];

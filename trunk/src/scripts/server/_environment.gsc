@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _environment::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::init()||");
 
     precache();
 
@@ -54,7 +54,7 @@ init()
 
 precache()
 {
-    debugPrint("in _environment::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::precache()||");
 
     level.lighting_fx = loadfx("weather/lightning");
     level.ember_fx = loadfx("fire/emb_burst_a");
@@ -62,7 +62,7 @@ precache()
 
 getDefaultVision()
 {
-    debugPrint("in _environment::getDefaultVision()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::getDefaultVision()||");
 
     if (level.dvar["env_override_vision"]) {return "rotu";}
     else {return getDvar("mapname");}
@@ -70,7 +70,7 @@ getDefaultVision()
 
 onPlayerConnect()
 {
-    debugPrint("in _environment::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::onPlayerConnect()||");
 
     self setclientdvar("r_blur", level.blur);
 }
@@ -87,7 +87,7 @@ updateBlur(blur)
 
 setBlur(blur, time)
 {
-    debugPrint("in _environment::setBlur()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::setBlur()||");
 
     change = (blur - level.blur) / (time + 1);
     for (i=0; i<=time; i++) {
@@ -98,7 +98,7 @@ setBlur(blur, time)
 
 setGlobalFX(fxtype)
 {
-    debugPrint("in _environment::setGlobalFX()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::setGlobalFX()||");
 
     switch (fxtype) {
         case "lightning":
@@ -115,7 +115,7 @@ setGlobalFX(fxtype)
 
 emberFX()
 {
-    debugPrint("in _environment::emberFX()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::emberFX()||");
 
     level endon("global_fx_end");
     while(1) {
@@ -135,7 +135,7 @@ emberFX()
 
 lightningFX()
 {
-    debugPrint("in _environment::lightningFX()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::lightningFX()||");
 
     level endon("global_fx_end");
     while(1) {
@@ -161,7 +161,7 @@ lightningFX()
 
 lightningBossFX()
 {
-    debugPrint("in _environment::lightningBossFX()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::lightningBossFX()||");
 
     level endon("global_fx_end");
     wait 15;
@@ -192,7 +192,7 @@ lightningBossFX()
 
 setFog(name, time)
 {
-    debugPrint("in _environment::setFog()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::setFog()||");
 
     switch (name) {
         case "toxic":
@@ -213,7 +213,7 @@ setFog(name, time)
 
 setVision(name, time)
 {
-    debugPrint("in _environment::setVision()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::setVision()||");
 
     level.vision = name;
     visionSetNaked(name, time);
@@ -221,7 +221,7 @@ setVision(name, time)
 
 resetVision(time)
 {
-    debugPrint("in _environment::resetVision()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::resetVision()||");
 
     level.vision = getDefaultVision();
     visionSetNaked(level.vision, time);
@@ -229,7 +229,7 @@ resetVision(time)
 
 setAmbient(ambient)
 {
-    debugPrint("in _environment::setAmbient()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::setAmbient()||");
 
     if (level.dvar["env_ambient"]) {
         AmbientStop(0);
@@ -239,7 +239,7 @@ setAmbient(ambient)
 
 stopAmbient(time)
 {
-    debugPrint("in _environment::stopAmbient()", "fn", level.nonVerbose);
+    log("trace", "msg|in _environment::stopAmbient()||");
 
     if (!isdefined(time)) {time = 10;}
     AmbientStop(time);

@@ -34,7 +34,7 @@
 
 init()
 {
-    debugPrint("in _maprotation::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maprotation::init()||");
 
     scripts\server\_maps::getMaprotation();
     level.onChangeMap = ::map_rotate;

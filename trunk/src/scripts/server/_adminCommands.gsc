@@ -44,7 +44,7 @@
 
 init()
 {
-    debugPrint("in _adminCommands::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::init()||");
 
     precache();
     buildAdminData();
@@ -62,7 +62,7 @@ init()
  */
 unlockPlayer(player)
 {
-    debugPrint("in _adminCommands::unlockPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::unlockPlayer()||");
 
     player.isLocked = false;
     player.lockedBy = "";
@@ -83,7 +83,7 @@ unlockPlayer(player)
  */
 cleanupDeadLocks()
 {
-    debugPrint("in _adminCommands::cleanupDeadLocks()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::cleanupDeadLocks()||");
 
     maxLockTime = 7000; // time, in ms
     while(1) {
@@ -518,7 +518,7 @@ restorePlayersSidearm(admin)
  */
 givePlayerUpgradePoints(admin)
 {
-    debugPrint("in _adminCommands::givePlayerUpgradePoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::givePlayerUpgradePoints()||");
 
     if(isDefined(self)) {
         self scripts\players\_players::incUpgradePoints(2000);
@@ -859,7 +859,7 @@ dropPlayerWeapon(admin)
  */
 ammoBox(admin)
 {
-    debugPrint("in _adminCommands::ammoBox()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::ammoBox()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -886,7 +886,7 @@ ammoBox(admin)
  */
 beAmmobox(time)
 {
-    debugPrint("in _adminCommands::beAmmobox()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::beAmmobox()||");
 
     wait 2;
     for (i=0; i<time; i++) {
@@ -919,7 +919,7 @@ beAmmobox(time)
  */
 restoreAmmoClip(player)
 {
-    debugPrint("in _adminCommands::restoreAmmoClip()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::restoreAmmoClip()||");
 
     weapon = player getcurrentweapon();
 
@@ -990,7 +990,7 @@ restoreAmmoClip(player)
  */
 healingAura(admin)
 {
-    debugPrint("in _adminCommands::healingAura()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::healingAura()||");
 
     if(isDefined(self) && self.isAlive)
     {
@@ -1085,7 +1085,7 @@ healPlayer(admin)
  */
 curePlayer(admin)
 {
-    debugPrint("in _adminCommands::curePlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::curePlayer()||");
 
     if(isDefined(self) && self.isAlive && self.infected)
     {
@@ -1363,7 +1363,7 @@ downPlayer(admin)
  */
 revivePlayer(admin)
 {
-    debugPrint("in _adminCommands::revivePlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminCommands::revivePlayer()||");
 
     if((isDefined(self)) &&
        (self.isDown) &&

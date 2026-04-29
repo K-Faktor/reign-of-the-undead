@@ -37,7 +37,7 @@
 // called from maps\mp\gametypes\surv::Callback_StartGameType()
 init()
 {
-    debugPrint("in _server::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _server::init()||");
 
     // should we use the alternate bot AI under devlopment?
     level.zombieAiDevelopment = true;
@@ -108,7 +108,7 @@ init()
  */
 verifyRconPassword()
 {
-    debugPrint("in _server::verifyRconPassword()", "fn", level.nonVerbose);
+    log("trace", "msg|in _server::verifyRconPassword()||");
 
     wait 5;
     resetCount = 0;
@@ -134,7 +134,7 @@ verifyRconPassword()
  */
 showDevelopmentConsoleMessages()
 {
-    debugPrint("in _server::showDevelopmentConsoleMessages()", "fn", level.nonVerbose);
+    log("trace", "msg|in _server::showDevelopmentConsoleMessages()||");
 
     wait 15;
     prefix = "^3[admin]: ";
@@ -196,7 +196,7 @@ readLogMessages()
  */
 intermissionDidYouKnowMessages()
 {
-    debugPrint("in _server::intermissionDidYouKnowMessages()", "fn", level.nonVerbose);
+    log("trace", "msg|in _server::intermissionDidYouKnowMessages()||");
 
     self endon("game_ended");
 
@@ -221,7 +221,7 @@ intermissionDidYouKnowMessages()
  */
 buildIntermissionDidYouKnowMessages()
 {
-    debugPrint("in _server::buildIntermissionDidYouKnowMessages()", "fn", level.nonVerbose);
+    log("trace", "msg|in _server::buildIntermissionDidYouKnowMessages()||");
 
     level.didYouKnow = [];
     for (i=0; i<60; i++) {
@@ -238,7 +238,7 @@ buildIntermissionDidYouKnowMessages()
  */
 runTestCode()
 {
-    debugPrint("in _server::runTestCode()", "fn", level.nonVerbose);
+    log("trace", "msg|in _server::runTestCode()||");
 
 //     maps\mp\_umi::devDumpEntities();
 //     maps\mp\_umi::devDumpCsvWaypointsToBtd();

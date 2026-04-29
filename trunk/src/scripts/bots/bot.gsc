@@ -46,7 +46,7 @@
  */
 instantiate()
 {
-    debugPrint("in bot::instantiate()", "fn", level.nonVerbose);
+    log("trace", "msg|in bot::instantiate()||");
 
     bot = addTestClient();
 
@@ -107,7 +107,7 @@ instantiate()
  */
 remove(botsToRemove)
 {
-    debugPrint("in bot::remove()", "fn", level.nonVerbose);
+    log("trace", "msg|in bot::remove()||");
 
     // move the bots to be removed to the end of the array
     for (i=0; i<botsToRemove.size; i++) {

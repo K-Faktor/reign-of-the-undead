@@ -62,7 +62,7 @@ isAdmin(player)
  */
 onOpenAdminMenuRequest()
 {
-    debugPrint("in _adminInterface::onOpenAdminMenuRequest()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::onOpenAdminMenuRequest()||");
 
     if (isAdmin(self)) {
         self onOpenAdminMenu();
@@ -96,7 +96,7 @@ watchForAdminSpectatorOpenMenuRequests()
  */
 onOpenAdminMenu()
 {
-    debugPrint("in _adminInterface::onOpenAdminMenu()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::onOpenAdminMenu()||");
 
     if (isAdmin(self)) {
         self.admin.adminMenuOpen = true;
@@ -121,7 +121,7 @@ onOpenAdminMenu()
  */
 watchAdminMenuData()
 {
-    debugPrint("in _adminInterface::watchAdminMenuData()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::watchAdminMenuData()||");
 
     self endon("disconnect");
 
@@ -339,7 +339,7 @@ validateSelectedPlayer()
  */
 onCloseAdminMenu()
 {
-    debugPrint("in _adminInterface::onCloseAdminMenu()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::onCloseAdminMenu()||");
 
     self.admin.adminMenuOpen = false;
 
@@ -376,7 +376,7 @@ onNoPermissions()
  */
 watchAdminMenuResponses()
 {
-    debugPrint("in _adminInterface::watchAdminMenuResponses()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::watchAdminMenuResponses()||");
 
     self endon( "disconnect" );
     // threaded on each admin player
@@ -651,7 +651,7 @@ intPlayerNumber(stringPlayerNumber)
  */
 ACPNotify(text, time)
 {
-    debugPrint("in _adminInterface::ACPNotify()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::ACPNotify()||");
 
     self notify("acp_notify");
     self endon("acp_notify");
@@ -670,7 +670,7 @@ ACPNotify(text, time)
  */
 selectNextPlayer()
 {
-    debugPrint("in _adminInterface::selectNextPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::selectNextPlayer()||");
     players = level.players;
 
     self.selectedPlayerIndex++;
@@ -693,7 +693,7 @@ selectNextPlayer()
  */
 selectPreviousPlayer()
 {
-    debugPrint("in _adminInterface::selectPreviousPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::selectPreviousPlayer()||");
     players = level.players;
     self.selectedPlayerIndex--;
 
@@ -716,7 +716,7 @@ selectPreviousPlayer()
  */
 showPlayerInfo()
 {
-    debugPrint("in _adminInterface::showPlayerInfo()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::showPlayerInfo()||");
 
     if (!isDefined(self.selectedPlayerIndex)) {
         debugPrint("for " + self.name + " self.selectedPlayerIndex is undefined; cannot show player info.", "val");
@@ -750,7 +750,7 @@ showPlayerInfo()
  */
 updatePerishablePlayerInfo(player, selectedPlayer)
 {
-    debugPrint("in _adminInterface::updatePerishablePlayerInfo()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::updatePerishablePlayerInfo()||");
 
     self endon("disconnect");
 
@@ -776,7 +776,7 @@ updatePerishablePlayerInfo(player, selectedPlayer)
  */
 getPlayersWarnings(player)
 {
-    debugPrint("in _adminInterface::getPlayersWarnings()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::getPlayersWarnings()||");
 
     if (player.pers["badLanguageWarnings"] == level.badLanguageWarningTempBanThreshold - 1) {
         nextLanguage = "TempBan";
@@ -804,7 +804,7 @@ getPlayersWarnings(player)
  */
 getRankPresitgeDemerits(player)
 {
-    debugPrint("in _adminInterface::getRankPresitgeDemerits()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::getRankPresitgeDemerits()||");
 
     prestige = player scripts\players\_rank::getPrestigeLevel();
     rank = player scripts\players\_rank::getRank() + 1;
@@ -823,7 +823,7 @@ getRankPresitgeDemerits(player)
  */
 getTeamName(player)
 {
-    debugPrint("in _adminInterface::getTeamName()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::getTeamName()||");
 
     if (!isDefined(player.team)) {return "Undefined";}
     if(player.team=="allies") {
@@ -843,7 +843,7 @@ getTeamName(player)
  */
 getPlayerStatus(player)
 {
-    debugPrint("in _adminInterface::getPlayerStatus()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::getPlayerStatus()||");
 
     if ((isDefined(player.isDown)) && (player.isDown)) {return "Down";}
     else if( player.sessionstate == "playing" )        {return "Playing";}
@@ -865,7 +865,7 @@ getPlayerStatus(player)
  */
 isLocked(player, adminName, commandName)
 {
-    debugPrint("in _adminInterface::isLocked()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::isLocked()||");
 
     // Ensure only one pending admin action on a player at a time
     if(player.isLocked) {
@@ -1170,7 +1170,7 @@ restorePlayersSidearm(playerEntityNumber)
  */
 givePlayerUpgradePoints(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::givePlayerUpgradePoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::givePlayerUpgradePoints()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canGiveUpgradePoints) {onNoPermissions(); return;}
@@ -1673,7 +1673,7 @@ hideAdminSession()
  */
 ammoBox(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::ammoBox()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::ammoBox()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canAmmoBox) {onNoPermissions(); return;}
@@ -1707,7 +1707,7 @@ ammoBox(playerEntityNumber)
  */
 healingAura(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::healingAura()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::healingAura()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canHealingAura) {onNoPermissions(); return;}
@@ -1741,7 +1741,7 @@ healingAura(playerEntityNumber)
  */
 displayAdminCommandFeedback(message)
 {
-    debugPrint("in _adminInterface::displayAdminCommandFeedback()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::displayAdminCommandFeedback()||");
 
     msg = "^5" + message; // cyan text
     self thread ACPNotify(msg, 3);
@@ -1862,7 +1862,7 @@ healPlayer(playerEntityNumber)
  */
 curePlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::curePlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::curePlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canCurePlayer) {onNoPermissions(); return;}
@@ -2103,7 +2103,7 @@ downPlayer(playerEntityNumber)
  */
 revivePlayer(playerEntityNumber)
 {
-    debugPrint("in _adminInterface::revivePlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _adminInterface::revivePlayer()||");
 
     // Bail if admin doesn't have this power
     if (!self.admin.canRevivePlayer) {onNoPermissions(); return;}

@@ -34,7 +34,7 @@
 
 init()
 {
-    debugPrint("in _ranks::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _ranks::init()||");
 
     level.rank = [];
     setupRanks();
@@ -42,7 +42,7 @@ init()
 
 setupRanks()
 {
-    debugPrint("in _ranks::setupRanks()", "fn", level.nonVerbose);
+    log("trace", "msg|in _ranks::setupRanks()||");
 
     i = 1;
     for (;;) {
@@ -55,7 +55,7 @@ setupRanks()
 
 loadPlayerRank()
 {
-    debugPrint("in _ranks::loadPlayerRank()", "fn", level.nonVerbose);
+    log("trace", "msg|in _ranks::loadPlayerRank()||");
 
     self.title = "";
     self.overrideStatusIcon = "";

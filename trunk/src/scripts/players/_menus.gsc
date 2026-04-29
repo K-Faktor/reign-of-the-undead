@@ -34,7 +34,7 @@
 
 init()
 {
-    debugPrint("in _menus::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _menus::init()||");
 
     game["menu_team"] = "team_marinesopfor";
     game["menu_class_allies"] = "class_marines";
@@ -101,7 +101,7 @@ init()
 
 onPlayerConnect()
 {
-    debugPrint("in _menus::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _menus::onPlayerConnect()||");
 
     for(;;) {
         level waittill("connected", player);
@@ -121,7 +121,7 @@ onPlayerConnect()
 
 onMenuResponse()
 {
-    debugPrint("in _menus::onMenuResponse()", "fn", level.nonVerbose);
+    log("trace", "msg|in _menus::onMenuResponse()||");
 
     self endon("disconnect");
 

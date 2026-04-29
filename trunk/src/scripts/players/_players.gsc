@@ -41,7 +41,7 @@
 
 init()
 {
-    debugPrint("in _players::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::init()||");
 
     level.activePlayers = 0;
     level.alivePlayers = 0;
@@ -76,7 +76,7 @@ init()
 
 precache()
 {
-    debugPrint("in _players::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::precache()||");
 
     level._effect["flashlight"] = Loadfx("misc/flashlight");
     level.medkitFX = loadfx("misc/medkit");
@@ -102,7 +102,7 @@ precache()
  */
 uav()
 {
-    debugPrint("in _players::uav()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::uav()||");
 
     level endon("game_ended");
 
@@ -146,7 +146,7 @@ setDown(isDown)
  */
 downed()
 {
-    debugPrint("in _players::downed()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::downed()||");
 
     self endon("disconnect");
 
@@ -174,7 +174,7 @@ downed()
  */
 autoText(message)
 {
-    debugPrint("in _players::autoText()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::autoText()||");
 
     if(!isDefined(message)) {
         errorPrint("_players::autoText() called with undefined message.");
@@ -186,7 +186,7 @@ autoText(message)
 
 Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration )
 {
-    debugPrint("in _players::Callback_PlayerLastStand()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::Callback_PlayerLastStand()||");
 
     // remove any usables on this player
     level scripts\players\_usables::removeUsable(self);
@@ -284,7 +284,7 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
  */
 isNewPlayer()
 {
-    debugPrint("in _players::isNewPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::isNewPlayer()||");
 
     prestige = self scripts\players\_persistence::statGet("plevel");
     rank = self.pers["rank"];
@@ -309,7 +309,7 @@ isNewPlayer()
  */
 assistNewPlayers()
 {
-    debugPrint("in _players::assistNewPlayers()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::assistNewPlayers()||");
 
     self thread revive();
     self.sessionstate = "playing";
@@ -333,7 +333,7 @@ assistNewPlayers()
 
 restoreAmmo()
 {
-    debugPrint("in _players::restoreAmmo()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::restoreAmmo()||");
 
     weapons = self getweaponslist();
     for( i = 0; i < weapons.size; i++ )
@@ -347,7 +347,7 @@ restoreAmmo()
 
 onPlayerConnect()
 {
-    debugPrint("in _players::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::onPlayerConnect()||");
 
     if (level.gameEnded) {self.sessionstate = "intermission";}
 
@@ -525,7 +525,7 @@ defaultHeadicon()
 
 onWaveIntermissionBegins()
 {
-    debugPrint("in _players::onWaveIntermissionBegins()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::onWaveIntermissionBegins()||");
 
     level endon("game_ended");
 
@@ -546,7 +546,7 @@ onWaveIntermissionBegins()
 
 onWaveIntermissionEnds()
 {
-    debugPrint("in _players::onWaveIntermissionEnds()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::onWaveIntermissionEnds()||");
 
     level endon("game_ended");
 
@@ -674,7 +674,7 @@ onWaveIntermissionEnds()
 
 onPlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
-    debugPrint("in _players::onPlayerKilled()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::onPlayerKilled()||");
 
     self endon("death");
     self endon("disconnect");
@@ -744,7 +744,7 @@ onPlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHit
 
 resetSpawning()
 {
-    debugPrint("in _players::resetSpawning()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::resetSpawning()||");
 
     for (i=0; i<level.players.size; i++) {
         self.mayRespawn = true;
@@ -832,7 +832,7 @@ onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, 
 
 watchHP()
 {
-    debugPrint("in _players::watchHP()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::watchHP()||");
 
     self endon("death");
     self endon("disconnect");
@@ -867,7 +867,7 @@ watchHP()
 
 doAreaDamage(range, damage, attacker)
 {
-    debugPrint("in _players::doAreaDamage()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::doAreaDamage()||");
 
     for (i=0; i<=level.bots.size; i++)
     {
@@ -1002,7 +1002,7 @@ printPlayersData()
 
 watchPlayersData()
 {
-    debugPrint("in _players::watchPlayersData()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::watchPlayersData()||");
 
     // while(1) {
     //     wait 30;
@@ -1024,7 +1024,7 @@ watchPlayersData()
  */
 correctPlayerCounts()
 {
-    debugPrint("in _players::correctPlayerCounts()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::correctPlayerCounts()||");
 
     self endon("game_ended");
 
@@ -1056,7 +1056,7 @@ correctPlayerCounts()
 // CLEANUP ON DEATH (SPEC) OR DISCONNECT
 cleanup(message)
 {
-    debugPrint("in _players::cleanup()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::cleanup()||");
 
     if(!isDefined(self)) {
         noticePrint("Player disconnected before _players::cleanup() could run.");
@@ -1172,7 +1172,7 @@ cleanup(message)
  */
 markAdminMenuAsDirty()
 {
-    debugPrint("in _players::markAdminMenuAsDirty()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::markAdminMenuAsDirty()||");
 
     players = level.players;
     for ( i = 0; i < players.size; i++ ) {
@@ -1189,7 +1189,7 @@ markAdminMenuAsDirty()
  */
 enoughPlayersAlive()
 {
-    debugPrint("in _players::enoughPlayersAlive()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::enoughPlayersAlive()||");
 
     if ((level.activePlayers == 0) ||
         (level.alivePlayers / level.activePlayers >= level.dvar["game_spawn_requirement"]))
@@ -1228,7 +1228,7 @@ spawnPlayerWhenMorePlayersAreAlive()
  */
 changeClass(cost)
 {
-    debugPrint("in _players::changeClass()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::changeClass()||");
     debugPrint("in _players::changeClass()", "val");
 
     // Force dead player's body to be their old class, not their new class
@@ -1252,7 +1252,7 @@ changeClass(cost)
  */
 changeClassNextIntermission()
 {
-    debugPrint("in _players::changeClassNextIntermission()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::changeClassNextIntermission()||");
 
     self endon("disconnect");
     level endon("game_ended");
@@ -1272,7 +1272,7 @@ changeClassNextIntermission()
 
 spawnPlayerNextIntermission(preserveState)
 {
-    debugPrint("in _players::spawnPlayerNextIntermission()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::spawnPlayerNextIntermission()||");
 
     self endon("disconnect");
     level endon("game_ended");
@@ -1295,7 +1295,7 @@ spawnPlayerNextIntermission(preserveState)
 
 spawnPlayer(preserveState)
 {
-    debugPrint("in _players::spawnPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::spawnPlayer()||");
 
     debugPrint(self.name + ": sessionstate: " + self.sessionstate, "val");
     debugPrint(self.name + ": sessionteam: " + self.sessionteam, "val");
@@ -1451,7 +1451,7 @@ spawnPlayer(preserveState)
 
 removeSpawnProtection(time)
 {
-    debugPrint("in _players::removeSpawnProtection()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::removeSpawnProtection()||");
 
     while (time > 0) {
         time -= 1;
@@ -1465,7 +1465,7 @@ removeSpawnProtection(time)
 
 resetUnlocks()
 {
-    debugPrint("in _players::resetUnlocks()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::resetUnlocks()||");
 
     self.unlock["primary"] = 0;
     self.unlock["secondary"] = 0;
@@ -1497,7 +1497,7 @@ setStatusIcon(icon)
 
 bounce(direction)
 {
-    debugPrint("in _players::bounce()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::bounce()||");
 
     self endon("disconnect");
     self endon("death");
@@ -1511,7 +1511,7 @@ bounce(direction)
 
 fullHeal(speed)
 {
-    debugPrint("in _players::fullHeal()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::fullHeal()||");
 
     self endon("death");
     self endon("disconnect");
@@ -1548,7 +1548,7 @@ incUpgradePoints(inc)
 
 joinAllies()
 {
-    debugPrint("in _players::joinAllies()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::joinAllies()||");
 
     if (level.gameEnded) {return;}
 
@@ -1566,7 +1566,7 @@ joinAllies()
 
 joinSpectator()
 {
-    debugPrint("in _players::joinSpectator()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::joinSpectator()||");
 
     if (level.gameEnded) {return;}
 
@@ -1616,7 +1616,7 @@ spawnSpectator(origin, angles)
 
 revive()
 {
-    debugPrint("in _players::revive()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::revive()||");
 
     if (level.gameEnded) {return;}
 
@@ -1726,7 +1726,7 @@ revive()
 
 execClientCommand(cmd)
 {
-    debugPrint("in _players::execClientCommand()", "fn", level.nonVerbose);
+    log("trace", "msg|in _players::execClientCommand()||");
 
     self setClientDvar("ui_clientcmd", cmd);
     self openMenuNoMouse(game["menu_clientcmd"]);

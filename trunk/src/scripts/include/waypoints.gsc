@@ -46,7 +46,7 @@
  */
 initializeWaypoints()
 {
-    debugPrint("in waypoints::initializeWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::initializeWaypoints()||");
 
     initStatic(); // initialize my hack to enable static member variables
 
@@ -82,7 +82,7 @@ initializeWaypoints()
  */
 initStatic()
 {
-    debugPrint("in waypoints::initStatic()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::initStatic()||");
 
     // an array and stack of variables so we can fake static member variables.  Needed
     // for kdWaypointNearestNeighbor()
@@ -128,7 +128,7 @@ availableStatic()
  */
 initKdWaypointTree()
 {
-    debugPrint("in waypoints::initKdWaypointTree()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::initKdWaypointTree()||");
 
     level.right = 0;
     level.wrong = 0;
@@ -183,7 +183,7 @@ initKdWaypointTree()
  */
 kdWaypointList()
 {
-    debugPrint("in waypoints::kdWaypointList()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::kdWaypointList()||");
 
     waypointList = [];
 
@@ -206,7 +206,7 @@ kdWaypointList()
  */
 abs(a)
 {
-    debugPrint("in waypoints::abs()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::abs()||");
 
     if (a < 0) {return a * -1;}
     return a;
@@ -224,7 +224,7 @@ abs(a)
  */
 kdWaypointTree(waypointList, depth)
 {
-    debugPrint("in waypoints::kdWaypointTree()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::kdWaypointTree()||");
 
     level.treeCalls++;
     if (!isDefined(depth)) {depth = 0;}
@@ -379,7 +379,7 @@ kdWaypointSiftDown(array, start, end, axis)
 /// just for verifying that heapsort works properly
 printArray(array, axis, pivotIndex)
 {
-    debugPrint("in waypoints::printArray()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::printArray()||");
 
     data = "";
     if (!isDefined(pivotIndex)) {pivotIndex = 0;}
@@ -980,7 +980,7 @@ random3dPoint(useMapExtents)
  */
 findWaypointExtents()
 {
-    debugPrint("in waypoints::findWaypointExtents()", "fn", level.nonVerbose);
+    log("trace", "msg|in waypoints::findWaypointExtents()||");
 
     level.waypointMinX = 0;
     level.waypointMaxX = 0;

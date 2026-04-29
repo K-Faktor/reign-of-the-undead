@@ -36,14 +36,14 @@
 
 init()
 {
-    debugPrint("in _welcome::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _welcome::init()||");
 
     loadSettings();
 }
 
 loadSettings()
 {
-    debugPrint("in _welcome::loadSettings()", "fn", level.nonVerbose);
+    log("trace", "msg|in _welcome::loadSettings()||");
 
     // Build array of welcome messages
     level.welcomeMessages = [];
@@ -66,7 +66,7 @@ loadSettings()
  */
 onPlayerSpawn()
 {
-    debugPrint("in _welcome::onPlayerSpawn()", "fn", level.nonVerbose);
+    log("trace", "msg|in _welcome::onPlayerSpawn()||");
 
     self endon("disconnect");
 

@@ -34,7 +34,7 @@
 
 init()
 {
-    debugPrint("in _scoreboard::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _scoreboard::init()||");
 
     precacheShader("faction_128_usmc");
     setdvar("g_TeamIcon_Allies", "faction_128_usmc");

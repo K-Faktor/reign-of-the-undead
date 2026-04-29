@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _abilities::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::init()||");
 
     precache();
     thread loadSpecialAbilitySettings();
@@ -44,7 +44,7 @@ init()
 
 precache()
 {
-    debugPrint("in _abilities::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::precache()||");
 
     level.heal_glow_body    = loadfx( "misc/heal_glow_body");
     level.heal_glow_effect  = loadfx( "misc/heal_glow");
@@ -60,7 +60,7 @@ precache()
  */
 loadSpecialAbilitySettings()
 {
-    debugPrint("in _abilities::loadSpecialAbilitySettings()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadSpecialAbilitySettings()||");
 
     // Stealth special
     level.special["fake_death"]["recharge_time"] = 40;
@@ -96,7 +96,7 @@ loadSpecialAbilitySettings()
  */
 resetAbilities()
 {
-    debugPrint("in _abilities::resetAbilities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::resetAbilities()||");
 
     self notify("reset_abilities");
     self.stealthMp = 1;
@@ -293,7 +293,7 @@ isAbilityAllowed(class, rank, type, ability)
  */
 loadClassAbilities(class)
 {
-    debugPrint("in _abilities::loadClassAbilities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadClassAbilities()||");
 
     // Set default properties for all classes
     self resetAbilities();
@@ -341,7 +341,7 @@ loadClassAbilities(class)
  */
 loadGeneralAbilities(class)
 {
-    debugPrint("in _abilities::loadGeneralAbilities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadGeneralAbilities()||");
 
     self setperk("specialty_pistoldeath");
     switch (class) {
@@ -376,7 +376,7 @@ loadGeneralAbilities(class)
  */
 loadSpecialAbility(special)
 {
-    debugPrint("in _abilities::loadSpecialAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadSpecialAbility()||");
 
     self.special["ability"] = special;
 
@@ -442,7 +442,7 @@ loadAbility(class, type, ability)
  */
 loadSoldierPrimaryAbility(ability)
 {
-    debugPrint("in _abilities::loadSoldierPrimaryAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadSoldierPrimaryAbility()||");
 
     switch (ability) {
         case "AB1": // Rampage
@@ -466,7 +466,7 @@ loadSoldierPrimaryAbility(ability)
  */
 loadSoldierPassiveAbility(ability)
 {
-    debugPrint("in _abilities::loadSoldierPassiveAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadSoldierPassiveAbility()||");
 
     switch (ability) {
         case "AB1": // Rifle Expertise
@@ -496,7 +496,7 @@ loadSoldierPassiveAbility(ability)
  */
 loadStealthPrimaryAbility(ability)
 {
-    debugPrint("in _abilities::loadStealthPrimaryAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadStealthPrimaryAbility()||");
 
     switch (ability) {
         case "AB1": // Assasination
@@ -521,7 +521,7 @@ loadStealthPrimaryAbility(ability)
  */
 loadStealthPassiveAbility(ability)
 {
-    debugPrint("in _abilities::loadStealthPassiveAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadStealthPassiveAbility()||");
 
     switch (ability) {
         case "AB1": // Way of the Assasin
@@ -577,7 +577,7 @@ loadMedicPrimaryAbility(ability)
  */
 loadMedicPassiveAbility(ability)
 {
-    debugPrint("in _abilities::loadMedicPassiveAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadMedicPassiveAbility()||");
 
     switch (ability) {
         case "AB1": // Paramedic
@@ -606,7 +606,7 @@ loadMedicPassiveAbility(ability)
  */
 loadArmoredPrimaryAbility(ability)
 {
-    debugPrint("in _abilities::loadArmoredPrimaryAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadArmoredPrimaryAbility()||");
 
     switch (ability) {
         case "AB1": // Melee Warrior
@@ -633,7 +633,7 @@ loadArmoredPrimaryAbility(ability)
  */
 loadArmoredPassiveAbility(ability)
 {
-    debugPrint("in _abilities::loadArmoredPassiveAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadArmoredPassiveAbility()||");
 
     switch (ability) {
         case "AB1": // Heavy Gunner
@@ -663,7 +663,7 @@ loadArmoredPassiveAbility(ability)
  */
 loadEngineerPrimaryAbility(ability)
 {
-    debugPrint("in _abilities::loadEngineerPrimaryAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadEngineerPrimaryAbility()||");
 
     switch (ability) {
         case "AB1": // Ammo Box
@@ -694,7 +694,7 @@ loadEngineerPrimaryAbility(ability)
  */
 loadEngineerPassiveAbility(ability)
 {
-    debugPrint("in _abilities::loadEngineerPassiveAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::loadEngineerPassiveAbility()||");
 
     switch (ability) {
         case "AB1": // Engineering
@@ -827,7 +827,7 @@ watchMedkits()
  */
 watchAmmobox()
 {
-    debugPrint("in _abilities::watchAmmobox()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchAmmobox()||");
 
     self endon("reset_abilities");
     self endon("downed");
@@ -889,7 +889,7 @@ restoreKit(time)
  */
 restoreAmmobox(time)
 {
-    debugPrint("in _abilities::restoreAmmobox()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::restoreAmmobox()||");
 
     self endon("reset_abilities");
     self endon("downed");
@@ -910,7 +910,7 @@ restoreAmmobox(time)
  */
 beAmmobox(time)
 {
-    debugPrint("in _abilities::beAmmobox()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::beAmmobox()||");
 
     wait 2;
     for (i=0; i<time; i++) {
@@ -1002,7 +1002,7 @@ medkitMedicine(medic)
  */
 stealthMovement()
 {
-    debugPrint("in _abilities::stealthMovement()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::stealthMovement()||");
 
     self endon("reset_abilities");
     self endon("downed");
@@ -1028,7 +1028,7 @@ stealthMovement()
  */
 tranceStealthMovement()
 {
-    debugPrint("in _abilities::tranceStealthMovement()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::tranceStealthMovement()||");
 
     // Do nothing while already in stealth mode
     while (self.inTrance) {
@@ -1055,7 +1055,7 @@ tranceStealthMovement()
  */
 endTranceStealthMovement()
 {
-    debugPrint("in _abilities::endTranceStealthMovement()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::endTranceStealthMovement()||");
 
     self waittill("end_trance");
 
@@ -1073,7 +1073,7 @@ endTranceStealthMovement()
  */
 watchEndTranceStealthMovement()
 {
-    debugPrint("in _abilities::watchEndTranceStealthMovement()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchEndTranceStealthMovement()||");
 
     self endon("end_trance");
 
@@ -1101,7 +1101,7 @@ watchEndTranceStealthMovement()
  */
 watchExplosives()
 {
-    debugPrint("in _abilities::watchExplosives()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchExplosives()||");
 
     self endon("end_trance");
 
@@ -1124,7 +1124,7 @@ watchExplosives()
  */
 watchTurrets()
 {
-    debugPrint("in _abilities::watchTurrets()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchTurrets()||");
 
     self endon("end_trance");
 
@@ -1143,7 +1143,7 @@ watchTurrets()
  */
 watchKnife()
 {
-    debugPrint("in _abilities::watchKnife()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchKnife()||");
 
     self endon("end_trance");
 
@@ -1166,7 +1166,7 @@ watchKnife()
  */
 watchUse()
 {
-    debugPrint("in _abilities::watchUse()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchUse()||");
 
     self endon("end_trance");
 
@@ -1182,7 +1182,7 @@ watchUse()
  */
 quickEscape()
 {
-    debugPrint("in _abilities::quickEscape()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::quickEscape()||");
 
     self endon("reset_abilities");
     self endon("death");
@@ -1207,7 +1207,7 @@ quickEscape()
  */
 tranceQuickEscape()
 {
-    debugPrint("in _abilities::tranceQuickEscape()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::tranceQuickEscape()||");
 
     // Override any existing trance
     if (self.inTrance) {
@@ -1237,7 +1237,7 @@ tranceQuickEscape()
  */
 endTranceQuickEscape()
 {
-    debugPrint("in _abilities::endTranceQuickEscape()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::endTranceQuickEscape()||");
 
     self waittill("end_trance");
     self endon("disconnect");
@@ -1262,7 +1262,7 @@ endTranceQuickEscape()
  */
 regenerate(health, interval, limit)
 {
-    debugPrint("in _abilities::regenerate()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::regenerate()||");
 
     self endon("reset_abilities");
     self endon("death");
@@ -1310,7 +1310,7 @@ heal(amount)
  */
 watchSpecialAbility()
 {
-    debugPrint("in _abilities::watchSpecialAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::watchSpecialAbility()||");
 
     self endon("disconnect");
     self endon("killed_player");
@@ -1383,7 +1383,7 @@ checkForDoubleTapF()
  */
 onSpecialAbility()
 {
-    debugPrint("in _abilities::onSpecialAbility()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::onSpecialAbility()||");
 
     self endon("disconnect");
 
@@ -1426,7 +1426,7 @@ onSpecialAbility()
  */
 resetSpecial()
 {
-    debugPrint("in _abilities::resetSpecial()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::resetSpecial()||");
 
     self endon("disconnect");
 
@@ -1472,7 +1472,7 @@ healingAura(time)
  */
 spawnHealFX(groundPoint, fx)
 {
-    debugPrint("in _abilities::spawnHealFX()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::spawnHealFX()||");
 
     effect = spawnFx(fx, groundPoint, (0,0,1), (1,0,0));
     triggerFx(effect);
@@ -1489,7 +1489,7 @@ spawnHealFX(groundPoint, fx)
  */
 beHealingAura(time)
 {
-    debugPrint("in _abilities::beHealingAura()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::beHealingAura()||");
 
     wait 2;
     timePassed = 0;
@@ -1521,7 +1521,7 @@ beHealingAura(time)
  */
 doHealingAura(player)
 {
-    debugPrint("in _abilities::doHealingAura()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::doHealingAura()||");
 
     master = self.master;
 
@@ -1549,7 +1549,7 @@ doHealingAura(player)
  */
 glowBall(player)
 {
-    debugPrint("in _abilities::glowBall()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::glowBall()||");
 
     // Spawn a moving glow ball
     offset = (0,0,40);
@@ -1599,7 +1599,7 @@ glowBall(player)
  */
 playGlowBallHeadEffect()
 {
-    debugPrint("in _abilities::playGlowBallHeadEffect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::playGlowBallHeadEffect()||");
 
     tag = "j_head";
     playFXOnTag(level.heal_glow_body, self, tag);
@@ -1615,7 +1615,7 @@ playGlowBallHeadEffect()
  */
 healPlayer(player, amount)
 {
-    debugPrint("in _abilities::healPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::healPlayer()||");
 
     if (player.health == player.maxhealth) {return 0;}
 
@@ -1787,7 +1787,7 @@ restoreAmmoMagazine(player)
  */
 doRampage(time)
 {
-    debugPrint("in _abilities::doRampage()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::doRampage()||");
 
     self endon("death");
     self endon("disconnect");
@@ -1820,7 +1820,7 @@ doRampage(time)
  */
 doFakeDeath(time)
 {
-    debugPrint("in _abilities::doFakeDeath()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::doFakeDeath()||");
 
     self endon("disconnect");
 
@@ -1868,7 +1868,7 @@ doFakeDeath(time)
  */
 doInvincible(time)
 {
-    debugPrint("in _abilities::doInvincible()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::doInvincible()||");
 
     self endon("death");
     self endon("disconnect");
@@ -1893,7 +1893,7 @@ doInvincible(time)
  */
 doAmmoSpecial()
 {
-    debugPrint("in _abilities::doAmmoSpecial()", "fn", level.nonVerbose);
+    log("trace", "msg|in _abilities::doAmmoSpecial()||");
 
     weapon = self GetCurrentWeapon();
     if ((weapon == self.primary) || (weapon == self.secondary)) {

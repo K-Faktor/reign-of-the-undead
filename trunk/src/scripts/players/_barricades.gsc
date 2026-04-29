@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _barricades::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::init()||");
 
     precachemodel("com_barrel_metal");      // regular Barrel
     precachemodel("com_barrel_biohazard");  // MG+Barrel
@@ -65,7 +65,7 @@ init()
  */
 giveBarrel(type)
 {
-    debugPrint("in _barricades::giveBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::giveBarrel()||");
 
     if (!isdefined(type)) {type = 0;}
 
@@ -113,7 +113,7 @@ makeBarricade()
  */
 placeBarrelOnDeath()
 {
-    debugPrint("in _barricades::placeBarrelOnDeath()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::placeBarrelOnDeath()||");
 
     wait 0.1; // wait until they get teleported away from shop/ammo, as required
     newpos = PlayerPhysicsTrace(self.carryObj.origin, self.carryObj.origin - (0,0,1000));
@@ -141,7 +141,7 @@ placeBarrelOnDeath()
  */
 placeBarrel()
 {
-    debugPrint("in _barricades::placeBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::placeBarrel()||");
 
     /// We do not end this function on "death" (i.e. down) so that we can force
     /// the player to drop the barrel when they go down.  This prevents the player
@@ -255,7 +255,7 @@ placeBarrel()
  */
 createMgBarrel()
 {
-    debugPrint("in _barricades::createMgBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::createMgBarrel()||");
 
     // Put the MG+Barrel in an out-of-the-way spot to prevent the 'Press F to use'
     // usable from showing up
@@ -297,7 +297,7 @@ createMgBarrel()
  */
 createMgBarrels()
 {
-    debugPrint("in _barricades::createMgBarrels()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::createMgBarrels()||");
 
     for (i=0; i<level.dvar["game_max_mg_barrels"]; i++) {
         thread createMgBarrel();
@@ -312,7 +312,7 @@ createMgBarrels()
  */
 giveMgBarrel()
 {
-    debugPrint("in _barricades::giveMgBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::giveMgBarrel()||");
 
     // Get a deployable MG+Barrel, if one is available
     mgBarrel = deployableMgBarrel();
@@ -351,7 +351,7 @@ giveMgBarrel()
  */
 removeMgBarrel()
 {
-    debugPrint("in _barricades::removeMgBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::removeMgBarrel()||");
 
     // If the barrel had a player when it died, free the player up to continue playing the game
     if (isdefined(self.turret.myPlayer)) {
@@ -388,7 +388,7 @@ removeMgBarrel()
  */
 deployableMgBarrel()
 {
-    debugPrint("in _barricades::deployableMgBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::deployableMgBarrel()||");
 
     // Iterate through the MG+Barrels and return the first one that
     // is deployable
@@ -407,7 +407,7 @@ deployableMgBarrel()
  */
 watchMGBarrel()
 {
-    debugPrint("in _barricades::watchMGBarrel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::watchMGBarrel()||");
 
     // Stop overheat/cooldown when MG dies
     self endon("death");
@@ -504,7 +504,7 @@ watchMGBarrel()
  */
 cooldown()
 {
-    debugPrint("in _barricades::cooldown()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::cooldown()||");
 
     self endon("trigger");
     self endon("death");
@@ -528,7 +528,7 @@ cooldown()
  */
 barrelDeath()
 {
-    debugPrint("in _barricades::barrelDeath()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::barrelDeath()||");
 
     // If a MG+Barrel
     if (self.type == 1) {
@@ -566,7 +566,7 @@ barrelDeath()
  */
 doBarricadeDamage(damage)
 {
-    debugPrint("in _barricades::doBarricadeDamage()", "fn", level.nonVerbose);
+    log("trace", "msg|in _barricades::doBarricadeDamage()||");
 
     if (self.bar_type == 0) {
         self.hp -= damage;

@@ -34,14 +34,14 @@
 
 init()
 {
-    debugPrint("in _playermodels::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _playermodels::init()||");
 
     precache();
 }
 
 precache()
 {
-    debugPrint("in _playermodels::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _playermodels::precache()||");
 
     precachemodel("body_mp_usmc_grenadier");
 
@@ -69,7 +69,7 @@ precache()
 
 setPlayerClassModel(class)
 {
-    debugPrint("in _playermodels::setPlayerClassModel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _playermodels::setPlayerClassModel()||");
 
     self detachAll();
     self.myBody = "";

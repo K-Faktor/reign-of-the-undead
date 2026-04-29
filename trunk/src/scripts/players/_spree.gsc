@@ -36,7 +36,7 @@
 
 onPlayerSpawn()
 {
-    debugPrint("in _spree::onPlayerSpawn()", "fn", level.nonVerbose);
+    log("trace", "msg|in _spree::onPlayerSpawn()||");
 
     self.spree = 0;
     if (!isdefined(self.hud_streak)) {streakHud();}

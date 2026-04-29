@@ -65,7 +65,7 @@
  */
 modName()
 {
-    debugPrint("in _umi::modName()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::modName()||");
 
     if (isDefined(level.modName)) {return level.modName;}
     else {
@@ -82,7 +82,7 @@ modName()
  */
 nativeMapType()
 {
-    debugPrint("in _umi::nativeMapType()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::nativeMapType()||");
 
     if (isDefined(level.nativeMapType)) {return level.nativeMapType;}
     else {return "";}
@@ -98,7 +98,7 @@ nativeMapType()
  */
 setNativeMapType(nativeMapType)
 {
-    debugPrint("in _umi::setNativeMapType()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::setNativeMapType()||");
 
     level.nativeMapType = nativeMapType;
 }
@@ -114,7 +114,7 @@ setNativeMapType(nativeMapType)
  */
 devDumpCsvWaypointsToBtd()
 {
-    debugPrint("in _umi::devDumpCsvWaypointsToBtd()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::devDumpCsvWaypointsToBtd()||");
 
     wp = [];
     wpCount = 0;
@@ -187,7 +187,7 @@ devDumpCsvWaypointsToBtd()
  */
 devDumpBtdWaypointsToCsv()
 {
-    debugPrint("in _umi::devDumpBtdWaypointsToCsv()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::devDumpBtdWaypointsToCsv()||");
 
     if ((!isDefined(level.waypoints)) || (level.waypoints.size == 0)) {
         noticePrint("No BTD waypoints in memory, nothing to dump.");
@@ -227,7 +227,7 @@ devDumpBtdWaypointsToCsv()
  */
 devDrawAllPossibleSpawnpoints()
 {
-    debugPrint("in _umi::devDrawAllPossibleSpawnpoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::devDrawAllPossibleSpawnpoints()||");
 
     // mark RotU-style spawngroups by targetname
     for (i=0; i<20; i++) {
@@ -290,7 +290,7 @@ devDrawAllPossibleSpawnpoints()
  */
 deleteUnusedSpawnpoints(deleteSab, deleteSd, deleteDom, deleteCtf)
 {
-    debugPrint("in _umi::deleteUnusedSpawnpoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteUnusedSpawnpoints()||");
 
     classes = [];
 
@@ -337,7 +337,7 @@ deleteUnusedSpawnpoints(deleteSab, deleteSd, deleteDom, deleteCtf)
  */
 deleteCtfEntities()
 {
-    debugPrint("in _umi::deleteCtfEntities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteCtfEntities()||");
 
     origins = [];
     index = 0;
@@ -364,7 +364,7 @@ deleteCtfEntities()
  */
 deleteTurrets()
 {
-    debugPrint("in _umi::deleteTurrets()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteTurrets()||");
 
     ents = getentarray("misc_turret", "classname");
     for (i=0; i<ents.size; i++) {
@@ -383,7 +383,7 @@ deleteTurrets()
  */
 deleteHqEntities()
 {
-    debugPrint("in _umi::deleteHqEntities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteHqEntities()||");
 
     origins = [];
     index = 0;
@@ -417,7 +417,7 @@ deleteHqEntities()
  */
 disambiguateBarrelsByTargetname(targetname)
 {
-    debugPrint("in _umi::disambiguateBarrelsByTargetname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::disambiguateBarrelsByTargetname()||");
 
     ents = getentarray(targetname, "targetname");
     for (i=0; i<ents.size; i++) {
@@ -436,7 +436,7 @@ disambiguateBarrelsByTargetname(targetname)
  */
 deleteSabotageEntities()
 {
-    debugPrint("in _umi::deleteSabotageEntities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteSabotageEntities()||");
 
     origins = [];
     index = 0;
@@ -472,7 +472,7 @@ deleteSabotageEntities()
  */
 loadCentralTrap(trigger, bat, base, activator, price)
 {
-    debugPrint("in _umi::loadCentralTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadCentralTrap()||");
 
     if (!isDefined(level.mapTraps)) {level.mapTraps = [];}
     if (!isDefined(price)) {price = 5000;} // default if not spec'd and not overriden in game.cfg
@@ -514,7 +514,7 @@ loadCentralTrap(trigger, bat, base, activator, price)
  */
 loadRotatingTrap(trigger, death, activator, price)
 {
-    debugPrint("in _umi::loadRotatingTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadRotatingTrap()||");
 
     if (!isDefined(level.mapTraps)) {level.mapTraps = [];}
     if (!isDefined(price)) {price = 5000;} // default if not spec'd and not overriden in game.cfg
@@ -555,7 +555,7 @@ loadRotatingTrap(trigger, death, activator, price)
  */
 loadSpikeTrap(trigger, death, activator, price)
 {
-    debugPrint("in _umi::loadSpikeTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadSpikeTrap()||");
 
     if (!isDefined(level.mapTraps)) {level.mapTraps = [];}
     if (!isDefined(price)) {price = 5000;} // default if not spec'd and not overriden in game.cfg
@@ -600,7 +600,7 @@ loadSpikeTrap(trigger, death, activator, price)
  */
 loadFireTrap(trigger, fire1, fire2, fire3, fire4, death, activator, price)
 {
-    debugPrint("in _umi::loadFireTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadFireTrap()||");
 
     if (!isDefined(level.mapTraps)) {level.mapTraps = [];}
     if (!isDefined(price)) {price = 5000;} // default if not spec'd and not overriden in game.cfg
@@ -651,7 +651,7 @@ loadFireTrap(trigger, fire1, fire2, fire3, fire4, death, activator, price)
  */
 loadElectricTrap(trigger, elec1, elec2, elec3, elec4, elec5, elec6, death, activator, price)
 {
-    debugPrint("in _umi::loadElectricTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadElectricTrap()||");
 
     if (!isDefined(level.mapTraps)) {level.mapTraps = [];}
     if (!isDefined(price)) {price = 5000;} // default if not spec'd and not overriden in game.cfg
@@ -704,7 +704,7 @@ loadElectricTrap(trigger, elec1, elec2, elec3, elec4, elec5, elec6, death, activ
  */
 loadGlidePad(trigger, origin1, origin2, origin3, origin4, origin5, origin6, velocity)
 {
-    debugPrint("in _umi::loadGlidePad()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadGlidePad()||");
 
     if (!isDefined(level.glidePads)) {level.glidePads = [];}
 
@@ -791,7 +791,7 @@ loadGlidePad(trigger, origin1, origin2, origin3, origin4, origin5, origin6, velo
  */
 loadCyclicalAnimation(model, type, steps, reversible, delay)
 {
-    debugPrint("in _umi::loadCyclicalAnimation()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadCyclicalAnimation()||");
 
     if (!isDefined(level.mapAnimations)) {level.mapAnimations = [];}
 
@@ -837,7 +837,7 @@ loadCyclicalAnimation(model, type, steps, reversible, delay)
  */
 loadElevator(model, trigger, positionA, positionB, velocity)
 {
-    debugPrint("in _umi::loadElevator()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadElevator()||");
 
     if (!isDefined(level.elevators)) {level.elevators = [];}
 
@@ -871,7 +871,7 @@ loadElevator(model, trigger, positionA, positionB, velocity)
  */
 loadMapTeleporter(trigger, destination)
 {
-    debugPrint("in _umi::loadMapTeleporter()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadMapTeleporter()||");
 
     if (!isDefined(level.mapTeleporters)) {level.mapTeleporters = [];}
 
@@ -894,7 +894,7 @@ loadMapTeleporter(trigger, destination)
  */
 loadHurtTriggers(trigger)
 {
-    debugPrint("in _umi::loadHurtTriggers()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadHurtTriggers()||");
 
     if (!isDefined(level.mapHurtTriggers)) {level.mapHurtTriggers = [];}
 
@@ -920,7 +920,7 @@ loadHurtTriggers(trigger)
  */
 buildShopsByTradespawns(equipmentShops, havePrefabModels)
 {
-    debugPrint("in _umi::buildShopsByTradespawns()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildShopsByTradespawns()||");
 
     if (!isDefined(havePrefabModels)) {havePrefabModels = false;}
 
@@ -989,7 +989,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)
  */
 buildShopsByTargetname(targetname)
 {
-    debugPrint("in _umi::buildShopsByTargetname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildShopsByTargetname()||");
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
@@ -1021,7 +1021,7 @@ buildShopsByTargetname(targetname)
  */
 buildWeaponShopsByTargetname(targetname, loadTime)
 {
-    debugPrint("in _umi::buildWeaponShopsByTargetname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildWeaponShopsByTargetname()||");
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
@@ -1063,7 +1063,7 @@ buildWeaponShopsByTargetname(targetname, loadTime)
  */
 buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
 {
-    debugPrint("in _umi::buildWeaponShopsByTradespawns()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildWeaponShopsByTradespawns()||");
 
     if (!isDefined(havePrefabModels)) {havePrefabModels = false;}
 
@@ -1269,7 +1269,7 @@ loadExternalWaypoints()
  */
 loadWaypointLinkDistances()
 {
-    debugPrint("in _umi::loadWaypointLinkDistances()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::loadWaypointLinkDistances()||");
 
     for (i=0; i<level.Wp.size; i++) {
         if (!isDefined(level.Wp[i].linked)) {
@@ -1405,7 +1405,7 @@ validateWaypoints()
 
 waypointQuality()
 {
-    debugPrint("in _umi::waypointQuality()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::waypointQuality()||");
 
     for (i=0; i<level.Wp.size; i++) {
         // check waypoint types
@@ -1448,7 +1448,7 @@ waypointQuality()
 
 isWaypointTypeValid(type)
 {
-    debugPrint("in _umi::isWaypointTypeValid()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::isWaypointTypeValid()||");
 
     switch(type) {
         case "stand":       // fall through
@@ -1465,7 +1465,7 @@ isWaypointTypeValid(type)
 
 deleteUnlinkedWaypoint(waypointId)
 {
-    debugPrint("in _umi::deleteUnlinkedWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteUnlinkedWaypoint()||");
 
     // Deleting a waypoint from the middle of the array is very expensive, while
     // deleting it from the end of the array is O(1), so first we ensure the waypoint
@@ -1492,7 +1492,7 @@ deleteUnlinkedWaypoint(waypointId)
  */
 buildZombieSpawnsByClassname(classname)
 {
-    debugPrint("in _umi::buildZombieSpawnsByClassname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildZombieSpawnsByClassname()||");
 
     ents = getEntArray(classname, "classname");
     if (ents.size == 0) {
@@ -2021,7 +2021,7 @@ waitUntilFirstPlayerSpawns()
  */
 startGame()
 {
-    debugPrint("in _umi::startGame()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::startGame()||");
 
     if (level.umiEnabled) {
         // Do Nothing.  Don't really start game when we are using UMI or taking screenshots
@@ -2043,7 +2043,7 @@ startGame()
  */
 deleteEntitiesByClassname(classname)
 {
-    debugPrint("in _umi::deleteEntitiesByClassname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteEntitiesByClassname()||");
 
     ents = getentarray(classname, "classname");
     for (i=0; i<ents.size; i++) {
@@ -2061,7 +2061,7 @@ deleteEntitiesByClassname(classname)
  */
 deleteEntitiesByTargetname(targetname)
 {
-    debugPrint("in _umi::deleteEntitiesByTargetname()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteEntitiesByTargetname()||");
 
     ents = getentarray(targetname, "targetname");
     for (i=0; i<ents.size; i++) {
@@ -2079,7 +2079,7 @@ deleteEntitiesByTargetname(targetname)
  */
 deletePickupItems()
 {
-    debugPrint("in _umi::deletePickupItems()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deletePickupItems()||");
 
     deleteEntitiesByTargetname("oldschool_pickup");
 }
@@ -2108,7 +2108,7 @@ deletePickupItems()
  */
 deleteNearbyEntities(origin, maximumDistance2D, maxDeltaHeight)
 {
-    debugPrint("in _umi::deleteNearbyEntities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::deleteNearbyEntities()||");
 
     ents = getentarray();
     for (i=0; i<ents.size; i++) {
@@ -2228,7 +2228,7 @@ loadTradespawn()
  */
 buildAmmoStock(targetname, loadTime)
 {
-    debugPrint("in _umi::buildAmmoStock()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildAmmoStock()||");
 
     setNativeMapType("rotu");
     level.isUmiMap = false;
@@ -2245,7 +2245,7 @@ buildAmmoStock(targetname, loadTime)
  */
 buildWeaponUpgrade(targetname)
 {
-    debugPrint("in _umi::buildWeaponUpgrade()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::buildWeaponUpgrade()||");
 
     setNativeMapType("rotu");
     level.isUmiMap = false;
@@ -2288,7 +2288,7 @@ waittillStart()
  */
 startSurvWaves()
 {
-    debugPrint("in _umi::startSurvWaves()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::startSurvWaves()||");
 
     startGame();
 }
@@ -2402,7 +2402,7 @@ setPlayerSpawns(targetname)
  */
 addDefaultZombieSpawns()
 {
-    debugPrint("in _umi::addDefaultZombieSpawns()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::addDefaultZombieSpawns()||");
 
     buildZombieSpawnsByClassname("mp_dm_spawn");
 }
@@ -2419,7 +2419,7 @@ addDefaultZombieSpawns()
  */
 placeShops(weapons, shops)
 {
-    debugPrint("in _umi::placeShops()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umi::placeShops()||");
 
     setNativeMapType("rozo");
     level.isUmiMap = false;

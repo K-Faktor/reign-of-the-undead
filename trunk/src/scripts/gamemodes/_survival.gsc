@@ -38,7 +38,7 @@
 
 initGame()
 {
-    debugPrint("in _survival::initGame()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::initGame()||");
 
     level.currentWave = 1;
     level.waveOrderCurrentWave = 0;
@@ -49,7 +49,7 @@ initGame()
 
 loadConfig()
 {
-    debugPrint("in _survival::loadConfig()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::loadConfig()||");
 
     wait .1;// Assume types not set, loading default
     dvarDefault("surv_special_final", "boss");  // rotu 2.2
@@ -102,7 +102,7 @@ loadConfig()
  */
 buildWaveOrder()
 {
-    debugPrint("in _survival::buildWaveOrder()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::buildWaveOrder()||");
 
     // Build a pool to choose waves from randomly
     wavePool = level.specialWaves;
@@ -140,7 +140,7 @@ buildWaveOrder()
 
 dvarDefault(dvar, def)
 {
-    debugPrint("in _survival::dvarDefault()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::dvarDefault()||");
 
     if (getdvar(dvar) == "") {setdvar(dvar,def);}
 }
@@ -174,7 +174,7 @@ randomSpawnpoint()
  */
 specialSpawn()
 {
-    debugPrint("in _survival::specialSpawn()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::specialSpawn()||");
 
     // do soul and ground spawns at random waypoints if the map has enough waypoints,
     // otherwise just use a random spawnpoint
@@ -195,7 +195,7 @@ specialSpawn()
  */
 getWaveSize(wave)
 {
-    debugPrint("in _survival::getWaveSize()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::getWaveSize()||");
 
     waveid = wave - 1;
     players = level.players.size;
@@ -214,7 +214,7 @@ getWaveSize(wave)
 
 beginGame()
 {
-    debugPrint("in _survival::beginGame()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::beginGame()||");
 
     if (level.survMode == "special") {
         scripts\gamemodes\_gamemodes::buildZomTypes("basic");
@@ -230,7 +230,7 @@ beginGame()
 
 watchEnd()
 {
-    debugPrint("in _survival::watchEnd()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::watchEnd()||");
 
     level endon( "game_ended" );
     level endon("wave_finished");
@@ -249,7 +249,7 @@ watchEnd()
 
 mainGametype()
 {
-    debugPrint("in _survival::mainGametype()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::mainGametype()||");
 
     level endon( "game_ended" );
 
@@ -300,7 +300,7 @@ mainGametype()
 
 allowRaygun()
 {
-    debugPrint("in _survival::allowRaygun()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::allowRaygun()||");
 
     level.canBuyRaygun = true;
     for (i=0; i<level.players.size; i++) {
@@ -319,7 +319,7 @@ allowRaygun()
  */
 survivorsHUD()
 {
-    debugPrint("in _survival::survivorsHUD()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::survivorsHUD()||");
 
     if (level.dvar["hud_survivors_left"]) {
         overlay = overlayMessage(&"ZOMBIE_SURV_LEFT", level.alivePlayers, (0,1,0), 1.4);
@@ -360,7 +360,7 @@ survivorsHUD()
  */
 destroySurvivorsLeft()
 {
-    debugPrint("in _survival::destroySurvivorsLeft()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::destroySurvivorsLeft()||");
 
     level endon("post_mapvote");
     while (1) {
@@ -381,7 +381,7 @@ destroySurvivorsLeft()
  */
 destroySurvivorsDown()
 {
-    debugPrint("in _survival::destroySurvivorsDown()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::destroySurvivorsDown()||");
 
     level endon("post_mapvote");
     while (1) {
@@ -402,7 +402,7 @@ destroySurvivorsDown()
  */
 destroyWaveNumber()
 {
-    debugPrint("in _survival::destroyWaveNumber()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::destroyWaveNumber()||");
 
     level endon("post_mapvote");
     while (1) {
@@ -423,7 +423,7 @@ destroyWaveNumber()
  */
 waveNumber()
 {
-    debugPrint("in _survival::waveNumber()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::waveNumber()||");
 
     level endon("game_ended");
     while (1) {
@@ -445,7 +445,7 @@ waveNumber()
  */
 survivorLeft()
 {
-    debugPrint("in _survival::survivorLeft()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::survivorLeft()||");
 
     level endon("game_ended");
     while (1) {
@@ -461,7 +461,7 @@ survivorLeft()
  */
 survivorDown()
 {
-    debugPrint("in _survival::survivorDown()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::survivorDown()||");
 
     level endon("game_ended");
 
@@ -784,7 +784,7 @@ startSpecialWave(type)
  */
 manyBossesMeatgrinder()
 {
-    debugPrint("in _survival::manyBossesMeatgrinder()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::manyBossesMeatgrinder()||");
 
     level endon("wave_finished");
 
@@ -821,7 +821,7 @@ manyBossesMeatgrinder()
  */
 monitorManyBossesProgress()
 {
-    debugPrint("in _survival::monitorManyBossesProgress()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::monitorManyBossesProgress()||");
 
     level endon("wave_finished");
 
@@ -847,7 +847,7 @@ monitorManyBossesProgress()
  */
 killBuggedZombies()
 {
-    debugPrint("in _survival::killBuggedZombies()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::killBuggedZombies()||");
 
     level endon("wave_finished");
 
@@ -892,7 +892,7 @@ killBuggedZombies()
  */
 watchWaveProgress()
 {
-    debugPrint("in _survival::watchWaveProgress()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::watchWaveProgress()||");
 
     level endon( "game_ended" );
     level endon("force_wave_finished");
@@ -920,7 +920,7 @@ watchWaveProgress()
  */
 doWaveHud()
 {
-    debugPrint("in _survival::doWaveHud()", "fn", level.nonVerbose);
+    log("trace", "msg|in _survival::doWaveHud()||");
 
     level endon( "game_ended" );
 

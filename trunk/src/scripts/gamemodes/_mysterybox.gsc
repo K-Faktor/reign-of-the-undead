@@ -34,7 +34,7 @@
 
 init()
 {
-    debugPrint("in _mysterybox::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mysterybox::init()||");
 
     level.mys_wep = [];
     addMysWep("weapon_ak47", "ak47_mp", "primary");
@@ -75,7 +75,7 @@ init()
 
 addMysWep(model, weaponName, slot)
 {
-    debugPrint("in _mysterybox::addMysWep()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mysterybox::addMysWep()||");
 
     precachemodel(model);
     struct = spawnstruct();
@@ -88,7 +88,7 @@ addMysWep(model, weaponName, slot)
 /// @todo is there a reason precache() isn't being called?
 precache()
 {
-    debugPrint("in _mysterybox::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mysterybox::precache()||");
 
     precachemodel("weapon_ak47");
     precachemodel("weapon_m4gre_sp_silencer_reflex");

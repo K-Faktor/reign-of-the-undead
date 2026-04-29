@@ -59,7 +59,7 @@ Callback_StartGameType()
 
 precacheDefault()
 {
-    debugPrint("in war::precacheDefault()", "fn", level.nonVerbose);
+    log("trace", "msg|in war::precacheDefault()||");
 
     precachemodel("tag_origin");
     preCacheShader("white");

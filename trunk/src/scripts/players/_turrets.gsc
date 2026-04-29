@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _turrets::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::init()||");
 
     level.sentry_turret_model["minigun"] = "mw2_sentry_turret";
     level.sentry_base_model["minigun"] = "mw3_sentry_gl_base";
@@ -99,7 +99,7 @@ init()
  */
 createGrenadeTurrets()
 {
-    debugPrint("in _turrets::createGrenadeTurrets()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::createGrenadeTurrets()||");
 
     for (i=0; i<level.maxGrenadeTurrets; i++) {
         thread createGrenadeTurret();
@@ -114,7 +114,7 @@ createGrenadeTurrets()
  */
 createMinigunTurrets()
 {
-    debugPrint("in _turrets::createMinigunTurrets()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::createMinigunTurrets()||");
 
     for (i=0; i<level.maxMinigunTurrets; i++) {
         thread createMinigunTurret();
@@ -133,7 +133,7 @@ createMinigunTurrets()
  */
 createGrenadeTurret()
 {
-    debugPrint("in _turrets::createGrenadeTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::createGrenadeTurret()||");
 
     // Put the turret in an out-of-the-way spot to prevent the 'Press F to use'
     // usable from showing up
@@ -201,7 +201,7 @@ createGrenadeTurret()
  */
 createMinigunTurret()
 {
-    debugPrint("in _turrets::createMinigunTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::createMinigunTurret()||");
 
     // Put the turret in an out-of-the-way spot to prevent the 'Press F to use'
     // usable from showing up
@@ -463,7 +463,7 @@ testMatrix()
  */
 deployableTurret(turretType)
 {
-    debugPrint("in _turrets::deployableTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::deployableTurret()||");
 
     if (turretType == "gl") { // grenade turret
         // Iterate through the grenade turrets and return the first one that
@@ -495,7 +495,7 @@ deployableTurret(turretType)
  */
 giveGrenadeTurret(turret)
 {
-    debugPrint("in _turrets::giveGrenadeTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::giveGrenadeTurret()||");
 
     if (isDefined(turret)) {
         level.grenadeTurretCount++;
@@ -540,7 +540,7 @@ giveGrenadeTurret(turret)
  */
 giveMinigunTurret(turret)
 {
-    debugPrint("in _turrets::giveMinigunTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::giveMinigunTurret()||");
 
     if (isDefined(turret)) {
         level.minigunTurretCount++;
@@ -596,7 +596,7 @@ primarySectorLaser(turret)
  */
 emplaceDefenseTurret(turret)
 {
-    debugPrint("in _turrets::emplaceDefenseTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::emplaceDefenseTurret()||");
 
     self endon("death");
     self endon("disconnect");
@@ -743,7 +743,7 @@ emplaceDefenseTurret(turret)
  */
 zombieEmplaceDefenseTurret(turret)
 {
-    debugPrint("in _turrets::zombieEmplaceDefenseTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::zombieEmplaceDefenseTurret()||");
 
     self endon("death");
     self endon("disconnect");
@@ -807,7 +807,7 @@ turretGoIdle(turret)
  */
 beDefenseTurret(turret)
 {
-    debugPrint("in _turrets::beDefenseTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::beDefenseTurret()||");
 
     self endon("joined_spectators");
     self endon("disconnect");
@@ -836,7 +836,7 @@ beDefenseTurret(turret)
  */
 yawTurret(turret, yawAngle)
 {
-    debugPrint("in _turrets::yawTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::yawTurret()||");
 
     self endon("joined_spectators");
     self endon("disconnect");
@@ -858,7 +858,7 @@ yawTurret(turret, yawAngle)
  */
 trackTarget(turret)
 {
-    debugPrint("in _turrets::trackTarget()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::trackTarget()||");
 
     self endon("joined_spectators");
     self endon("disconnect");
@@ -1329,7 +1329,7 @@ isInView(target)
  */
 watchTurretOwnership(turret)
 {
-    debugPrint("in _turrets::watchTurretOwnership()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::watchTurretOwnership()||");
 
     // Sometimes players do not leave the game cleanly, so they may still own a
     // turret even after they left the game
@@ -1361,7 +1361,7 @@ watchTurretOwnership(turret)
  */
 removeTurret(turret)
 {
-    debugPrint("in _turrets::removeTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::removeTurret()||");
 
     debugPrint("Removing turret " + turret.id, "val");
 
@@ -1431,7 +1431,7 @@ removeTurret(turret)
  */
 moveDefenseTurret(turret)
 {
-    debugPrint("in _turrets::moveDefenseTurret()", "fn", level.nonVerbose);
+    log("trace", "msg|in _turrets::moveDefenseTurret()||");
 
     self endon("death");
     self endon("disconnect");

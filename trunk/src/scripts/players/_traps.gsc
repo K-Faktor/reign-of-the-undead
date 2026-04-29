@@ -35,7 +35,7 @@
 
 init()
 {
-    debugPrint("in _traps::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::init()||");
 
     precache();
 
@@ -65,7 +65,7 @@ precache()
  */
 startTrap(trap)
 {
-    debugPrint("in _traps::startTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::startTrap()||");
 
     // self is activating player
 
@@ -100,7 +100,7 @@ startTrap(trap)
  */
 watchTrap(activatingPlayer)
 {
-    debugPrint("in _traps::watchTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::watchTrap()||");
 
     // self is the trap
     activatingPlayer endon("disconnect");
@@ -163,7 +163,7 @@ watchTrap(activatingPlayer)
  */
 centralTrapBat(trap)
 {
-    debugPrint("in _traps::centralTrapBat()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::centralTrapBat()||");
 
     trap.bat moveZ(-80, 1);
 }
@@ -178,7 +178,7 @@ centralTrapBat(trap)
  */
 centralTrap(trap)
 {
-    debugPrint("in _traps::centralTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::centralTrap()||");
 
     // self is activating player
     trap.activator PlaySound("shield_on");
@@ -215,7 +215,7 @@ centralTrap(trap)
  */
 rotatingTrap(trap)
 {
-    debugPrint("in _traps::rotatingTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::rotatingTrap()||");
 
     trap.activator PlaySound("shield_on");
 
@@ -248,7 +248,7 @@ rotatingTrap(trap)
  */
 spikeTrap(trap)
 {
-    debugPrint("in _traps::spikeTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::spikeTrap()||");
 
     trap.activator PlaySound("shield_on");
 
@@ -282,7 +282,7 @@ spikeTrap(trap)
  */
 fireTrap(trap)
 {
-    debugPrint("in _traps::fireTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::fireTrap()||");
 
     trap.activator PlaySound("shield_on");
 
@@ -325,7 +325,7 @@ fireTrap(trap)
  */
 electricTrap(trap)
 {
-    debugPrint("in _traps::electricTrap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _traps::electricTrap()||");
 
     trap.activator PlaySound("shield_on");
     trap.activator moveZ(-2.5, 1);

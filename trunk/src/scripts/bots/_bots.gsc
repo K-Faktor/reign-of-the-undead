@@ -42,7 +42,7 @@
 
 init()
 {
-    debugPrint("in _bots::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bots::init()||");
 
     precache();
 
@@ -134,7 +134,7 @@ init()
 
 precache()
 {
-    debugPrint("in _bots::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bots::precache()||");
 
     // precache the weapons used for animations
     precacheItem("bot_zombie_walk_mp");
@@ -183,7 +183,7 @@ precache()
  */
 instantiateBots(botCount)
 {
-    debugPrint("in _bots::instantiateBots()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bots::instantiateBots()||");
 
     failedCount = 0;    // The number of bots we ultimately failed to create
     attemptCount = 0;

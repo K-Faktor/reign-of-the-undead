@@ -40,7 +40,7 @@
  */
 buildPrintableAscii()
 {
-    debugPrint("in strings::buildPrintableAscii()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::buildPrintableAscii()||");
 
     ascii = [];
     ascii[32] = " ";
@@ -154,7 +154,7 @@ buildPrintableAscii()
  */
 charToInt(character)
 {
-    debugPrint("in strings::charToInt()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::charToInt()||");
 
     if (character.size > 1) {return -1;}
     for (integer = 32; integer <= 126; integer++) {
@@ -211,7 +211,7 @@ isUpper(character)
  */
 isLower(character)
 {
-    debugPrint("in strings::isLower()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::isLower()||");
 
     if (character.size > 1) {return -1;}
 
@@ -286,7 +286,7 @@ isSymbol(character)
  */
 toAscii(integer)
 {
-    debugPrint("in strings::toAscii()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::toAscii()||");
 
     if ((integer < 32) || (integer > 126)) {return "";}
     return level.ascii[integer];
@@ -301,7 +301,7 @@ toAscii(integer)
  */
 toUpper(string)
 {
-    debugPrint("in strings::toUpper()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::toUpper()||");
 
     upperString = "";
     for (i=0; i < string.size; i++) {
@@ -329,7 +329,7 @@ toUpper(string)
  */
 toLower(string)
 {
-    debugPrint("in strings::toLower()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::toLower()||");
 
     lowerString = "";
     for (i=0; i < string.size; i++) {
@@ -456,7 +456,7 @@ replace(haystack, oldText, newText)
  */
 tokenMatchCount(string, token)
 {
-    debugPrint("in strings::tokenMatchCount()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::tokenMatchCount()||");
 
     matches = matches(string, token);
     numberOfMatches = Int(matches.size / 2);
@@ -567,7 +567,7 @@ collapse(string)
  */
 split(string, token)
 {
-    debugPrint("in strings::split()", "fn", level.nonVerbose);
+    log("trace", "msg|in strings::split()||");
 
     results = [];
     matches = matches(string, token);

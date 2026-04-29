@@ -35,7 +35,7 @@
 
 precache()
 {
-    debugPrint("in adminCommon::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::precache()||");
 
     // Precache effects for medkits & healing aura
     level.heal_glow_body        = loadfx( "misc/heal_glow_body");
@@ -64,7 +64,7 @@ precache()
  */
 buildAdminData()
 {
-    debugPrint("in adminCommon::buildAdminData()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::buildAdminData()||");
 
     // Build data structures for known admins
     i = 0;
@@ -96,7 +96,7 @@ buildAdminData()
  */
 rconAdmin()
 {
-    debugPrint("in adminCommon::rconAdmin()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::rconAdmin()||");
 
     // Declare and initialize a new admin struct
     admin = spawnStruct();
@@ -125,7 +125,7 @@ rconAdmin()
  */
 newAdmin(adminConfigId)
 {
-    debugPrint("in adminCommon::newAdmin()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::newAdmin()||");
 
     // Declare and initialize a new admin struct
     admin = spawnStruct();
@@ -398,7 +398,7 @@ newAdmin(adminConfigId)
  */
 onPlayerConnect()
 {
-    debugPrint("in adminCommon::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::onPlayerConnect()||");
 
     while (1) {
         level waittill( "connected", player );
@@ -455,7 +455,7 @@ onPlayerConnect()
  */
 onAdminConnect(admin)
 {
-    debugPrint("in adminCommon::onAdminConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::onAdminConnect()||");
 
     admin.playerName = self.name;
     admin.playerNumber = self getEntityNumber();
@@ -614,7 +614,7 @@ informAllPlayersOfAdminAction(player, color, message)
  */
 informPlayerOfAdminAction(player, color, message)
 {
-    debugPrint("in adminCommon::informPlayerOfAdminAction()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::informPlayerOfAdminAction()||");
 
     switch(color) {
     case "positive": // green messages
@@ -644,7 +644,7 @@ informPlayerOfAdminAction(player, color, message)
  */
 adminActionConsoleMessage(message)
 {
-    debugPrint("in adminCommon::adminActionConsoleMessage()", "fn", level.nonVerbose);
+    log("trace", "msg|in adminCommon::adminActionConsoleMessage()||");
 
     if (self.admin.showActionConsoleMessages) {
         iPrintln("^3[admin]: " + message);

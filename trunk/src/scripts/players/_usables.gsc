@@ -39,7 +39,7 @@
 
 init()
 {
-    debugPrint("in _usables::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _usables::init()||");
 
     level.useObjects = [];
     thread debugUsables();
@@ -47,7 +47,7 @@ init()
 
 debugUsables()
 {
-    debugPrint("in _usables::debugUsables()", "fn", level.nonVerbose);
+    log("trace", "msg|in _usables::debugUsables()||");
 
     wait 10;
     useObjects = level.useObjects;
@@ -96,7 +96,7 @@ removeUsable(ent)
 
 checkForUsableObjects()
 {
-    debugPrint("in _usables::checkForUsableObjects()", "fn", level.nonVerbose);
+    log("trace", "msg|in _usables::checkForUsableObjects()||");
 
     self endon("death");
     self endon("disconnect");
@@ -554,7 +554,7 @@ restoreBarricade()
 
 reviveInTime(time, player)
 {
-    debugPrint("in _usables::reviveInTime()", "fn", level.nonVerbose);
+    log("trace", "msg|in _usables::reviveInTime()||");
 
     self endon("death");
     self endon("disconnect");
@@ -570,7 +570,7 @@ reviveInTime(time, player)
 
 coveringPlayers()
 {
-    debugPrint("in _usables::coveringPlayers()", "fn", level.nonVerbose);
+    log("trace", "msg|in _usables::coveringPlayers()||");
 
     players = level.players;
     index = 0;
@@ -591,7 +591,7 @@ coveringPlayers()
 
 finishRevive(player, startCovering)
 {
-    debugPrint("in _usables::finishRevive()", "fn", level.nonVerbose);
+    log("trace", "msg|in _usables::finishRevive()||");
 
     self endon("death");
     self endon("disconnect");

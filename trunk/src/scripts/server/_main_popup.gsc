@@ -46,14 +46,14 @@
 
 init()
 {
-    debugPrint("in _main_popup::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _main_popup::init()||");
 
     level thread onPlayerConnect();
 }
 
 onPlayerConnect()
 {
-    debugPrint("in _main_popup::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _main_popup::onPlayerConnect()||");
 
     while(true) {
         level waittill("connected", player);
@@ -63,7 +63,7 @@ onPlayerConnect()
 
 onPlayerSpawned()
 {
-    debugPrint("in _main_popup::onPlayerSpawned()", "fn", level.nonVerbose);
+    log("trace", "msg|in _main_popup::onPlayerSpawned()||");
 
     self endon("disconnect");
 
@@ -75,7 +75,7 @@ onPlayerSpawned()
 
 onMenuResponse()
 {
-    debugPrint("in _main_popup::onMenuResponse()", "fn", level.nonVerbose);
+    log("trace", "msg|in _main_popup::onMenuResponse()||");
 
     self endon("death");
     self endon("disconnect");

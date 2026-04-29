@@ -35,7 +35,7 @@
 
 init()
 {
-    debugPrint("in _settings::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _settings::init()||");
 
     level.dvar = [];
     loadSettings();
@@ -56,7 +56,7 @@ init()
  */
 loadSettings()
 {
-    debugPrint("in _settings::loadSettings()", "fn", level.nonVerbose);
+    log("trace", "msg|in _settings::loadSettings()||");
 
     // These dvarType functions are defined and documented following the loadSettings() function
     dvarBool(   "bot",      "scores",               0);
@@ -317,7 +317,7 @@ dvarChoice(type, dvar, def, values)
  */
 dvarString(type, dvar, def)
 {
-    debugPrint("in _settings::dvarString()", "fn", level.nonVerbose);
+    log("trace", "msg|in _settings::dvarString()||");
 
     var = type + "_" + dvar;
     val = getDvar(var);
@@ -343,7 +343,7 @@ dvarString(type, dvar, def)
  */
 dvarBool(type, dvar, def)
 {
-    debugPrint("in _settings::dvarBool()", "fn", level.nonVerbose);
+    log("trace", "msg|in _settings::dvarBool()||");
 
     var = type + "_" + dvar;
 
@@ -376,7 +376,7 @@ dvarBool(type, dvar, def)
  */
 dvarInt(type, dvar, def, min, max)
 {
-    debugPrint("in _settings::dvarInt()", "fn", level.nonVerbose);
+    log("trace", "msg|in _settings::dvarInt()||");
 
     var = type + "_" + dvar;
 
@@ -416,7 +416,7 @@ dvarInt(type, dvar, def, min, max)
  */
 dvarFloat(type, dvar, def, min, max)
 {
-    debugPrint("in _settings::dvarFloat()", "fn", level.nonVerbose);
+    log("trace", "msg|in _settings::dvarFloat()||");
 
     var = type + "_" + dvar;
 

@@ -44,7 +44,7 @@
  */
 instantiate()
 {
-    debugPrint("in _bot::instantiate()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bot::instantiate()||");
 
     bot = addTestClient();
 
@@ -70,7 +70,7 @@ instantiate()
  */
 initialize(bot)
 {
-    debugPrint("in _bot::initialize()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bot::initialize()||");
 
     bot.isBot = true;
     bot.hasSpawned = false;
@@ -134,7 +134,7 @@ initialize(bot)
  */
 reconnect(bot)
 {
-    debugPrint("in _bot::reconnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bot::reconnect()||");
 
     initialize(bot);
 }
@@ -148,7 +148,7 @@ reconnect(bot)
  */
 remove(botsToRemove)
 {
-    debugPrint("in _bot::remove()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bot::remove()||");
 
     // move the bots to be removed to the end of the array
     for (i=0; i<botsToRemove.size; i++) {
@@ -856,7 +856,7 @@ clamped(bot)
  */
 devDrawLocalCoordinateSystem(bot, direction, origin)
 {
-    debugPrint("in _bot::devDrawLocalCoordinateSystem()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bot::devDrawLocalCoordinateSystem()||");
 
     bot endon("hide_coordinate_system");
 
@@ -1673,7 +1673,7 @@ initMovementCache()
 
 cacheMovement(movement)
 {
-    debugPrint("in _bots::cacheMovement()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bots::cacheMovement()||");
 
     hash = movementCacheHash(movement.from, movement.to, movement.speed);
     level.movementCache[hash][level.movementCache[hash].size] = movement;
@@ -1706,7 +1706,7 @@ cachedMovement(from, to, speed)
 
 movementCacheHash(from, to, speed)
 {
-    debugPrint("in _bots::movementCacheHash()", "fn", level.nonVerbose);
+    log("trace", "msg|in _bots::movementCacheHash()||");
 
     // see http://planetmath.org/goodhashtableprimes for primes
     n = 193;    // cache size, prime.  good primes: 53, 97, 193, 389

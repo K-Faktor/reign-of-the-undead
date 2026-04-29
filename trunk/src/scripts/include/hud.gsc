@@ -49,28 +49,28 @@ updateWaveHud(killed,total)
 
 createTeamObjpoint(origin, shader, alpha)
 {
-    debugPrint("in hud::createTeamObjpoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::createTeamObjpoint()||");
 
     scripts\gamemodes\_hud::createTeamObjpoint( origin, shader, alpha);
 }
 
 addTimer(label, string, time)
 {
-    debugPrint("in hud::addTimer()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::addTimer()||");
 
     thread scripts\gamemodes\_hud::addTimer(label, string, time);
 }
 
 removeTimers()
 {
-    debugPrint("in hud::removeTimers()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::removeTimers()||");
 
     thread scripts\gamemodes\_hud::removeTimers();
 }
 
 announceMessage(label, text, glowcolor, duration, speed, size)
 {
-    debugPrint("in hud::announceMessage()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::announceMessage()||");
 
     for (i=0; i<level.players.size; i++) {
         level.players[i] thread scripts\gamemodes\_hud::glowMessage(label, text, glowcolor, duration, speed, size);
@@ -79,7 +79,7 @@ announceMessage(label, text, glowcolor, duration, speed, size)
 
 overlayMessage(label, text, glowcolor, size)
 {
-    debugPrint("in hud::overlayMessage()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::overlayMessage()||");
 
     return self thread scripts\gamemodes\_hud::overlayMessage(label, text, glowcolor, size);
 }
@@ -93,14 +93,14 @@ glowMessage(label, text, glowcolor, duration, speed, size, sound)
 
 timer(time, label, glowcolor, text)
 {
-    debugPrint("in hud::timer()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::timer()||");
 
     thread scripts\gamemodes\_hud::timer(time, label, glowcolor, text);
 }
 
 fadeout(time)
 {
-    debugPrint("in hud::fadeout()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::fadeout()||");
 
     if (isDefined(self)) {
         self fadeOverTime( time );
@@ -124,7 +124,7 @@ fadein(time, alpha)
 
 fontPulseInit()
 {
-    debugPrint("in hud::fontPulseInit()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::fontPulseInit()||");
 
     self.baseFontScale = self.fontScale;
     self.maxFontScale = self.fontScale * 2;
@@ -157,7 +157,7 @@ fontPulse(player)
 
 progressBar(time)
 {
-    debugPrint("in hud::progressBar()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::progressBar()||");
 
     self destroyProgressBar();
     self thread scripts\gamemodes\_hud::progressBar(time);
@@ -166,7 +166,7 @@ progressBar(time)
 
 bar(color, initial, y)
 {
-    debugPrint("in hud::bar()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::bar()||");
 
     self destroyProgressBar();
     self scripts\gamemodes\_hud::bar(color, initial, y);
@@ -189,7 +189,7 @@ destroyProgressBar()
 
 streakHud()
 {
-    debugPrint("in hud::streakHud()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::streakHud()||");
 
     self.hud_streak = NewClientHudElem(self);
     self.hud_streak.alpha = 0;
@@ -212,7 +212,7 @@ streakHud()
 
 rgb(r, g, b)
 {
-    debugPrint("in hud::rgb()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::rgb()||");
 
     return (r/255,g/255,b/255);
 }
@@ -292,7 +292,7 @@ screenFlash(color, time, alpha)
 
 createHealthOverlay(color)
 {
-    debugPrint("in hud::createHealthOverlay()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::createHealthOverlay()||");
 
     whitescreen = newclientHudElem(self);
     whitescreen.sort = -2;
@@ -321,7 +321,7 @@ playerFilmTweaks(enable, invert, desaturation, darktint,  lighttint, brightness,
 
 playerFilmTweaksOff()
 {
-    debugPrint("in hud::playerFilmTweaksOff()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::playerFilmTweaksOff()||");
 
     self setClientDvars( "r_filmusetweaks", 0, "cg_fovscale", 1 );
     self.tweaksOverride = 0;
@@ -330,7 +330,7 @@ playerFilmTweaksOff()
 
 playerSetPermanentTweaks(invert, desaturation, darktint,  lighttint, brightness, contrast, fovscale)
 {
-    debugPrint("in hud::playerSetPermanentTweaks()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::playerSetPermanentTweaks()||");
 
     self.tweakBrightness = brightness;
     self.tweakContrast = desaturation;
@@ -346,7 +346,7 @@ playerSetPermanentTweaks(invert, desaturation, darktint,  lighttint, brightness,
 
 doPermanentTweaks()
 {
-    debugPrint("in hud::doPermanentTweaks()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::doPermanentTweaks()||");
 
     self setClientDvars("r_filmusetweaks", 1, "r_filmtweaks", 1 , "r_filmtweakenable", 1 , "r_filmtweakinvert", self.tweakInvert , "r_filmtweakdesaturation", self.tweakDesaturation , "r_filmtweakdarktint",
     self.tweakDarkTint , "r_filmtweaklighttint", self.tweakLightTint , "r_filmtweakbrightness", self.tweakBrightness ,"r_filmtweakcontrast", self.tweakContrast, "cg_fovscale", self.tweakFovScale );
@@ -354,7 +354,7 @@ doPermanentTweaks()
 
 permanentTweaksOff()
 {
-    debugPrint("in hud::permanentTweaksOff()", "fn", level.nonVerbose);
+    log("trace", "msg|in hud::permanentTweaksOff()||");
 
     self setClientDvars("r_filmusetweaks", 0, "cg_fovscale", 1);
     self.tweaksPermanent = 0;

@@ -59,7 +59,7 @@
  *      made when in debug mode, e.g. \code printPlayersInGame(); // <debug />\endcode
  *
  * 3)   Almost all lines containing debugPrint() function calls, e.g.
- *      \code debugPrint("in adminInterface::doAwesomeThing()", "fn", level.nonVerbose); \endcode
+ *      \code log("trace", "msg|in adminInterface::doAwesomeThing()||"); \endcode
  *      or
  *      \code debugPrint("The player's name is: " + self.name, "val"); \endcode
  *      N.B. warnPrint(), errorPrint(), and noticePrint() statements are never removed

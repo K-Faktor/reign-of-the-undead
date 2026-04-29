@@ -57,7 +57,7 @@ init()
  */
 precacheUmiModels()
 {
-    debugPrint("in _umiEditor::precacheUmiModels()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::precacheUmiModels()||");
 
     // Used as default weapon/shop models when running UMI maps
     precacheModel("ad_sodamachine");
@@ -75,7 +75,7 @@ precacheUmiModels()
  */
 onOpenDevMenu()
 {
-    debugPrint("in _umiEditor::onOpenDevMenu()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::onOpenDevMenu()||");
 
     if (scripts\server\_adminInterface::isAdmin(self)) {
         // Do nothing
@@ -91,7 +91,7 @@ onOpenDevMenu()
  */
 onOpenDevMenuRequest()
 {
-    debugPrint("in _umiEditor::onOpenDevMenuRequest()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::onOpenDevMenuRequest()||");
 
     if ((level.developerMode) && (scripts\server\_adminInterface::isAdmin(self))) {
         self onOpenDevMenu();
@@ -106,7 +106,7 @@ onOpenDevMenuRequest()
  */
 watchDevelopmentMenuResponses()
 {
-    debugPrint("in _umiEditor::watchDevelopmentMenuResponses()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::watchDevelopmentMenuResponses()||");
 
     self endon("disconnect");
     // threaded on each admin player
@@ -182,7 +182,7 @@ watchDevelopmentMenuResponses()
  */
 initMapEditor()
 {
-    debugPrint("in _umiEditor::initMapEditor()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::initMapEditor()||");
 
     // wait until someone is in the game to see the waypoints before we draw them
     while (level.activePlayers == 0) {
@@ -243,7 +243,7 @@ initMapEditor()
  */
 devToggleGiveWaypointsMode()
 {
-    debugPrint("in _umiEditor::devToggleGiveWaypointsMode()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devToggleGiveWaypointsMode()||");
 
     // don't start or stop waypoint mode while in the process of linking a waypoint
     if (level.linkingInProgress) {return;}
@@ -274,7 +274,7 @@ devToggleGiveWaypointsMode()
  */
 devCycleWaypointType()
 {
-    debugPrint("in _umiEditor::devCycleWaypointType()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devCycleWaypointType()||");
 
     if (isDefined(level.Wp[level.currentWaypoint].type)) {
         currentType = level.Wp[level.currentWaypoint].type;
@@ -324,7 +324,7 @@ devCycleWaypointType()
  */
 devSetLadderAngles()
 {
-    debugPrint("in _umiEditor::devSetLadderAngles()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devSetLadderAngles()||");
 
     // bail if we are in waypoint mode
     if (level.giveWaypointMode) {return;}
@@ -389,7 +389,7 @@ devSetLadderAngles()
  */
 devLinkWaypoint()
 {
-    debugPrint("in _umiEditor::devLinkWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devLinkWaypoint()||");
 
     // don't start a waypoint link while in waypoint mode
     if (level.giveWaypointMode) {return;}
@@ -419,7 +419,7 @@ devLinkWaypoint()
  */
 devFinishLink()
 {
-    debugPrint("in _umiEditor::devFinishLink()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFinishLink()||");
 
     from = level.Wp[self.carryObj.waypointId].origin + (0,0,10);
     color = decimalRgbToColor(255,0,0);
@@ -472,7 +472,7 @@ devFinishLink()
  */
 devLinkTwoWaypoints(waypointA, waypointB, deferUpdates)
 {
-    debugPrint("in _umiEditor::devLinkTwoWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devLinkTwoWaypoints()||");
 
     if (!isDefined(deferUpdates)) {deferUpdates = false;}
 
@@ -549,7 +549,7 @@ devLinkTwoWaypoints(waypointA, waypointB, deferUpdates)
  */
 devAutoLinkWaypoints()
 {
-    debugPrint("in _umiEditor::devAutoLinkWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devAutoLinkWaypoints()||");
 
     begin = gettime();
     n = level.unlinkedWaypoints.size;
@@ -625,7 +625,7 @@ devAutoLinkWaypoints()
  */
 devGiveWaypoint()
 {
-    debugPrint("in _umiEditor::devGiveWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devGiveWaypoint()||");
 
     flag = devGetAvailableUnlinkedWaypointFlag();
     if (!isDefined(flag)) {
@@ -682,7 +682,7 @@ devGiveWaypoint()
  */
 devGetAvailableUnlinkedWaypointFlag()
 {
-    debugPrint("in _umiEditor::devGetAvailableUnlinkedWaypointFlag()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devGetAvailableUnlinkedWaypointFlag()||");
 
     for (i=0; i<level.unlinkedWaypointFlags.size; i++) {
         if (level.unlinkedWaypointFlags[i].waypointId == -1) {
@@ -702,7 +702,7 @@ devGetAvailableUnlinkedWaypointFlag()
  */
 devUiDeleteWaypoint()
 {
-    debugPrint("in _umiEditor::devUiDeleteWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devUiDeleteWaypoint()||");
 
     // don't delete a waypoint while in waypoint mode
     if (level.giveWaypointMode) {return;}
@@ -724,7 +724,7 @@ devUiDeleteWaypoint()
  */
 devDeleteWaypoint(waypointId)
 {
-    debugPrint("in _umiEditor::devDeleteWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devDeleteWaypoint()||");
 
     // Deleting a waypoint from the middle of the array is very expensive, while
     // deleting it from the end of the array is O(1), so first we ensure the waypoint
@@ -761,7 +761,7 @@ devDeleteWaypoint(waypointId)
  */
 devSwapWaypoints(waypointA, waypointB, redrawWaypointLinks)
 {
-    debugPrint("in _umiEditor::devSwapWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devSwapWaypoints()||");
 
     if (!isDefined(redrawWaypointLinks)) {redrawWaypointLinks = true;}
 
@@ -791,7 +791,7 @@ devSwapWaypoints(waypointA, waypointB, redrawWaypointLinks)
  */
 devUpdateWaypointReferences(newWaypointId, oldWaypointId)
 {
-    debugPrint("in _umiEditor::devUpdateWaypointReferences()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devUpdateWaypointReferences()||");
 
     // for all of the waypoints linked to this one
     for (i=0; i<level.Wp[oldWaypointId].linkedCount; i++) {
@@ -815,7 +815,7 @@ devUpdateWaypointReferences(newWaypointId, oldWaypointId)
  */
 devDeleteLink()
 {
-    debugPrint("in _umiEditor::devDeleteLink()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devDeleteLink()||");
 
     linkId = level.currentWaypointLink;
     waypointA = level.waypointLinks[linkId].fromId;
@@ -862,7 +862,7 @@ devDeleteLink()
  */
 devUnlinkWaypoint(waypointId)
 {
-    debugPrint("in _umiEditor::devUnlinkWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devUnlinkWaypoint()||");
 
     // for all of the waypoints linked to this one, remove the references to this one
     for (i=0; i<level.Wp[waypointId].linkedCount; i++) {
@@ -891,7 +891,7 @@ devUnlinkWaypoint(waypointId)
  */
 devEmplaceWaypoint()
 {
-    debugPrint("in _umiEditor::devEmplaceWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devEmplaceWaypoint()||");
 
     // make them wait 1 second between planting waypoint flags to make attackbuttonpressed
     // be bounce-less
@@ -953,7 +953,7 @@ devEmplaceWaypoint()
  */
 devMoveWaypoint(flag)
 {
-    debugPrint("in _umiEditor::devMoveWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devMoveWaypoint()||");
 
     self scripts\players\_usables::removeUsable(flag);
 
@@ -979,7 +979,7 @@ devMoveWaypoint(flag)
  */
 devInitializeUnlinkedWaypoints()
 {
-    debugPrint("in _umiEditor::devInitializeUnlinkedWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devInitializeUnlinkedWaypoints()||");
 
     level.unlinkedWaypoints = [];
     for (i=0; i<level.Wp.size; i++) {
@@ -1002,7 +1002,7 @@ devInitializeUnlinkedWaypoints()
  */
 devUpdateLocalWaypoints(nearestWp)
 {
-    debugPrint("in _umiEditor::devUpdateLocalWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devUpdateLocalWaypoints()||");
 
     level.localWaypoints = [];
 
@@ -1130,7 +1130,7 @@ devUpdateLocalWaypoints(nearestWp)
  */
 devFindClosestWaypoints(waypoints, origin, n)
 {
-    debugPrint("in _umiEditor::devFindClosestWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFindClosestWaypoints()||");
 
     // compute the distance proxy for each of the waypoints under consideration
     for (i=0; i<waypoints.size; i++) {
@@ -1163,7 +1163,7 @@ devFindClosestWaypoints(waypoints, origin, n)
  */
 devQuicksortWaypoints(data, left, right, callback)
 {
-    debugPrint("in _umiEditor::devQuicksortWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devQuicksortWaypoints()||");
 
     // If the list has 2 or more items
     if (left < right) {
@@ -1201,7 +1201,7 @@ devQuicksortWaypoints(data, left, right, callback)
  */
 devSelectKthClosestWaypoint(list, left, right, k, callback)
 {
-    debugPrint("in _umiEditor::devSelectKthClosestWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devSelectKthClosestWaypoint()||");
 
     if (left == right) {
         return left;
@@ -1242,7 +1242,7 @@ devSelectKthClosestWaypoint(list, left, right, k, callback)
  */
 devPartition(list, left, right, pivotIndex, callback)
 {
-    debugPrint("in _umiEditor::devPartition()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devPartition()||");
 
     pivotValue = [[callback]](level.Wp[list[pivotIndex]]);
 
@@ -1281,7 +1281,7 @@ devPartition(list, left, right, pivotIndex, callback)
  */
 devWatchPlayer()
 {
-    debugPrint("in _umiEditor::devWatchPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devWatchPlayer()||");
 
     oldNearestWp = -1;
     while (1) {
@@ -1324,7 +1324,7 @@ devWatchPlayer()
  */
 devInitWaypointHud()
 {
-    debugPrint("in _umiEditor::devInitWaypointHud()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devInitWaypointHud()||");
 
     // Set up HUD elements
     verticalOffset = 80;
@@ -1455,7 +1455,7 @@ getDistance(struct) {return struct.distance;} /// callback
  */
 devFindNearestWaypointIndex(origin)
 {
-    debugPrint("in _umiEditor::devFindNearestWaypointIndex()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFindNearestWaypointIndex()||");
 
     nearestWp = 0;
     nearestDistance = 9999999999;
@@ -1482,7 +1482,7 @@ devFindNearestWaypointIndex(origin)
  */
 devFindNearestWaypointWithLinksIndex(origin)
 {
-    debugPrint("in _umiEditor::devFindNearestWaypointWithLinksIndex()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFindNearestWaypointWithLinksIndex()||");
 
     nearestWp = 0;
     nearestDistance = 9999999999;
@@ -1507,7 +1507,7 @@ devFindNearestWaypointWithLinksIndex(origin)
  */
 devFlagWaypoint(waypointId)
 {
-    debugPrint("in _umiEditor::devFlagWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFlagWaypoint()||");
 
     if (!isDefined(level.Wp[waypointId].linked)) {
         for (i=0; i<level.unlinkedWaypointFlags.size; i++) {
@@ -1543,7 +1543,7 @@ devFlagWaypoint(waypointId)
  */
 devUnflagWaypoint(waypointId)
 {
-    debugPrint("in _umiEditor::devUnflagWaypoint()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devUnflagWaypoint()||");
 
     if (!isDefined(level.Wp[waypointId].linked)) {
         for (i=0; i<level.unlinkedWaypointFlags.size; i++) {
@@ -1580,7 +1580,7 @@ devUnflagWaypoint(waypointId)
  */
 devInitWaypointFlags()
 {
-    debugPrint("in _umiEditor::devInitWaypointFlags()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devInitWaypointFlags()||");
 
     level.linkedWaypointFlags = [];
     for (i=0; i<10; i++) {
@@ -1614,7 +1614,7 @@ devInitWaypointFlags()
  */
 devDrawWaypointLinks()
 {
-    debugPrint("in _umiEditor::devDrawWaypointLinks()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devDrawWaypointLinks()||");
 
     level endon("waypoint_links_dirty");
 
@@ -1698,7 +1698,7 @@ devDrawWaypointLinks()
  */
 devWatchNearestWaypointLink()
 {
-    debugPrint("in _umiEditor::devWatchNearestWaypointLink()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devWatchNearestWaypointLink()||");
 
     level endon("waypoint_links_dirty");
 
@@ -1723,7 +1723,7 @@ devWatchNearestWaypointLink()
  */
 devFindNearestWaypointLink()
 {
-    debugPrint("in _umiEditor::devFindNearestWaypointLink()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFindNearestWaypointLink()||");
 
     if (level.waypointLinks.size == 1) {return 0;}
 
@@ -1764,7 +1764,7 @@ devFindNearestWaypointLink()
  */
 devFindWaypointLinkIndex(fromWp, toWp)
 {
-    debugPrint("in _umiEditor::devFindWaypointLinkIndex()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devFindWaypointLinkIndex()||");
 
     // In the level.waypointLinks[] array, .fromId is always in acsending order,
     // so we can do a binary search.  Also, .toId is always > .fromId, so we can
@@ -1848,7 +1848,7 @@ devFindWaypointLinkIndex(fromWp, toWp)
  */
 devDumpWaypointLinks()
 {
-    debugPrint("in _umiEditor::devDumpWaypointLinks()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devDumpWaypointLinks()||");
 
     for (i=0; i<level.waypointLinks.size; i++) {
         from = level.waypointLinks[i].fromId;
@@ -1865,7 +1865,7 @@ devDumpWaypointLinks()
  */
 devGiveEquipmentShop()
 {
-    debugPrint("in _umiEditor::devGiveEquipmentShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devGiveEquipmentShop()||");
 
     if (!isDefined(level.devEquipmentShops)) {level.devEquipmentShops = [];}
 
@@ -1897,7 +1897,7 @@ devGiveEquipmentShop()
  */
 devEmplaceEquipmentShop()
 {
-    debugPrint("in _umiEditor::devEmplaceEquipmentShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devEmplaceEquipmentShop()||");
 
     while (1) {
         if (self attackbuttonpressed()) {
@@ -2049,7 +2049,7 @@ devDrawLaser(color, origin, direction)
  */
 devEmplaceWeaponShop()
 {
-    debugPrint("in _umiEditor::devEmplaceWeaponShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devEmplaceWeaponShop()||");
 
     while (1) {
         if (self attackbuttonpressed()) {
@@ -2166,7 +2166,7 @@ devEmplaceWeaponShop()
  */
 initWeaponShopEditor(weaponShops)
 {
-    debugPrint("in _umiEditor::initWeaponShopEditor()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::initWeaponShopEditor()||");
 
     weapons = strTok(weaponShops, " ");
     if (!isDefined(level.tradespawns[int(weapons[0])])) {
@@ -2199,7 +2199,7 @@ initWeaponShopEditor(weaponShops)
  */
 initEquipmentShopEditor(equipmentShops)
 {
-    debugPrint("in _umiEditor::initEquipmentShopEditor()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::initEquipmentShopEditor()||");
 
     shops = strTok(equipmentShops, " ");
     if (!isDefined(level.tradespawns[int(shops[0])])) {
@@ -2231,7 +2231,7 @@ initEquipmentShopEditor(equipmentShops)
  */
 devMoveEquipmentShop(shop)
 {
-    debugPrint("in _umiEditor::devMoveEquipmentShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devMoveEquipmentShop()||");
 
     self scripts\players\_usables::removeUsable(shop);
 
@@ -2258,7 +2258,7 @@ devMoveEquipmentShop(shop)
  */
 devMoveWeaponShop(shop)
 {
-    debugPrint("in _umiEditor::devMoveWeaponShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devMoveWeaponShop()||");
 
     self scripts\players\_usables::removeUsable(shop);
 
@@ -2283,7 +2283,7 @@ devMoveWeaponShop(shop)
  */
 devGiveWeaponsShop()
 {
-    debugPrint("in _umiEditor::devGiveWeaponsShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devGiveWeaponsShop()||");
 
     if (!isDefined(level.devWeaponShops)) {level.devWeaponShops = [];}
 
@@ -2313,7 +2313,7 @@ devGiveWeaponsShop()
  */
 devDeleteClosestShop()
 {
-    debugPrint("in _umiEditor::devDeleteClosestShop()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devDeleteClosestShop()||");
 
     // Find closest equipment shop
     closestEquipmentDistance = 999999;
@@ -2368,7 +2368,7 @@ devDeleteClosestShop()
  */
 devSaveTradespawns()
 {
-    debugPrint("in _umiEditor::devSaveTradespawns()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devSaveTradespawns()||");
 
     if (level.devWeaponShops.size != level.devEquipmentShops.size) {
         msg = "Map: You must have an equal number of weapon and equipment shops!";
@@ -2441,7 +2441,7 @@ devSaveTradespawns()
  */
 devExponentialGuard(number)
 {
-    debugPrint("in _umiEditor::devExponentialGuard()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devExponentialGuard()||");
 
     tolerance = 0.001;
     integer = int(number);
@@ -2465,7 +2465,7 @@ devExponentialGuard(number)
  */
 devSaveWaypoints()
 {
-    debugPrint("in _umiEditor::devSaveWaypoints()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devSaveWaypoints()||");
 
     mapName =  tolower(getdvar("mapname"));
     logPrint("// =============================================================================\n");
@@ -2558,7 +2558,7 @@ devSaveWaypoints()
  */
 devDumpEntities()
 {
-    debugPrint("in _umiEditor::devDumpEntities()", "fn", level.nonVerbose);
+    log("trace", "msg|in _umiEditor::devDumpEntities()||");
 
     ents = getentarray();
     for (i=0; i<ents.size; i++) {

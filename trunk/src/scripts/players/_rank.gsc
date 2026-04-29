@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _rank::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::init()||");
 
     level.scoreInfo = [];
     level.rankTable = [];
@@ -130,7 +130,7 @@ isRegisteredEvent(type)
 
 registerScoreInfo(type, value)
 {
-    debugPrint("in _rank::registerScoreInfo()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::registerScoreInfo()||");
 
     level.scoreInfo[type]["value"] = value;
 }
@@ -165,14 +165,14 @@ getRankInfoXPAmt(rankId)
 
 getRankInfoMaxXp(rankId)
 {
-    debugPrint("in _rank::getRankInfoMaxXp()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::getRankInfoMaxXp()||");
 
     return int(level.rankTable[rankId][7]);
 }
 
 getRankInfoFull(rankId)
 {
-    debugPrint("in _rank::getRankInfoFull()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::getRankInfoFull()||");
 
     return tableLookupIString( "mp/ranktable.csv", 0, rankId, 16 );
 }
@@ -236,7 +236,7 @@ getRankInfoLevel(rankId)
 
 onPlayerConnect()
 {
-    debugPrint("in _rank::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::onPlayerConnect()||");
 
     //for(;;)
     //{
@@ -310,7 +310,7 @@ onPlayerConnect()
 
 onPlayerSpawned()
 {
-    debugPrint("in _rank::onPlayerSpawned()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::onPlayerSpawned()||");
 
     self endon("disconnect");
     /// @deprecated
@@ -564,7 +564,7 @@ updateRank()
 
 updateRankAnnounceHUD()
 {
-    debugPrint("in _rank::updateRankAnnounceHUD()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::updateRankAnnounceHUD()||");
 
     self endon("disconnect");
 
@@ -681,7 +681,7 @@ getRank()
 
 getRankForXp(xpVal)
 {
-    debugPrint("in _rank::getRankForXp()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::getRankForXp()||");
 
     rankId = 0;
     rankName = level.rankTable[rankId][1];
@@ -714,7 +714,7 @@ getSPM()
 
 getPrestigeLevel()
 {
-    debugPrint("in _rank::getPrestigeLevel()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::getPrestigeLevel()||");
 
     return self scripts\players\_persistence::statGet("plevel");
 }
@@ -747,7 +747,7 @@ incRankXP(amount)
 
 increaseDemerits(amount, reason)
 {
-    debugPrint("in _rank::increaseDemerits()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rank::increaseDemerits()||");
 
     if(!isDefined(self)) {return;}
 

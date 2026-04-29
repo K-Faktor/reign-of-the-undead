@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _mapvoting22::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::init()||");
 
     precacheshader("white");
     level.mapvote = 0;
@@ -72,7 +72,7 @@ init()
 
 reducedFrequencyMaps()
 {
-    debugPrint("in _mapvoting22::reducedFrequencyMaps()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::reducedFrequencyMaps()||");
 
     level.reducedFrequencyMaps = strtok(getdvar("sv_reduced_frequency_maps"), " ");
     level.greatlyReducedFrequencyMaps = strtok(getdvar("sv_greatly_reduced_frequency_maps"), " ");
@@ -95,7 +95,7 @@ reducedFrequencyMaps()
  */
 blacklistedMaps()
 {
-    debugPrint("in _mapvoting22::blacklistedMaps()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::blacklistedMaps()||");
     
     level.blacklistedMaps[level.blacklistedMaps.size] = "mp_vacant";                 // exceeds limit of 1000 xmodels
     level.blacklistedMaps[level.blacklistedMaps.size] = "mp_surv_aftermath";         // exceeds limit of 1000 xmodels
@@ -129,7 +129,7 @@ noneOfTheAboveWon()
  */
 startMapVote()
 {
-    debugPrint("in _mapvoting22::startMapVote()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::startMapVote()||");
 
     level notify("pre_mapvote");
     lastMapPlayed = getdvar("mapname");
@@ -177,7 +177,7 @@ startMapVote()
  */
 buildVoteFeedbackArray()
 {
-    debugPrint("in _mapvoting22::buildVoteFeedbackArray()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::buildVoteFeedbackArray()||");
 
     feedbackText = "";
     padding = "";
@@ -206,7 +206,7 @@ buildVoteFeedbackArray()
  */
 randomMapSelection(mapList, numberOfMaps, illegal)
 {
-    debugPrint("in _mapvoting22::randomMapSelection()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::randomMapSelection()||");
 
     availableMaps = mapList;
     selectedMaps = []; // maps in selection
@@ -280,7 +280,7 @@ randomMapSelection(mapList, numberOfMaps, illegal)
  */
 isLegal(name, illegal)
 {
-    debugPrint("in _mapvoting22::isLegal()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::isLegal()||");
 
     /// illegal struct is not implemented
     if (!isString(illegal)) {
@@ -302,7 +302,7 @@ isLegal(name, illegal)
  */
 mapRotation()
 {
-    debugPrint("in _mapvoting22::mapRotation()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::mapRotation()||");
 
     maprotation = [];
     index = 0;
@@ -503,7 +503,7 @@ mapTextName(mapname)
  */
 beginVoting(votingTime)
 {
-    debugPrint("in _mapvoting22::beginVoting()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::beginVoting()||");
 
     level.alphaintensity = .5;
 
@@ -531,7 +531,7 @@ beginVoting(votingTime)
  */
 playerVote()
 {
-    debugPrint("in _mapvoting22::playerVote()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::playerVote()||");
 
     level endon("post_mapvote");
     self endon("disconnect");
@@ -592,7 +592,7 @@ playerVote()
  */
 playerStartVoting()
 {
-    debugPrint("in _mapvoting22::playerStartVoting()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::playerStartVoting()||");
 
     level endon("post_mapvote");
     self endon("disconnect");
@@ -615,7 +615,7 @@ playerStartVoting()
  */
 removeVotingInstructions()
 {
-    debugPrint("in _mapvoting22::removeVotingInstructions()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::removeVotingInstructions()||");
 
     self endon("disconnect");
 
@@ -639,7 +639,7 @@ removeVotingInstructions()
  */
 countdown()
 {
-    debugPrint("in _mapvoting22::countdown()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::countdown()||");
 
     self endon("disconnect");
     time = level.votingTime;
@@ -658,7 +658,7 @@ countdown()
  */
 playerVisuals()
 {
-    debugPrint("in _mapvoting22::playerVisuals()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::playerVisuals()||");
 
     self setclientdvar("ui_hud_hardcore", 1);
 
@@ -718,7 +718,7 @@ playerVisuals()
  */
 playerDeleteVisuals()
 {
-    debugPrint("in _mapvoting22::playerDeleteVisuals()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::playerDeleteVisuals()||");
 
     self endon("disconnect");
 
@@ -741,7 +741,7 @@ playerDeleteVisuals()
  */
 updateVotingResults()
 {
-    debugPrint("in _mapvoting22::updateVotingResults()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::updateVotingResults()||");
 
     level endon("none_of_the_above_won");
 
@@ -775,7 +775,7 @@ updateVotingResults()
 
 updateVotingResultsHUD(votingResultsText)
 {
-    debugPrint("in _mapvoting22::updateVotingResultsHUD()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::updateVotingResultsHUD()||");
 
     if (isDefined(level.votingResultsHud)) {level.votingResultsHud destroy();}
 //     wait 0.05;
@@ -806,7 +806,7 @@ updateVotingResultsHUD(votingResultsText)
  */
 voteForNextMap()
 {
-    debugPrint("in _mapvoting22::voteForNextMap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::voteForNextMap()||");
 
     // Remove the player's current vote
     changePlayerVote(self.mapVote, -1);
@@ -834,7 +834,7 @@ voteForNextMap()
  */
 voteForPreviousMap()
 {
-    debugPrint("in _mapvoting22::voteForPreviousMap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::voteForPreviousMap()||");
 
     // Remove the player's current vote
     changePlayerVote(self.mapVote, -1);
@@ -929,7 +929,7 @@ votersText(mapIndex)
  */
 createVisuals()
 {
-    debugPrint("in _mapvoting22::createVisuals()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::createVisuals()||");
 
     // The large black background for the ballot
     level.blackbg = newHudElem();
@@ -1122,7 +1122,7 @@ createVisuals()
  */
 deleteVisuals()
 {
-    debugPrint("in _mapvoting22::deleteVisuals()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::deleteVisuals()||");
 
     // Destroy the player's visuals
     for (i=0; i<level.votingPlayers.size; i++) {
@@ -1170,7 +1170,7 @@ deleteVisuals()
  */
 updateWinningMap()
 {
-    debugPrint("in _mapvoting22::updateWinningMap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::updateWinningMap()||");
 
     level endon("post_mapvote");
     while (1) {
@@ -1213,7 +1213,7 @@ winningMapIndex()
  */
 winningMap()
 {
-    debugPrint("in _mapvoting22::winningMap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _mapvoting22::winningMap()||");
 
     return level.votingMaps[winningMapIndex()];
 }

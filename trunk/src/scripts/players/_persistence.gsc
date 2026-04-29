@@ -35,7 +35,7 @@
 
 init()
 {
-    debugPrint("in _persistence::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _persistence::init()||");
 
     level.persistentDataInfo = [];
 
@@ -48,7 +48,7 @@ init()
 
 onPlayerConnect()
 {
-    debugPrint("in _persistence::onPlayerConnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in _persistence::onPlayerConnect()||");
 
     for(;;) {
         level waittill("connected", player);
@@ -61,7 +61,7 @@ onPlayerConnect()
 
 restoreData()
 {
-    debugPrint("in _persistence::restoreData()", "fn", level.nonVerbose);
+    log("trace", "msg|in _persistence::restoreData()||");
 
     struct = level.persPlayerData[self.guid];
     if (!isdefined(struct)) {

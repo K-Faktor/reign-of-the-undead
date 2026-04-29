@@ -39,7 +39,7 @@
 
 init()
 {
-    debugPrint("in signals::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::init()||");
 
     self thread gameEnded();
     self thread preMapVote();
@@ -62,7 +62,7 @@ init()
  */
 gameEnded()
 {
-    debugPrint("in signals::gameEnded()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::gameEnded()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -80,7 +80,7 @@ gameEnded()
  */
 intermission()
 {
-    debugPrint("in signals::intermission()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::intermission()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -99,7 +99,7 @@ intermission()
  */
 preMapVote()
 {
-    debugPrint("in signals::preMapVote()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::preMapVote()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -119,7 +119,7 @@ preMapVote()
  */
 mapVote()
 {
-    debugPrint("in signals::mapVote()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::mapVote()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -139,7 +139,7 @@ mapVote()
  */
 postMapVote()
 {
-    debugPrint("in signals::postMapVote()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::postMapVote()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -160,7 +160,7 @@ postMapVote()
  */
 startingCredits()
 {
-    debugPrint("in signals::startingCredits()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::startingCredits()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -180,7 +180,7 @@ startingCredits()
  */
 creditsFinished()
 {
-    debugPrint("in signals::creditsFinished()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::creditsFinished()||");
 
     level endon("starting_map_change");
     while(1) {
@@ -200,7 +200,7 @@ creditsFinished()
  */
 startingMapChange()
 {
-    debugPrint("in signals::startingMapChange()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::startingMapChange()||");
 
     while(1) {
         level waittill("starting_map_change");
@@ -219,7 +219,7 @@ startingMapChange()
  */
 mapChangeFailed()
 {
-    debugPrint("in signals::mapChangeFailed()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::mapChangeFailed()||");
 
     while(1) {
         level waittill("map_change_failed");
@@ -238,7 +238,7 @@ mapChangeFailed()
  */
 noLongerAZombie()
 {
-    debugPrint("in signals::noLongerAZombie()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::noLongerAZombie()||");
 
     while(isDefined(self)) {
         self waittill("no_longer_a_zombie");
@@ -256,7 +256,7 @@ noLongerAZombie()
  */
 death()
 {
-    debugPrint("in signals::death()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::death()||");
 
     while(isDefined(self)) {
         self waittill("death");
@@ -274,7 +274,7 @@ death()
  */
 disconnect()
 {
-    debugPrint("in signals::disconnect()", "fn", level.nonVerbose);
+    log("trace", "msg|in signals::disconnect()||");
 
     while(isDefined(self)) {
         self waittill("disconnect");

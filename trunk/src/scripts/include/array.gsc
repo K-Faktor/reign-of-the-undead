@@ -190,7 +190,7 @@ orderedInsert(data, first, newValue)
  */
 orderedRemove(data, first, value)
 {
-    debugPrint("in array::orderedRemove()", "fn", level.nonVerbose);
+    log("trace", "msg|in array::orderedRemove()||");
 
     index = binarySearch(data, first, data.size - 1, value);
     if (index == -1) {
@@ -218,7 +218,7 @@ orderedRemove(data, first, value)
  */
 removeElementByIndex(data, index)
 {
-    debugPrint("in array::removeElementByIndex()", "fn", level.nonVerbose);
+    log("trace", "msg|in array::removeElementByIndex()||");
 
     // If index is out of range high or low, do nothing
     if (index > data.size - 1) {return data;}
@@ -253,7 +253,7 @@ removeElementByIndex(data, index)
  */
 binarySearch(data, leftBound, rightBound, value)
 {
-    debugPrint("in array::binarySearch()", "fn", level.nonVerbose);
+    log("trace", "msg|in array::binarySearch()||");
 
     // continue searching while range [leftBound,rightBound] is not empty
     while (leftBound <= rightBound)
@@ -323,7 +323,7 @@ inArray(data, value)
  */
 inIntArray(data, value)
 {
-    debugPrint("in array::inIntArray()", "fn", level.nonVerbose);
+    log("trace", "msg|in array::inIntArray()||");
 
     for (i=0; i<data.size; i++) {
         if (data[i] == value) {

@@ -37,7 +37,7 @@
 
 init()
 {
-    debugPrint("in _teleporter::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _teleporter::init()||");
 
     precacheModel( "bx_teleporter" );
     precacheShellShock( "teleporter" );

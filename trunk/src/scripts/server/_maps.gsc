@@ -36,7 +36,7 @@
 
 init()
 {
-    debugPrint("in _maps::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::init()||");
 
     level.onChangeMap = ::blank;
     if (level.dvar["game_mapvote"] == 1) {
@@ -97,7 +97,7 @@ blank(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
  */
 applyMapFixes()
 {
-    debugPrint("in _maps::applyMapFixes()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::applyMapFixes()||");
 
     currentMap = getdvar("mapname");
 
@@ -194,7 +194,7 @@ getNextMap()
  */
 logPlayersAtGameEnd()
 {
-    debugPrint("in _maps::logPlayersAtGameEnd()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::logPlayersAtGameEnd()||");
 
     level endon("starting_map_change");
 
@@ -217,7 +217,7 @@ logPlayersAtGameEnd()
 
 changeMap(mapname)
 {
-    debugPrint("in _maps::changeMap()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::changeMap()||");
 
     level notify("starting_map_change");
     /** @todo log all the players here(?): guid, name.  Then do the same when the
@@ -321,7 +321,7 @@ changeMap(mapname)
  */
 mapAnimation(animation)
 {
-    debugPrint("in _maps::mapAnimation()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::mapAnimation()||");
 
     level endon("game_ended");
 
@@ -359,7 +359,7 @@ mapAnimation(animation)
  */
 watchGlidePad(pad)
 {
-    debugPrint("in _maps::watchGlidePad()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::watchGlidePad()||");
 
     while (1) {
         self waittill("trigger", player);
@@ -379,7 +379,7 @@ watchGlidePad(pad)
  */
 glidePlayer(player)
 {
-    debugPrint("in _maps::glidePlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::glidePlayer()||");
 
     // self is the pad
     player setOrigin(self.origin1);
@@ -420,7 +420,7 @@ glidePlayer(player)
  */
 watchElevatorTrigger(elevator)
 {
-    debugPrint("in _maps::watchElevatorTrigger()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::watchElevatorTrigger()||");
 
     while (1) {
         self waittill("trigger", player);
@@ -452,7 +452,7 @@ watchElevatorTrigger(elevator)
  */
 watchMapTeleporters(mapTeleporter)
 {
-    debugPrint("in _maps::watchMapTeleporters()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::watchMapTeleporters()||");
 
     while (1) {
         self waittill("trigger", player);
@@ -472,7 +472,7 @@ watchMapTeleporters(mapTeleporter)
  */
 watchHurtTriggers(trigger)
 {
-    debugPrint("in _maps::watchHurtTriggers()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::watchHurtTriggers()||");
 
     while (1) {
         self waittill("trigger", player);
@@ -504,7 +504,7 @@ watchHurtTriggers(trigger)
  */
 hurtPlayer()
 {
-    debugPrint("in _maps::hurtPlayer()", "fn", level.nonVerbose);
+    log("trace", "msg|in _maps::hurtPlayer()||");
 
     interval = 1;
     damage = 65;

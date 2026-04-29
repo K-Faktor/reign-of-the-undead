@@ -38,7 +38,7 @@
 
 init()
 {
-    debugPrint("in _rconInterface::init()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rconInterface::init()||");
 
     level.cmd = [];
     thread watchCmd();
@@ -54,7 +54,7 @@ init()
 
 precache()
 {
-    debugPrint("in _rconInterface::precache()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rconInterface::precache()||");
 }
 
 /**
@@ -67,7 +67,7 @@ precache()
  */
 addCmd(dvar, script)
 {
-    debugPrint("in _rconInterface::addCmd()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rconInterface::addCmd()||");
 
     cmd = spawnstruct();
     level.cmd[level.cmd.size] = cmd;
@@ -83,7 +83,7 @@ addCmd(dvar, script)
  */
 watchCmd()
 {
-    debugPrint("in _rconInterface::watchCmd()", "fn", level.nonVerbose);
+    log("trace", "msg|in _rconInterface::watchCmd()||");
 
     while(1) {
         for (i=0; i<level.cmd.size; i++) {

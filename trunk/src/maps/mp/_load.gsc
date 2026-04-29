@@ -216,7 +216,7 @@ exploder_load(trigger)
 
 setupExploders()
 {
-    debugPrint("in _load::setupExploders()", "fn", level.nonVerbose);
+    log("trace", "msg|in _load::setupExploders()||");
 
     // Hide exploder models.
     ents = getentarray( "script_brushmodel", "classname" );
