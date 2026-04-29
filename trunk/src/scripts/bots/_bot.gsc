@@ -1129,7 +1129,8 @@ getBestWaypoint(entityPosition, goalPosition, pathId)
         }
     }
     best = waypoints[0]; //a; // @todo might be best to just force-use the closest, fewer complications?
-    temp = sprintfLog("{\"bestWaypointData\": {\"origin\": $1, \"wp1Pos\": $2, \"wp2Pos\": $3, \"wp3Pos\": $4, \"bestWpPos\": $5}}", posToJson(entityPosition), posToJson(level.Wp[waypoints[0]].origin), posToJson(level.Wp[waypoints[1]].origin), posToJson(level.Wp[waypoints[2]].origin), posToJson(level.Wp[best].origin));
+    if (!isDefined(pathId)) {pathId = "null";}
+    temp = sprintfLog("{\"pathId\": $6, \"bestWaypointData\": {\"origin\": $1, \"wp1Pos\": $2, \"wp2Pos\": $3, \"wp3Pos\": $4, \"bestWpPos\": $5}}", posToJson(entityPosition), posToJson(level.Wp[waypoints[0]].origin), posToJson(level.Wp[waypoints[1]].origin), posToJson(level.Wp[waypoints[2]].origin), posToJson(level.Wp[best].origin), pathId);
     logPrint(temp + "\n");
 
     return best;
@@ -1211,7 +1212,7 @@ getToBestWaypoint(bot, pathId)
         pos = findGround(centroid);
         // no exponential notation around 0
         if ((pos[2] < 0.125) && (pos[2] > -0.125)) {pos = pos * (1,1,0);}
-        temp = sprintfLog("{\"getToBestWaypointData\": {\"origin\": $1, \"centroid\": $2, \"distance\": $3, \"nextWpPos\": $4, \"bestWpPos\": $5, \"cornerPos\": $6}}", posToJson(bot.origin), posToJson(pos), distance, posToJson(secondPathPos), posToJson(firstPathPos), posToJson(proj_point));
+        temp = sprintfLog("{\"pathId\": $7, \"getToBestWaypointData\": {\"origin\": $1, \"centroid\": $2, \"distance\": $3, \"nextWpPos\": $4, \"bestWpPos\": $5, \"cornerPos\": $6}}", posToJson(bot.origin), posToJson(pos), distance, posToJson(secondPathPos), posToJson(firstPathPos), posToJson(proj_point), pathId);
         logPrint(temp + "\n");
         res[res.size] = pos;
         res[res.size] = level.Wp[bot.myWaypoint].origin;

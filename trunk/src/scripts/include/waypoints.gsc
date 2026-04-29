@@ -1888,30 +1888,20 @@ CatmullRomPoint(p0, p1, p2, p3, t)
  * @brief Sample a full smooth path from a waypoint array
  *
  * @param pathList array The list of waypoint indexes in pathStack
+ * @param pathId integer ID for this path, so we can keep related JSON segments together
  * @param samplesPerSegment integer How many points to use for smoothing
  *                                  path between waypoints
+ * @param steps array List of position vectors it takes to intelligently 'get on' best waypoint.
+ *                    Usually 0 or 2 items in size.
  *
- * @returns vector array The list of smoothed positions for this pathStack
+ * @returns vector array An array of arrays, organized like a stack of stacks
  */
 getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
 {
-    // @todo pathId is for JSON debug ID.   Not every path has all 3 elements we chart,
-    // so we need to aggregate the debug JSON around a common ID so they all
-    // match up. Implement in the JSON output, then update the python
-    // to parse *all* the paths debug data, aggregated by id, with a cmdline option
-    // to display data for a specific pathId.
     smoothPath = [];    // array of segments, as a stack
     segment = [];       // array of positions this segment, as a stack
 
     logPrint("pathList.size: " + pathList.size + "\n");
-
-    // if (isDefined(steps)) {
-    //     log("dev", "msg|adding steps to smoothedPath||");
-    //     for (i=0; i<steps.size; i++) {
-    //         smoothPath[smoothPath.size] =  steps[i];
-    //         log("dev", sprintfLog("msg|step:||stepOrigin|$1||", steps[i]));
-    //     }
-    // }
 
     if (!isDefined(samplesPerSegment)) {samplesPerSegment = 5;}  // (4 = low, 10-12 = very smooth)
 
@@ -2016,9 +2006,7 @@ getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
         smoothPath[smoothPath.size] = reverseArray(segment);
     }
 
-    // logPrint("smoothPath.size: " + smoothPath.size + "\n");
     newSmoothPath = reverseArray(smoothPath);
-    // logPrint("newSmoothPath.size: " + newSmoothPath.size + "\n");
     // smoothPath should now be an array of arrays, organized as a stack of stacks
 
     if (true) {
@@ -2035,7 +2023,7 @@ getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
         // ugly hack around CoD4's logging line character limit; as we build the JSON,
         // dump it to g_log whenever it exceeds 200 characters.
         logPrint("#CatmullRomStart\n");
-        json = "{\"name\": \"CatmullRom\", \"original\": [";
+        json = "{\"name\": \"CatmullRom\", \"pathId\": " + pathId + ", \"original\": [";
         for (i=0; i<pathList.size; i++) {
             json += "[" + level.Wp[pathList[i]].origin[0] +", " + level.Wp[pathList[i]].origin[1] +", " + level.Wp[pathList[i]].origin[2]+"]";
             if (json.size > 200) {logPrint(json + "\n"); json = "";}
