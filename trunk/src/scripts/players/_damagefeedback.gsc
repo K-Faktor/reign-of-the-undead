@@ -71,7 +71,7 @@ updateDamageFeedbackSound()
 
 updateDamageFeedback(hitBodyArmor)
 {
-    debugPrint("in _damagefeedback::updateDamageFeedback()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _damagefeedback::updateDamageFeedback()||");
 
     if (!isPlayer(self)) {return;}
 

@@ -152,7 +152,7 @@ dvarDefault(dvar, def)
  */
 randomSpawnpoint()
 {
-    debugPrint("in _survival::randomSpawnpoint()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _survival::randomSpawnpoint()||");
 
     // force using a single spawnpoint for AI development
     // id = level.botSpawnpointsQueue[level.nextBotSpawnpointPointer];
@@ -940,7 +940,7 @@ doWaveHud()
  */
 spawnZombie(override, spawntype)
 {
-    debugPrint("in _survival::spawnZombie()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _survival::spawnZombie()||");
 
     if (!isdefined(spawntype)) {spawntype = 0;}
 
@@ -990,7 +990,7 @@ spawnZombie(override, spawntype)
  */
 groundSpawn(type, spawn, bot)
 {
-    debugPrint("in _survival::groundSpawn()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _survival::groundSpawn()||");
 
     playfx(level.goundSpawnFX, PhysicsTrace(spawn.origin, spawn.origin-200));
     wait .2;
@@ -1009,7 +1009,7 @@ groundSpawn(type, spawn, bot)
  */
 soulSpawn(type, spawn, bot)
 {
-    debugPrint("in _survival::soulSpawn()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _survival::soulSpawn()||");
 
     org = spawn("script_model", spawn.origin + (0,0,2000));
     org setmodel("tag_origin");

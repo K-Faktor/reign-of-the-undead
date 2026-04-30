@@ -96,7 +96,7 @@ addZomModel(type, body, head)
  */
 loadZomModel(type)
 {
-    debugPrint("in _types::loadZomModel()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _types::loadZomModel()||");
 
     self DetachAll();
 
@@ -116,7 +116,7 @@ loadZomModel(type)
  */
 loadAnimTree(type)
 {
-    debugPrint("in _types::loadAnimTree()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _types::loadAnimTree()||");
 
     animTree = level.zom_types[type].animTree;
     switch (animTree) {
@@ -364,7 +364,7 @@ getFxForSpecialWave(type)
  */
 loadZomStats(type)
 {
-    debugPrint("in _types::loadZomStats()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _types::loadZomStats()||");
 
     struct = level.zom_types[type];
 
@@ -396,7 +396,7 @@ loadZomStats(type)
  */
 onSpawn(type)
 {
-    debugPrint("in _types::onSpawn()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _types::onSpawn()||");
 
     // track if a turret is targeting this bot, to help turrets work co-operatively
     self.isTurretTarget = false;
@@ -635,7 +635,7 @@ killBall(player)
  */
 onDamage(type, sMeansOfDeath, sWeapon, iDamage, eAttacker)
 {
-    debugPrint("in _types::onDamage()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _types::onDamage()||");
 
     switch (type) {
         case "boss":  // this is a boss zombie
@@ -831,7 +831,7 @@ nextBossStatus()
  */
 onAttack(type, target)
 {
-    debugPrint("in _types::onAttack()", "fn", level.medVerbosity);
+    log("trace", "msg|in _types::onAttack()||");
 
     switch (type) {
         case "boss":            // Fall through
@@ -853,7 +853,7 @@ onAttack(type, target)
  */
 onCorpse(type)
 {
-    debugPrint("in _types::onCorpse()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _types::onCorpse()||");
 
     switch (type) {
         case "burning":         // Fall through

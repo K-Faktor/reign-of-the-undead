@@ -129,7 +129,7 @@ uav()
 
 setDown(isDown)
 {
-    debugPrint("in _players::setDown()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _players::setDown()||");
 
     self.isDown = isDown;
     self.persData.isDown = isDown;
@@ -495,7 +495,7 @@ onPlayerConnect()
  */
 defaultHeadicon()
 {
-    debugPrint("in _players::defaultHeadicon()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _players::defaultHeadicon()||");
 
     if(!isDefined(self)) {return;}
 
@@ -753,7 +753,7 @@ resetSpawning()
 
 onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime)
 {
-    debugPrint("in _players::onPlayerDamage()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _players::onPlayerDamage()||");
 
     if(self.sessionteam == "spectator") {return;}
 
@@ -896,7 +896,7 @@ doAreaDamage(range, damage, attacker)
 
 printPlayersData()
 {
-    debugPrint("in _players::printPlayersData()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _players::printPlayersData()||");
 
     players = level.players;
     if (players.size == 0) {return;}
@@ -1490,7 +1490,7 @@ resetUnlocks()
 
 setStatusIcon(icon)
 {
-    debugPrint("in _players::setStatusIcon()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _players::setStatusIcon()||");
 
     if (self.overrideStatusIcon == "") {self.statusicon = icon;}
 }
@@ -1526,7 +1526,7 @@ fullHeal(speed)
 
 incUpgradePoints(inc)
 {
-    debugPrint("in _players::incUpgradePoints()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _players::incUpgradePoints()||");
 
     self endon("disconnect");
 

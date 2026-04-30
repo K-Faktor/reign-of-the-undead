@@ -137,7 +137,7 @@ registerScoreInfo(type, value)
 
 getScoreInfoValue(type)
 {
-    debugPrint("in _rank::getScoreInfoValue()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _rank::getScoreInfoValue()||");
 
     return (level.scoreInfo[type]["value"]);
 }
@@ -151,14 +151,14 @@ getScoreInfoLabel(type)
 
 getRankInfoMinXP(rankId)
 {
-    debugPrint("in _rank::getRankInfoMinXP()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _rank::getRankInfoMinXP()||");
 
     return int(level.rankTable[rankId][2]);
 }
 
 getRankInfoXPAmt(rankId)
 {
-    debugPrint("in _rank::getRankInfoXPAmt()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _rank::getRankInfoXPAmt()||");
 
     return int(level.rankTable[rankId][3]);
 }
@@ -348,7 +348,7 @@ roundUp(floatVal)
 
 giveRankXP(type, value)
 {
-    debugPrint("in _rank::giveRankXP()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _rank::giveRankXP()||");
 
     self endon("disconnect");
 
@@ -528,7 +528,7 @@ resetRank(delay)
 
 updateRank()
 {
-    debugPrint("in _rank::updateRank()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _rank::updateRank()||");
 
     if (self.rankHacker)
     return;
@@ -624,7 +624,7 @@ endGameUpdate()
 
 updateRankScoreHUD(amount)
 {
-    debugPrint("in _rank::updateRankScoreHUD()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _rank::updateRankScoreHUD()||");
 
     /*self endon( "disconnect" );
     self endon( "joined_team" );
@@ -667,7 +667,7 @@ updateRankScoreHUD(amount)
 
 getRank()
 {
-    debugPrint("in _rank::getRank()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _rank::getRank()||");
 
     rankXp = self.pers["rankxp"];
     rankId = self.pers["rank"];
@@ -721,14 +721,14 @@ getPrestigeLevel()
 
 getRankXP()
 {
-    debugPrint("in _rank::getRankXP()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _rank::getRankXP()||");
 
     return self.pers["rankxp"];
 }
 
 incRankXP(amount)
 {
-    debugPrint("in _rank::incRankXP()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _rank::incRankXP()||");
 
     xp = self getRankXP();
     newXp = (xp + amount);

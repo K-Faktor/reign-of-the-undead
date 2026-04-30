@@ -141,7 +141,7 @@ resetAbilities()
 
 getDamageModifier(weapon, means, target, damage)
 {
-    debugPrint("in _abilities::getDamageModifier()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _abilities::getDamageModifier()||");
 
     MP = 1;
     if (issubstr(self.weaponMod, "soldier")) {
@@ -256,7 +256,7 @@ getDamageModifier(weapon, means, target, damage)
  */
 isAbilityAllowed(class, rank, type, ability)
 {
-    debugPrint("in _abilities::isAbilityAllowed()", "fn", level.medVerbosity);
+    log("trace", "msg|in _abilities::isAbilityAllowed()||");
 
     if (type == "PR") { // Primary abilities
         if ((ability == "AB1") && (rank >= 5)) {return true;}
@@ -403,7 +403,7 @@ loadSpecialAbility(special)
  */
 loadAbility(class, type, ability)
 {
-    debugPrint("in _abilities::loadAbility()", "fn", level.medVerbosity);
+    log("trace", "msg|in _abilities::loadAbility()||");
 
     switch (class) {
         case "soldier":
@@ -773,7 +773,7 @@ loadScoutPassiveAbility(ability)
  */
 rechargeSpecial(delta)
 {
-    debugPrint("in _abilities::rechargeSpecial()", "fn", level.medVerbosity);
+    log("trace", "msg|in _abilities::rechargeSpecial()||");
 
     if(!isDefined(self)) {return;}
 
@@ -1295,7 +1295,7 @@ regenerate(health, interval, limit)
  */
 heal(amount)
 {
-    debugPrint("in _abilities::heal()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _abilities::heal()||");
 
     self.health += amount;
     if (self.health > self.maxhealth) {self.health = self.maxhealth;}
@@ -1352,7 +1352,7 @@ watchSpecialAbility()
  */
 checkForDoubleTapF()
 {
-    debugPrint("in _abilities::checkForDoubleTapF()", "fn", level.medVerbosity);
+    log("trace", "msg|in _abilities::checkForDoubleTapF()||");
 
     self endon("disconnect");
     self endon("killed_player");

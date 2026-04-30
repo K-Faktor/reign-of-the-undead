@@ -77,7 +77,7 @@ onPlayerConnect()
 
 updateBlur(blur)
 {
-    debugPrint("in _environment::updateBlur()", "fn", level.medVerbosity);
+    log("trace", "msg|in _environment::updateBlur()||");
 
     level.blur = blur;
     for (i=0; i<level.players.size; i++) {

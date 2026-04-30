@@ -181,7 +181,7 @@ Callback_PlayerDisconnect()
 
 Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime)
 {
-    debugPrint("in _clients::Callback_PlayerDamage()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _clients::Callback_PlayerDamage()||");
 
     if (self.isBot) {
         self thread scripts\bots\_bots::Callback_BotDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
@@ -193,7 +193,7 @@ Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sW
 
 Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
-    debugPrint("in _clients::Callback_PlayerKilled()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _clients::Callback_PlayerKilled()||");
 
     if (self.isBot) {
         self thread scripts\bots\_bot::killed(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration);

@@ -60,7 +60,7 @@ debugUsables()
 
 addUsable(ent, type, hintstring, distance)
 {
-    debugPrint("in _usables::addUsable()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _usables::addUsable()||");
 
     self.useObjects[self.useObjects.size] = ent;
     ent.occupied = false;
@@ -493,7 +493,7 @@ usableUse()
 
 usableAbort()
 {
-    debugPrint("in _usables::usableAbort()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _usables::usableAbort()||");
 
     self notify("usable_abort");
     self setclientdvar("ui_hintstring", "");

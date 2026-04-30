@@ -63,7 +63,7 @@
  * @returns string The name of the mod, e.g. "rotu", "rozo", etc
  * @since RotU 2.2.1
  */
-modName()
+modName()                                           // quality:external_interface
 {
     log("trace", "msg|in _umi::modName()||");
 
@@ -80,7 +80,7 @@ modName()
  * @returns string The native type of the map, e.g. "rotu", "rozo", etc.
  * @since RotU 2.2.1
  */
-nativeMapType()
+nativeMapType()                                     // quality:external_interface
 {
     log("trace", "msg|in _umi::nativeMapType()||");
 
@@ -96,7 +96,7 @@ nativeMapType()
  * @returns nothing
  * @since RotU 2.2.1
  */
-setNativeMapType(nativeMapType)
+setNativeMapType(nativeMapType)                     // quality:external_interface
 {
     log("trace", "msg|in _umi::setNativeMapType()||");
 
@@ -112,7 +112,7 @@ setNativeMapType(nativeMapType)
  * @returns nothing
  * @since RotU 2.2.1
  */
-devDumpCsvWaypointsToBtd()
+devDumpCsvWaypointsToBtd()                          // quality:external_interface
 {
     log("trace", "msg|in _umi::devDumpCsvWaypointsToBtd()||");
 
@@ -185,7 +185,7 @@ devDumpCsvWaypointsToBtd()
  * @returns nothing
  * @since RotU 2.2.1
  */
-devDumpBtdWaypointsToCsv()
+devDumpBtdWaypointsToCsv()                          // quality:external_interface
 {
     log("trace", "msg|in _umi::devDumpBtdWaypointsToCsv()||");
 
@@ -288,7 +288,7 @@ devDrawAllPossibleSpawnpoints()
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteUnusedSpawnpoints(deleteSab, deleteSd, deleteDom, deleteCtf)
+deleteUnusedSpawnpoints(deleteSab, deleteSd, deleteDom, deleteCtf)  // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteUnusedSpawnpoints()||");
 
@@ -335,7 +335,7 @@ deleteUnusedSpawnpoints(deleteSab, deleteSd, deleteDom, deleteCtf)
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteCtfEntities()
+deleteCtfEntities()                                 // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteCtfEntities()||");
 
@@ -362,7 +362,7 @@ deleteCtfEntities()
  * @returns nothing
  * @since RotU 2.2.2
  */
-deleteTurrets()
+deleteTurrets()                                     // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteTurrets()||");
 
@@ -381,7 +381,7 @@ deleteTurrets()
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteHqEntities()
+deleteHqEntities()                                  // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteHqEntities()||");
 
@@ -415,7 +415,7 @@ deleteHqEntities()
  * @returns nothing
  * @since RotU 2.2.2
  */
-disambiguateBarrelsByTargetname(targetname)
+disambiguateBarrelsByTargetname(targetname)         // quality:external_interface
 {
     log("trace", "msg|in _umi::disambiguateBarrelsByTargetname()||");
 
@@ -434,7 +434,7 @@ disambiguateBarrelsByTargetname(targetname)
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteSabotageEntities()
+deleteSabotageEntities()                            // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteSabotageEntities()||");
 
@@ -470,7 +470,7 @@ deleteSabotageEntities()
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadCentralTrap(trigger, bat, base, activator, price)
+loadCentralTrap(trigger, bat, base, activator, price)   // quality:external_interface
 {
     log("trace", "msg|in _umi::loadCentralTrap()||");
 
@@ -512,7 +512,7 @@ loadCentralTrap(trigger, bat, base, activator, price)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadRotatingTrap(trigger, death, activator, price)
+loadRotatingTrap(trigger, death, activator, price)  // quality:external_interface
 {
     log("trace", "msg|in _umi::loadRotatingTrap()||");
 
@@ -553,7 +553,7 @@ loadRotatingTrap(trigger, death, activator, price)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadSpikeTrap(trigger, death, activator, price)
+loadSpikeTrap(trigger, death, activator, price)     // quality:external_interface
 {
     log("trace", "msg|in _umi::loadSpikeTrap()||");
 
@@ -598,7 +598,7 @@ loadSpikeTrap(trigger, death, activator, price)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadFireTrap(trigger, fire1, fire2, fire3, fire4, death, activator, price)
+loadFireTrap(trigger, fire1, fire2, fire3, fire4, death, activator, price)  // quality:external_interface
 {
     log("trace", "msg|in _umi::loadFireTrap()||");
 
@@ -649,7 +649,7 @@ loadFireTrap(trigger, fire1, fire2, fire3, fire4, death, activator, price)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadElectricTrap(trigger, elec1, elec2, elec3, elec4, elec5, elec6, death, activator, price)
+loadElectricTrap(trigger, elec1, elec2, elec3, elec4, elec5, elec6, death, activator, price)    // quality:external_interface
 {
     log("trace", "msg|in _umi::loadElectricTrap()||");
 
@@ -702,7 +702,7 @@ loadElectricTrap(trigger, elec1, elec2, elec3, elec4, elec5, elec6, death, activ
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadGlidePad(trigger, origin1, origin2, origin3, origin4, origin5, origin6, velocity)
+loadGlidePad(trigger, origin1, origin2, origin3, origin4, origin5, origin6, velocity)   // quality:external_interface
 {
     log("trace", "msg|in _umi::loadGlidePad()||");
 
@@ -789,7 +789,7 @@ loadGlidePad(trigger, origin1, origin2, origin3, origin4, origin5, origin6, velo
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadCyclicalAnimation(model, type, steps, reversible, delay)
+loadCyclicalAnimation(model, type, steps, reversible, delay)    // quality:external_interface
 {
     log("trace", "msg|in _umi::loadCyclicalAnimation()||");
 
@@ -835,7 +835,7 @@ loadCyclicalAnimation(model, type, steps, reversible, delay)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadElevator(model, trigger, positionA, positionB, velocity)
+loadElevator(model, trigger, positionA, positionB, velocity)    // quality:external_interface
 {
     log("trace", "msg|in _umi::loadElevator()||");
 
@@ -869,7 +869,7 @@ loadElevator(model, trigger, positionA, positionB, velocity)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadMapTeleporter(trigger, destination)
+loadMapTeleporter(trigger, destination)             // quality:external_interface
 {
     log("trace", "msg|in _umi::loadMapTeleporter()||");
 
@@ -892,7 +892,7 @@ loadMapTeleporter(trigger, destination)
  * @returns nothing
  * @since RotU 2.2.3
  */
-loadHurtTriggers(trigger)
+loadHurtTriggers(trigger)                           // quality:external_interface
 {
     log("trace", "msg|in _umi::loadHurtTriggers()||");
 
@@ -918,7 +918,7 @@ loadHurtTriggers(trigger)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildShopsByTradespawns(equipmentShops, havePrefabModels)
+buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_interface
 {
     log("trace", "msg|in _umi::buildShopsByTradespawns()||");
 
@@ -987,7 +987,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildShopsByTargetname(targetname)
+buildShopsByTargetname(targetname)                  // quality:external_interface
 {
     log("trace", "msg|in _umi::buildShopsByTargetname()||");
 
@@ -1019,7 +1019,7 @@ buildShopsByTargetname(targetname)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildWeaponShopsByTargetname(targetname, loadTime)
+buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interface
 {
     log("trace", "msg|in _umi::buildWeaponShopsByTargetname()||");
 
@@ -1061,7 +1061,7 @@ buildWeaponShopsByTargetname(targetname, loadTime)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
+buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)    // quality:external_interface
 {
     log("trace", "msg|in _umi::buildWeaponShopsByTradespawns()||");
 
@@ -1107,14 +1107,14 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)
  * @returns nothing
  * @since RotU 2.2.1
  */
-convertToNativeWaypoints()
+convertToNativeWaypoints()                       // quality:external_interface
 {
     log("trace", "msg|in _umi::convertToNativeWaypoints()||");
 
     loadWaypoints();
 }
 
-loadWaypoints()
+loadWaypoints()                                     // quality:external_interface
 {
     log("trace", "msg|in _umi::loadWaypoints()||");
     log("dev", "msg|in _umi::loadWaypoints()||");
@@ -1490,7 +1490,7 @@ deleteUnlinkedWaypoint(waypointId)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildZombieSpawnsByClassname(classname)
+buildZombieSpawnsByClassname(classname)             // quality:external_interface
 {
     log("trace", "msg|in _umi::buildZombieSpawnsByClassname()||");
 
@@ -1516,7 +1516,7 @@ buildZombieSpawnsByClassname(classname)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildZombieSpawnByTargetname(targetname, priority)
+buildZombieSpawnByTargetname(targetname, priority)  // quality:external_interface
 {
     log("trace", "msg|in _umi::buildZombieSpawnByTargetname()||");
 
@@ -1547,7 +1547,7 @@ buildZombieSpawnByTargetname(targetname, priority)
  */
 findAdditionalSpawnpoints()
 {
-    debugPrint("in _umi::findAdditionalSpawnpoints()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _umi::findAdditionalSpawnpoints()||");
 
     potentialSpawnpoints = [];
 
@@ -1708,7 +1708,7 @@ findAdditionalSpawnpoints()
  */
 isSpawnpointOk(origin)
 {
-    debugPrint("in _umi::isSpawnpointOk()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _umi::isSpawnpointOk()||");
 
     // the spec'd spawnpoint may be in the air, with overhead cover, such that
     // we will hit the ceiling when we check for obstructions.  So first we try
@@ -1750,7 +1750,7 @@ isSpawnpointOk(origin)
  * @returns nothing
  * @since RotU 2.2.1
  */
-addPlayerSpawnsByClassname(classname, enabled)
+addPlayerSpawnsByClassname(classname, enabled)      // quality:external_interface
 {
     log("trace", "msg|in _umi::addPlayerSpawnsByClassname()||");
 
@@ -1766,7 +1766,7 @@ addPlayerSpawnsByClassname(classname, enabled)
  * @returns nothing
  * @since RotU 2.2.1
  */
-addPlayerSpawnsByTargetname(targetname, enabled)
+addPlayerSpawnsByTargetname(targetname, enabled)    // quality:external_interface
 {
     log("trace", "msg|in _umi::addPlayerSpawnsByTargetname()||");
 
@@ -1787,7 +1787,7 @@ addPlayerSpawnsByTargetname(targetname, enabled)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll)
+buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll)   // quality:external_interface
 {
     log("trace", "msg|in _umi::buildBarricadesByTargetname()||");
 
@@ -1877,7 +1877,7 @@ buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dro
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildBarricadesByClassname(classname, partCount, health, deathFx, buildFx, dropAll)
+buildBarricadesByClassname(classname, partCount, health, deathFx, buildFx, dropAll) // quality:external_interface
 {
     log("trace", "msg|in _umi::buildBarricadesByClassname()||");
 
@@ -1895,7 +1895,7 @@ buildBarricadesByClassname(classname, partCount, health, deathFx, buildFx, dropA
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType)
+buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType) // quality:external_interface
 {
     log("trace", "msg|in _umi::buildWeaponPickupByTargetname()||");
 
@@ -1919,7 +1919,7 @@ buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType)
  * @returns nothing
  * @since RotU 2.2.1
  */
-buildWeaponPickupByClassname(classname, itemText, weapon, weaponType)
+buildWeaponPickupByClassname(classname, itemText, weapon, weaponType)   // quality:external_interface
 {
     log("trace", "msg|in _umi::buildWeaponPickupByClassname()||");
 
@@ -1951,6 +1951,8 @@ setPreferBtdWaypoints(value)
  */
 precacheCommonItems()
 {
+    // quality:ignore_trace
+
     /**
      * Many maps try to load dust_trail_IR, but it generates errors
      * about it not being precached.  Effects cannot be precached after a call to
@@ -1991,7 +1993,7 @@ precacheCommonItems()
  * @returns nothing
  * @since RotU 2.2.1
  */
-waitUntilFirstPlayerSpawns()
+waitUntilFirstPlayerSpawns()                        // quality:external_interface
 {
     log("trace", "msg|in _umi::waitUntilFirstPlayerSpawns()||");
 
@@ -2019,7 +2021,7 @@ waitUntilFirstPlayerSpawns()
  * @returns nothing
  * @since RotU 2.2.1
  */
-startGame()
+startGame()                                         // quality:external_interface
 {
     log("trace", "msg|in _umi::startGame()||");
 
@@ -2041,7 +2043,7 @@ startGame()
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteEntitiesByClassname(classname)
+deleteEntitiesByClassname(classname)                // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteEntitiesByClassname()||");
 
@@ -2059,7 +2061,7 @@ deleteEntitiesByClassname(classname)
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteEntitiesByTargetname(targetname)
+deleteEntitiesByTargetname(targetname)              // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteEntitiesByTargetname()||");
 
@@ -2077,7 +2079,7 @@ deleteEntitiesByTargetname(targetname)
  * @returns nothing
  * @since RotU 2.2.1
  */
-deletePickupItems()
+deletePickupItems()                                 // quality:external_interface
 {
     log("trace", "msg|in _umi::deletePickupItems()||");
 
@@ -2106,7 +2108,7 @@ deletePickupItems()
  * @returns nothing
  * @since RotU 2.2.1
  */
-deleteNearbyEntities(origin, maximumDistance2D, maxDeltaHeight)
+deleteNearbyEntities(origin, maximumDistance2D, maxDeltaHeight) // quality:external_interface
 {
     log("trace", "msg|in _umi::deleteNearbyEntities()||");
 
@@ -2128,7 +2130,7 @@ deleteNearbyEntities(origin, maximumDistance2D, maxDeltaHeight)
  * @returns boolean Whether the mapper or server operator prefers the BTD waypoints
  * @since RotU 2.2.1
  */
-preferBtdWaypoints()
+preferBtdWaypoints()                                // quality:external_interface
 {
     log("trace", "msg|in _umi::preferBtdWaypoints()||");
 
@@ -2142,7 +2144,7 @@ preferBtdWaypoints()
  * @returns boolean true if the map uses UMI, false otherwise
  * @since RotU 2.2.1
  */
-isUmiMap()
+isUmiMap()                                          // quality:external_interface
 {
     log("trace", "msg|in _umi::isUmiMap()||");
 
@@ -2157,7 +2159,7 @@ isUmiMap()
  * @returns string The name of the mod, or an empty string if undetermined
  * @since RotU 2.2.1
  */
-privateGuessModName()
+privateGuessModName()                               // quality:external_interface
 {
     log("trace", "msg|in _umi::privateGuessModName()||");
 
@@ -2179,8 +2181,10 @@ privateGuessModName()
  *
  * @returns nothing
  */
-initWaypoints()
-{}
+initWaypoints()                                     // quality:external_interface
+{
+    // quality:ignore_trace    
+}
 
 /**
  * @brief A hook for a function to initialize game setup
@@ -2188,8 +2192,10 @@ initWaypoints()
  *
  * @returns nothing
  */
-initSetup()
-{}
+initSetup()                                         // quality:external_interface
+{
+    // quality:ignore_trace
+}
 
 /**
  * @brief A hook for a function to initialize barricades
@@ -2197,8 +2203,10 @@ initSetup()
  *
  * @returns nothing
  */
-initBarricades()
-{}
+initBarricades()                                    // quality:external_interface
+{
+    // quality:ignore_trace
+}
 
 /**
  * @brief A hook for a function to load tradespawns
@@ -2206,8 +2214,10 @@ initBarricades()
  *
  * @returns nothing
  */
-loadTradespawn()
-{}
+loadTradespawn()                                    // quality:external_interface
+{
+    // quality:ignore_trace
+}
 
 
 //
@@ -2226,7 +2236,7 @@ loadTradespawn()
  *
  * @returns nothing
  */
-buildAmmoStock(targetname, loadTime)
+buildAmmoStock(targetname, loadTime)                // quality:external_interface
 {
     log("trace", "msg|in _umi::buildAmmoStock()||");
 
@@ -2243,7 +2253,7 @@ buildAmmoStock(targetname, loadTime)
  *
  * @returns nothing
  */
-buildWeaponUpgrade(targetname)
+buildWeaponUpgrade(targetname)                      // quality:external_interface
 {
     log("trace", "msg|in _umi::buildWeaponUpgrade()||");
 
@@ -2262,7 +2272,7 @@ buildWeaponUpgrade(targetname)
  *
  * @returns nothing
  */
-buildSurvSpawn(targetname, priority)
+buildSurvSpawn(targetname, priority)                // quality:external_interface
 {
     log("trace", "msg|in _umi::buildSurvSpawn()||");
 
@@ -2274,7 +2284,7 @@ buildSurvSpawn(targetname, priority)
  *
  * @returns nothing
  */
-waittillStart()
+waittillStart()                                     // quality:external_interface
 {
     log("trace", "msg|in _umi::waittillStart()||");
 
@@ -2286,7 +2296,7 @@ waittillStart()
  *
  * @returns nothing
  */
-startSurvWaves()
+startSurvWaves()                                    // quality:external_interface
 {
     log("trace", "msg|in _umi::startSurvWaves()||");
 
@@ -2305,7 +2315,7 @@ startSurvWaves()
  *
  * @returns nothing
  */
-buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)
+buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)    // quality:external_interface
 {
     log("trace", "msg|in _umi::buildBarricade()||");
 
@@ -2322,7 +2332,7 @@ buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)
  *
  * @returns nothing
  */
-buildWeaponPickup(targetname, itemText, weapon, weaponType)
+buildWeaponPickup(targetname, itemText, weapon, weaponType) // quality:external_interface
 {
     log("trace", "msg|in _umi::buildWeaponPickup()||");
 
@@ -2330,7 +2340,7 @@ buildWeaponPickup(targetname, itemText, weapon, weaponType)
 }
 
 /// rotu unused ?
-setWeaponHandling(id)
+setWeaponHandling(id)                               // quality:external_interface
 {
     log("trace", "msg|in _umi::setWeaponHandling()||");
 
@@ -2338,7 +2348,7 @@ setWeaponHandling(id)
 }
 
 /// rotu unused ?
-setSpawnWeapons(primary, secondary)
+setSpawnWeapons(primary, secondary)                 // quality:external_interface
 {
     log("trace", "msg|in _umi::setSpawnWeapons()||");
 
@@ -2347,7 +2357,7 @@ setSpawnWeapons(primary, secondary)
 }
 
 /// rotu unused ?
-buildParachutePickup(targetname)
+buildParachutePickup(targetname)                    // quality:external_interface
 {
     log("trace", "msg|in _umi::buildParachutePickup()||");
 
@@ -2357,7 +2367,7 @@ buildParachutePickup(targetname)
 }
 
 /// rotu unused ?
-setWorldVision(vision, transitiontime)
+setWorldVision(vision, transitiontime)              // quality:external_interface
 {
     log("trace", "msg|in _umi::setWorldVision()||");
 
@@ -2366,7 +2376,7 @@ setWorldVision(vision, transitiontime)
 }
 
 /// rotu unused ?
-setGameMode(mode)
+setGameMode(mode)                               // quality:external_interface
 {
     log("trace", "msg|in _umi::setGameMode()||");
 
@@ -2375,7 +2385,7 @@ setGameMode(mode)
 }
 
 /// rotu unused ?
-setPlayerSpawns(targetname)
+setPlayerSpawns(targetname)                         // quality:external_interface
 {
     log("trace", "msg|in _umi::setPlayerSpawns()||");
 
@@ -2400,7 +2410,7 @@ setPlayerSpawns(targetname)
  *
  * @returns nothing
  */
-addDefaultZombieSpawns()
+addDefaultZombieSpawns()                            // quality:external_interface
 {
     log("trace", "msg|in _umi::addDefaultZombieSpawns()||");
 
@@ -2417,7 +2427,7 @@ addDefaultZombieSpawns()
  *
  * @returns nothing
  */
-placeShops(weapons, shops)
+placeShops(weapons, shops)                          // quality:external_interface
 {
     log("trace", "msg|in _umi::placeShops()||");
 
@@ -2436,7 +2446,7 @@ placeShops(weapons, shops)
  *
  * @returns nothing
  */
-convertWaypoints()
+convertWaypoints()                                  // quality:external_interface
 {
     log("trace", "msg|in _umi::convertWaypoints()||");
 
@@ -2450,44 +2460,44 @@ convertWaypoints()
  *
  * @returns nothing
  */
-zombieDefaultTarget(origin)
+zombieDefaultTarget(origin)                         // quality:external_interface
 {
-    log("trace", "msg|in _umi::zombieDefaultTarget()||");
+    // quality:ignore_trace
 
     // Do nothing, RotU doesn't need to set default targets for zombies
 }
 
-mapThink()
+mapThink()                                          // quality:external_interface
 {
-    log("trace", "msg|in _umi::mapThink()||");
+    // quality:ignore_trace
 
     // Do nothing, ROZO internal function
 }
 
-setPlayerModels()
+setPlayerModels()                                   // quality:external_interface
 {
-    log("trace", "msg|in _umi::setPlayerModels()||");
+    // quality:ignore_trace
 
     // Do nothing, ROZO internal function
 }
 
-getFreeStruct(structs, additional)
+getFreeStruct(structs, additional)                  // quality:external_interface
 {
-    log("trace", "msg|in _umi::getFreeStruct()||");
+    // quality:ignore_trace
 
     // Do nothing, ROZO internal function
 }
 
-addDefaultPlayerSpawns(swap)
+addDefaultPlayerSpawns(swap)                        // quality:external_interface
 {
-    log("trace", "msg|in _umi::addDefaultPlayerSpawns()||");
+    // quality:ignore_trace
 
     // Do nothing, RotU doesn't need to add default player spawns
 }
 
-addPlayerSpawns(classname, enabled)
+addPlayerSpawns(classname, enabled)                 // quality:external_interface
 {
-    log("trace", "msg|in _umi::addPlayerSpawns()||");
+    // quality:ignore_trace
 
     // Do nothing, RotU doesn't need to add player spawns
 }

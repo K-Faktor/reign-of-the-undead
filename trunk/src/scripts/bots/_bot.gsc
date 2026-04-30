@@ -182,7 +182,7 @@ remove(botsToRemove)
  */
 makeBotAvailable(bot)
 {
-    debugPrint("in _bot::makeBotAvailable()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::makeBotAvailable()||");
 
     // push the bot's index onto the availableBots stack
     level.availableBots[level.availableBots.size] = bot.index;
@@ -199,7 +199,7 @@ makeBotAvailable(bot)
  */
 playSoundOnBot(bot, delay, sound, random)
 {
-    debugPrint("in _bot::playSoundOnBot()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::playSoundOnBot()||");
 
     if (delay > 0) {
         bot endon("death");
@@ -219,7 +219,7 @@ playSoundOnBot(bot, delay, sound, random)
  */
 giveAssists(bot, killer)
 {
-    debugPrint("in _bot::giveAssists()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::giveAssists()||");
 
     for (i=0; i<bot.damagedBy.size; i++) {
         struct = bot.damagedBy[i];
@@ -281,7 +281,7 @@ setAnimation(bot, type)
  */
 idle(bot)
 {
-    debugPrint("in _bot::idle()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::idle()||");
 
     bot setAnimation(bot, "stand");
     bot.cur_speed = 0;
@@ -292,7 +292,7 @@ idle(bot)
 
 search(bot)
 {
-    debugPrint("in _bot::search()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::search()||");
 
     bot endon("dying");
     bot endon("disconnect");
@@ -311,7 +311,7 @@ search(bot)
 
 getPath(bot)
 {
-    debugPrint("in _bot::getPath()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::getPath()||");
 
     // iPrintLnBold("getting path");
 
@@ -485,7 +485,7 @@ botMain(bot)
 // controls bot movement across the map
 wander(bot)
 {
-    debugPrint("in _bot::wander()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::wander()||");
 
     bot endon("dying");
     bot endon("disconnect");
@@ -797,7 +797,7 @@ mantle(bot)
  */
 clamped(bot)
 {
-    debugPrint("in _bot::clamped()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::clamped()||");
 
     bot endon("dying");
     bot endon("disconnect");
@@ -1888,7 +1888,7 @@ pathType(fromWp, toWp)
  */
 stun(bot)
 {
-    debugPrint("in _bot::stun()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bot::stun()||");
 
     // no stunning in final wave!
     if (level.currentWave < level.totalWaves) {
@@ -1902,7 +1902,7 @@ stun(bot)
 
 groan(bot)
 {
-    debugPrint("in _bot::groan()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _bot::groan()||");
 
     bot endon("death");
     bot endon("disconnect");
@@ -2259,7 +2259,7 @@ jumpMelee() {}
 // probably deprecated for waypoints pathfinding
 findPathToTarget(bot)
 {
-    debugPrint("in _bot::findPathToTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::findPathToTarget()||");
 
     if (bot.isFollowingWaypoints) {
         // since we are following waypoints, we assume no solid objects or obstructions
@@ -2312,7 +2312,7 @@ findPathToTarget(bot)
 
 findLinearPath(origin, destination, distance)
 {
-    debugPrint("in _bot::findLinearPath()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::findLinearPath()||");
 
     position = self findGround(destination);
     if (isPathNavigable(origin, position)) {
@@ -2331,7 +2331,7 @@ findLinearPath(origin, destination, distance)
 // map must be in developer mode for line() function
 isPathNavigable(bot, origin, destination)
 {
-    debugPrint("in _bot::isPathNavigable()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::isPathNavigable()||");
 
     // assume the mapmaker didn't put a waypoint link through a solid object
     if (bot.isFollowingWaypoints) {return true;}
@@ -2364,7 +2364,7 @@ isPathNavigable(bot, origin, destination)
 // @todo make this a stack
 enqueueMovement(bot, origin, time, facing)
 {
-    debugPrint("in _bot::enqueueMovement()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::enqueueMovement()||");
 
     // add capacity to queue, if needed
     if (bot.movement.last == bot.movement.orders.size) {
@@ -2388,7 +2388,7 @@ enqueueMovement(bot, origin, time, facing)
 
 findGround(position)
 {
-    debugPrint("in _bot::findGround()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::findGround()||");
 
     // if input param is undef, no point spinning the server
     if (!isDefined(position)) {return undefined;}
@@ -2453,7 +2453,7 @@ findGround(position)
 
 bestTarget(bot)
 {
-    debugPrint("in _bot::bestTarget(bot)", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::bestTarget(bot)||");
 
     closestDis = 1000000000;
     closestVisDis = 1000000000;
@@ -2495,7 +2495,7 @@ bestTarget(bot)
 
 closestTarget()
 {
-    debugPrint("in _bot::closestTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::closestTarget()||");
 
     targets = self sortTargetsByDistance();
     if (!isDefined(targets[0])) {return undefined;}
@@ -2505,7 +2505,7 @@ closestTarget()
 
 sortTargetsByDistance(bot)
 {
-    debugPrint("in _bot::sortTargetsByDistance()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::sortTargetsByDistance()||");
 
     players = level.players;
     data = [];
@@ -2533,7 +2533,7 @@ sortTargetsByDistance(bot)
 // deprecated??
 main(bot)
 {
-    debugPrint("in _bot::main()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::main()||");
 
     bot endon("disconnect");
     bot endon("death");
@@ -2616,7 +2616,7 @@ executeMovementQueue(bot)
  */
 watchTargetedPlayer(bot)
 {
-    debugPrint("in _bot::watchTargetedPlayer()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::watchTargetedPlayer()||");
 
     bot endon("disconnect");
     bot endon("death");
@@ -2633,7 +2633,7 @@ watchTargetedPlayer(bot)
  */
 onTargetedPlayerDeath(bot)
 {
-    debugPrint("in _bot::onTargetedPlayerDeath()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::onTargetedPlayerDeath()||");
 
     bot endon("disconnect");
     bot endon("death");
@@ -2650,7 +2650,7 @@ onTargetedPlayerDeath(bot)
  */
 newTarget(bot)
 {
-    debugPrint("in _bot::newTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::newTarget()||");
 
     bot endon("disconnect");
     bot endon("death");
@@ -2671,7 +2671,7 @@ newTarget(bot)
  */
 setTargetedPlayer(bot, playerToTarget)
 {
-    debugPrint("in _bot::setTargetedPlayer()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::setTargetedPlayer()||");
 
     bot.targetedPlayer = playerToTarget;
 }
@@ -2683,7 +2683,7 @@ setTargetedPlayer(bot, playerToTarget)
  */
 melee(bot)
 {
-    debugPrint("in _bot::melee()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _bot::melee()||");
 
     bot endon("disconnect");
     bot endon("death");
@@ -2713,7 +2713,7 @@ melee(bot)
  */
 infect(bot, chance)
 {
-    debugPrint("in _bot::infect()", "fn", level.medVerbosity);
+    log("trace", "msg|in _bot::infect()||");
 
     if (bot.infected) {return;}
 
@@ -2725,7 +2725,7 @@ infect(bot, chance)
 
 damage(bot, meleeRange)
 {
-    debugPrint("in _bot::damage()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::damage()||");
 
     meleeRangeSquared = meleeRange * meleeRange;
     damage = int(bot.damage * level.dif_zomDamMod);
@@ -2782,7 +2782,7 @@ damage(bot, meleeRange)
 
 fixStuck(bot)
 {
-    debugPrint("in _bot::fixStuck()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bot::fixStuck()||");
 
     if (!isDefined(bot)) {return;}
 
@@ -2840,7 +2840,7 @@ fixStuck(bot)
 // from callback, so self here is the bot
 killed(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
-    debugPrint("in _bot::killed()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _bot::killed()||");
 
     //self unlink();
     self notify("dying");

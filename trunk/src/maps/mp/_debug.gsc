@@ -75,6 +75,8 @@
  */
 initializeDebugSystem()
 {
+    // quality:ignore_trace
+    
     level.printFunctionEntryMessages = getDvarInt("debug_print_function_entry_messages");
     level.printValueMessages = getDvarInt("debug_print_value_messages");
     level.printSignalMessages = getDvarInt("debug_print_signal_messages");

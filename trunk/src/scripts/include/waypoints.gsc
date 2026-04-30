@@ -285,7 +285,7 @@ kdWaypointTree(waypointList, depth)
  */
 kdWaypointHeapsort(array, count, axis)
 {
-    debugPrint("in waypoints::kdWaypointHeapsort()", "fn", level.medVerbosity);
+    log("trace", "msg|in waypoints::kdWaypointHeapsort()||");
 
     // first place a in max-heap order
     array = kdWaypointHeapify(array, count, axis);
@@ -317,7 +317,7 @@ kdWaypointHeapsort(array, count, axis)
  */
 kdWaypointHeapify(array, count, axis)
 {
-    debugPrint("in waypoints::kdWaypointHeapify()", "fn", level.medVerbosity);
+    log("trace", "msg|in waypoints::kdWaypointHeapify()||");
 
     // start is assigned the index in array of the last parent node
     start = int((count - 2) / 2);
@@ -346,7 +346,7 @@ kdWaypointHeapify(array, count, axis)
  */
 kdWaypointSiftDown(array, start, end, axis)
 {
-    debugPrint("in waypoints::kdWaypointSiftDown()", "fn", level.highVerbosity);
+    log("trace", "msg|in waypoints::kdWaypointSiftDown()||");
 
     // end represents the limit of how far down the heap to sift.
     root = start;
@@ -884,7 +884,7 @@ kdWaypointNearestNeighborsIterative(root, origin, staticIndex)
  */
 kdPrintNode(node, depth)
 {
-    debugPrint("in waypoints::kdPrintNode()", "fn", level.medVerbosity);
+    log("trace", "msg|in waypoints::kdPrintNode()||");
 
     // pre-order traversal
     if(!isDefined(node)) {return;}
@@ -915,7 +915,7 @@ kdPrintNode(node, depth)
  */
 kdValidateNode(node, depth)
 {
-    debugPrint("in waypoints::kdValidateNode()", "fn", level.medVerbosity);
+    log("trace", "msg|in waypoints::kdValidateNode()||");
 
     // pre-order traversal
     if(!isDefined(node)) {return;}
@@ -955,7 +955,7 @@ kdValidateNode(node, depth)
  */
 random3dPoint(useMapExtents)
 {
-    debugPrint("in waypoints::random3dPoint()", "fn", level.fullVerbosity);
+    log("trace", "msg|in waypoints::random3dPoint()||");
 
     if (!isDefined(useMapExtents)) {useMapExtents = false;}
 

@@ -35,10 +35,14 @@
 /**
  * @brief Creates a new priority queue
  *
+ * @param name string The queue name. Very useful when debugging multiple queues
+ *
  * @returns struct A new priority queue with capacity=10 and count=0
  */
 pqNew(name)
 {
+    // quality:ignore_trace
+
     queue = spawnStruct();
     queue.name = name;      // use variable name; for debugging
     queue.data = [];
@@ -47,6 +51,7 @@ pqNew(name)
     queue.type = "priority_queue";
     return queue;
 }
+
 
 /**
  * @brief Enqueues a single item into the queue, by priority
@@ -60,6 +65,8 @@ pqNew(name)
  */
 pqInsert(item, priority)
 {
+    // quality:ignore_trace
+
     // find insertion point (lowest f first)
     insertIdx = self.data.size;     // default: append
     for (i=0; i<self.data.size; i++) {
@@ -85,13 +92,30 @@ pqInsert(item, priority)
         }
     }
 }
+
+
+/**
+ * @brief The size of the queue
+ *
+ * @returns integer The size of the queue
+ */
 pqSize()
 {
+    // quality:ignore_trace
+
     return self.data.size;
 }
 
+
+/**
+ * @brief Removes and return the next item in the queue
+ *
+ * @returns variable The next item in the queue
+ */
 pqPop()
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.capacity)) { self.capacity = 10; }
     if (!isDefined(self.data)) { self.data = []; }
 
@@ -112,17 +136,36 @@ pqPop()
     return item;
 }
 
-// is the waypoint ID in the queue?
+
+/**
+ * @brief Is the waypoint in the queue?
+ *
+ * @param wp integer The waypoint ID to look for
+ *
+ * @returns boolean True if found, false otherwise
+ */
 pqWaypointExists(wp) 
 {
+    // quality:ignore_trace
+
     for (i=0; i<self.data.size; i++) {
         if (self.data[i].wpIdx == wp) {return true;}
     }
     return false;
 }
 
+
+/**
+ * @brief Removes the waypoint from the queue
+ *
+ * @param wp integer The ID of the waypoint to remove
+ *
+ * @returns nothing
+ */
 pqRemoveByWaypoint(wp) 
 {
+    // quality:ignore_trace
+
     for (i=0; i<self.data.size; i++) {
         if (self.data[i].wpIdx == wp) {
             for (j=i; j<self.data.size-1; j++) {
@@ -134,8 +177,16 @@ pqRemoveByWaypoint(wp)
     }
 }
 
+
+/** @deprecated? unused?
+ * @brief Reverses and return the data array
+ *
+ * @returns nothing
+ */
 pqToReversedArray()
 {
+    // quality:ignore_trace
+
     result = [];
     for (i=self.data.size-1; i>=0; i--) {
         result[result.size] = self.data[i];
@@ -143,17 +194,34 @@ pqToReversedArray()
     return result;
 }
 
-// get the node associated with the wp ID
+
+/**
+ * @brief Gets the node associated with the wp ID
+ *
+ * @param wp integer The ID of the waypoint to return
+ *
+ * @returns the waypoint node if found, or undefined if not found
+ */
 pqGetNodeByWaypoint(wp) 
 {
+    // quality:ignore_trace
+
     for (i=0; i<self.data.size; i++) {
         if (self.data[i].wpIdx == wp) {return self.data[i];}
     }
     return undefined;
 }
 
+
+/**
+ * @brief Prints the priority of the elements in the queue
+ *
+ * @returns nothing
+ */
 pqPrintPriority()
 {
+    // quality:ignore_trace
+
     buf = self.name + ": [ ";
     for (i=0; i<self.data.size; i++) {
         buf += "" + self.data[i].priority + ", ";
@@ -162,8 +230,16 @@ pqPrintPriority()
     logPrint(buf);
 }
 
+
+/**
+ * @brief Prints the waypoint IDs of the elements in the queue
+ *
+ * @returns nothing
+ */
 pqPrintWaypoints()
 {
+    // quality:ignore_trace
+
     buf = self.name + ": [ ";
     for (i=0; i<self.data.size; i++) {
         buf += "" + self.data[i].wpIdx + ", ";
@@ -185,6 +261,8 @@ pqPrintWaypoints()
  */
 pqEnsureCapacity(requestedCapacity)
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.capacity)) {
         self.capacity = 10;
     }

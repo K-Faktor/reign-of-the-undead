@@ -35,12 +35,17 @@
 #include maps\mp\_utility;
 #include scripts\include\utility;
 
-
-// Bootstrap a few critical items, because we never know what nonsense map makers
-// will throw at us.
+/**
+ * @brief Bootstrap a few critical items, because we never know what nonsense map makers
+ *        will throw at us.
+ *
+ * @truens nothing
+ */
 bootstrapCritical()
 {
-    // Ensure thsi can be called safely repeatedly, from the sundry of ways
+    // quality:ignore_trace
+
+    // Ensure this can be called safely repeatedly, from the sundry of ways
     // map makers find to hook into our code.
     if ((!isDefined(level.bootstrapped)) || (level.bootstrapped == 0)) {
         level.developmentStatus = "dev"; // for RotU [dev|prod]        <DEPLOY />
@@ -69,7 +74,8 @@ bootstrapCritical()
 
 main(bScriptgened, bCSVgened, bsgenabled)
 {
-    // log() isn't initialized until after bootstrap.
+    // quality:ignore_trace    log() isn't initialized until after bootstrap.
+
     bootstrapCritical();
     log("trace", "msg|in _load::main()||");
     log("debug", "msg|in _load::main()||");

@@ -49,7 +49,7 @@ init()
  */
 isAdmin(player)
 {
-    debugPrint("in _adminInterface::isAdmin()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _adminInterface::isAdmin()||");
 
     if (isDefined(player.admin) && player.admin.isAdmin) { return true;}
     return false;

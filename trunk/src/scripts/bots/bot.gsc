@@ -137,7 +137,7 @@ remove(botsToRemove)
  */
 makeBotAvailable(bot)
 {
-    debugPrint("in bot::makeBotAvailable()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bot::makeBotAvailable()||");
 
     // push the bot's index onto the availableBots stack
     level.availableBots[level.availableBots.size] = bot.index;
@@ -154,7 +154,7 @@ makeBotAvailable(bot)
  */
 playSoundOnBot(delay, sound, random)
 {
-    debugPrint("in bot::playSoundOnBot()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bot::playSoundOnBot()||");
 
     if (delay > 0) {
         self endon("death");
@@ -174,7 +174,7 @@ playSoundOnBot(delay, sound, random)
  */
 giveAssists(killer)
 {
-    debugPrint("in bot::giveAssists()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::giveAssists()||");
 
     for (i=0; i<self.damagedBy.size; i++) {
         struct = self.damagedBy[i];
@@ -236,7 +236,7 @@ setAnimation(type)
  */
 idle()
 {
-    debugPrint("in bot::idle()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bot::idle()||");
 
     self setAnimation("stand");
     self.cur_speed = 0;
@@ -247,7 +247,7 @@ idle()
 
 run()
 {
-    debugPrint("in bot::run()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::run()||");
 
     self setAnimation("sprint");
     self.cur_speed = self.runSpeed;
@@ -258,7 +258,7 @@ run()
 
 walk()
 {
-    debugPrint("in bot::walk()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::walk()||");
 
     self setAnimation("walk");
     self.cur_speed = self.walkSpeed;
@@ -276,7 +276,7 @@ walk()
  */
 stun()
 {
-    debugPrint("in bot::stun()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bot::stun()||");
 
     // no stunning in final wave!
     if (level.currentWave < level.totalWaves) {
@@ -290,7 +290,7 @@ stun()
 
 groan()
 {
-    debugPrint("in bot::groan()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in bot::groan()||");
 
     self endon("death");
     self endon("disconnect");
@@ -360,7 +360,7 @@ canSeeTarget(target)
 
 findPathToTarget()
 {
-    debugPrint("in bot::bestTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::bestTarget()||");
 
     if (self.isFollowingWaypoints) {
     } else {
@@ -399,7 +399,7 @@ findPathToTarget()
 
 findLinearPath(origin, destination, distance)
 {
-    debugPrint("in bot::findLinearPath()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::findLinearPath()||");
 
     position = self findGround(destination);
     if (isPathNavigable(origin, position)) {
@@ -417,7 +417,7 @@ findLinearPath(origin, destination, distance)
 
 isPathNavigable(origin, destination)
 {
-    debugPrint("in bot::isPathNavigable()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::isPathNavigable()||");
 
     // assume the mapmaker didn't put a waypoint link through a solid object
     if (self.isFollowingWaypoints) {return true;}
@@ -449,7 +449,7 @@ isPathNavigable(origin, destination)
 
 enqueueMovement(origin, time, facing)
 {
-    debugPrint("in bot::enqueueMovement()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::enqueueMovement()||");
 
     self.movement.orders[self.movement.last].origin = origin;
     self.movement.orders[self.movement.last].time = time;
@@ -460,7 +460,7 @@ enqueueMovement(origin, time, facing)
 
 findGround(position)
 {
-    debugPrint("in bot::findGround()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::findGround()||");
 
     top = position + (0,0,50);
     bottom = position + (0,0,-100);
@@ -470,7 +470,7 @@ findGround(position)
 
 bestTarget()
 {
-    debugPrint("in bot::bestTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::bestTarget()||");
 
     // the best target is the closest player the bot can see
     targets = self sortTargetsByDistance();
@@ -485,14 +485,14 @@ bestTarget()
 
 closestTarget()
 {
-    debugPrint("in bot::closestTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::closestTarget()||");
 
     return self sortTargetsByDistance()[0].player;
 }
 
 sortTargetsByDistance()
 {
-    debugPrint("in bot::sortTargetsByDistance()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::sortTargetsByDistance()||");
 
     players = level.players;
     data = [];
@@ -519,7 +519,7 @@ sortTargetsByDistance()
 
 main()
 {
-    debugPrint("in bot::main()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::main()||");
 
     wait 1.2; // wait until bot is standing up before he starts to move
     target = bestTarget();
@@ -532,7 +532,7 @@ main()
 
 move()
 {
-    debugPrint("in bot::move()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::move()||");
 
     self endon("disconnect");
     self endon("death");
@@ -568,7 +568,7 @@ move()
  */
 watchTargetedPlayer()
 {
-    debugPrint("in bot::watchTargetedPlayer()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::watchTargetedPlayer()||");
 
     self endon("disconnect");
     self endon("death");
@@ -585,7 +585,7 @@ watchTargetedPlayer()
  */
 onTargetedPlayerDeath()
 {
-    debugPrint("in bot::onTargetedPlayerDeath()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::onTargetedPlayerDeath()||");
 
     self endon("disconnect");
     self endon("death");
@@ -602,7 +602,7 @@ onTargetedPlayerDeath()
  */
 newTarget()
 {
-    debugPrint("in bot::newTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in bot::newTarget()||");
 
     self endon("disconnect");
     self endon("death");
@@ -623,7 +623,7 @@ newTarget()
  */
 melee()
 {
-    debugPrint("in bot::melee()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in bot::melee()||");
 
     self endon("disconnect");
     self endon("death");

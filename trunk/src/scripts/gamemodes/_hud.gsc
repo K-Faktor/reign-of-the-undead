@@ -239,7 +239,7 @@ bar(color, initial, y)
 
 bar_setscale(scale, color)
 {
-    debugPrint("in _hud::bar_setscale()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _hud::bar_setscale()||");
 
     if (isDefined(self.bar_fg)) {
         self.bar_fg ScaleOverTime(1, int(self.bar_fg.width*scale), self.bar_fg.height);

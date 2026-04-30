@@ -35,7 +35,7 @@
 
 damageEnt(eInflictor, eAttacker, iDamage, sMeansOfDeath, sWeapon, damagepos, damagedir)
 {
-    debugPrint("in entities::damageEnt()", "fn", level.medVerbosity);
+    log("trace", "msg|in entities::damageEnt()||");
 
     if (self.isPlayer) {
         self.damageOrigin = damagepos;
@@ -103,7 +103,7 @@ getClosestPlayer()
 
 getClosestPlayerArray()
 {
-    debugPrint("in entities::getClosestPlayerArray()", "fn", level.highVerbosity);
+    log("trace", "msg|in entities::getClosestPlayerArray()||");
 
     playerCount = level.players.size;
 
@@ -139,7 +139,7 @@ getClosestPlayerArray()
  */
 getClosestTarget()
 {
-    debugPrint("in entities::getClosestTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in entities::getClosestTarget()||");
 
     ents = level.players;
     nearestEnt = undefined;

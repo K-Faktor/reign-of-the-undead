@@ -42,10 +42,12 @@
  *
  * @param origin vector The position to place the flag, will be bottom of flagpole.
  *
- * @return nothing
+ * @returns nothing
  */
 plantFlag(origin)
 {
+    // quality:ignore_trace
+
     flag = spawn("script_model", origin);
     flag setModel("prop_flag_american");  
 }
@@ -59,6 +61,8 @@ plantFlag(origin)
  */
 logMapStartHeader()
 {
+    // quality:ignore_trace
+
     initRealTime();
 
     currentMap = getDvar("mapname");
@@ -83,6 +87,8 @@ logMapStartHeader()
  */
 initLogging()
 {
+    // quality:ignore_trace
+
     temp = getdvar("sv_hide_log_message");
     values = strTok(temp, ",");
 
@@ -138,15 +144,12 @@ initLogging()
  */
 tokenizeMessage(encodedJson)
 {
-    // logPrint(encodedJson + "\n");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     buf = "";
     pairs = split(encodedJson, "||");  // strTok() is too greedy, and can only handle a single-char replcement str
     if (!isDefined(pairs)) {logPrint("pairs is undefined. Bailing\n"); return;}
     
-    // for (i=0; i<pairs.size; i++) {
-    //     logPrint("pair: " + pairs[i] + "\n");
-    // }
-
     for (i=0; i<pairs.size; i++) {
         pair = pairs[i];
         tokens = strTok(pair, "|");
@@ -206,6 +209,8 @@ tokenizeMessage(encodedJson)
 // Will be deperecated ASAP
 // convenience function to wrap existing *old* debug calls with the req'd JSON tokens
 wrap(msg){
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     return "msg|" + msg + "||";
 }
 
@@ -223,6 +228,8 @@ wrap(msg){
  */
 log(eventType, message, includeEpoch)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     // handle undefined eventType
     if (!isDefined(eventType)) {
         LogPrint("Error: utility::log() parameter 'eventType' is undefined\n");
@@ -361,6 +368,8 @@ log(eventType, message, includeEpoch)
  */
 debugPrint(message, type, verbosity)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     // Function entry messages
     if ((level.printFunctionEntryMessages) &&
         (type == "fn") &&
@@ -391,6 +400,8 @@ debugPrint(message, type, verbosity)
  */
 warnPrint(message)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     // @todo print deprecation notice to find any warnPrint's not ported, *after gloabl replace
     log("warn", wrap(message), false);
 }
@@ -406,6 +417,8 @@ warnPrint(message)
  */
 errorPrint(message)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     // @todo print deprecation notice to find any noticePrint's not ported
     log("error", wrap(message), false);
 }
@@ -423,6 +436,8 @@ errorPrint(message)
  */
 noticePrint(message)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     // @todo print deprecation notice to find any noticePrint's not ported
     log("server", wrap(message), false);
 }
@@ -438,13 +453,31 @@ noticePrint(message)
  *                        
  *                            Ex.: "key1|value1:n||key2|value2:b||"
  *
- * @param p1-p19 string The parameters to interpolate
+ * @param p1 string A parameter to interpolate
+ * @param p2 string A parameter to interpolate
+ * @param p3 string A parameter to interpolate
+ * @param p4 string A parameter to interpolate
+ * @param p5 string A parameter to interpolate
+ * @param p6 string A parameter to interpolate
+ * @param p7 string A parameter to interpolate
+ * @param p8 string A parameter to interpolate
+ * @param p9 string A parameter to interpolate
+ * @param p10 string A parameter to interpolate
+ * @param p11 string A parameter to interpolate
+ * @param p12 string A parameter to interpolate
+ * @param p13 string A parameter to interpolate
+ * @param p14 string A parameter to interpolate
+ * @param p15 string A parameter to interpolate
+ * @param p16 string A parameter to interpolate
+ * @param p17 string A parameter to interpolate
+ * @param p18 string A parameter to interpolate
+ * @param p19 string A parameter to interpolate
  *
  * @returns the interpolated JSON-formatted string
  */
 sprintfLog(formatString, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19)
 {
-    debugPrint("in utility::sprintfLog()", "fn", level.highVerbosity);
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     // We are *just* doing interpolation here, no quoting, no default values
     p = [];

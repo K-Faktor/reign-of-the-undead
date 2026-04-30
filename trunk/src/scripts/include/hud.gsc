@@ -86,7 +86,7 @@ overlayMessage(label, text, glowcolor, size)
 
 glowMessage(label, text, glowcolor, duration, speed, size, sound)
 {
-    debugPrint("in hud::glowMessage()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in hud::glowMessage()||");
 
     self thread scripts\gamemodes\_hud::glowMessage(label, text, glowcolor, duration, speed, size, sound);
 }
@@ -134,7 +134,7 @@ fontPulseInit()
 
 fontPulse(player)
 {
-    debugPrint("in hud::fontPulse()", "fn", level.medVerbosity);
+    log("trace", "msg|in hud::fontPulse()||");
 
     self notify ( "fontPulse" );
     self endon ( "fontPulse" );
@@ -174,7 +174,7 @@ bar(color, initial, y)
 
 bar_setscale(scale, color)
 {
-    debugPrint("in hud::bar_setscale()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in hud::bar_setscale()||");
 
     self thread scripts\gamemodes\_hud::bar_setscale(scale, color);
 }
@@ -219,7 +219,7 @@ rgb(r, g, b)
 
 upgradeHud(points)
 {
-    debugPrint("in hud::upgradeHud()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in hud::upgradeHud()||");
 
     self endon("disconnect");
     hud_score = NewClientHudElem(self);
@@ -262,7 +262,7 @@ upgradeHud(points)
 
 updateHealthHud(delta)
 {
-    debugPrint("in hud::updateHealthHud()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in hud::updateHealthHud()||");
 
     self setclientdvar("ui_healthbar", delta);
 }
@@ -312,7 +312,7 @@ createHealthOverlay(color)
 
 playerFilmTweaks(enable, invert, desaturation, darktint,  lighttint, brightness, contrast, fovscale)
 {
-    debugPrint("in hud::playerFilmTweaks()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in hud::playerFilmTweaks()||");
 
     self.tweaksOverride = 1;
     self setClientDvars( "r_filmusetweaks", 1, "r_filmtweaks", 1 , "r_filmtweakenable", enable , "r_filmtweakinvert", invert , "r_filmtweakdesaturation", desaturation , "r_filmtweakdarktint",

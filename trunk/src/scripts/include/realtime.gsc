@@ -39,10 +39,12 @@
  * Expect it to drift more and more the longer it has been since you restarted
  * the CoD4 server
  *
- * @return Nothing
+ * @returns Nothing
  */
 initRealTime()
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     // Base Unix timestamp (seconds since 1970-01-01 UTC)
     level.realTimeBase = getDvarInt("real_time_base");
     if (level.realTimeBase <= 0) {
@@ -70,6 +72,8 @@ initRealTime()
  */
 getRealUnixTime()
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     if (!isDefined(level.realTimeBase))
         initRealTime();
 
@@ -88,6 +92,8 @@ getRealUnixTime()
  */
 getRealDateTimeString()
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     if (!isDefined(level.realTimeBase))
         initRealTime();
 
@@ -140,13 +146,34 @@ getRealDateTimeString()
     return dateStr + " " + timeStr + " " + level.realTimeTZ;
 }
 
+
+/**
+ * @brief Is it a leap year?
+ *
+ * @param y integer The numeric year
+ *
+ * @returns boolean indicating whether it is a leap year or not
+ */
 isLeapYear(y)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     return (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0));
 }
 
+
+/**
+ * @brief Pads a numeric string to a vertain number of digits
+ *
+ * @param num integer The number to pad
+ * @param digits integer The number places to zero-pad to
+ *
+ * @returns string The zero-padded numeric string
+ */
 padZero(num, digits)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     if (!isDefined(digits))
         digits = 2;
 

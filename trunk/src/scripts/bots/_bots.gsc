@@ -219,7 +219,7 @@ instantiateBots(botCount)
  */
 deleteBots(botCount)
 {
-    debugPrint("in _bots::deleteBots()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::deleteBots()||");
 
     botsToRemove = [];
 
@@ -244,7 +244,7 @@ deleteBots(botCount)
  */
 monitorBotSlots()
 {
-    debugPrint("in _bots::monitorBotSlots()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::monitorBotSlots()||");
 
     level endon("game_ended");
 
@@ -291,7 +291,7 @@ monitorBotSlots()
  */
 resetFlexibleSlots()
 {
-    debugPrint("in _bots::resetFlexibleSlots()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::resetFlexibleSlots()||");
 
     botCount = getDvarInt("bot_count");
 
@@ -314,7 +314,7 @@ resetFlexibleSlots()
  */
 availableBot()
 {
-    debugPrint("in _bots::availableBot()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::availableBot()||");
 
     // noticePrint("level.availableBots.size: " + level.availableBots.size);
     if (level.availableBots.size == 0) {
@@ -348,7 +348,7 @@ availableBot()
  */
 spawnZombie(zombieType, spawnpoint, bot)
 {
-    debugPrint("in _bots::spawnZombie()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::spawnZombie()||");
 
     if (!isDefined(bot)) {
 //         noticePrint("asking for a bot so we can spawn a zombie");
@@ -466,7 +466,7 @@ spawnZombie(zombieType, spawnpoint, bot)
  */
 endZombieSpawnProtection(time, decrease)
 {
-    debugPrint("in _bots::endZombieSpawnProtection()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bots::endZombieSpawnProtection()||");
 
     self endon("death");
 
@@ -485,7 +485,7 @@ endZombieSpawnProtection(time, decrease)
 
 Callback_BotDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime)
 {
-    debugPrint("in _bots::Callback_BotDamage()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::Callback_BotDamage()||");
 
     if(!self scripts\bots\_types::onDamage(self.type, sMeansOfDeath, sWeapon, iDamage, eAttacker))
     {
@@ -554,7 +554,7 @@ Callback_BotDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeap
  */
 addToAssist(player, damage)
 {
-    debugPrint("in _bots::addToAssist()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::addToAssist()||");
 
     for (i=0; i<self.damagedBy.size; i++) {
         if (self.damagedBy[i].player == player) {
@@ -680,7 +680,7 @@ addToAssist(player, damage)
 
 zomMain()
 {
-    debugPrint("in _bots::zomMain()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _bots::zomMain()||");
 
     self endon("disconnect");
     self endon("death");
@@ -774,7 +774,7 @@ zomMain()
 
 zomGetBestTarget()
 {
-    debugPrint("in _bots::zomGetBestTarget()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _bots::zomGetBestTarget()||");
 
     if (!isDefined(self.currentTarget)) {
         for (i=0; i<level.players.size; i++) {
@@ -830,7 +830,7 @@ zomMovement()
 
 zomGoTriggered()
 {
-    debugPrint("in _bots::zomGoTriggered()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _bots::zomGoTriggered()||");
 
     self.status = "triggered";
     //self.update = 10;
@@ -958,7 +958,7 @@ zomMoveTowards(target_position)
 
 zomMoveLockon(player, time, speed)
 {
-    debugPrint("in _bots::zomMoveLockon()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _bots::zomMoveLockon()||");
 
     intervals = int(time / level.zomInterval);
     for (i=0; i<intervals; i++) {
@@ -978,7 +978,7 @@ zomMoveLockon(player, time, speed)
 
 pushOutOfPlayers() // ON SELF
 {
-    debugPrint("in _bots::pushOutOfPlayers()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _bots::pushOutOfPlayers()||");
 
     //push out of other players
     //players = level.players;
@@ -1041,7 +1041,7 @@ zomAreaDamage(range)
 
 zomSetTarget(target)
 {
-    debugPrint("in _bots::zomSetTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in _bots::zomSetTarget()||");
 
     //wait .5;
     //self.targetPosition = getentarray(target, "targetname")[0].origin;

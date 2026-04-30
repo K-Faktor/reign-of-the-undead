@@ -35,7 +35,7 @@
 
 delayStartRagdoll(ent, sHitLoc, vDir, sWeapon, eInflictor, sMeansOfDeath)
 {
-    debugPrint("in physics::delayStartRagdoll()", "fn", level.highVerbosity);
+    log("trace", "msg|in physics::delayStartRagdoll()||");
 
     if (isDefined(ent)) {
         deathAnim = ent getcorpseanim();
@@ -99,7 +99,7 @@ delayStartRagdoll(ent, sHitLoc, vDir, sWeapon, eInflictor, sMeansOfDeath)
 
 getHitLocHeight(sHitLoc)
 {
-    debugPrint("in physics::getHitLocHeight()", "fn", level.highVerbosity);
+    log("trace", "msg|in physics::getHitLocHeight()||");
 
     switch (sHitLoc) {
         case "helmet":

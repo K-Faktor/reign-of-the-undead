@@ -45,6 +45,7 @@ bug = []
 deprecated = []
 hack = []
 fixme = []
+oldLogging = []
 functions = ""
 documentedFunctions = ""
 functionEntrance = []
@@ -689,7 +690,7 @@ def print_help():
 
 def quality_check(root_dir: Path, config):
     """Run code quality checks on GSC files."""
-    global license, tab, todo, bug, deprecated, hack, fixme
+    global license, tab, todo, bug, deprecated, hack, fixme, oldLogging
     global functions, documentedFunctions, functionEntrance, doxErrors
     global deprecatedFiles, unusedFunctions, unusedIncludes, quality, sloc
 
@@ -771,6 +772,8 @@ def quality_check(root_dir: Path, config):
         file_str = file.as_posix()
         if '/src/' not in file_str or not file_str.endswith('.gsc'):
             continue
+        if '/custom_maps/maps/mp/' in file_str:
+            continue
 
         try:
             with open(file, 'r', encoding='utf-8', errors='ignore') as R:
@@ -797,8 +800,15 @@ def quality_check(root_dir: Path, config):
                 hack.append(f"Hack found: {relFile}:{lineNumber}:  {line.strip()}")
             elif re.search(r'fixme', line, re.IGNORECASE):
                 fixme.append(f"Fixme found: {relFile}:{lineNumber}:  {line.strip()}")
-            elif re.search(r'^\w*\(.*\)\n', line, re.IGNORECASE):
+            elif re.search(r'debugprint\(', line, re.IGNORECASE) or  \
+                 re.search(r'errorprint\(', line, re.IGNORECASE) or \
+                 re.search(r'warnprint\(', line, re.IGNORECASE):
+                oldLogging.append(f"Old logging method found: {relFile}:{lineNumber}:  {line.strip()}")
+            # elif re.search(r'^\w*\(.*\)\n', line, re.IGNORECASE):
+            elif re.search(r'^\w+\s*\([^)]*\)\s*(?://.*quality:external_interface)?', line, re.IGNORECASE):
                 functionLines.append(lineIndex)
+
+# // quality:external_interface
 
             lineNumber += 1
             lineIndex += 1
@@ -841,8 +851,10 @@ def quality_check(root_dir: Path, config):
             )
             # print(testLine)
             if not pattern.search(testLine):
-                if not re.search(r'most-called function', testLine) or not re.search(r'quality:ignore_trace', testLine):
-                    functionEntrance.append(f"Missing or wrong function entrance debug statement found: {relFile}:{lineNumber}:  {functionLine.strip()}")
+                # if not re.search(r'most-called function', testLine) or not re.search(r'quality:ignore_trace', testLine):
+                if ("most-called function" not in testLine and 
+                    "quality:ignore_trace" not in testLine):
+                    functionEntrance.append(f"Missing or wrong function entrance debug statement found: {relFile}:{lineNumber}:  {functionLine.strip()}  {testLine.strip()}")
     print("done.")
 
     print("Analyzing functions...", end="")
@@ -861,6 +873,8 @@ def quality_check(root_dir: Path, config):
         file_str = file.as_posix()
         if '/src/' not in file_str or not file_str.endswith('.gsc'):
             continue
+        if '/custom_maps/maps/mp/' in file_str:
+            continue
         match = re.search(r'.*/src/(.*)', file_str)
         relFile = match.group(1).replace('/', '\\') if match else file_str
 
@@ -874,7 +888,8 @@ def quality_check(root_dir: Path, config):
     # Unused functions
     for key in sorted(funcDefs.keys()):
         if len(funcDefs[key]['uses']) == 0 and not re.search(r'zombiescript', key):
-            unusedFunctions += f"Unused function found: {key}()\n"
+            if not re.search(r'custom_maps\\maps\\mp', key) and not funcDefs[key]['isExternalInterface']:
+                unusedFunctions += f"Unused function found: {key}()  line: {str(funcDefs[key]['lineNumber'])}\n"
     print("done.")
 
     # === Build summary ===
@@ -887,6 +902,7 @@ def quality_check(root_dir: Path, config):
         f"  Found {len(deprecated)} @deprecated items\n"
         f"  Found {len(hack)} hack items\n"
         f"  Found {len(fixme)} fixme items\n"
+        f"  Found {len(oldLogging)} old logging items\n"
         f"  Found {len(funcDefs)} function definitions\n"
         f"  Found {functions.count('\n')} undocumented functions\n"
         f"  Found {documentedFunctions.count('\n')} documented functions\n"
@@ -910,6 +926,8 @@ def quality_check(root_dir: Path, config):
     for item in hack:
         print(item)
     for item in fixme:
+        print(item)
+    for item in oldLogging:
         print(item)
     print(functions, end='')
     for item in functionEntrance:
@@ -942,6 +960,8 @@ def quality_check(root_dir: Path, config):
             Q.write(f"{item}\n")
         # Q.write(fixme)
         for item in fixme:
+            Q.write(f"{item}\n")
+        for item in oldLogging:
             Q.write(f"{item}\n")
         Q.write(functions)
         # Q.write(functionEntrance)
@@ -1276,6 +1296,10 @@ def findFunctionDefinitions(file):
                 if openCommentCount:
                     continue
                 
+                isExternalInterface = False
+                if re.search(r'// quality:external_interface', line):
+                    isExternalInterface = True
+
                 # strip // comments
                 line = re.sub(r'//.*', '', line)
                 
@@ -1343,6 +1367,7 @@ def findFunctionDefinitions(file):
                     'columnNumber': columnNumber,
                     'extRegex': extRegex,
                     'intRegex': intRegex,
+                    'isExternalInterface': isExternalInterface,
                     'uses': list(uses),   # copy of @uses
                 }
                 

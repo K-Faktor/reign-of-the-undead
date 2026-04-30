@@ -51,7 +51,7 @@ onPlayerSpawn()
  */
 checkSpree()
 {
-    debugPrint("in _spree::checkSpree()", "fn", level.highVerbosity);
+    log("trace", "msg|in _spree::checkSpree()||");
 
     self endon( "disconnect" );
     self endon( "death" );

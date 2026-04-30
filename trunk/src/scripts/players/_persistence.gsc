@@ -118,7 +118,7 @@ Returns the value of the named stat
 */
 statGet(dataName)
 {
-    debugPrint("in _persistence::statGet()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _persistence::statGet()||");
 
     //if ( !level.onlineGame )
     //  return 0;
@@ -135,7 +135,7 @@ Sets the value of the named stat
 */
 statSet(dataName, value)
 {
-    debugPrint("in _persistence::statSet()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _persistence::statSet()||");
 
     //if ( !level.rankedMatch )
     //  return;

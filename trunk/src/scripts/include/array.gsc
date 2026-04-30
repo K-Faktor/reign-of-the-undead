@@ -158,7 +158,7 @@ insertionsort(data, first, n)
  */
 orderedInsert(data, first, newValue)
 {
-    debugPrint("in array::orderedInsert()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in array::orderedInsert()||");
 
     i = data.size;
     // Starting at the right end of the array, shift elements larger than
@@ -289,7 +289,7 @@ binarySearch(data, leftBound, rightBound, value)
  */
 inArray(data, value)
 {
-    debugPrint("in array::inArray()", "fn", level.medVerbosity);
+    log("trace", "msg|in array::inArray()||");
 
     for (i=0; i<data.size; i++) {
         found = true;

@@ -783,7 +783,7 @@ zombieEmplaceDefenseTurret(turret)
  */
 turretGoIdle(turret)
 {
-    debugPrint("in _turrets::turretGoIdle()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _turrets::turretGoIdle()||");
 
     self endon("joined_spectators");
     self endon("disconnect");
@@ -1009,7 +1009,7 @@ trackTarget(turret)
  */
 nextTarget(turret)
 {
-    debugPrint("in _turrets::nextTarget()", "fn", level.highVerbosity);
+    log("trace", "msg|in _turrets::nextTarget()||");
 
     turret endon("no_ammo");
     turret endon("turret_being_moved");
@@ -1029,7 +1029,7 @@ nextTarget(turret)
  */
 engageTarget(turret)
 {
-    debugPrint("in _turrets::engageTarget()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _turrets::engageTarget()||");
 
     self endon("joined_spectators");
     self endon("disconnect");
@@ -1182,7 +1182,7 @@ engageTarget(turret)
  */
 selectTarget(turret)
 {
-    debugPrint("in _turrets::selectTarget()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _turrets::selectTarget()||");
 
     self endon("joined_spectators");
     self endon("disconnect");
@@ -1473,7 +1473,7 @@ moveDefenseTurret(turret)
  */
 abs(number)
 {
-    debugPrint("in _turrets::abs()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _turrets::abs()||");
 
     if (number >= 0) {return number;}
     else {return number * -1;}

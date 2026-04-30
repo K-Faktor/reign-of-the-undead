@@ -152,7 +152,7 @@ init()
  */
 isSpecialWeap(weapon)
 {
-    debugPrint("in _weapons::isSpecialWeap()", "fn", level.medVerbosity);
+    log("trace", "msg|in _weapons::isSpecialWeap()||");
 
     for (i=0; i<level.specialWeps.size; i++) {
         if (level.specialWeps[i] == weapon) {return true;}
@@ -532,7 +532,7 @@ swapWeapons(type, weapon)
  */
 isSniper(weapon)
 {
-    debugPrint("in _weapons::isSniper()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _weapons::isSniper()||");
 
     if (weapon == "m21_mp") {return true;}
     if (weapon == "aw50_mp") {return true;}
@@ -554,7 +554,7 @@ isSniper(weapon)
  */
 isRifle(weapon)
 {
-    debugPrint("in _weapons::isRifle()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _weapons::isRifle()||");
 
     if (isSubStr(weapon, "ak47")) {return true;}
     if (isSubStr(weapon, "m4")) {return true;}
@@ -575,7 +575,7 @@ isRifle(weapon)
  */
 isShotgun(weapon)
 {
-    debugPrint("in _weapons::isShotgun()", "fn", level.medVerbosity);
+    log("trace", "msg|in _weapons::isShotgun()||");
 
     if (isSubStr(weapon, "m1014")) {return true;}
     if (isSubStr(weapon, "winchester1200")) {return true;}
@@ -594,7 +594,7 @@ isShotgun(weapon)
  */
 isLMG(weapon)
 {
-    debugPrint("in _weapons::isLMG()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _weapons::isLMG()||");
 
     if (isSubStr(weapon, "m60e4")) {return true;}
     if (isSubStr(weapon, "saw")) {return true;}
@@ -612,7 +612,7 @@ isLMG(weapon)
  */
 isSMG(weapon)
 {
-    debugPrint("in _weapons::isSMG()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _weapons::isSMG()||");
 
     if (isSubStr(weapon, "mp5")) {return true;}
     if (isSubStr(weapon, "ak74u")) {return true;}
@@ -654,7 +654,7 @@ isExplosive(weapon)
  */
 isPistol(weapon)
 {
-    debugPrint("in _weapons::isPistol()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in _weapons::isPistol()||");
 
     if (isSubStr(weapon, "beretta")) {return true;}
     if (isSubStr(weapon, "usp")) {return true;}
@@ -673,7 +673,7 @@ isPistol(weapon)
  */
 isSilenced(weapon)
 {
-    debugPrint("in _weapons::isSilenced()", "fn", level.highVerbosity);
+    log("trace", "msg|in _weapons::isSilenced()||");
 
     if (isSubStr(weapon, "_silencer_")) {return true;}
 
@@ -782,7 +782,7 @@ claymoreDetonation()
  */
 waitUntilExplosivesEmplaced()
 {
-    debugPrint("in _weapons::waitUntilExplosivesEmplaced()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _weapons::waitUntilExplosivesEmplaced()||");
 
     // self is claymore
     previousLocation = (0,0,0); // Init
@@ -866,7 +866,7 @@ rebuildPlayersEmplacedExplosives()
 
 shouldAffectClaymore(claymore)
 {
-    debugPrint("in _weapons::shouldAffectClaymore()", "fn", level.fullVerbosity);
+    log("trace", "msg|in _weapons::shouldAffectClaymore()||");
 
     // fn from modwarfare
     pos = self.origin + (0,0,32);
@@ -1021,7 +1021,7 @@ waitAndDetonate(delay)
 
 playC4Effects()
 {
-    debugPrint("in _weapons::playC4Effects()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _weapons::playC4Effects()||");
 
     self endon("death");
     self waittill("activated");
@@ -1119,7 +1119,7 @@ resetC4ExplodeThisFrame()
 
 clearFXOnDeath(fx)
 {
-    debugPrint("in _weapons::clearFXOnDeath()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _weapons::clearFXOnDeath()||");
 
     fx endon("death");
     self waittill("death");

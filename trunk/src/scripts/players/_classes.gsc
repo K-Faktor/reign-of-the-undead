@@ -205,7 +205,7 @@ isValidClass(class)
  */
 isClassEnabled(class)
 {
-    debugPrint("in _classes::isClassEnabled()", "fn", level.medVerbosity);
+    log("trace", "msg|in _classes::isClassEnabled()||");
 
     // Admin can always be any class
     if (scripts\server\_adminInterface::isAdmin(self)) {return true;}
@@ -263,7 +263,7 @@ isClassEnabled(class)
  */
 getClassPlayerCount(class)
 {
-    debugPrint("in _classes::getClassPlayerCount()", "fn", level.medVerbosity);
+    log("trace", "msg|in _classes::getClassPlayerCount()||");
 
     players = level.players;
     count = 0;
@@ -281,7 +281,7 @@ getClassPlayerCount(class)
  */
 enableClasses()
 {
-    debugPrint("in _classes::enableClasses()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _classes::enableClasses()||");
 
     if (!isDefined(self)) {return;}
 

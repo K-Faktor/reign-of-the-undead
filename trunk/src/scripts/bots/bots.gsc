@@ -154,7 +154,7 @@ instantiateBots(botCount)
  */
 deleteBots(botCount)
 {
-    debugPrint("in bots::deleteBots()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bots::deleteBots()||");
 
     botsToRemove = [];
 
@@ -178,7 +178,7 @@ deleteBots(botCount)
  */
 availableBot()
 {
-    debugPrint("in bots::availableBot()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bots::availableBot()||");
 
     noticePrint(level.availableBots.size + " bots available.");
     if (level.availableBots.size == 0) {
@@ -200,7 +200,7 @@ availableBot()
  */
 monitorBotSlots()
 {
-    debugPrint("in bots::monitorBotSlots()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bots::monitorBotSlots()||");
 
     level endon("game_ended");
 
@@ -250,7 +250,7 @@ monitorBotSlots()
  */
 spawnZombie(zombieType, spawnpoint, bot)
 {
-    debugPrint("in bots::spawnZombie()", "fn", level.fullVerbosity);
+    log("trace", "msg|in bots::spawnZombie()||");
 
     noticePrint("trying to spawn zombie");
 
@@ -343,7 +343,7 @@ spawnZombie(zombieType, spawnpoint, bot)
  */
 endZombieSpawnProtection(time, decrease)
 {
-    debugPrint("in bots::endZombieSpawnProtection()", "fn", level.highVerbosity);
+    log("trace", "msg|in bots::endZombieSpawnProtection()||");
 
     self endon("death");
 
@@ -361,7 +361,7 @@ endZombieSpawnProtection(time, decrease)
 
 botKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
-    debugPrint("in bots::botKilled()", "fn", level.veryHighVerbosity);
+    log("trace", "msg|in bots::botKilled()||");
 
     self unlink();
 

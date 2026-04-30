@@ -34,7 +34,7 @@
 
 atof(string)
 {
-    debugPrint("in data::atof()", "fn", level.highVerbosity);
+    log("trace", "msg|in data::atof()||");
 
     setdvar("2float", string);
     return getdvarfloat("2float");
@@ -42,7 +42,7 @@ atof(string)
 
 atoi(string)
 {
-    debugPrint("in data::atoi()", "fn", level.highVerbosity);
+    log("trace", "msg|in data::atoi()||");
 
     setdvar("2int", string);
     return getdvarint("2int");

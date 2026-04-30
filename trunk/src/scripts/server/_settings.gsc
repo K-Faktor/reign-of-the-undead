@@ -270,7 +270,7 @@ loadSettings()
  */
 finishDvar(type, dvar, val)
 {
-    debugPrint("in _settings::finishDvar()", "fn", level.veryLowVerbosity);
+    log("trace", "msg|in _settings::finishDvar()||");
 
     setDvar(type + "_" + dvar, val);
     level.dvar[type + "_" + dvar] = val;

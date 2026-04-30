@@ -291,7 +291,7 @@ addSpawnType(type)
  */
 getRandomType()
 {
-    debugPrint("in _gamemodes::getRandomType()", "fn", level.absurdVerbosity);
+    log("trace", "msg|in _gamemodes::getRandomType()||");
 
     weight = randomint(level.zom_spawntypes_weightotal);
     for (i=0; i<level.zom_spawntypes.size; i++) {
@@ -310,7 +310,7 @@ getRandomType()
  */
 getRandomSpecialType()
 {
-    debugPrint("in _gamemodes::getRandomSpecialType()", "fn", level.medVerbosity);
+    log("trace", "msg|in _gamemodes::getRandomSpecialType()||");
 
     index = randomInt(level.weightedSpecialTypes.size);
     return level.weightedSpecialTypes[index];

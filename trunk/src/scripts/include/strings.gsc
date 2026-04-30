@@ -40,7 +40,7 @@
  */
 buildPrintableAscii()
 {
-    // log("trace", "msg|in strings::buildPrintableAscii()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     ascii = [];
     ascii[32] = " ";
@@ -138,9 +138,6 @@ buildPrintableAscii()
     ascii[124] = "|";
     ascii[125] = "}";
     ascii[126] = "~";
-/*    for (integer = 32; integer <= 126; integer++) {
-        debugPrint(integer + ":" + ascii[integer], "val");
-    }*/
     return ascii;
 }
 
@@ -154,7 +151,7 @@ buildPrintableAscii()
  */
 charToInt(character)
 {
-    // log("trace", "msg|in strings::charToInt()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
     for (integer = 32; integer <= 126; integer++) {
@@ -172,7 +169,7 @@ charToInt(character)
  */
 isAlpha(character)
 {
-    // log("trace", "msg|in strings::isAlpha()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
 
@@ -192,7 +189,7 @@ isAlpha(character)
  */
 isUpper(character)
 {
-    // log("trace", "msg|in strings::isUpper()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
 
@@ -211,7 +208,7 @@ isUpper(character)
  */
 isLower(character)
 {
-    // log("trace", "msg|in strings::isLower()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
 
@@ -230,7 +227,7 @@ isLower(character)
  */
 isNumeric(character)
 {
-    // log("trace", "msg|in strings::isNumeric()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
 
@@ -249,7 +246,7 @@ isNumeric(character)
  */
 isAlphaNumeric(character)
 {
-    // log("trace", "msg|in strings::isAlphaNumeric()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
 
@@ -271,7 +268,7 @@ isAlphaNumeric(character)
  */
 isSymbol(character)
 {
-    // log("trace", "msg|in strings::isSymbol()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (character.size > 1) {return -1;}
     return !isAlphaNumeric(character);
@@ -286,7 +283,7 @@ isSymbol(character)
  */
 toAscii(integer)
 {
-    // log("trace", "msg|in strings::toAscii()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if ((integer < 32) || (integer > 126)) {return "";}
     return level.ascii[integer];
@@ -301,7 +298,7 @@ toAscii(integer)
  */
 toUpper(string)
 {
-    // log("trace", "msg|in strings::toUpper()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     upperString = "";
     for (i=0; i < string.size; i++) {
@@ -315,7 +312,6 @@ toUpper(string)
         charUpper = toAscii(upperDecimal);
         upperString += charUpper;
     }
-//     debugPrint(string + ":" + upperString, "val");
     return upperString;
 }
 
@@ -329,7 +325,7 @@ toUpper(string)
  */
 toLower(string)
 {
-    // log("trace", "msg|in strings::toLower()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     lowerString = "";
     for (i=0; i < string.size; i++) {
@@ -343,7 +339,6 @@ toLower(string)
         lowerUpper = toAscii(lowerDecimal);
         lowerString += lowerUpper;
     }
-//     debugPrint(string + ":" + lowerString, "val");
     return lowerString;
 }
 
@@ -358,7 +353,7 @@ toLower(string)
  */
 join(tokens, glue) /// @todo enable joining a specific range within an array
 {
-    // debugPrint("in strings::join()", "fn", level.veryLowVerbosity);
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     // Max size of a string in *.gsc (we reserve a some chars so the string can
     // actually be used)
@@ -403,12 +398,9 @@ join(tokens, glue) /// @todo enable joining a specific range within an array
  */
 replace(haystack, oldText, newText)
 {
-    // debugPrint("in strings::replace()", "fn", level.absurdVerbosity);
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     matches = matches(haystack, oldText);
-/*    for (i=0; i<matches.size; i++) {
-        debugPrint("match indexes: " + matches[i], "val");
-    }*/
     numberOfMatches = Int(matches.size / 2);
     if (numberOfMatches == 0) {return haystack;}
     else {
@@ -456,7 +448,7 @@ replace(haystack, oldText, newText)
  */
 tokenMatchCount(string, token)
 {
-    // log("trace", "msg|in strings::tokenMatchCount()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     matches = matches(string, token);
     numberOfMatches = Int(matches.size / 2);
@@ -472,7 +464,7 @@ tokenMatchCount(string, token)
  */
 trim(string)
 {
-    // log("trace", "msg|in strings::trim()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     // trim leading spaces
     for (i=0; i<string.size; i++) {
@@ -500,9 +492,16 @@ trim(string)
 /**
  * @brief Returns true if haystack ends with search
  *        Works safely even if search is longer than haystack
+ *
+ * @param haystack string The string to be searched
+ * @param search string The string to look for
+ *
+ * @returns boolean indicating whether the search term was found in haystack
  */
 endsWith(haystack, search)
 {
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
+
     if (!isDefined(haystack) || !isDefined(search))
         return false;
 
@@ -515,10 +514,10 @@ endsWith(haystack, search)
     // Compare the ending part of haystack with search
     start = haystack.size - search.size;
 
-    for (i = 0; i < search.size; i++)
-    {
-        if (haystack[start + i] != search[i])
+    for (i=0; i<search.size; i++) {
+        if (haystack[start+i] != search[i]) {
             return false;
+        }
     }
 
     return true;
@@ -534,7 +533,7 @@ endsWith(haystack, search)
  */
 collapse(string)
 {
-    // log("trace", "msg|in strings::collapse()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     string = trim(string);
 
@@ -567,7 +566,7 @@ collapse(string)
  */
 split(string, token)
 {
-    // log("trace", "msg|in strings::split()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     results = [];
     matches = matches(string, token);
@@ -623,7 +622,7 @@ split(string, token)
 /// unused, under development
 newMatchTask(beginIndex, endIndex, type)
 {
-    // log("trace", "msg|in strings::newMatchTask()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     task = spawnstruct();
     task.beginIndex = beginIndex;
@@ -644,7 +643,7 @@ newMatchTask(beginIndex, endIndex, type)
  */
 matches(string, token)
 {
-    // debugPrint("in strings::matches()", "fn", level.absurdVerbosity);
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     found = false;
     matchCount = 0;
@@ -702,7 +701,14 @@ matches(string, token)
  * @brief Performs sprintf-like variable interpolation
  *
  * @param formatString The string with parameter tokens
- * @param p1-p8 string The paramters to interpolate
+ * @param p1 string A paramter to interpolate
+ * @param p2 string A paramter to interpolate
+ * @param p3 string A paramter to interpolate
+ * @param p4 string A paramter to interpolate
+ * @param p5 string A paramter to interpolate
+ * @param p6 string A paramter to interpolate
+ * @param p7 string A paramter to interpolate
+ * @param p8 string A paramter to interpolate
  *
  * $1 gets p1, $4 gets p4
  *
@@ -710,7 +716,7 @@ matches(string, token)
  */
 sprintf(formatString, p1, p2, p3, p4, p5, p6, p7, p8)
 {
-    // debugPrint("in strings::sprintf()", "fn", level.highVerbosity);
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     // parse parameters
     count = 1;
@@ -820,7 +826,7 @@ sprintf(formatString, p1, p2, p3, p4, p5, p6, p7, p8)
  */
 leftPad(string, paddingCharacter, length)
 {
-    // debugPrint("in strings::leftPad()", "fn", level.medVerbosity);
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     padding = "";
     while (string.size + padding.size < length) {
@@ -842,7 +848,7 @@ leftPad(string, paddingCharacter, length)
  */
 rightPad(string, paddingCharacter, length)
 {
-    // log("trace", "msg|in strings::rightPad()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     if (!isDefined(string)) {logPrint("param string is undefined\n"); return string;}
     if (!isDefined(paddingCharacter)) {logPrint("param paddingCharacter is undefined\n"); return paddingCharacter;}

@@ -75,7 +75,7 @@ value(matrix, row, column)
 
     if ((row > matrix.rowCount) || (column > matrix.columnCount) ||
         (row == 0) || (column == 0)) {
-        errorPrint("Address (" + row + ", " + column + ") exceeds the dimensions of the matrix.");
+        log("error", "msg|Address (" + row + ", " + column + ") exceeds the dimensions of the matrix.||");
         printMatrix(matrix);
         return undefined;
     }
@@ -105,7 +105,7 @@ setValue(matrix, row, column, data)
 
     if ((row > matrix.rowCount) || (column > matrix.columnCount) ||
         (row == 0) || (column == 0)) {
-        errorPrint("Address (" + row + ", " + column + ") exceeds the dimensions of the matrix.");
+        log("error", "msg|Address (" + row + ", " + column + ") exceeds the dimensions of the matrix.||");
         printMatrix(matrix);
         return false;
     }
@@ -270,7 +270,7 @@ augment(matrix, augment)
     if (!isDefined(augment)) {augment = zeros(matrix.rowCount, 1);}
 
     if (matrix.rowCount != augment.rowCount) {
-        errorPrint("The augment matrix must have the same number of rows as the original matrix.");
+        log("error", "msg|The augment matrix must have the same number of rows as the original matrix.||");
         return undefined;
     }
 
@@ -301,7 +301,7 @@ appendMatrix(A, B)
     log("trace", "msg|in matrix::appendMatrix()||");
 
     if (A.columnCount != B.columnCount) {
-        errorPrint("Matrices to be appended must have the same number of columns.");
+        log("error", "msg|Matrices to be appended must have the same number of columns.||");
         return undefined;
     }
 
@@ -367,7 +367,7 @@ addMatrices(A, B)
     log("trace", "msg|in matrix::addMatrices()||");
 
     if ((A.rowCount != B.rowCount) || (A.columnCount != B.columnCount)) {
-        errorPrint("You cannot add matrices of different sizes.");
+        log("error", "msg|You cannot add matrices of different sizes.||");
         return undefined;
     }
 
@@ -393,7 +393,7 @@ matrixMultiply(A, B)
     log("trace", "msg|in matrix::matrixMultiply()||");
 
     if (A.columnCount != B.rowCount) {
-        errorPrint("Dimension mis-match.  The number of columns of A must match the number of rows of B.");
+        log("error", "msg|Dimension mis-match.  The number of columns of A must match the number of rows of B.||");
         return undefined;
     }
 
@@ -435,7 +435,7 @@ matrixPower(A, k)
     log("trace", "msg|in matrix::matrixPower()||");
 
     if (A.rowCount != A.columnCount) {
-        errorPrint("Matrix isn't square.");
+        log("error", "msg|Matrix isn't square.||");
         return undefined;
     }
 
@@ -470,7 +470,7 @@ determinant(A)
     log("trace", "msg|in matrix::determinant()||");
 
     if (A.rowCount != A.columnCount) {
-        errorPrint("Matrix isn't square.");
+        log("error", "masg|Matrix isn't square.||");
         return undefined;
     }
 
@@ -510,7 +510,7 @@ determinant(A)
                     // swap rows to put pivot row in pivot position
                     B = swapRows(B, foundPivot[0], pivotRow);
                     r++;
-//                     printMatrix(B);
+                    // printMatrix(B);
                 }
 
                 // create zeroes in all entries below the pivot
@@ -519,9 +519,9 @@ determinant(A)
                         // found a row with a non-zero entry, so make the entry a zero
                         pivotValue = B.data[pivotRow][pivotColumn];
                         scalar = -1 * (B.data[j][pivotColumn] / pivotValue);
-//                         debugPrint("pivotValue: " + pivotValue + " scalar: " + scalar + " j: " + j, "val");
+                        // log("dev", "msg|pivotValue: " + pivotValue + " scalar: " + scalar + " j: " + j + "||");
                         B = scaleAddRow(B, scalar, pivotRow, j);
-//                         printMatrix(B);
+                        // printMatrix(B);
                     }
                 }
                 // we are done with this column
@@ -756,8 +756,8 @@ printMatrix(matrix)
         lines += line + "\n";
         line = "";
     }
-    debugPrint("Matrix size (by property) (" + matrix.rowCount + " x " + matrix.columnCount + ")", "val");
-    debugPrint("Actual matrix size (" + matrix.data.size + " x " + matrix.data[0].size + ")", "val");
+    log("pre", "Matrix size (by property) (" + matrix.rowCount + " x " + matrix.columnCount + ")");
+    log("pre", "Actual matrix size (" + matrix.data.size + " x " + matrix.data[0].size + ")");
 
     logPrint(lines);
 }
