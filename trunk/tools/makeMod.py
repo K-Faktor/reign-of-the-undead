@@ -31,11 +31,40 @@
 #     Reign of the Undead must also comply with Activision/Infinity Ward's modtools
 #     EULA.
 #******************************************************************************
-"""Ported makeMod.pl for Reign of the Undead, by Claude Haiku 4.5.
+"""Ported makeMod.pl for Reign of the Undead, partially by Claude Haiku 4.5.
 
 This script is intended to replicate the current makeMod.pl behavior for no-argument
 builds and the common build/install workflows.
 """
+
+# Globals (assumed declared at module level)
+license = []
+tab = []
+todo = []
+bug = []
+deprecated = []
+hack = []
+fixme = []
+functions = ""
+documentedFunctions = ""
+functionEntrance = []
+doxErrors = []
+deprecatedFiles = ""
+unusedFunctions = ""
+unusedIncludes = ""
+quality = ""
+sloc = 0
+funcKeysByFile = {}
+funcDefs = {}
+processedFiles = {}
+functionCounts = {}
+uses = []
+
+# @files and load_files() assumed available
+# config dict also available
+# # Assuming these are defined in the broader scope (like in Perl)
+# config = {}  # populated from .env as described
+
 
 import argparse
 import hashlib
@@ -658,90 +687,722 @@ def print_help():
     print("  -r  Prepare a release")
 
 
-def quality_check(root_dir: Path):
+def quality_check(root_dir: Path, config):
     """Run code quality checks on GSC files."""
+    global license, tab, todo, bug, deprecated, hack, fixme
+    global functions, documentedFunctions, functionEntrance, doxErrors
+    global deprecatedFiles, unusedFunctions, unusedIncludes, quality, sloc
+
     print("Running quality checks...")
+
     files = load_files(root_dir)
-    src_files = [f for f in files if "/src/" in f.as_posix() and f.suffix.lower() == ".gsc"]
-    
-    license_issues = []
-    tab_issues = []
-    todo_items = []
-    bug_items = []
-    deprecated_items = []
-    hack_items = []
-    fixme_items = []
-    
-    print(f"Found {len(src_files)} GSC files to check...")
-    
-    # License check
-    for file_path in src_files:
-        if "_waypoints.gsc" in file_path.name or "_tradespawns.gsc" in file_path.name:
+
+    # Find function definitions
+    print("Finding function definitions...", end="")
+    for file in files:
+        file_str = file.as_posix()          # <--- use string for all checks
+        # only test source files
+        if '/src/' not in file_str:
             continue
-        try:
-            content = file_path.read_text(encoding="utf-8", errors="replace")
-        except Exception as exc:
-            print(f"Warning: Unable to read {file_path}: {exc}")
+        # only test *.gsc files
+        if not file_str.endswith('.gsc'):
             continue
-        
-        if not ("Copyright (c) 2010-2026 Reign of the Undead Team" in content and
-                'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND' in content):
-            rel = file_path.relative_to(root_dir)
-            license_issues.append(str(rel))
-    
-    # Tab check
-    text_suffixes = {".gsc", ".menu", ".cfg", ".txt"}
-    text_files = [f for f in files if "/src/" in f.as_posix() and f.suffix.lower() in text_suffixes]
-    for file_path in text_files:
+        findFunctionDefinitions(file_str)   # pass string path
+    print("done.")
+
+    print("Preparing files for analysis...", end="")
+    for file in files:
+        file_str = file.as_posix()
+        if '/src/' not in file_str:
+            continue
+        if not file_str.endswith('.gsc'):
+            continue
+        stripComments(file_str)
+    print("done.")
+
+    print("Checking files for a proper license...", end="")
+    for file in files:
+        file_str = file.as_posix()
+        if '/src/' not in file_str:
+            continue
+        if not file_str.endswith('.gsc'):
+            continue
+        if '_waypoints.gsc' in file_str or '_tradespawns.gsc' in file_str:
+            continue
+
         try:
-            content = file_path.read_text(encoding="utf-8", errors="replace")
+            with open(file, 'r', encoding='utf-8', errors='ignore') as R:
+                contents = R.read()
+        except Exception as e:
+            print(f"Warning: can't open {file}: {e}")
+            continue
+
+        match = re.search(r'.*/(src/.*)', file_str)
+        relFile = match.group(1) if match else file_str
+
+        if not (re.search(r'Copyright \(c\) 2010-2026 Reign of the Undead Team', contents) and
+                re.search(r'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND', contents)):
+            license.append(f"Missing or improper license: {relFile}")
+    print("done.")
+
+    print("Checking files for tab characters (use spaces instead!)...", end="")
+    for file in files:
+        file_str = file.as_posix()
+        if '/src/' not in file_str:
+            continue
+        if not re.search(r'(\.gsc|\.menu|\.cfg|\.txt)$', file_str):
+            continue
+
+        try:
+            with open(file, 'r', encoding='utf-8', errors='ignore') as R:
+                contents = R.read()
         except Exception:
             continue
-        if "\t" in content:
-            rel = file_path.relative_to(root_dir)
-            tab_issues.append(str(rel))
-    
-    # Line-by-line checks for notations
-    for file_path in src_files:
+
+        match = re.search(r'.*/(src/.*)', file_str)
+        relFile = match.group(1) if match else file_str
+
+        if '\t' in contents:
+            tab += f"Found tab character: {relFile}\n"
+    print("done.")
+
+    print("Checking for 'bug', 'todo', 'hack', 'fixme', and 'deprecated' notations...", end="")
+    for file in files:
+        file_str = file.as_posix()
+        if '/src/' not in file_str or not file_str.endswith('.gsc'):
+            continue
+
         try:
-            with file_path.open("r", encoding="utf-8", errors="replace") as fh:
-                for line_num, line in enumerate(fh, 1):
-                    rel = file_path.relative_to(root_dir)
-                    if "@todo" in line.lower():
-                        todo_items.append(f"{rel}:{line_num}  {line.strip()}")
-                    if "@bug" in line.lower():
-                        bug_items.append(f"{rel}:{line_num}  {line.strip()}")
-                    if "@deprecated" in line.lower():
-                        deprecated_items.append(f"{rel}:{line_num}  {line.strip()}")
-                    if "hack:" in line.lower():
-                        hack_items.append(f"{rel}:{line_num}  {line.strip()}")
-                    if "fixme" in line.lower():
-                        fixme_items.append(f"{rel}:{line_num}")
+            with open(file, 'r', encoding='utf-8', errors='ignore') as R:
+                lines = R.readlines()
         except Exception:
             continue
+
+        match = re.search(r'.*/(src/.*)', file_str)
+        relFile = match.group(1) if match else file_str
+
+        lineNumber = 1
+        lineIndex = 0
+        functionLines = []
+
+        for line in lines:
+            # line = line.strip()
+            if re.search(r'@todo\b', line, re.IGNORECASE):
+                todo.append(f"Todo found: {relFile}:{lineNumber}:  {line.strip()}")
+            elif re.search(r'@bug\b', line, re.IGNORECASE):
+                bug.append(f"Bug found: {relFile}:{lineNumber}:  {line.strip()}")
+            elif re.search(r'@deprecated\b', line, re.IGNORECASE):
+                deprecated.append(f"Deprecated item found: {relFile}:{lineNumber}:  {line.strip()}")
+            elif re.search(r'hack:', line, re.IGNORECASE):
+                hack.append(f"Hack found: {relFile}:{lineNumber}:  {line.strip()}")
+            elif re.search(r'fixme', line, re.IGNORECASE):
+                fixme.append(f"Fixme found: {relFile}:{lineNumber}:  {line.strip()}")
+            elif re.search(r'^\w*\(.*\)\n', line, re.IGNORECASE):
+                functionLines.append(lineIndex)
+
+            lineNumber += 1
+            lineIndex += 1
+
+        sloc += len(lines)
+        # print(f"length of function lines: {len(functionLines)}")
+
+        for index in functionLines:
+            if index - 1 < 0 or index >= len(lines):
+                continue
+            testLine = lines[index - 1]
+            functionLine = lines[index]
+            lineNumber = index + 1
+
+            filename = file.name[:-4] if file.name.endswith('.gsc') else file.name
+
+            match = re.search(r'(^\w*)\((.*)\).*;{0,0}\n', functionLine, re.IGNORECASE)
+            functionName = match.group(1) if match else ""
+            # args = match.group(2) if match else ""
+
+            # Load function ID for unused check
+            path = relFile.replace('src/', '', 1).replace('.gsc', '').replace('/', '\\')
+            if functionName not in ("init", "main"):
+                function = f"{path}::{functionName}"
+                functionCounts[function] = 0
+
+            if (re.search(r'main\(\)', functionLine) or
+                re.search(r'load_tradespawns\(\)', functionLine) or
+                re.search(r'load_waypoints\(\)', functionLine)):
+                continue
+
+            testLine = lines[index + 2] if index + 2 < len(lines) else ""
+            # pattern = re.compile(
+            #     r'    debugPrint\("in ' + re.escape(filename) +
+            #     r'::' + re.escape(functionName) + r'\(\)", "fn", level'
+            # )
+            pattern = re.compile(
+                r'    log\("trace", "msg|in ' + re.escape(filename) +
+                r'::' + re.escape(functionName) + r'\(\)"'
+            )
+            # print(testLine)
+            if not pattern.search(testLine):
+                if not re.search(r'most-called function', testLine) or not re.search(r'quality:ignore_trace', testLine):
+                    functionEntrance.append(f"Missing or wrong function entrance debug statement found: {relFile}:{lineNumber}:  {functionLine.strip()}")
+    print("done.")
+
+    print("Analyzing functions...", end="")
+    start_file = "../src/maps/mp/gametypes/surv.gsc"
+    # Convert to absolute if needed
+    if not os.path.isabs(start_file):
+        start_file = str((root_dir / start_file.lstrip('../')).resolve())
+
+    findFunctionCalls(start_file, config)
+
+    # Deprecated files check
+    uniqueFiles = [v.replace('/', '\\') for v in processedFiles.values()]
+    sorted_unique = sorted(set(uniqueFiles))
+
+    for file in files:
+        file_str = file.as_posix()
+        if '/src/' not in file_str or not file_str.endswith('.gsc'):
+            continue
+        match = re.search(r'.*/src/(.*)', file_str)
+        relFile = match.group(1).replace('/', '\\') if match else file_str
+
+        if relFile not in sorted_unique:
+            if relFile not in ('maps\\mp\\_load.gsc',
+                               'maps\\mp\\gametypes\\dm.gsc',
+                               'maps\\mp\\gametypes\\surv.gsc',
+                               'maps\\mp\\gametypes\\war.gsc'):
+                deprecatedFiles += f"Possibly deprecated file: {file_str}\n"
+
+    # Unused functions
+    for key in sorted(funcDefs.keys()):
+        if len(funcDefs[key]['uses']) == 0 and not re.search(r'zombiescript', key):
+            unusedFunctions += f"Unused function found: {key}()\n"
+    print("done.")
+
+    # === Build summary ===
+    global quality
+    quality = (
+        f"  Found {len(license)} improperly licensed files\n"
+        f"  Found {len(tab)} files with tab characters\n"
+        f"  Found {len(todo)} @todo items\n"
+        f"  Found {len(bug)} @bug items\n"
+        f"  Found {len(deprecated)} @deprecated items\n"
+        f"  Found {len(hack)} hack items\n"
+        f"  Found {len(fixme)} fixme items\n"
+        f"  Found {len(funcDefs)} function definitions\n"
+        f"  Found {functions.count('\n')} undocumented functions\n"
+        f"  Found {documentedFunctions.count('\n')} documented functions\n"
+        f"  Found {len(functionEntrance)} functions with missing or improper function entrance debug statements\n"
+        f"  Found {len(doxErrors)} doxygen errors\n"
+        f"  Found {deprecatedFiles.count('\n')} possibly deprecated files\n"
+        f"  Found {unusedFunctions.count('\n')} apparently unused functions\n"
+        f"  Found {unusedIncludes.count('\n')} unused #include statements\n"
+        f"\n  {sloc} Source Lines of Code in *.gsc files\n"
+    )
+
+    # Print to console
+    for item in license:
+        print(item)
+    for item in tab:
+        print(item)
+    for item in todo:
+        print(item)
+    for item in bug:
+        print(item)
+    for item in hack:
+        print(item)
+    for item in fixme:
+        print(item)
+    print(functions, end='')
+    for item in functionEntrance:
+        print(item)
+    for item in doxErrors:
+        print(item)
+    print(deprecatedFiles, end='')
+    print(unusedFunctions, end='')
+    print(unusedIncludes, end='')
+    print(quality, end='')
+
+    # print(license, end='')
+    # Write report
+    with open("qualityReport.log", "w", encoding="utf-8") as Q:
+        Q.write(quality + "\n")
+        for item in license:
+            Q.write(f"{item}\n")
+        # Q.write(license)
+        for item in tab:
+            Q.write(f"{item}\n")
+        # Q.write(tab)
+        for item in todo:
+            Q.write(f"{item}\n")
+        # Q.write(todo)
+        # Q.write(bug)
+        for item in bug:
+            Q.write(f"{item}\n")
+        # Q.write(hack)
+        for item in hack:
+            Q.write(f"{item}\n")
+        # Q.write(fixme)
+        for item in fixme:
+            Q.write(f"{item}\n")
+        Q.write(functions)
+        # Q.write(functionEntrance)
+        for item in functionEntrance:
+            Q.write(f"{item}\n")
+        # Q.write(doxErrors)
+        for item in doxErrors:
+            Q.write(f"{item}\n")
+        Q.write(deprecatedFiles)
+        Q.write(unusedFunctions)
+        Q.write(unusedIncludes)
+
+    printFunctionUses()
+
+
+# # Assuming these are defined in the broader scope (like in Perl)
+# funcKeysByFile = {}
+
+# # Globals assumed to exist in the broader module scope
+# functions = ""
+# documentedFunctions = ""
+# funcDefs = {}
+# funcKeysByFile = {}
+# # @uses is used below - assuming it's a global list defined elsewhere
+# # If not, it will be an empty list or you can initialize it
+# uses = []   # fallback if not defined globally
+
+# # Global variable used by the Perl code (assumed to exist in the broader scope)
+# doxErrors = ""
+
+# # Globals assumed to exist in the broader module scope
+# processedFiles = {}
+# unusedIncludes = ""
+# config = {}  # populated from .env as described
+
+
+def printFunctionUses():
+    file = "functionUseReport.log"
+    try:
+        with open(file, 'w', encoding='utf-8') as F:
+            for key in sorted(funcDefs.keys()):
+                # $key =~ m/(.*)\:\:/;
+                match = re.search(r'(.*)::', key)
+                name = match.group(1) if match else key
+
+                F.write("Function " + name + "::" + funcDefs[key]['fnPrototype'] + "\n")
+                F.write("    Definition:\n")
+                F.write("        " + funcDefs[key]['file'] + ":" +
+                        str(funcDefs[key]['lineNumber']) + ":" +
+                        str(funcDefs[key]['columnNumber']) + "\n")
+                F.write("    Uses:\n")
+
+                useCount = len(funcDefs[key]['uses'])
+                if useCount:
+                    for use in funcDefs[key]['uses']:
+                        # $use->{file} =~ m!.*/src/(.*)!;
+                        match = re.search(r'.*/src/(.*)', use['file'])
+                        relFile = match.group(1) if match else use['file']
+                        # $relFile =~ s!/!\\!g;
+                        relFile = relFile.replace('/', '\\')
+
+                        F.write("        " + relFile + ":" +
+                                str(use['line']) + ":" +
+                                str(use['column']) + "\n")
+                else:
+                    F.write("        No uses of this function were found\n")
+
+                F.write("\n")
+    except Exception as e:
+        raise Exception(f"can't open file: {e}")
     
-    # Report
-    print("\n--- Quality Report ---")
-    print(f"Files with license issues:     {len(license_issues)}")
-    if license_issues:
-        for item in license_issues[:20]:
-            print(f"  - {item}")
-        if len(license_issues) > 20:
-            print(f"  ... and {len(license_issues) - 20} more")
+
+# Create a version of file $contents without comments, but preserving line numbers
+def stripComments(file):
+    #     print "$file\n";
+    try:
+        with open(file, 'r', encoding='utf-8', errors='ignore') as R:
+            lineNumber = 0
+            openCommentCount = 0
+            lines = []
+            lines.append("")
+            for line in R:
+                # $open =()= $line =~ /\/\*/gi;
+                open_matches = re.findall(r'/\*', line, re.IGNORECASE)
+                open_count = len(open_matches)
+                
+                # $close =()= $line =~ /\*\//gi;
+                close_matches = re.findall(r'\*/', line, re.IGNORECASE)
+                close_count = len(close_matches)
+                
+                if open_count == 1 and close_count == 1:
+                    # This line has a single /* comment */, remove it
+                    line = re.sub(r'/\*.*?\*/', '', line, flags=re.IGNORECASE | re.DOTALL)
+                
+                # Add number of opening multi-line comment delimiters in this line
+                openCommentCount += open_count
+                # Subtract number of closing multi-line comment delimiters in this line
+                openCommentCount -= close_count
+                
+                # If $openCommentCount is non-zero, we are in a multiline comment
+                if openCommentCount:
+                    # replace contents of line with \n
+                    line = "\n"
+                    lineNumber += 1
+                    lines.append(line)
+                    #             print $line;
+                    continue
+                
+                # this is the last line of a multi-line comment
+                if re.search(r'(.*\*/)(.*)', line, re.IGNORECASE):
+                    match = re.match(r'(.*\*/)(.*)', line, re.IGNORECASE)
+                    if match:
+                        part1 = match.group(1)
+                        part2 = match.group(2)
+                        pad = ' ' * len(part1)
+                        line = pad + part2 + "\n"
+                        lineNumber += 1
+                        lines.append(line)
+                        #             print $line;
+                        continue
+                
+                # strip // comments
+                line = re.sub(r'//.*', '', line)
+                lineNumber += 1
+                lines.append(line)
+                #         print $line;
+    except Exception as e:
+        raise Exception(f"can't open file {file}: {e}")
+
+    # $file =~ m!.*/src/(.*)!;
+    # Extract relative path after /src/
+    match = re.search(r'.*/src/(.*)', file)
+    if match:
+        relFile = match.group(1)
+    else:
+        relFile = file  # fallback if no /src/ found
     
-    print(f"Files with tab characters:     {len(tab_issues)}")
-    if tab_issues:
-        for item in tab_issues[:20]:
-            print(f"  - {item}")
-        if len(tab_issues) > 20:
-            print(f"  ... and {len(tab_issues) - 20} more")
+    # $relFile =~ s!/!\\!g;
+    relFile = relFile.replace('/', '\\')
+
+    # Store the comment-stripped @lines for later use
+    if relFile not in funcKeysByFile:
+        funcKeysByFile[relFile] = {}
+    funcKeysByFile[relFile]['fileLines'] = lines[:]
+
+
+def findFunctionCalls(file, config):
+    global unusedIncludes, processedFiles
+
+    # $file =~ m!.*/src/(.*)!;
+    match = re.search(r'.*/src/(.*)', file)
+    relFile = match.group(1) if match else file
+    # $relFile =~ s!/!\\!g;
+    relFile = relFile.replace('/', '\\')
+
+    # Mark this file as already being processed
+    file_hash = hashlib.md5(relFile.encode('utf-8')).hexdigest()
+    processedFiles[file_hash] = relFile
+
+    internalFuncKeys = []
+    internalFileKeys = []
+    lineNumber = 0
+    lookingForIncludes = 1
+    contents = "".join(funcKeysByFile.get(relFile, {}).get('fileLines', []))
+
+    includeFiles = {}
+
+    internalFileKeys.append(relFile)
+    # Load the keys for the functions defined in this file
+    for key in funcKeysByFile.get(relFile, {}).get('fnKeys', []):
+        internalFuncKeys.append(key)
+
+    for line in funcKeysByFile.get(relFile, {}).get('fileLines', []):
+        lineNumber += 1
+        include_match = re.search(r'#include\s+(.*);\n', line)
+        if include_match:
+            inc = include_match.group(1) + '.gsc'
+            internalFileKeys.append(inc)
+            includeFiles[include_match.group(1)] = {'count': 0}
+
+            inc_hash = hashlib.md5(inc.encode('utf-8')).hexdigest()
+            if inc_hash not in processedFiles:
+                # recurse
+                newFile = '../src/' + inc
+                newFile = newFile.replace('\\', '/')
+                if not os.path.exists(newFile):
+                    codPath = str(config.get('codPath', ''))
+                    rawFile = codPath + '/raw/' + inc
+                    rawFile = rawFile.replace('\\', '/')
+                    if not os.path.exists(rawFile):
+                        unusedIncludes += f"Include file {inc} included in {file} does not exist in src or raw\n"
+                    else:
+                        findFunctionCalls(rawFile, config)
+                else:
+                    findFunctionCalls(newFile, config)
+
+            # Load the keys for the functions defined in this include file
+            for key in funcKeysByFile.get(inc, {}).get('fnKeys', []):
+                internalFuncKeys.append(key)
+
+        if lookingForIncludes and re.match(r'^\w', line):
+            lookingForIncludes = 0
+
+    # Search this file for function calls using the scoping operator
+    for key in sorted(funcDefs.keys()):
+        matchPos = 0
+        extRegex = funcDefs[key]['extRegex']
+        while True:
+            match = extRegex.search(contents, matchPos)
+            if not match:
+                break
+            pos = match.start(1)          # $-[1] in Perl
+            matchSize = len(match.group(0))
+            matchPos = pos
+
+            # Find line and column
+            lineN = 0
+            colN = 0
+            tmp_pos = 0
+            for m in re.finditer(r'(\n)', contents):
+                lineN += 1
+                if m.start(1) >= pos:
+                    break
+                colN = pos - m.start(1)   # rough equivalent
+
+            # Update search position
+            matchPos = match.end(0)
+
+            line = funcKeysByFile.get(relFile, {}).get('fileLines', [])[lineN] if lineN < len(funcKeysByFile.get(relFile, {}).get('fileLines', [])) else ""
+
+            use = {
+                'file': file,
+                'line': lineN,
+                'column': colN,
+                'contents': line,
+            }
+            funcDefs[key]['uses'].append(use)
+
+        # If $matchPos is non-zero, we found at least one use of this external function
+        if matchPos:
+            key_match = re.search(r'(.*)::', key)
+            if key_match:
+                refRelFile = key_match.group(1) + '.gsc'
+                ref_hash = hashlib.md5(refRelFile.encode('utf-8')).hexdigest()
+                if ref_hash not in processedFiles:
+                    newFile = '../src/' + refRelFile
+                    newFile = newFile.replace('\\', '/')
+                    if not os.path.exists(newFile):
+                        codPath = str(config.get('codPath', ''))
+                        rawFile = codPath + '/raw/' + refRelFile
+                        rawFile = rawFile.replace('\\', '/')
+                        if not os.path.exists(rawFile):
+                            print(f"Referenced file {refRelFile} does not exist in src or raw")
+                            continue
+                    findFunctionCalls(newFile, config)   # note: original calls even if raw doesn't exist, but we follow logic
+
+    # Search this file for internal function calls
+    # reset $relFile
+    match = re.search(r'.*/src/(.*)', file)
+    relFile = match.group(1) if match else file
+    relFile = relFile.replace('/', '\\')
+
+    for key in internalFuncKeys:
+        matchPos = 0
+        intRegex = funcDefs[key]['intRegex']
+        while True:
+            match = intRegex.search(contents, matchPos)
+            if not match:
+                break
+            pos = match.start(1)
+            matchSize = len(match.group(0))
+            matchPos = pos
+
+            # Find line and column
+            lineN = 0
+            colN = 0
+            for m in re.finditer(r'(\n)', contents):
+                lineN += 1
+                if m.start(1) >= pos:
+                    break
+                colN = pos - m.start(1)
+
+            matchPos = match.end(0)
+
+            # Check if it's really a call (not in string)
+            line_text = funcKeysByFile.get(relFile, {}).get('fileLines', [])[lineN] if lineN < len(funcKeysByFile.get(relFile, {}).get('fileLines', [])) else ""
+            stripped = re.sub(r'".+?"', '', line_text)
+            if intRegex.search(stripped):
+                use = {
+                    'file': file,
+                    'line': lineN,
+                    'column': colN,
+                    'contents': line_text,
+                }
+                funcDefs[key]['uses'].append(use)
+
+                # Increment include counters if applicable
+                for includeKey in list(includeFiles.keys()):
+                    tmp = includeKey.replace('\\', '\\\\')
+                    if re.search(tmp, key, re.IGNORECASE):
+                        includeFiles[includeKey]['count'] += 1
+
+    # Are any of the include'd files unused?
+    for includeKey in includeFiles:
+        if includeFiles[includeKey]['count'] == 0:
+            if re.search(r'common_scripts', includeKey):
+                continue
+            # global unusedIncludes
+            unusedIncludes += f"Unused include file {includeKey} included in {file}\n"
+
+
+
+def findFunctionDefinitions(file):
+    global functions, documentedFunctions, funcDefs, funcKeysByFile
+
+    try:
+        with open(file, 'r', encoding='utf-8', errors='ignore') as R:
+            lineNumber = 0
+            openCommentCount = 0
+            lines = []
+            lines.append("")
+            for line in R:
+                lineNumber += 1
+                lines.append(line)
+                
+                # Add number of opening multi-line comment delimiters
+                openCommentCount += len(re.findall(r'/\*', line, re.IGNORECASE))
+                # Subtract number of closing multi-line comment delimiters
+                openCommentCount -= len(re.findall(r'\*/', line, re.IGNORECASE))
+                
+                # If $openCommentCount is non-zero, we are in a multiline comment
+                if openCommentCount:
+                    continue
+                
+                # strip // comments
+                line = re.sub(r'//.*', '', line)
+                
+                # next unless ($line =~ m/^\w/);
+                if not re.match(r'^\w', line):
+                    continue
+                
+                # $line =~ m/((\w*)\(.*?\))[ {]{0,}\n/;
+                match = re.search(r'((\w*)\(.*?\))[ {]{0,}\n', line)
+                if not match:
+                    continue
+                fnPrototype = match.group(1)
+                fnName = match.group(2)
+                
+                if not fnPrototype:
+                    continue
+                
+                # We don't need documentation on some functions
+                if re.search(r'main\(\)', fnPrototype):
+                    continue
+                if re.search(r'load_tradespawns\(\)', fnPrototype):
+                    continue
+                if re.search(r'load_waypoints\(\)', fnPrototype):
+                    continue
+                
+                # $file =~ m!.*/src/(.*)!;
+                match = re.search(r'.*/src/(.*)', file)
+                relFile = match.group(1) if match else file
+                
+                # $relFile =~ s!/!\\!g;
+                relFile = relFile.replace('/', '\\')
+                
+                key = relFile + '::' + fnName
+                key = key.replace('.gsc', '')   # $key =~ s!.gsc!!;
+                
+                columnNumber = 0
+                
+                # We found a function definition, now check if it is properly documented
+                if not re.search(r' \*/\n', lines[lineNumber - 1]):
+                    global functions
+                    functions += f"Undocumented function found: {relFile}:{lineNumber}:{fnPrototype}\n"
+                else:
+                    # todo check the validity of the comment block
+                    validateDocumentation(lines, lineNumber, relFile)
+                    global documentedFunctions
+                    documentedFunctions += f"Documented function found: {relFile}:{lineNumber}:{fnPrototype}\n"
+                
+                # Build regexes
+                tmp = key
+                tmp = "(" + tmp + ")"
+                tmp = tmp.replace('\\', '\\\\')
+                tmp = tmp.replace(':', '\\:')
+                extRegex = re.compile(tmp, re.IGNORECASE)
+                
+                tmp = fnName
+                tmp = "(?:[ {(!])(" + tmp + ")"
+                intRegex = re.compile(tmp, re.IGNORECASE)
+                
+                # Store function information indexed by full scope
+                funcDefs[key] = {
+                    'file': relFile,
+                    'fnName': fnName,
+                    'fnPrototype': fnPrototype,
+                    'lineNumber': lineNumber,
+                    'columnNumber': columnNumber,
+                    'extRegex': extRegex,
+                    'intRegex': intRegex,
+                    'uses': list(uses),   # copy of @uses
+                }
+                
+                # Store function keys indexed by relative filename
+                if relFile not in funcKeysByFile:
+                    funcKeysByFile[relFile] = {}
+                if 'fnKeys' not in funcKeysByFile[relFile]:
+                    funcKeysByFile[relFile]['fnKeys'] = []
+                funcKeysByFile[relFile]['fnKeys'].append(key)
+                
+    except Exception as e:
+        raise Exception(f"can't open file {file}: {e}")
     
-    print(f"@todo items found:             {len(todo_items)}")
-    print(f"@bug items found:              {len(bug_items)}")
-    print(f"@deprecated items found:       {len(deprecated_items)}")
-    print(f"hack: items found:             {len(hack_items)}")
-    print(f"fixme items found:             {len(fixme_items)}")
-    print("---")
+
+def validateDocumentation(linesRef, functionIndex, relFile):
+    global doxErrors
+    dox = ""
+
+    functionLine = linesRef[functionIndex]
+
+    count = 0
+    index = functionIndex
+    while linesRef[index] != "/**\n":
+        index -= 1
+        count += 1
+        if count > 45:
+            return
+
+    # Note: This for-loop logic is preserved exactly as in Perl (including the odd use of $index in the condition)
+    for i in range(index, functionIndex):   # We still need a loop variable, but logic stays identical
+        dox += linesRef[index]
+        index += 1   # This mirrors the original increment behavior
+
+    # Original regex: $functionLine =~ /(^\w*)\((.*)\).*;{0,0}\n/i;
+    match = re.search(r'(^\w*)\((.*)\).*;{0,0}\n', functionLine, re.IGNORECASE)
+    if match:
+        functionName = match.group(1)
+        arg = match.group(2)
+    else:
+        functionName = ""
+        arg = ""
+
+    if arg:
+        # there is some argument text, perhaps containing multiple arguments
+        args = re.split(r',\s*', arg)
+        if args:
+            # there was at least one argument
+            for arg in args:
+                arg = re.sub(r'\s*', '', arg)
+                if not re.search(r'@param ' + re.escape(arg), dox):
+                    # global doxErrors
+                    doxErrors.append(f"Doxygen block '{arg}' parameter is undocumented: {relFile}:{functionIndex}:  {functionName}()")
+
+    if not re.search(r'@brief', dox):
+        # global doxErrors
+        doxErrors.append(f"Doxygen block missing the @brief tag: {relFile}:{functionIndex}:  {functionName}()")
+
+    if not re.search(r'@returns', dox):
+        # global doxErrors
+        doxErrors.append(f"Doxygen block missing the @returns tag: {relFile}:{functionIndex}:  {functionName}()")
 
 
 def release(config, root_dir: Path, release_name: str, bash_path: str):
@@ -860,6 +1521,8 @@ def main():
     config = {
         "codPath": normalize_path(env.get("COD_PATH"), project_path),
         "modPath": normalize_path(env.get("MOD_PATH"), project_path),
+        # "codPath": str(normalize_path(env.get("COD_PATH"), project_path)),
+        # "modPath": str(normalize_path(env.get("MOD_PATH"), project_path)),
         "uploadPath": normalize_path(env.get("UPLOAD_PATH"), project_path),
         "releasePath": normalize_path(env.get("RELEASE_PATH"), project_path),
         "workPath": normalize_path(env.get("WORK_PATH"), project_path),
@@ -905,7 +1568,7 @@ def main():
         clean(config, root_dir)
         return
     if args.q:
-        quality_check(root_dir)
+        quality_check(root_dir, config)
         return
     if args.r:
         release(config, root_dir, args.r, bash_path)

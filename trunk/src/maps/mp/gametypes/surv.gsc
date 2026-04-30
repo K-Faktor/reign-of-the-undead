@@ -43,7 +43,7 @@
 main()
 {
     // source the settings the debug system depends on
-    // initializeDebugSystem();  // @deprecated, once all od debug statements are removed
+    initializeDebugSystem();  // @deprecated, once *all* of debug statements are removed, 
     scripts\include\constants::init();
 
     // Used to let maps know what mod is trying to load them

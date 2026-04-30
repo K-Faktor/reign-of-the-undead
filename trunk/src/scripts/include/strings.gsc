@@ -40,7 +40,7 @@
  */
 buildPrintableAscii()
 {
-    log("trace", "msg|in strings::buildPrintableAscii()||");
+    // log("trace", "msg|in strings::buildPrintableAscii()||");
 
     ascii = [];
     ascii[32] = " ";
@@ -154,7 +154,7 @@ buildPrintableAscii()
  */
 charToInt(character)
 {
-    log("trace", "msg|in strings::charToInt()||");
+    // log("trace", "msg|in strings::charToInt()||");
 
     if (character.size > 1) {return -1;}
     for (integer = 32; integer <= 126; integer++) {
@@ -172,7 +172,7 @@ charToInt(character)
  */
 isAlpha(character)
 {
-    log("trace", "msg|in strings::isAlpha()||");
+    // log("trace", "msg|in strings::isAlpha()||");
 
     if (character.size > 1) {return -1;}
 
@@ -192,7 +192,7 @@ isAlpha(character)
  */
 isUpper(character)
 {
-    log("trace", "msg|in strings::isUpper()||");
+    // log("trace", "msg|in strings::isUpper()||");
 
     if (character.size > 1) {return -1;}
 
@@ -211,7 +211,7 @@ isUpper(character)
  */
 isLower(character)
 {
-    log("trace", "msg|in strings::isLower()||");
+    // log("trace", "msg|in strings::isLower()||");
 
     if (character.size > 1) {return -1;}
 
@@ -230,7 +230,7 @@ isLower(character)
  */
 isNumeric(character)
 {
-    log("trace", "msg|in strings::isNumeric()||");
+    // log("trace", "msg|in strings::isNumeric()||");
 
     if (character.size > 1) {return -1;}
 
@@ -249,7 +249,7 @@ isNumeric(character)
  */
 isAlphaNumeric(character)
 {
-    log("trace", "msg|in strings::isAlphaNumeric()||");
+    // log("trace", "msg|in strings::isAlphaNumeric()||");
 
     if (character.size > 1) {return -1;}
 
@@ -271,7 +271,7 @@ isAlphaNumeric(character)
  */
 isSymbol(character)
 {
-    log("trace", "msg|in strings::isSymbol()||");
+    // log("trace", "msg|in strings::isSymbol()||");
 
     if (character.size > 1) {return -1;}
     return !isAlphaNumeric(character);
@@ -286,7 +286,7 @@ isSymbol(character)
  */
 toAscii(integer)
 {
-    log("trace", "msg|in strings::toAscii()||");
+    // log("trace", "msg|in strings::toAscii()||");
 
     if ((integer < 32) || (integer > 126)) {return "";}
     return level.ascii[integer];
@@ -301,7 +301,7 @@ toAscii(integer)
  */
 toUpper(string)
 {
-    log("trace", "msg|in strings::toUpper()||");
+    // log("trace", "msg|in strings::toUpper()||");
 
     upperString = "";
     for (i=0; i < string.size; i++) {
@@ -329,7 +329,7 @@ toUpper(string)
  */
 toLower(string)
 {
-    log("trace", "msg|in strings::toLower()||");
+    // log("trace", "msg|in strings::toLower()||");
 
     lowerString = "";
     for (i=0; i < string.size; i++) {
@@ -358,7 +358,7 @@ toLower(string)
  */
 join(tokens, glue) /// @todo enable joining a specific range within an array
 {
-    debugPrint("in strings::join()", "fn", level.veryLowVerbosity);
+    // debugPrint("in strings::join()", "fn", level.veryLowVerbosity);
 
     // Max size of a string in *.gsc (we reserve a some chars so the string can
     // actually be used)
@@ -403,7 +403,7 @@ join(tokens, glue) /// @todo enable joining a specific range within an array
  */
 replace(haystack, oldText, newText)
 {
-    debugPrint("in strings::replace()", "fn", level.absurdVerbosity);
+    // debugPrint("in strings::replace()", "fn", level.absurdVerbosity);
 
     matches = matches(haystack, oldText);
 /*    for (i=0; i<matches.size; i++) {
@@ -456,7 +456,7 @@ replace(haystack, oldText, newText)
  */
 tokenMatchCount(string, token)
 {
-    log("trace", "msg|in strings::tokenMatchCount()||");
+    // log("trace", "msg|in strings::tokenMatchCount()||");
 
     matches = matches(string, token);
     numberOfMatches = Int(matches.size / 2);
@@ -472,7 +472,7 @@ tokenMatchCount(string, token)
  */
 trim(string)
 {
-    log("trace", "msg|in strings::trim()||");
+    // log("trace", "msg|in strings::trim()||");
 
     // trim leading spaces
     for (i=0; i<string.size; i++) {
@@ -534,7 +534,7 @@ endsWith(haystack, search)
  */
 collapse(string)
 {
-    log("trace", "msg|in strings::collapse()||");
+    // log("trace", "msg|in strings::collapse()||");
 
     string = trim(string);
 
@@ -567,7 +567,7 @@ collapse(string)
  */
 split(string, token)
 {
-    log("trace", "msg|in strings::split()||");
+    // log("trace", "msg|in strings::split()||");
 
     results = [];
     matches = matches(string, token);
@@ -623,7 +623,7 @@ split(string, token)
 /// unused, under development
 newMatchTask(beginIndex, endIndex, type)
 {
-    log("trace", "msg|in strings::newMatchTask()||");
+    // log("trace", "msg|in strings::newMatchTask()||");
 
     task = spawnstruct();
     task.beginIndex = beginIndex;
@@ -644,7 +644,7 @@ newMatchTask(beginIndex, endIndex, type)
  */
 matches(string, token)
 {
-    debugPrint("in strings::matches()", "fn", level.absurdVerbosity);
+    // debugPrint("in strings::matches()", "fn", level.absurdVerbosity);
 
     found = false;
     matchCount = 0;
@@ -710,7 +710,7 @@ matches(string, token)
  */
 sprintf(formatString, p1, p2, p3, p4, p5, p6, p7, p8)
 {
-    debugPrint("in strings::sprintf()", "fn", level.highVerbosity);
+    // debugPrint("in strings::sprintf()", "fn", level.highVerbosity);
 
     // parse parameters
     count = 1;
@@ -820,7 +820,7 @@ sprintf(formatString, p1, p2, p3, p4, p5, p6, p7, p8)
  */
 leftPad(string, paddingCharacter, length)
 {
-    debugPrint("in strings::leftPad()", "fn", level.medVerbosity);
+    // debugPrint("in strings::leftPad()", "fn", level.medVerbosity);
 
     padding = "";
     while (string.size + padding.size < length) {
@@ -842,7 +842,7 @@ leftPad(string, paddingCharacter, length)
  */
 rightPad(string, paddingCharacter, length)
 {
-    log("trace", "msg|in strings::rightPad()||");
+    // log("trace", "msg|in strings::rightPad()||");
 
     if (!isDefined(string)) {logPrint("param string is undefined\n"); return string;}
     if (!isDefined(paddingCharacter)) {logPrint("param paddingCharacter is undefined\n"); return paddingCharacter;}
@@ -860,7 +860,7 @@ rightPad(string, paddingCharacter, length)
 
 numericToString(numeric, precision)
 {
-    log("trace", "msg|in strings::numericToString()||");
+    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
 
     isInteger = false;
     if (Int(numeric) == numeric) {isInteger = true;}
