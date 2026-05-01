@@ -561,10 +561,10 @@ LANG_ENGLISH        "Hitman (^3lvl 20^7)"
 
 
 REFERENCE			DES_SCOUT_PS_AB3
-LANG_ENGLISH		"The assasin deals ^215%^7 more damage if the zombie can not see him. Also headshots deal another ^250%^7 more damage."
+LANG_ENGLISH		"The scout deals ^215%^7 more damage if the zombie can not see him. Also headshots deal another ^250%^7 more damage."
 
 REFERENCE			DES_SCOUT_PS_AB3D
-LANG_ENGLISH		"The assasin deals ^215%^7 more damage if the zombie can not see him. Also single-shot headshots deal another ^250%^7 more damage. ^3Unlocked ^3at Assasin rank 20."
+LANG_ENGLISH		"The scout deals ^215%^7 more damage if the zombie can not see him. Also single-shot headshots deal another ^250%^7 more damage. ^3Unlocked ^3at Scout rank 20."
 
 		// ABILITY 4 //
 REFERENCE			SCOUT_PS_AB4

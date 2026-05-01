@@ -42,6 +42,12 @@ init()
     thread loadSpecialAbilitySettings();
 }
 
+
+/**
+ * @brief Precache items for abilities
+ *
+ * @returns nothing
+ */
 precache()
 {
     log("trace", "msg|in _abilities::precache()||");
@@ -139,6 +145,16 @@ resetAbilities()
 }
 
 
+/**
+ * @brief Computes the damage modifier due to special abilities
+ *
+ * @param weapon string The internal weapon name
+ * @param means string The internal type of damage
+ * @param target entity The bot that took damage 
+ * @param damage integer Unused: The unmodified amount of damage caused
+ *
+ * @returns float the damage modifier for the given type of damage
+ */
 getDamageModifier(weapon, means, target, damage)
 {
     log("trace", "msg|in _abilities::getDamageModifier()||");
@@ -150,28 +166,23 @@ getDamageModifier(weapon, means, target, damage)
         }
     }
     if (issubstr(self.weaponMod, "assasin")) {
-        /** @bug We are getting two errors here on occasion
+        /** FIXED: We are getting two errors here on occasion
          *     'Weapon name "none" is not valid.'  and
          *     'cannot cast undefined to bool:'
          *
          * If weapon=="none", it isn't a valid weapon, we get first error
          * which makes weaponIsBoltActio(weapon) return undefined instead of boolean
-         *
-         * How can a player cause gamage to another if their weapon is "none"???
          */
         if (weapon == "none") {
-//   3:10 Notice: Weapon equal 'none' error.
-//   3:10 Notice: self.name: |PZA| Pulsar
-//   3:10 Notice: self.weaponMod: assasinhitman means: MOD_EXPLOSIVE
-// was exploding barrel
-
-            noticePrint("Weapon equal 'none' error.");
-            noticePrint("self.name: " + self.name);
-            noticePrint("self.weaponMod: " + self.weaponMod + " means: " + means);
+            // Notice: Weapon equal 'none' error.
+            // Notice: self.name: |PZA| Pulsar
+            // Notice: self.weaponMod: assasinhitman means: MOD_EXPLOSIVE
+            // was exploding barrel
+            // log("bug", sprintfLog("msg|Weapon equal 'none' error.||player|$1||weaponMod|$2||means|$3||", self.name, self.weaponMod, means));
             return 1; // i.e. unity damage modifier
         }
         if (weapon == "turret_mp") { // hack for minigun turret
-            return 1;
+            return 1; // i.e. unity damage modifier
         }
         if (!WeaponIsBoltAction(weapon) && !WeaponIsSemiAuto(weapon)) {
             MP -= .15;
@@ -189,7 +200,11 @@ getDamageModifier(weapon, means, target, damage)
     }
     if (issubstr(self.weaponMod, "hitman")) {
         if (!WeaponIsBoltAction(weapon) && !WeaponIsSemiAuto(weapon) && means == "MOD_HEAD_SHOT") {
-            MP += .45;
+            if (issubstr(self.weaponMod, "scout")) {
+                MP += .50;
+            } else if (issubstr(self.weaponMod, "assasin")) {
+                MP += .45;
+            }
         }
         if (!target scripts\bots\_bot::canSeeTarget(self)) {
             MP += .15;
@@ -673,13 +688,12 @@ loadEngineerPrimaryAbility(ability)
             self.ammoboxTime = 15;
             self.ammoboxRestoration = 25;
             self thread watchAmmobox();
-            //self giveweapon("knife_mp");
         break;
         case "AB2": // Supplies
             self loadSpecialAbility("ammo");
         break;
         case "AB3": // Last Man Standing
-            self.canSearchBodies = true; /// @todo not in UI.  unused?
+            self.canSearchBodies = true; // not in UI.  unused? deprecated?
             self.hasLastManStanding = true;
         break;
     }
@@ -704,7 +718,8 @@ loadEngineerPassiveAbility(ability)
             self.explosiveExpert = true;
         break;
         case "AB3": // Repair Tools
-            /// @todo in UI, but not implemented
+            // ability to repair turrets and vehicles
+            // @todo in UI, but not implemented
         break;
         case "AB4": // Incendiary Ammunition
             self.bulletMod = "incendary";
@@ -756,7 +771,7 @@ loadScoutPassiveAbility(ability)
             self.headshotMP = 1.5;
         break;
         case "AB3": // Hitman
-            /// @todo in UI, but not implemented
+            self.weaponMod += "hitman";
         break;
         case "AB4": // Scouting Drone
             self setClientDvar("g_compassShowEnemies", 1);
@@ -1532,9 +1547,9 @@ doHealingAura(player)
     if (!isDefined(self)) {return;}
     // Heal the player when the glow ball catches them
     if (isDefined(self.healing)){
-        debugPrint("self.healing: " + self.healing, "val");
+        log("dev", "msg|self.healing: " + self.healing + "||");
     } else {
-        debugPrint("self.healing is undefined; should be 50. Hacking around bug.", "val");
+        log("bug", sprintfLog("msg|self.healing is undefined; setting to 50.||selfName|$1||playerName|$2||selfMaster|$3||", self.name, player.name, self.master));
         self.healing = 50;
     }
     master thread healPlayer(player, self.healing);
@@ -1811,6 +1826,7 @@ doRampage(time)
     }
 }
 
+
 /**
  * @brief Implementation of the Fake Death Special
  *
@@ -1838,7 +1854,7 @@ doFakeDeath(time)
     self.isTargetable = false;
     self.isGod = true;
     self.god = true;
-    debugPrint("Fake Death set.", "val");
+    log("dev", "msg|Fake Death set.||");
 
     self setclientdvar("ui_specialtext", "^1Special activated!!");
     self thread screenFlash((.65, .1, .1), .5, .6);
@@ -1855,9 +1871,10 @@ doFakeDeath(time)
 
     self playerFilmTweaksOff();
     self thread screenFlash((.65, .1, .1), .5, .6);
-    debugPrint("Fake Death unset.", "val");
+    log("dev", "msg|Fake Death unset.||");
     self notify("end_trance");
 }
+
 
 /**
  * @brief Implementation of the Invincibility Special
