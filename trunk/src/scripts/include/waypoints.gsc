@@ -1008,12 +1008,12 @@ findWaypointExtents()
  *
  * @returns array of integers representing the indices of the nearest waypoint(s)
  */
-nearestWaypoints(origin, n, hintWp) {
+nearestWaypoints(origin, n) {
     // KD Tree (Iterative) is always good, but on modern hardware, direct iteration is
     // better on small waypoint maps.  They break even at about 250 waypoints.
 
     // Use KD Tree on large maps, else direct iteration
-    // TODO: only build the KD Tree at map load if we are going to use it
+    // @todo: only build the KD Tree at map load if we are going to use it
     if (level.Wp.size > 250) {
         level.useKdWaypointTree = true;
         return nearestWaypointsKDIterative(origin, n);

@@ -43,9 +43,11 @@
 
 init()
 {
+    // quality:ignore_trace
+
     if (!level.umiEnabled) {
-        noticePrint("_umiEditor: Developer mode is off, UMI Map Editor is unavailable");
-        noticePrint("_umiEditor: To enable UMI Editor mode, playMod.bat requires '+set dedicated 0 +set developer 1 +set developer_script 1 +set enable_umi_editor 1'");
+        log("server", "msg|_umiEditor: Developer mode is off, UMI Map Editor is unavailable.||");
+        log("server", "msg|_umiEditor: To enable UMI Editor mode, playMod.bat requires '+set dedicated 0 +set developer 1 +set developer_script 1 +set enable_umi_editor 1'||");
     }
 }
 
@@ -125,7 +127,7 @@ watchDevelopmentMenuResponses()
 
         // If menu isn't an admin menu, then bail
         if ((menu != "development") && (menu != "clientcmd")) {
-            //debugPrint("Menu is not the development menu.", "val");
+            // log("dev", "msg|Menu is not the development menu.||");
             continue;
         }
 
@@ -199,8 +201,8 @@ initMapEditor()
 
     // Prevent massive runtime errors from hanging the hosting computer
     if (!(isDefined(level.devPlayer))) {
-        errorPrint("level.devPlayer is not defined, which may mean the admin player wasn't recognized. Did you set admin_forced_guid?");
-        errorPrint("Aborting initialization of UMI Map Editor.");
+        log("error", "msg|level.devPlayer is not defined, which may mean the admin player wasn't recognized. Did you set admin_forced_guid?||");
+        log("error", "msg|Aborting initialization of UMI Map Editor.||");
         return;
     }
 
@@ -597,7 +599,7 @@ devAutoLinkWaypoints()
             }
             if (!alreadyLinked) {
                 devLinkTwoWaypoints(fromWp, toWp, true); // defer updates
-                debugPrint(fromWp+":"+toWp, "val");
+                log("dev", "msg|Linked waypoints data||fromWp|" + fromWp + "||toWp|" + toWp + "||");
             }
         }
     }
@@ -613,7 +615,7 @@ devAutoLinkWaypoints()
     iPrintLnBold("Autolinking took "+elapsed+" ms");
 
     iPrintLnBold("Auto-saving waypoints");
-    noticePrint("The following waypoint file was auto-saved after waypoints were autolinked.");
+    log("server", "msg|The following waypoint file was auto-saved after waypoints were autolinked.||");
     devSaveWaypoints();
 }
 
@@ -1653,7 +1655,7 @@ devDrawWaypointLinks()
                 level.waypointLinks[linkIndex] = link;
                 link.fromId = level.Wp[i].ID;
                 link.toId = level.Wp[i].linked[j].ID;
-                // debugPrint("linkIndex: "+linkIndex+" .fromId: "+link.fromId+" .toId: "+link.toId, "val");
+                // log("dev", "msg|linkIndex: " + linkIndex + " .fromId: " + link.fromId + " .toId: " + link.toId + "||");
                 link.color = colors[linkIndex % colors.size];
                 linkIndex++;
             }
@@ -1771,9 +1773,6 @@ devFindWaypointLinkIndex(fromWp, toWp)
     // determine which one of the bidirectional links we are actually using, and
     // hence to search for.
 
-//     iPrintLnBold(fromWp+":"+toWp);
-//     debugPrint(fromWp+":"+toWp, "val");
-
     leftBound = 0;
     rightBound = level.waypointLinks.size - 1;
     index = -1;
@@ -1808,15 +1807,14 @@ devFindWaypointLinkIndex(fromWp, toWp)
 
     if (index == -1) {
         // ex.: it was looking for 'undefined' and 370, but no 370 in waypointLinks array
-        errorPrint("Failed to find index!"); /// @bug we sometimes fail to find the index
-        errorPrint("toWp: " + toWp + " fromWp: " + fromWp);
-        errorPrint("toValue: " + toValue + " fromValue: " + fromValue);
+        log("error", "msg|Failed to find index!||"); /// @bug we sometimes fail to find the index
+        log("error", sprintfLog("msg|Failure data||toWp|$1||fromWp|$2||toValue|$3||fromValue|$4||", toWp, fromWp, toValue, fromValue));
         devDumpWaypointLinks();
         // We are going to be in an infinite loop here, so wait a bit to give us
         // time to kill the game before server_mp.log gets too bloated.
         wait 7;
     } else {
-        //debugPrint("Value found at index: "+index, "val");
+        // log("dev", "msg|Value found at index: " + index + "||");
     }
 
     // there are possibly several matches in the array, so peek at the value in
@@ -1837,7 +1835,7 @@ devFindWaypointLinkIndex(fromWp, toWp)
         }
     }
     // error, we couldn't find the link
-    errorPrint("Error: Couldn't find waypoint link index!");
+    log("error", "msg|Couldn't find waypoint link index!||");
     return -1;
 }
 
@@ -1853,7 +1851,7 @@ devDumpWaypointLinks()
     for (i=0; i<level.waypointLinks.size; i++) {
         from = level.waypointLinks[i].fromId;
         to = level.waypointLinks[i].toId;
-        errorPrint("Wayoint Link index: " + i + " from: " + from + " to: " + to);
+        log("error", sprintfLog("msg|Wayoint Link data||index|$1||from|$2|to|$3||", i, from, to));
     }
 }
 
@@ -2170,7 +2168,7 @@ initWeaponShopEditor(weaponShops)
 
     weapons = strTok(weaponShops, " ");
     if (!isDefined(level.tradespawns[int(weapons[0])])) {
-        errorPrint("Map: No weapon shop tradespawns defined, or tradespawns haven't been loaded().");
+        log("error", "msg|Map: No weapon shop tradespawns defined, or tradespawns haven't been loaded().||");
         return;
     }
     if (!isDefined(level.devWeaponShops)) {level.devWeaponShops = [];}
@@ -2203,7 +2201,7 @@ initEquipmentShopEditor(equipmentShops)
 
     shops = strTok(equipmentShops, " ");
     if (!isDefined(level.tradespawns[int(shops[0])])) {
-        errorPrint("Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().");
+        log("error", "msg|Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().||");
         return;
     }
     if (!isDefined(level.devEquipmentShops)) {level.devEquipmentShops = [];}
@@ -2319,7 +2317,6 @@ devDeleteClosestShop()
     closestEquipmentDistance = 999999;
     closestEquipmentShopIndex = -1;
     if (isDefined(level.devEquipmentShops)) {
-        noticePrint("Pre level.devEquipmentShops.size: " + level.devEquipmentShops.size);
         for (i=0; i<level.devEquipmentShops.size; i++) {
             distanceProxy = distanceSquared(self.origin, level.devEquipmentShops[i].origin);
             if (distanceProxy < closestEquipmentDistance) {
@@ -2333,7 +2330,6 @@ devDeleteClosestShop()
     closestWeaponDistance = 999999;
     closestWeaponShopIndex = -1;
     if (isDefined(level.devWeaponShops)) {
-        noticePrint("Pre level.devWeaponShops.size: " + level.devWeaponShops.size);
         for (i=0; i<level.devWeaponShops.size; i++) {
             distanceProxy = distanceSquared(self.origin, level.devWeaponShops[i].origin);
             if (distanceProxy < closestWeaponDistance) {
@@ -2349,13 +2345,13 @@ devDeleteClosestShop()
         level scripts\players\_usables::removeUsable(level.devEquipmentShops[closestEquipmentShopIndex]);
         level.devEquipmentShops[closestEquipmentShopIndex] delete();
         level.devEquipmentShops = removeElementByIndex(level.devEquipmentShops, closestEquipmentShopIndex);
-        noticePrint("Post level.devEquipmentShops.size: " + level.devEquipmentShops.size);
+        log("server", "msg|Deleted closest equipment shop. New size: " + level.devEquipmentShops.size + "||");
     } else {
         // delete weapon shop
         level scripts\players\_usables::removeUsable(level.devWeaponShops[closestWeaponShopIndex]);
         level.devWeaponShops[closestWeaponShopIndex] delete();
         level.devWeaponShops = removeElementByIndex(level.devWeaponShops, closestWeaponShopIndex);
-        noticePrint("Post level.devWeaponShops.size: " + level.devWeaponShops.size);
+        log("server", "msg|Deleted closest weapons shop. New size: " + level.devWeaponShops.size + "||");
     }
 
 }
@@ -2372,7 +2368,7 @@ devSaveTradespawns()
 
     if (level.devWeaponShops.size != level.devEquipmentShops.size) {
         msg = "Map: You must have an equal number of weapon and equipment shops!";
-        errorPrint(msg);
+        log("error", "msg|" + msg + "||");
         iPrintLnBold(msg);
         return;
     }
@@ -2570,6 +2566,6 @@ devDumpEntities()
         if (isDefined(ents[i].targetname)) {targetname = ents[i].targetname;}
         if (isDefined(ents[i].origin)) {origin = ents[i].origin;}
         if (isDefined(ents[i].script_noteworthy)) {script_noteworthy = ents[i].script_noteworthy;}
-        noticePrint("Entity: "+i+" classname: "+classname+" targetname: "+targetname+" origin: "+origin+" script_noteworthy: "+script_noteworthy);
+        log("dev", sprintfLog("msg|Entity data||index|$1||classname|$2||targetname|$3||origin|$4||scriptNoteworthy|$5||", i, classname, targetname, origin, script_noteworthy));
     }
 }

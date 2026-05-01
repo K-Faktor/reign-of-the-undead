@@ -66,7 +66,7 @@ instantiate()
  *
  * @param bot The bot to initialize
  *
- * @return boolean assumes the bot was properly initialized
+ * @returns boolean assumes the bot was properly initialized
  */
 initialize(bot)
 {
@@ -843,6 +843,8 @@ clamped(bot)
  * @brief Draws a local right-handed coordinate system
  *
  * @param direction vector The unit vector specifing the direction for the x-axis
+ * @param origin vector The position to place the origin at. Uses bot.origin if \corigin is undefined.
+ *
  * determine the direction with \code
  * direction = vectorNormalize(endPoint - bot.origin);
  * \endcode
@@ -1110,6 +1112,7 @@ zeroGuard(divisor, replacement, reference) {
  *
  * @param entityPosition vector The position entity is currently at
  * @param goalPosition vector The position we want to get to
+ * @param pathId integer The id for this path; used for debug plotting with catmullRomPlot.py
  *
  * @returns integer The index of the best waypoint
  */
@@ -1142,6 +1145,8 @@ getBestWaypoint(entityPosition, goalPosition, pathId)
  *        waypoint, or to the second waypoint.  We then compute two movements such
  *        that we approach the waypoint from an angle that minimizes variance with our
  *        departure angle from that waypoint, so the movement is smooth.
+ *
+ * @param pathId integer The id for this path; used for debug plotting with catmullRomPlot.py
  *
  * @returns vector array A list of two positions to move to to get us to the first waypoint.
  *                       Returns undefined if we are already very close to the first waypoint.
@@ -1322,14 +1327,15 @@ drawLine(from, to)
 }
 
 /**
- * Reflects a vector v over a surface with normal n.
- *
- * @param v The incident vector (e.g. velocity or direction)
- * @param n The surface normal vector (should ideally be normalized)
- * @return The reflected vector
+ * @brief Reflects a vector v over a surface with normal n.
  *
  * This implements the standard reflection formula:
  *     r = v - 2 * dot(n, v) * n
+ *
+ * @param v The incident vector (e.g. velocity or direction)
+ * @param n The surface normal vector (should ideally be normalized)
+ *
+ * @returns The reflected vector
  */
 reflect(v, n)
 {
@@ -2666,6 +2672,8 @@ newTarget(bot)
 
 /**
  * @brief Simple setter for use from _bots:: to set the targetedPlayer
+ *
+ * @param playerToTarget Dunno, amn, unused, probably deprecated
  *
  * @returns nothing
  */

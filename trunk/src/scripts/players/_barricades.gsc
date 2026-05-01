@@ -217,9 +217,9 @@ placeBarrel()
 /**
  * @brief Creates one barrel-mounted machine gun
  *
- * @bug FIXED: ROTU 2.1 disconnected clients sometimes when MG+Barrels were placed.
+ * FIXED: ROTU 2.1 disconnected clients sometimes when MG+Barrels were placed.
  * When the clients were disconnected, there was no debug information written to
- * console_mp.log or to the chat log file, regardless of how many debugPrint()
+ * console_mp.log or to the chat log file, regardless of how many log()
  * statements I littered the code with.
  *
  * After exhaustive debugging, and reimplementing the MG+Barrels from scratch,
@@ -340,7 +340,7 @@ giveMgBarrel()
         // There aren't any deployable MG+Barrels
         // We can't get here, since _shop.gsc prevents us from buying a MG+Barrel
         // unless there is less than the maximum deployed
-        errorPrint("There isn't a deployable MG+Barrel, but level.barrels[1] says there is.");
+        log("error", "msg|There isn't a deployable MG+Barrel, but level.barrels[1] says there is.||");
     }
 }
 
@@ -542,7 +542,7 @@ barrelDeath()
     // Decrement the number of this type of barrel, and update dynamic barricades array
     if (level.barrels[self.type] > 0) {
         level.barrels[self.type] -= 1;
-    } else {debugPrint("Trying to set number of barrels to a negative number", "val");}
+    } else {log("debug", "msg|Trying to set number of barrels to a negative number||");}
     level.dynamic_barricades = removeFromArray(level.dynamic_barricades, self);
 
     // Exploding Barrels

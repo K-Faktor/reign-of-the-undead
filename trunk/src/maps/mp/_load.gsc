@@ -39,7 +39,7 @@
  * @brief Bootstrap a few critical items, because we never know what nonsense map makers
  *        will throw at us.
  *
- * @truens nothing
+ * @returns nothing
  */
 bootstrapCritical()
 {

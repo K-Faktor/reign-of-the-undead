@@ -47,6 +47,11 @@ initGame()
     thread loadConfig();
 }
 
+/**
+ * @brief Loads config settings for a survival match
+ *
+ * @returns nothing
+ */
 loadConfig()
 {
     log("trace", "msg|in _survival::loadConfig()||");
@@ -64,27 +69,22 @@ loadConfig()
     level.specialWaveSizeFactor = getDvarFloat("surv_special_wave_size_factor");
 
     // Load an arbitrary number of surv_special[n] dvars
-    if (level.survMode == "special")
-    {
+    if (level.survMode == "special") {
         level.specialWaves = [];
-        for (i=0; i<level.dvar["surv_specialwaves"]; i++)
-        {
+        for (i=0; i<level.dvar["surv_specialwaves"]; i++) {
             get = getdvar("surv_special"+(i+1));
             if(get == "") {break;}
-            level.specialWaves[i]=get;
-//             debugPrint("special wave " + (i+1) + " is: " + level.specialWaves[i], "val");
+            level.specialWaves[i] = get;
+            // log("dev", "msg|special wave " + (i+1) + " is: " + level.specialWaves[i] + "||");
         }
     }
 
-    if (level.dvar["surv_weaponmode"] == "wawzombies")
-    {
+    if (level.dvar["surv_weaponmode"] == "wawzombies") {
         level.onGiveWeapons = 0;
         level.ammoStockType = "weapon";
         level.spawnPrimary = level.dvar["surv_waw_spawnprimary"];
         level.spawnSecondary = level.dvar["surv_waw_spawnsecondary"];
-    }
-    else if (level.dvar["surv_weaponmode"] == "upgrade")
-    {
+    } else if (level.dvar["surv_weaponmode"] == "upgrade") {
         level.onGiveWeapons = 1;
         level.ammoStockType = "upgrade";
     }
@@ -138,11 +138,20 @@ buildWaveOrder()
     log("server", sprintfLog("msg|Configured game waves.||waveCount|$1||" + buf, level.totalWaves));
 }
 
+
+/**
+ * @brief Convenience wrapper to specify a default for a dvar
+ *
+ * @param dvar string The name of the dvar
+ * @param def variable The default value to use if the dvar isn't set
+ *
+ * @returns nothing
+ */
 dvarDefault(dvar, def)
 {
     log("trace", "msg|in _survival::dvarDefault()||");
 
-    if (getdvar(dvar) == "") {setdvar(dvar,def);}
+    if (getdvar(dvar) == "") {setdvar(dvar, def);}
 }
 
 /**
@@ -167,6 +176,7 @@ randomSpawnpoint()
     return spawnpoint;
 }
 
+
 /**
  * @brief Chooses a spawnpoint for soul and ground spawned zombies
  *
@@ -185,6 +195,7 @@ specialSpawn()
         return randomSpawnpoint();
     }
 }
+
 
 /**
  * @brief Calculates the number of zombies in a wave based on the wave system
@@ -212,6 +223,12 @@ getWaveSize(wave)
     }
 }
 
+
+/**
+ * @brief Starts a survival match
+ *
+ * @returns nothing
+ */
 beginGame()
 {
     log("trace", "msg|in _survival::beginGame()||");
@@ -228,6 +245,12 @@ beginGame()
     thread mainGametype();
 }
 
+
+/**
+ * @brief Watches for the player's to lose the match
+ *
+ * @returns nothing
+ */
 watchEnd()
 {
     log("trace", "msg|in _survival::watchEnd()||");
@@ -237,7 +260,7 @@ watchEnd()
 
     while (1) {
         if (level.alivePlayers == 0) {
-            noticePrint("The players lost the game.");
+            log("server", "msg|The players lost the game.||");
             thread scripts\gamemodes\_gamemodes::endMap("All survivors have died!");
             return;
         }
@@ -246,7 +269,11 @@ watchEnd()
 }
 
 
-
+/**
+ * @brief Starts a survival match
+ *
+ * @returns nothing
+ */
 mainGametype()
 {
     log("trace", "msg|in _survival::mainGametype()||");
@@ -258,8 +285,8 @@ mainGametype()
     // Some legacy maps (e.g. mp_surv_overrun) seem to not use waypoints, so level.wp.size is zero.
     // In these cases, we just get a random spawn points; make a note of this in the logs
     if (level.wp.size == 0) {
-        noticePrint("Legacy map " + getdvar("mapname") + " doesn't use waypoints. Using random spawn points instead of waypoints for spawning and emberFX");
-        noticePrint("You may use the UMI Editor to create waypoints for this map.");
+        log("server", "msg|Legacy map " + getdvar("mapname") + " doesn't use waypoints. Using random spawn points instead of waypoints for spawning and emberFX||");
+        log("server", "msg|You may use the UMI Editor to create waypoints for this map.||");
     }
 
     for (level.waveOrderCurrentWave=0; level.waveOrderCurrentWave<level.waveOrder.size; level.waveOrderCurrentWave++) {
@@ -294,10 +321,16 @@ mainGametype()
         else {startSpecialWave(level.waveOrder[level.waveOrderCurrentWave]);}
     }
 
-    noticePrint("The players won the game.");
+    log("server", "msg|The players won the game.||");
     thread scripts\gamemodes\_gamemodes::endMap("All waves have been held off!", 1);
 }
 
+
+/**
+ * @brief Sets availability of the Raygun based on level.canGetSpecialWeapons
+ *
+ * @returns nothing
+ */
 allowRaygun()
 {
     log("trace", "msg|in _survival::allowRaygun()||");
@@ -311,6 +344,7 @@ allowRaygun()
         }
     }
 }
+
 
 /**
  * @brief Creates the HUD elements for Survivors left, down and wave number
@@ -353,6 +387,7 @@ survivorsHUD()
     }
 }
 
+
 /**
  * @brief Removes the suvivors left HUD before the credits so we don't run out of HUD elements
  *
@@ -373,6 +408,7 @@ destroySurvivorsLeft()
         wait 3;
     }
 }
+
 
 /**
  * @brief Removes the suvivors down HUD before the credits so we don't run out of HUD elements
@@ -395,6 +431,7 @@ destroySurvivorsDown()
     }
 }
 
+
 /**
  * @brief Removes the wave number HUD before the credits so we don't run out of HUD elements
  *
@@ -415,6 +452,7 @@ destroyWaveNumber()
         wait 3;
     }
 }
+
 
 /**
  * @brief Updates the wave number HUD whena wave finishes
@@ -438,6 +476,7 @@ waveNumber()
     }
 }
 
+
 /**
  * @brief Updates the survivors left HUD every second
  *
@@ -453,6 +492,7 @@ survivorLeft()
         wait 1;
     }
 }
+
 
 /**
  * @brief Updates the survivors down HUD every second
@@ -475,6 +515,7 @@ survivorDown()
         wait 1;
     }
 }
+
 
 /**
  * @brief Starts a regular wave of zombies
@@ -555,6 +596,7 @@ startRegularWave()
 
     level.currentWave++;
 }
+
 
 /**
  * @brief Starts a special wave of zombies
@@ -772,13 +814,13 @@ startSpecialWave(type)
     level.currentWave++;
 }
 
+
 /**
  * @brief Watch many_bosses wave for unkillable boss zombies
  *
  * On some buggy maps, a boss zombie may spawn and get stuck in a spot where
  * the players can't damage him.  If the boss zombies, collectively, haven't taken
  * any damage in 60 seconds, we kill them all and proceed to the next kill method.
- * is damage that needs to be done, which prevents the game from being won.
  *
  * @returns nothing
  */
@@ -814,6 +856,7 @@ manyBossesMeatgrinder()
     }
 }
 
+
 /**
  * @brief Monitors the progress of the many_bosses kill methods
  *
@@ -839,6 +882,7 @@ monitorManyBossesProgress()
         wait 0.5;
     }
 }
+
 
 /**
  * @brief Uses the meatgrinder to kill stuck zombies
@@ -885,6 +929,7 @@ killBuggedZombies()
     }
 }
 
+
 /**
  * @brief Keeps track of the number of zombies killed this wave, and when the wave ends
  *
@@ -913,6 +958,7 @@ watchWaveProgress()
     level notify("wave_finished");
 }
 
+
 /**
  * @brief Updates the wave progress HUD
  *
@@ -929,6 +975,7 @@ doWaveHud()
         wait 1;
     }
 }
+
 
 /**
  * @brief Spawns a zombie with a specified spawn type
@@ -979,6 +1026,7 @@ spawnZombie(override, spawntype)
     }
 }
 
+
 /**
  * @brief Spawns a zombie coming up through the ground
  *
@@ -997,6 +1045,7 @@ groundSpawn(type, spawn, bot)
 
     scripts\bots\_bots::spawnZombie(type, spawn, bot);
 }
+
 
 /**
  * @brief Spawns a zombie falling from the sky

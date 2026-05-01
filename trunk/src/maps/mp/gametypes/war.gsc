@@ -39,7 +39,6 @@ main()
     // source the settings the debug system depends on
     initializeDebugSystem();
     log("trace", "msg|in war::main()||");
-    noticePrint("in war::main()");
 
     if (getDvar("mapname") == "mp_background") {return;} // this isn't required...
 

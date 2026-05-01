@@ -211,6 +211,15 @@ setFog(name, time)
     }
 }
 
+
+/**
+ * @brief Sets a named vision filter for the map
+ *
+ * @param name string The name of the vision ao apply
+ * @param time float How long to fade the transition in
+ *
+ * @returns nothing
+ */
 setVision(name, time)
 {
     log("trace", "msg|in _environment::setVision()||");

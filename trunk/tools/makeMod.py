@@ -802,7 +802,8 @@ def quality_check(root_dir: Path, config):
                 fixme.append(f"Fixme found: {relFile}:{lineNumber}:  {line.strip()}")
             elif re.search(r'debugprint\(', line, re.IGNORECASE) or  \
                  re.search(r'errorprint\(', line, re.IGNORECASE) or \
-                 re.search(r'warnprint\(', line, re.IGNORECASE):
+                 re.search(r'warnprint\(', line, re.IGNORECASE) or \
+                 re.search(r'noticeprint\(', line, re.IGNORECASE):
                 oldLogging.append(f"Old logging method found: {relFile}:{lineNumber}:  {line.strip()}")
             # elif re.search(r'^\w*\(.*\)\n', line, re.IGNORECASE):
             elif re.search(r'^\w+\s*\([^)]*\)\s*(?://.*quality:external_interface)?', line, re.IGNORECASE):

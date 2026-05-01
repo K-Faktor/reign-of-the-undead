@@ -67,7 +67,7 @@ gameEnded()
     level endon("starting_map_change");
     while(1) {
         level waittill("game_ended");
-        debugPrint("caught signal: game_ended", "sig");
+        log("signal", "msg|caught signal: game_ended||");
     }
 }
 
@@ -85,7 +85,7 @@ intermission()
     level endon("starting_map_change");
     while(1) {
         level waittill("intermission");
-        debugPrint("caught signal: intermission", "sig");
+        log("signal", "msg|caught signal: intermission||");
     }
 }
 
@@ -104,7 +104,7 @@ preMapVote()
     level endon("starting_map_change");
     while(1) {
         level waittill("pre_mapvote");
-        debugPrint("caught signal: pre_mapvote", "sig");
+        log("signal", "msg|caught signal: pre_mapvote||");
     }
 }
 
@@ -124,7 +124,7 @@ mapVote()
     level endon("starting_map_change");
     while(1) {
         level waittill("mapvote");
-        debugPrint("caught signal: mapvote", "sig");
+        log("signal", "msg|caught signal: mapvote||");
     }
 }
 
@@ -144,7 +144,7 @@ postMapVote()
     level endon("starting_map_change");
     while(1) {
         level waittill("post_mapvote");
-        debugPrint("caught signal: post_mapvote", "sig");
+        log("signal", "caught signal: post_mapvote||");
     }
 }
 
@@ -165,7 +165,7 @@ startingCredits()
     level endon("starting_map_change");
     while(1) {
         level waittill("starting_credits");
-        debugPrint("caught signal: starting_credits", "sig");
+        log("signal", "msg|caught signal: starting_credits||");
     }
 }
 
@@ -185,7 +185,7 @@ creditsFinished()
     level endon("starting_map_change");
     while(1) {
         level waittill("credits_finished");
-        debugPrint("caught signal: credits_finished", "sig");
+        log("signal", "msg|caught signal: credits_finished||");
     }
 }
 
@@ -204,7 +204,7 @@ startingMapChange()
 
     while(1) {
         level waittill("starting_map_change");
-        debugPrint("caught signal: starting_map_change", "sig");
+        log("signal", "msg|caught signal: starting_map_change||");
     }
 }
 
@@ -223,7 +223,7 @@ mapChangeFailed()
 
     while(1) {
         level waittill("map_change_failed");
-        debugPrint("caught signal: map_change_failed", "sig");
+        log("signal", "msg|caught signal: map_change_failed||");
     }
 }
 
@@ -242,7 +242,7 @@ noLongerAZombie()
 
     while(isDefined(self)) {
         self waittill("no_longer_a_zombie");
-        debugPrint("caught signal: no_longer_a_zombie", "sig");
+        log("signal", "msg|caught signal: no_longer_a_zombie||");
     }
 }
 
@@ -260,7 +260,7 @@ death()
 
     while(isDefined(self)) {
         self waittill("death");
-        debugPrint("caught signal: death", "sig");
+        log("signal", "msg|caught signal: death||");
     }
 }
 
@@ -278,6 +278,6 @@ disconnect()
 
     while(isDefined(self)) {
         self waittill("disconnect");
-        debugPrint("caught signal: disconnect", "sig");
+        log("signal", "msg|caught signal: disconnect||");
     }
 }

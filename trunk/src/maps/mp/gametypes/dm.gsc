@@ -41,8 +41,6 @@ main()
     scripts\include\constants::init();
     log("trace", "msg|in dm::main()||");
 
-    noticePrint("in dm::main()");
-
     if (getDvar("mapname") == "mp_background") {return;} // this isn't required...
 
     maps\mp\gametypes\_callbacksetup::SetupCallbacks();

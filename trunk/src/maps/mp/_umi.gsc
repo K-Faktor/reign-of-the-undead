@@ -123,7 +123,7 @@ devDumpCsvWaypointsToBtd()                          // quality:external_interfac
     wpCount = int(TableLookup(fileName, 0, 0, 1));
 
     if ((!isDefined(wpCount)) || (wpCount == 0)) {
-        noticePrint("No csv waypoints in fastfile, nothing to dump.");
+        log("server", "msg|No csv waypoints in fastfile, nothing to dump.||");
         return;
     }
 
@@ -190,7 +190,7 @@ devDumpBtdWaypointsToCsv()                          // quality:external_interfac
     log("trace", "msg|in _umi::devDumpBtdWaypointsToCsv()||");
 
     if ((!isDefined(level.waypoints)) || (level.waypoints.size == 0)) {
-        noticePrint("No BTD waypoints in memory, nothing to dump.");
+        log("server", "msg|No BTD waypoints in memory, nothing to dump.||");
         return;
     }
 
@@ -924,8 +924,8 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
 
     if (!isDefined(havePrefabModels)) {havePrefabModels = false;}
 
-    noticePrint("Map: RotU prefers _umi::buildShopsByTargetname(targetname).");
-    noticePrint("Map: You may call _umi::modName() to determine which mod is trying to load the map.");
+    log("server", "msg|Map: RotU prefers _umi::buildShopsByTargetname(targetname).||");
+    log("server", "msg|Map: You may call _umi::modName() to determine which mod is trying to load the map.||");
 
     shops = strTok(equipmentShops, " ");
     if (level.autoMapTesting) {
@@ -933,7 +933,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
         log("automaptest", sprintfLog(fmt, shops.size));
     }
     if (!isDefined(level.tradespawns[int(shops[0])])) {
-        errorPrint("Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().");
+        log("error", "msg|Map: No equipment shop tradespawns defined, or tradespawns haven't been loaded().||");
         return;
     }
 
@@ -997,7 +997,7 @@ buildShopsByTargetname(targetname)                  // quality:external_interfac
         log("automaptest", sprintfLog(fmt, ents.size));
     }
     if (ents.size == 0) {
-        errorPrint("Map: No equipment shops (entities matching targetname: " + targetname + ") found.");
+        log("error", "msg|Map: No equipment shops (entities matching targetname: " + targetname + ") found.||");
         return;
     }
 
@@ -1029,7 +1029,7 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
         log("automaptest", sprintfLog(fmt, ents.size));
     }
     if (ents.size == 0) {
-        errorPrint("Map: No weapon shops (entities matching targetname: " + targetname + ") found.");
+        log("error", "msg|Map: No weapon shops (entities matching targetname: " + targetname + ") found.||");
         return;
     }
 
@@ -1045,7 +1045,7 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
         } else if (level.ammoStockType == "ammo") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Hold [USE] to restock ammo", 96);
         } else {
-            errorPrint("level.ammoStockType isn't recognized.");
+            log("error", "msg|level.ammoStockType isn't a valid ammoStockType.||");
         }
     }
 }
@@ -1067,8 +1067,8 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)    // quality:exter
 
     if (!isDefined(havePrefabModels)) {havePrefabModels = false;}
 
-    noticePrint("Map: RotU prefers _umi::buildWeaponShopsByTargetname(targetname).");
-    noticePrint("Map: You may call _umi::modName() to determine which mod is trying to load the map.");
+    log("server", "msg|Map: RotU prefers _umi::buildWeaponShopsByTargetname(targetname).||");
+    log("server", "msg|Map: You may call _umi::modName() to determine which mod is trying to load the map.||");
 
     weapons = strTok(weaponShops, " ");
     if (level.autoMapTesting) {
@@ -1077,7 +1077,7 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)    // quality:exter
     }
 
     if (!isDefined(level.tradespawns[int(weapons[0])])) {
-        errorPrint("Map: No weapon shop tradespawns defined, or tradespawns haven't been loaded().");
+        log("error", "msg|Map: No weapon shop tradespawns defined, or tradespawns haven't been loaded().||");
         return;
     }
 
@@ -1100,6 +1100,7 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)    // quality:exter
     }
 }
 
+
 /**
  * @brief UMI converts BTD/ROZO waypoints into RotU waypoints
  *
@@ -1114,6 +1115,14 @@ convertToNativeWaypoints()                       // quality:external_interface
     loadWaypoints();
 }
 
+
+/**
+ * @brief Preferentially loads external waypoints, falls-back to internal waypoints
+ *
+ * @pre waypoints loaded into memory in level.waypoints
+ * @returns nothing
+ * @since RotU 2.2.1
+ */
 loadWaypoints()                                     // quality:external_interface
 {
     log("trace", "msg|in _umi::loadWaypoints()||");
@@ -1158,6 +1167,14 @@ loadWaypoints()                                     // quality:external_interfac
     }
 }
 
+
+/**
+ * @brief Loads internal waypoints
+ *
+ * @pre waypoints loaded into memory in level.waypoints
+ * @returns nothing
+ * @since RotU 2.2.1
+ */
 loadInternalWaypoints()
 {
     log("trace", "msg|in _umi::loadInternalWaypoints()||");
@@ -1191,17 +1208,25 @@ loadInternalWaypoints()
         }
         return true;
     } else {
-        errorPrint("Map: No internal waypoints found!");
+        log("error", "msg|Map: No internal waypoints found!||");
         return false;
     }
 }
 
+
+/**
+ * @brief Loads external waypoints
+ *
+ * @pre waypoints loaded into memory in level.waypoints
+ * @returns nothing
+ * @since RotU 2.2.1
+ */
 loadExternalWaypoints()
 {
     log("trace", "msg|in _umi::loadExternalWaypoints()||");
 
     if (level.waypoints.size == 0) {
-        errorPrint("Map: No external waypoints found!");
+        log("error", "msg|Map: No external waypoints found!||");
         return false;
     }
 
@@ -1402,7 +1427,12 @@ validateWaypoints()
 }
 
 
-
+/**
+ * @brief Checks loaded waypoints for common specification errors
+ *
+ * @pre waypoints loaded into level.Wp array
+ * @returns nothing
+ */
 waypointQuality()
 {
     log("trace", "msg|in _umi::waypointQuality()||");
@@ -1412,7 +1442,7 @@ waypointQuality()
         if (!isWaypointTypeValid(level.Wp[i].type)) {
             type = level.Wp[i].type;
             level.Wp[i].type = "stand";
-            warnPrint("Waypoint " + i + " had unrecognized type: " + type + ". RotU set type to 'stand'.");
+            log("warn", "msg|Waypoint " + i + " had unrecognized type: " + type + ". RotU set type to 'stand'.||");
         }
         // check path types
         if (level.Wp[i].type == "mantle") {
@@ -1425,10 +1455,10 @@ waypointQuality()
                 }
             }
             if (!foundPath) {
-                warnPrint("Waypoint " + i + " has type 'mantle', but RotU did not find a valid mantle path.");
-                noticePrint("The mantle waypoint must be linked to the higher destination waypoint.");
-                noticePrint("The destination waypoint must be between " + level.MANTLE_MIN_Z + " and " + level.MANTLE_MAX_Z + " units above the mantle waypoint.");
-                noticePrint("The 2-D distance between the mantle waypoint and the destination waypoint must be less than " + level.MANTLE_MAX_DISTANCE + " units.");
+                log("warn", "msg|Waypoint " + i + " has type 'mantle', but RotU did not find a valid mantle path.||");
+                log("debug", "msg|The mantle waypoint must be linked to the higher destination waypoint.||");
+                log("debug", "msg|The destination waypoint must be between " + level.MANTLE_MIN_Z + " and " + level.MANTLE_MAX_Z + " units above the mantle waypoint.||");
+                log("debug", "msg|The 2-D distance between the mantle waypoint and the destination waypoint must be less than " + level.MANTLE_MAX_DISTANCE + " units.||");
             }
         } else if (level.Wp[i].type == "teleport") {
             foundPath = false;
@@ -1440,12 +1470,20 @@ waypointQuality()
                 }
             }
             if (!foundPath) {
-                warnPrint("Waypoint " + i + " has type 'teleport', but RotU did not find a valid teleport path.");
+                log("warn", "msg|Waypoint " + i + " has type 'teleport', but RotU did not find a valid teleport path.||");
             }
         }
     }
 }
 
+
+/**
+ * @brief Checks if a type is a valid waypoint type
+ *
+ * @param type string A waypoint type to check for validity
+ *
+ * @returns boolean Indicating whether \ctype is valid or not
+ */
 isWaypointTypeValid(type)
 {
     log("trace", "msg|in _umi::isWaypointTypeValid()||");
@@ -1463,6 +1501,15 @@ isWaypointTypeValid(type)
     return false;
 }
 
+
+/**
+ * @brief Deletes an unlinked waypoint from level.Wp array.
+ *        Does not fix the underlying incorrect waypoint in the map or external waypoints file.
+ *
+ * @param waypointId integer The ID of the unlinked waypoint
+ *
+ * @returns nothing
+ */
 deleteUnlinkedWaypoint(waypointId)
 {
     log("trace", "msg|in _umi::deleteUnlinkedWaypoint()||");
@@ -1475,12 +1522,12 @@ deleteUnlinkedWaypoint(waypointId)
     }
 
     // unlink and delete the last waypoint
-//     maps\mp\_umiEditor::devUnlinkWaypoint(level.Wp.size - 1);
     level.Wp[level.Wp.size - 1] = undefined;
 
     // update waypoint count
     level.WpCount = level.Wp.size;
 }
+
 
 /**
  * @brief UMI to build zombie spawn points by the entities' classname property
@@ -1496,7 +1543,7 @@ buildZombieSpawnsByClassname(classname)             // quality:external_interfac
 
     ents = getEntArray(classname, "classname");
     if (ents.size == 0) {
-        errorPrint("Map: No zombie spawn points (entities matching classname: " + classname + ") found.");
+        log("error", "msg|Map: No zombie spawn points (entities matching classname: " + classname + ") found.||");
         return;
     }
     for (i=0; i<ents.size; i++) {
@@ -1658,7 +1705,7 @@ findAdditionalSpawnpoints()
         if (!isDefined(level.botSpawnpoints[i].parent)) {continue;}
         level.botSpawnpoints[i].priority = level.botSpawnpoints[level.botSpawnpoints[i].parent].priority;
     }
-    noticePrint("Added " + added + " extra spawnpoints");
+    log("server", "msg|Added " + added + " extra spawnpoints.||");
 
     // build a non-randomized queue with the right priorities
     queue = [];
@@ -1693,8 +1740,7 @@ findAdditionalSpawnpoints()
         level.botSpawnpoints[i] = sp;
     }
 
-    noticePrint("level.botSpawnpoints.size: " + level.botSpawnpoints.size);
-    noticePrint("level.botSpawnpointsQueue.size: " + level.botSpawnpointsQueue.size);
+    log("server", sprintfLog("msg|Zombie spawnpoints data||botSpawnpointsSize|$1||botSpawnpointsQueueSize|$2||", level.botSpawnpoints.size, level.botSpawnpointsQueue.size));
     // free unused memory
     potentialSpawnpoints = undefined;
 }
@@ -1757,6 +1803,7 @@ addPlayerSpawnsByClassname(classname, enabled)      // quality:external_interfac
     // Do nothing, RotU doesn't need to add player spawns
 }
 
+
 /**
  * @brief UMI to build player spawn points by entities' targetname property
  *
@@ -1810,7 +1857,7 @@ buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dro
     for (i=0; i<s; i++) {
         ent = ents[i];
         if (!isDefined(ent)) {
-            noticePrint("entity : + i + is undefined.");
+            log("warn", "msg|entity: " + i + " is undefined.||");
             continue;
         }
         // if (isDefined(ent.origin)) {plantFlag(ent.origin);}
@@ -1882,7 +1929,9 @@ buildBarricadesByClassname(classname, partCount, health, deathFx, buildFx, dropA
     log("trace", "msg|in _umi::buildBarricadesByClassname()||");
 
     // Do nothing, RotU builds barricades by targetname
+    log("warn", "msg|Building barricades by classname is unsupported. Use _umi::buildBarricadesByTargetname() instead.||");
 }
+
 
 /**
  * @brief UMI builds weapons that can be picked up based on a targetname
@@ -1908,6 +1957,7 @@ buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType) // quali
     }
 }
 
+
 /**
  * @brief UMI builds weapons that can be picked up based on a classname
  *
@@ -1926,6 +1976,7 @@ buildWeaponPickupByClassname(classname, itemText, weapon, weaponType)   // quali
     // Do nothing, RotU doesn't build pickup weapons by classname
 }
 
+
 /**
  * @brief Sets whether the BTD waypoints are preferred if both BTD and CSV waypoints are available
  *
@@ -1940,6 +1991,7 @@ setPreferBtdWaypoints(value)
 
     level.preferBtdWaypoints = value;
 }
+
 
 /**
  * @brief Precache common items maps try to use, but often don't precache
@@ -1960,7 +2012,7 @@ precacheCommonItems()
      * maps call for it.
      */
     level.barricadefx = loadfx("dust/dust_trail_IR");
-    level.windfx = loadfx ("props/car_glass_large");    // mp_fnrp_bigfight
+    level.windfx = loadfx ("props/car_glass_large");    // mp_fnrp_bigfight  @todo add to mod, have quality check that stuff that should be in the mod is actually in the mod
 
     /** Many maps try to run shellshock("default_mp", 1), but there
      * was no such shock file, which caused errors about it not being precached.
@@ -1982,6 +2034,7 @@ precacheCommonItems()
     precachemodel("com_barrel_blue_rust");
 }
 
+
 /**
  * @brief UMI stops loading the map until the first player is actually ready to play
  *
@@ -2002,7 +2055,7 @@ waitUntilFirstPlayerSpawns()                        // quality:external_interfac
     // critical items before any calls to 'wait' or its kin.
     maps\mp\_load::bootstrapCritical();
 
-    noticePrint("Map: First call to wait(), it is now too late to precache models or load fx.");
+    log("server", "msg|Map: First call to wait(), it is now too late to precache models or load fx.||");
     // N.B. It doesn't care if the models are already precached or not; it
     //      errors out just calling the precacheModel(), et. al. methods.
     wait 0.5;
@@ -2027,7 +2080,7 @@ startGame()                                         // quality:external_interfac
 
     if (level.umiEnabled) {
         // Do Nothing.  Don't really start game when we are using UMI or taking screenshots
-        noticePrint("Doing nothing");
+        log("server", "UMI mode is enabled, not starting game.||");
     } else {
         findAdditionalSpawnpoints();        
         scripts\gamemodes\_survival::beginGame();
@@ -2148,9 +2201,12 @@ isUmiMap()                                          // quality:external_interfac
 {
     log("trace", "msg|in _umi::isUmiMap()||");
 
-    /// @todo implement me
-    return false;
+    if ((isDefined(level.isZombiescript)) && (level.isZombiescript == 1)) {
+        return false;
+    }
+    return true;
 }
+
 
 /**
  * @brief Attempts to determine the name of the mod loading the map
@@ -2228,6 +2284,7 @@ loadTradespawn()                                    // quality:external_interfac
 // forward the function call to the appropriate UMI function.
 //
 
+
 /**
  * @brief Builds weapon shops for RotU maps using old _zombiescript.gsc calls
  *
@@ -2246,6 +2303,7 @@ buildAmmoStock(targetname, loadTime)                // quality:external_interfac
     buildWeaponShopsByTargetname(targetname, loadTime);
 }
 
+
 /**
  * @brief Builds equipment shops for RotU maps using old _zombiescript.gsc calls
  *
@@ -2263,6 +2321,7 @@ buildWeaponUpgrade(targetname)                      // quality:external_interfac
     buildShopsByTargetname(targetname);
 }
 
+
 /**
  * @brief Builds a zombie spawn point for RotU maps using old _zombiescript.gsc calls
  *
@@ -2279,6 +2338,7 @@ buildSurvSpawn(targetname, priority)                // quality:external_interfac
     buildZombieSpawnByTargetname(targetname, priority);
 }
 
+
 /**
  * @brief Waits to start the game until the first player chooses their class and is spawned
  *
@@ -2291,6 +2351,7 @@ waittillStart()                                     // quality:external_interfac
     waitUntilFirstPlayerSpawns();
 }
 
+
 /**
  * @brief Begins the first wave of a RotU survival game
  *
@@ -2302,6 +2363,7 @@ startSurvWaves()                                    // quality:external_interfac
 
     startGame();
 }
+
 
 /**
  * @brief Builds all barricades of the given targetname in the map
@@ -2322,6 +2384,7 @@ buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)    // q
     buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll);
 }
 
+
 /**
  * @brief Builds a weapon that can be picked up from an old RotU map using _zombiescript.gsc
  *
@@ -2339,15 +2402,40 @@ buildWeaponPickup(targetname, itemText, weapon, weaponType) // quality:external_
     buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType);
 }
 
-/// rotu unused ?
-setWeaponHandling(id)                               // quality:external_interface
+
+// I don't know any maps that use any of these, or need to
+
+/**
+ * @brief Allows a mapmaker override the ammoStockType 
+ *
+ * @param onGiveWeapons integer [0|1] Sets ammo stock type
+ *                                    0 sets level.ammoStockType to "weapon"
+ *                                    1 sets level.ammoStockType to "upgrade"
+ *
+ * @returns nothing
+ */
+setWeaponHandling(onGiveWeapons)                    // quality:external_interface
 {
     log("trace", "msg|in _umi::setWeaponHandling()||");
 
-    level.onGiveWeapons = id;
+    if (onGiveWeapons == 0) {
+        level.onGiveWeapons = 0;
+        level.ammoStockType = "weapon";
+    } else if (onGiveWeapons == 1) {
+        level.onGiveWeapons = 1;
+        level.ammoStockType = "upgrade";
+    }
 }
 
-/// rotu unused ?
+
+/**
+ * @brief Allows a mapmaker override the default primary and secondary player weapons
+ *
+ * @param primary string The default primary weapon
+ * @param secondary string The default secondary weapon
+ *
+ * @returns nothing
+ */
 setSpawnWeapons(primary, secondary)                 // quality:external_interface
 {
     log("trace", "msg|in _umi::setSpawnWeapons()||");
@@ -2356,7 +2444,17 @@ setSpawnWeapons(primary, secondary)                 // quality:external_interfac
     level.spawnSecondary = secondary;
 }
 
-/// rotu unused ?
+
+/** @deprecated
+ * @brief  Related to dropping supplies by parachute?
+ *
+ *         NOOP.  Must be from RotU 2.1 or earlier. The file _parachutes.gsc
+ *         doesn't exist anywhere from 2.2.0 onwards.
+ *
+ * @param targetname string The entities to load as parachute drop points
+ *
+ * @returns nothing
+ */
 buildParachutePickup(targetname)                    // quality:external_interface
 {
     log("trace", "msg|in _umi::buildParachutePickup()||");
@@ -2364,27 +2462,54 @@ buildParachutePickup(targetname)                    // quality:external_interfac
     ents = getentarray(targetname, "targetname");
     //for (i=0; i<ents.size; i++)
     //ents[i] thread scripts\players\_parachute::parachutePickup();
+    log("warn", "msg|Map: Parachute pickups are unsupported; doing nothing||");
 }
 
-/// rotu unused ?
+
+/**
+ * @brief Allows a mapmaker to apply a post-processing visual filter
+ *
+ * @param vision string The name of the vision ao apply
+ * @param transitiontime float How long to fade the transition in
+ *
+ * @returns nothing
+ */
 setWorldVision(vision, transitiontime)              // quality:external_interface
 {
     log("trace", "msg|in _umi::setWorldVision()||");
 
-    visionSetNaked(vision, transitiontime);
-    level.vision = vision;
+    scripts\server\_environment::setVision(vision, transitiontime);
 }
 
-/// rotu unused ?
-setGameMode(mode)                               // quality:external_interface
+
+// This is probably a terrible idea
+/**
+ * @brief Allows a mapmaker to override the server's game mode
+ *
+ * @param mode string The level.gameMode value for this map
+ *
+ * @returns nothing
+ */
+setGameMode(mode)                                   // quality:external_interface
 {
     log("trace", "msg|in _umi::setGameMode()||");
 
+    // note: only modes "waves_special" and "waves_endless" are supported.
+    //       "onslaught" & "scripted" are deprecated
     level.gameMode = mode;
+
+    log("server", "msg|Map: First call to wait(), it is now too late to precache models or load fx.||");
     waittillframeend;
 }
 
-/// rotu unused ?
+
+/**
+ * @brief Allows a mapmaker to override using TDM apwnpoints for the players
+ *
+ * @param targetname string The targetname of the map entities to use as player spawnpoints
+ *
+ * @returns nothing
+ */
 setPlayerSpawns(targetname)                         // quality:external_interface
 {
     log("trace", "msg|in _umi::setPlayerSpawns()||");
@@ -2405,6 +2530,7 @@ setPlayerSpawns(targetname)                         // quality:external_interfac
 // forward the function call to the appropriate UMI function.
 //
 
+
 /**
  * @brief Builds zombie spawn points for old ROZO maps
  *
@@ -2416,6 +2542,7 @@ addDefaultZombieSpawns()                            // quality:external_interfac
 
     buildZombieSpawnsByClassname("mp_dm_spawn");
 }
+
 
 /**
  * @brief Builds weapon shops and equipment shops using old ROZO calls
@@ -2441,6 +2568,7 @@ placeShops(weapons, shops)                          // quality:external_interfac
     buildShopsByTradespawns(shops);
 }
 
+
 /**
  * @brief Converts waypoints for old ROZO maps
  *
@@ -2453,8 +2581,9 @@ convertWaypoints()                                  // quality:external_interfac
     convertToNativeWaypoints();
 }
 
+
 /**
- * @brief Adds a new position as a default target for zombies that don't see a player
+ * @brief NOOP
  *
  * @param origin A tuple containing the map position to be the default target
  *
@@ -2467,6 +2596,12 @@ zombieDefaultTarget(origin)                         // quality:external_interfac
     // Do nothing, RotU doesn't need to set default targets for zombies
 }
 
+
+/**
+ * @brief NOOP
+ *
+ * @returns nothing
+ */
 mapThink()                                          // quality:external_interface
 {
     // quality:ignore_trace
@@ -2474,6 +2609,12 @@ mapThink()                                          // quality:external_interfac
     // Do nothing, ROZO internal function
 }
 
+
+/**
+ * @brief NOOP
+ *
+ * @returns nothing
+ */
 setPlayerModels()                                   // quality:external_interface
 {
     // quality:ignore_trace
@@ -2481,6 +2622,15 @@ setPlayerModels()                                   // quality:external_interfac
     // Do nothing, ROZO internal function
 }
 
+
+/**
+ * @brief NOOP
+ *
+ * @param structs n/a
+ * @param additional n/a
+ *
+ * @returns nothing
+ */
 getFreeStruct(structs, additional)                  // quality:external_interface
 {
     // quality:ignore_trace
@@ -2488,6 +2638,14 @@ getFreeStruct(structs, additional)                  // quality:external_interfac
     // Do nothing, ROZO internal function
 }
 
+
+/**
+ * @brief NOOP
+ *
+ * @param swap n/a
+ *
+ * @returns nothing
+ */
 addDefaultPlayerSpawns(swap)                        // quality:external_interface
 {
     // quality:ignore_trace
@@ -2495,6 +2653,15 @@ addDefaultPlayerSpawns(swap)                        // quality:external_interfac
     // Do nothing, RotU doesn't need to add default player spawns
 }
 
+
+/**
+ * @brief NOOP
+ *
+ * @param classname n/a
+ * @param enabled n/a
+  *
+ * @returns nothing
+ */
 addPlayerSpawns(classname, enabled)                 // quality:external_interface
 {
     // quality:ignore_trace

@@ -134,9 +134,11 @@ getClosestPlayerArray()
     return nearPlayers;
 }
 
-/**
- * @deprecated
- */
+/** @deprecated
+ * @brief Gets closest alive player
+ *
+ * @returns entity the closest alive player
+ */ 
 getClosestTarget()
 {
     log("trace", "msg|in entities::getClosestTarget()||");

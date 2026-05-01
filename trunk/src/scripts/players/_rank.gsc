@@ -297,7 +297,7 @@ onPlayerConnect()
 
         // Initial upgrade point bonus for prestige level
         if (!self.hasPreviouslyJoined) {
-            // BUG: Fixed.  If prestige is 0, then bonus points is 0. This puts a red '0' on game join
+            // Fixed: If prestige is 0, then bonus points is 0. This puts a red '0' on game join
             // in the center of the HUD for every player that hasn't prestiged yet.
             // Don't give a useless bonus.
             if (prestige > 0) {
@@ -338,12 +338,19 @@ onPlayerSpawned()
     }*/
 }
 
-roundUp(floatVal)
+/**
+ * @brief Rounds a float up to the next integer
+ *
+ * @param val float The flost to round up
+ *
+ * @returns integer the rounded value
+ */
+roundUp(val)
 {
     log("trace", "msg|in _rank::roundUp()||");
 
-    if (int( floatVal ) != floatVal) {return int(floatVal+1);}
-    else {return int(floatVal);}
+    if (int(val) != val) {return int(val+1);}
+    else {return int(val);}
 }
 
 giveRankXP(type, value)
@@ -450,6 +457,13 @@ giveRankXP(type, value)
 }
 
 
+/**
+ * @brief Sets a player's prestige to the given level
+ *
+ * @param newPrestige integer The player's new prestige level
+ *
+ * @returns nothing
+ */
 setPrestige(newPrestige)
 {
     log("trace", "msg|in _rank::setPrestige()||");
@@ -472,36 +486,24 @@ setPrestige(newPrestige)
     self thread resetRank(.5);
 }
 
+
+/**
+ * @brief Increases a player's prestige level
+ *
+ * @returns nothing
+ */
 prestigeUp()
 {
     log("trace", "msg|in _rank::prestigeUp()||");
-
-    //if (self.rankHacker)
-    //return;
 
     if (self.pers["prestige"] == level.maxPrestige) {return;}
     if (self getRank() < level.maxRank) {return;}
 
     self.canGetSpecialWeapons = true;
 
-    //self.pers["rank"] = 0;
     self.pers["prestige"]+=int(self.pers["rankxp"]/(getRankInfoMaxXp(level.maxRank)-10));
     self setStat(2326, self.pers["prestige"]);
     self setStat(210, self.pers["prestige"]);
-    /*rankId = 0;
-    self.pers["rank"] = 0;
-    self setRank(rankId, self.pers["prestige"]);
-    wait 100;
-    //self scripts\players\_classes::getSkillpoints(rankId);
-    wait 0.05;
-    self setStat( 252, rankId );
-    self setStat( 253, rankId );
-    self.pers["rankxp"] = 0;
-    self scripts\players\_persistence::statSet( "rankxp", 0 );
-    self scripts\players\_persistence::statSet( "rank", rankId );
-    self scripts\players\_persistence::statSet( "minxp", int(level.rankTable[rankId][2]) );
-    self scripts\players\_persistence::statSet( "maxxp", int(level.rankTable[rankId][7]) );
-    self updateRankAnnounceHUD();*/
     self scripts\players\_persistence::statSet( "rankxp", 0 );
     self scripts\players\_persistence::statSet( "rank", 0 );
     self scripts\players\_persistence::statSet( "minxp", int(level.rankTable[0][2]) );
@@ -510,7 +512,6 @@ prestigeUp()
     self setStat( 253, 0 );
     self.pers["rankxp"] = 0;
     self setRank(0, self.pers["prestige"]);
-    //updateRank();
     self thread resetRank(.5);
 }
 
@@ -526,23 +527,25 @@ resetRank(delay)
     self scripts\players\_classes::getSkillpoints(rankId);
 }
 
+/**
+ * @brief Updates a player's rank
+ *
+ * @returns boolean indicating whether their rank was increased or not
+ */
 updateRank()
 {
     log("trace", "msg|in _rank::updateRank()||");
 
-    if (self.rankHacker)
-    return;
+    if (self.rankHacker) {return false;}
 
     newRankId = self getRank();
-    if ( newRankId == self.pers["rank"] )
-        return false;
+    if (newRankId == self.pers["rank"]) {return false;}
 
     oldRank = self.pers["rank"];
     rankId = self.pers["rank"];
     self.pers["rank"] = newRankId;
 
-    while ( rankId <= newRankId )
-    {
+    while (rankId <= newRankId) {
         self scripts\players\_persistence::statSet( "rank", rankId );
         self scripts\players\_persistence::statSet( "minxp", int(level.rankTable[rankId][2]) );
         self scripts\players\_persistence::statSet( "maxxp", int(level.rankTable[rankId][7]) );
@@ -550,8 +553,6 @@ updateRank()
         // set current new rank index to stat#252
         self setStat( 252, rankId );
         self setStat( 253, rankId );
-
-
 
         rankId++;
     }
@@ -562,39 +563,26 @@ updateRank()
     return true;
 }
 
+
+/**
+ * @brief Announces that a player was promoted
+ *
+ * @returns nothing
+ */
 updateRankAnnounceHUD()
 {
     log("trace", "msg|in _rank::updateRankAnnounceHUD()||");
 
     self endon("disconnect");
-
     self notify("update_rank");
     self endon("update_rank");
 
     team = self.pers["team"];
-    if ( !isdefined( team ) )
+    if (!isdefined(team)) {
         return;
-
-    newRankName = self getRankInfoFull( self.pers["rank"] );
-
-    /*subRank = int(rank_char[rank_char.size-1]);
-
-    if ( subRank == 2 )
-    {
-        textLabel = newRankName;
-        notifyText = &"RANK_ROMANI";
-    }
-    else if ( subRank == 3 )
-    {
-        textLabel = newRankName;
-        notifyText = &"RANK_ROMANII";
-    }
-    else
-    {
-        notifyText = newRankName;
     }
 
-    thread scripts\players\_hud_message::notifyMessage( notifyData );*/
+    newRankName = self getRankInfoFull(self.pers["rank"]);
 
     rank_char = level.rankTable[self.pers["rank"]][1];
     subRank = int(rank_char[rank_char.size-1]);
@@ -604,12 +592,10 @@ updateRankAnnounceHUD()
     rank_char = level.rankTable[self.pers["rank"]][1];
     subRank = int(rank_char[rank_char.size-1]);
 
-    if (subRank == 1)
-    {
-        for ( i = 0; i < level.players.size; i++ )
-        {
+    if (subRank == 1) {
+        for (i=0; i<level.players.size; i++) {
             player = level.players[i];
-            player iprintln( &"RANK_PLAYER_WAS_PROMOTED", self, newRankName);
+            player iprintln(&"RANK_PLAYER_WAS_PROMOTED", self, newRankName);
         }
     }
 }
@@ -621,6 +607,7 @@ endGameUpdate()
 
     player = self;
 }
+
 
 updateRankScoreHUD(amount)
 {
@@ -712,6 +699,12 @@ getSPM()
     return 3 + (rankLevel * 0.5);
 }
 
+
+/**
+ * @brief Gets the player's current prestige level
+ *
+ * @returns integer the player's current prestige level
+ */
 getPrestigeLevel()
 {
     log("trace", "msg|in _rank::getPrestigeLevel()||");
@@ -719,6 +712,12 @@ getPrestigeLevel()
     return self scripts\players\_persistence::statGet("plevel");
 }
 
+
+/**
+ * @brief Gets the player's current rank points
+ *
+ * @returns integer the player's current rank points
+ */
 getRankXP()
 {
     log("trace", "msg|in _rank::getRankXP()||");
@@ -726,6 +725,14 @@ getRankXP()
     return self.pers["rankxp"];
 }
 
+
+/**
+ * @brief Increases a player's rank points
+ *
+ * @param amount integer The amount to incease the player's rank XP by
+ *
+ * @returns nothing
+ */
 incRankXP(amount)
 {
     log("trace", "msg|in _rank::incRankXP()||");
@@ -745,6 +752,17 @@ incRankXP(amount)
     self scripts\players\_persistence::statSet( "rankxp", newXp );
 }
 
+
+/**
+ * @brief Increases a player's demerits.
+ *        If that pushes player past maxDemerits, player loses 500 rank points,
+ *        which may then demote the player.
+ *
+ * @param amount integer The amount of demerits to apply
+ * @param reason string The token reason for the demerits
+ *
+ * @returns nothing
+ */
 increaseDemerits(amount, reason)
 {
     log("trace", "msg|in _rank::increaseDemerits()||");
@@ -770,11 +788,11 @@ increaseDemerits(amount, reason)
             break;
     }
     self iPrintLnBold(message);
-    debugPrint(self.name + ": " + message, "val");
+    log("server", "msg|" + self.name + ": " + message + "||");
 
     demerits = self.pers["demerits"] + amount;
     if (demerits >= level.maxDemerits) {
-        noticePrint("Taking 500 rank points from " + self.name + " for being a poor team player.");
+        log("server", "msg|Taking 500 rank points from " + self.name + " for being a poor team player.||");
         self decreaseRankPoints(500);
         demerits = 0;
     }
@@ -824,7 +842,7 @@ decreaseRankPoints(amount)
             self setRank(self.pers["rank"], self.pers["prestige"]);
 
             rankCount = currentRankId - newRankId;
-            noticePrint("Demoted " + self.name + " " + rankCount + " ranks.");
+            log("server", "msg|Demoted " + self.name + " " + rankCount + " ranks.||");
             self thread demotionAnnouncement(newRankId);
         } else {
             // just took rank points
@@ -833,7 +851,7 @@ decreaseRankPoints(amount)
             self scripts\players\_persistence::statSet("rankxp", newRankXp);
 
             self iPrintLnBold("^1You Lost " + amount + " Rank Points Due to Demerits");
-            noticePrint("Took " + amount + " rank points from " + self.name);
+            log("server", "msg|Took " + amount + " rank points from " + self.name + "||");
         }
     } else if (currentPrestigeLevel == 0) {
         // new player, just take all their points
@@ -858,7 +876,7 @@ decreaseRankPoints(amount)
             self setRank(self.pers["rank"], self.pers["prestige"]);
 
             rankCount = currentRankId - newRankId;
-            noticePrint("Demoted " + self.name + " " + rankCount + " ranks.");
+            log("server", "msg|Demoted " + self.name + " " + rankCount + " ranks.||");
             self thread demotionAnnouncement(newRankId);
         } else {
             self.pers["rankxp"] = newRankXp;
@@ -893,11 +911,19 @@ decreaseRankPoints(amount)
         self setRank(self.pers["rank"], self.pers["prestige"]);
 
         rankCount = level.maxRank - newRankId + currentRankId;
-        noticePrint("Demoted " + self.name + " " + rankCount + " ranks.");
+        log("server", "msg|Demoted " + self.name + " " + rankCount + " ranks.||");
         self thread demotionAnnouncement(newRankId);
     }
 }
 
+
+/**
+ * @brief Announces that a player was demoted
+ *
+ * @param newRankId integer [0-54] The Id for the player's new rank
+ *
+ * @returns nothing
+ */
 demotionAnnouncement(newRankId)
 {
     log("trace", "msg|in _rank::demotionAnnouncement()||");
@@ -906,6 +932,7 @@ demotionAnnouncement(newRankId)
 
     self glowMessage(&"ZOMBIE_RANK_DEMOTED", "", decimalRgbToColor(255, 0, 0), 5, 90, 2, "mp_level_up");
 
+    // tableLookupIString( <filename>, <column>, <row>, <string_ref_column> )
     newRankName = tableLookupIString( "mp/ranktable.csv", 0, newRankId, 5 );
 
     // Inform other players that player was demoted
