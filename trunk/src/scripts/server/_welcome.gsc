@@ -71,7 +71,7 @@ onPlayerSpawn()
     self endon("disconnect");
 
     /**
-     * HACK: Since I can't figure out how to get an array of the survivor's
+     * Since I can't figure out how to get an array of the survivor's
      * spawn point(s) from code (from the map???), we simply store original
      * location where they spawn as a new property in their player struct.  This
      * original spawn location is used in the implementation of the

@@ -84,16 +84,14 @@ dropSpawns()
 
     TDMSpawns = getentarray("mp_tdm_spawn", "classname");
 
-    for (i=0; i<TDMSpawns.size; i++)
-    {
+    for (i=0; i<TDMSpawns.size; i++) {
         spawn = TDMSpawns[i];
         spawn.origin = dropPlayer(spawn.origin+(0,0,32), 300);
     }
 
     DMSpawns = getentarray("mp_dm_spawn", "classname");
 
-    for (i=0; i<DMSpawns.size; i++)
-    {
+    for (i=0; i<DMSpawns.size; i++) {
         spawn = DMSpawns[i];
         spawn.origin = dropPlayer(spawn.origin+(0,0,32), 300);
     }
@@ -160,7 +158,7 @@ buildZomTypes(preset)
 {
     log("trace", "msg|in _gamemodes::buildZomTypes()||");
 
-    debugPrint("loading zombie types: " + preset, "val");
+    // log("dev", "msg|Loading zombie types: " + preset + "||");
 
     level.zom_spawntypes = [];
     level.zom_spawntypes_weight = [];
@@ -283,6 +281,7 @@ addSpawnType(type)
     level.zom_spawntypes[level.zom_spawntypes.size] = type;
     level.zom_spawntypes_weight[level.zom_spawntypes_weight.size] = weight;
 }
+
 
 /**
  * @brief Randomly selects a type of zombie
@@ -706,7 +705,7 @@ showMovieStyleCredit(label, credits)
     labelText.alpha = 1;
     labelText.glowColor = (.1,.8,0);
     labelText.glowAlpha = 1;
-//     debugPrint("label width: " + labelText.width, "val");
+    // log("dev", "msg|label width: " + labelText.width + "||");
 
     // Hud element for credits
     creditText = newHudElem();

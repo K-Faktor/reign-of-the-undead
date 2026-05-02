@@ -95,7 +95,7 @@ cleanupDeadLocks()
                     // there is a bug in the code that failed to unlock the player
                     message = players[i].name + " was locked by " + players[i].lockedBy;
                     message += " at gametime " + players[i].lockTime + "ms for command " + players[i].lockingCommand;
-                    errorPrint("Cleaning dead lock: " + message);
+                    log("bug", "msg|Cleaning dead lock: " + message + "||");
                     unlockPlayer(players[i]);
                 }
             }
@@ -185,7 +185,7 @@ warnPlayer(admin, reason)
                 admin thread informPlayerOfAdminAction(self, "negative", "One more general warning and you will be permanently banned.");
             }
         }
-        noticePrint("Admin " + admin.name + " warned " + self.name + ". Reason: " + reason + ".");
+        log("server", "msg|Admin " + admin.name + " warned " + self.name + ". Reason: " + reason + ".||");
         unlockPlayer(self);
     }
 }
@@ -206,7 +206,7 @@ removeOneWarning(admin)
         if (self.pers["generalWarnings"] < 0) {self.pers["generalWarnings"] = 0;}
         self setStat(2354, self.pers["generalWarnings"]);
 
-        noticePrint("Admin " + admin.name + " removed one warning from " + self.name);
+        log("server", "msg|Admin " + admin.name + " removed one warning from " + self.name + "||");
         admin thread informPlayerOfAdminAction(self, "positive", "Admin removed one warning from you.");
         admin thread adminActionConsoleMessage("One warning was removed from " + self.name);
 
@@ -231,7 +231,7 @@ removeOneLanguageWarning(admin)
         if (self.pers["badLanguageWarnings"] < 0) {self.pers["badLanguageWarnings"] = 0;}
         self setStat(2355, self.pers["badLanguageWarnings"]);
 
-        noticePrint("Admin " + admin.name + " removed one language warning from " + self.name);
+        log("server", "msg|Admin " + admin.name + " removed one language warning from " + self.name + "||");
         admin thread informPlayerOfAdminAction(self, "positive", "Admin removed one language warning from you.");
         admin thread adminActionConsoleMessage("One language warning was removed from " + self.name);
 
@@ -258,7 +258,7 @@ removeAllWarnings(admin)
         self.pers["generalWarnings"] = 0;
         self setStat(2354, self.pers["generalWarnings"]);
 
-        noticePrint("Admin " + admin.name + " removed all warnings from " + self.name);
+        log("server", "msg|Admin " + admin.name + " removed all warnings from " + self.name + "||");
         admin thread informPlayerOfAdminAction(self, "positive", "Admin removed all warnings from you.");
         admin thread adminActionConsoleMessage("All warnings were removed from " + self.name);
 
@@ -374,12 +374,12 @@ demotePlayer(admin)
             // Inform player they were demoted
             self glowMessage(&"ZOMBIE_RANK_DEMOTED", "", decimalRgbToColor(255, 0, 0), 5, 90, 2, "mp_level_up");
 
-            noticePrint("Admin " + admin.name + " demoted " + self.name);
+            log("server", "msg|Admin " + admin.name + " demoted " + self.name + "||");
             admin thread adminActionConsoleMessage("Admin demoted " + self.name);
             unlockPlayer(self);
             return "Player demoted one rank";
         } else {
-            noticePrint("Admin " + admin.name + " took 750 rank points from " + self.name);
+            log("server", "msg|Admin " + admin.name + " took 750 rank points from " + self.name + "||");
             admin thread informPlayerOfAdminAction(self, "negative", "Admin took 750 rank points from you.");
             admin thread adminActionConsoleMessage("Admin took 750 rank points from " + self.name);
             unlockPlayer(self);
@@ -425,13 +425,13 @@ promotePlayer(admin)
         }
 
         if (rankGiven) {
-            noticePrint("Admin " + admin.name + " promoted " + self.name);
+            log("server", "masg|Admin " + admin.name + " promoted " + self.name + "||");
             admin thread informPlayerOfAdminAction(self, "positive", "Admin promoted you.");
             admin thread adminActionConsoleMessage("Admin promoted " + self.name);
             unlockPlayer(self);
             return "Player promoted one rank";
         } else {
-            noticePrint("Admin " + admin.name + " gave 750 rank points to " + self.name);
+            log("server", "msg|Admin " + admin.name + " gave 750 rank points to " + self.name + "||");
             admin thread informPlayerOfAdminAction(self, "positive", "Admin gave 750 rank points to you.");
             admin thread adminActionConsoleMessage("Admin gave 750 rank points to " + self.name);
             unlockPlayer(self);
@@ -556,7 +556,7 @@ banPlayer(admin, reason)
         // In the case of banning, we do not need to unlock the player
         // unlockPlayer(self);
 
-        noticePrint("Permanently banned guid: " + self.guid);
+        log("server", "msg|Permanently banned guid: " + self.guid + "||");
         wait 5; // Let player hang around long enough to see they are banned
         ban(self getEntityNumber());
     }
@@ -592,7 +592,7 @@ kickPlayer(admin, reason)
 
         wait 5; // Let player hang around long enough to see they are kicked
 
-        noticePrint("Admin " + admin.name + " kicked " + self.name + ". Reason: " + reason + ".");
+        log("server", "msg|Admin " + admin.name + " kicked " + self.name + ". Reason: " + reason + ".||");
 
         if (self.isBot || !self.hasBegun) {return;}
 
@@ -641,7 +641,7 @@ temporarilyBanPlayer(admin, reason)
 
         wait 5; // Let player hang around long enough to see they are temp banned
 
-        noticePrint("Admin " + admin.name + " temporarily banned " + self.name + ". Reason: " + reason + ".");
+        log("server", "msg|Admin " + admin.name + " temporarily banned " + self.name + ". Reason: " + reason + ".||");
 
         // Kick() bans player for time set in sv_kickBanTime parameter in server.cfg file
         kick(self getEntityNumber());
@@ -670,7 +670,7 @@ killZombies(admin)
         wait 0.05;
     }
 
-    noticePrint("Admin " + admin.name + " killed " + count + " zombies.");
+    log("server", "msg|Admin " + admin.name + " killed " + count + " zombies.||");
     admin thread adminActionConsoleMessage("Admin killed " + count + " zombies.");
 }
 
@@ -697,7 +697,7 @@ finishWave(admin)
     }
     level.playWave = true;
 
-    noticePrint("Admin " + admin.name + " finished the wave.");
+    log("server", "msg|Admin " + admin.name + " finished the wave.||");
 }
 
 
@@ -726,7 +726,7 @@ restartWave(admin)
     level.playWave = true;
 
     admin thread adminActionConsoleMessage("Wave restarting.");
-    noticePrint("Admin " + admin.name + " restarted the wave.");
+    log("server", "msg|Admin " + admin.name + " restarted the wave.||");
 }
 
 
@@ -741,7 +741,7 @@ restartMap(admin)
 {
     log("trace", "msg|in _adminCommands::restartMap()||");
 
-    noticePrint("Admin " + admin.name + " restarted the map.");
+    log("server", "msg|Admin " + admin.name + " restarted the map.||");
 
     scripts\server\_maps::changeMap(getdvar("mapname"));
 }
@@ -770,7 +770,7 @@ finishMap(admin)
         wait 0.05;
     }
     level.playWave = true;
-    noticePrint("Admin " + admin.name + " finished the map.");
+    log("server", "msg|Admin " + admin.name + " finished the map.||");
 }
 
 
@@ -788,7 +788,7 @@ changeMap(admin, newMap)
     log("trace", "msg|in _adminCommands::changeMap()||");
 
     if (validateMap(newMap)) {
-        noticePrint("Admin " + admin.name + " changed the map to " + newMap);
+        log("server", "msg|Admin " + admin.name + " changed the map to " + newMap + "||");
         scripts\server\_maps::changeMap(newMap);
     }
 }
@@ -826,7 +826,7 @@ dropPlayerWeapon(admin)
     {
         currentWeapon = self getCurrentWeapon(); // getCurrentWeapon returns code name string, "ak74u_reflex_mp"
         hasAmmo = false;
-        /** @bug FIXED: if weapon is dropped when it has no ammo, it disappears.
+        /** FIXED: if weapon is dropped when it has no ammo, it disappears.
          * If the weapon has 20 or less rounds, don't drop it
          */
         if (self getWeaponAmmoStock(currentWeapon) > 20) {
@@ -1246,9 +1246,7 @@ teleportPlayerToSpawn(admin)
 {
     log("trace", "msg|in _adminCommands::teleportPlayerToSpawn()||");
 
-    if(isDefined(self) && self.isAlive)
-    {
-        /// HACK: part of origin hack described in scripts\server\_welcome::onPlayerSpawn()
+    if(isDefined(self) && self.isAlive) {
         self setOrigin(self.originalSpawnLocation);
         admin thread informPlayerOfAdminAction(self, "nuetral", "You were teleported by admin");
         admin thread adminActionConsoleMessage("^7 " + self.name + " ^7was teleported to spawn point.");
@@ -1269,8 +1267,7 @@ teleportPlayerToAdmin(location, admin)
 {
     log("trace", "msg|in _adminCommands::teleportPlayerToAdmin()||");
 
-    if(isDefined(self) && self.isAlive)
-    {
+    if(isDefined(self) && self.isAlive) {
         self setOrigin(location);
         admin thread informPlayerOfAdminAction(self, "nuetral", "You were teleported by admin");
         admin thread adminActionConsoleMessage("^7 " + self.name + " ^7was teleported to admin's location'.");
@@ -1322,11 +1319,11 @@ downPlayer(admin)
     if(isDefined(self) && self.isAlive)
     {
         if (!isDefined(self.isPlayer)) {
-            noticePrint(self.name + " can't be downed because self.isPlayer is undefined.");
+            log("bug", "msg|" + self.name + " can't be downed because self.isPlayer is undefined.||");
             unlockPlayer(self);
             return;
         } else if (!self.isPlayer){
-            noticePrint(self.name + " can't be downed because self.isPlayer is false.");
+            log("bug", "msg|" + self.name + " can't be downed because self.isPlayer is false.||");
             unlockPlayer(self);
             return;
         }
@@ -1373,7 +1370,7 @@ revivePlayer(admin)
         self scripts\players\_players::revive();
         admin thread informPlayerOfAdminAction(self, "positive", "You were revived by Admin");
         admin thread adminActionConsoleMessage("^7Revived " + self.name + ".");
-        noticePrint(admin.name + " revived " + self.name);
+        log("server", "msg|" + admin.name + " revived " + self.name + "||");
     }
     unlockPlayer(self);
 }

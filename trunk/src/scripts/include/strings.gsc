@@ -363,7 +363,7 @@ join(tokens, glue) /// @todo enable joining a specific range within an array
         // if there are more tokens, add all of them except for the last one
         for (i=1; i<tokens.size - 1; i++) {
             if(results.size + glue.size + tokens[i].size > maxStringLength) {
-                debugPrint(results, "val");
+                log("dev", "msg|" + results + "||");
                 // results will be trucated,
                 // add on whatever characters we can
                 temp = glue + tokens[i];
@@ -551,7 +551,6 @@ collapse(string)
             i--;
         }
     }
-//     debugPrint("newString: " + newString, "val");
     return newString;
 
 }
@@ -578,9 +577,7 @@ split(string, token)
         matchBegins = matches[0];
         matchEnds = matches[1];
         text = "";
-//         debugPrint("string size: " + string.size, "val");
         for (i=0; i<string.size; i++) {
-//             debugPrint("i: " + i, "val");
             if (i == matchBegins) // 0,2,4,6...
             {
                 // We are at beginning of a matched token we want to skip
@@ -612,7 +609,6 @@ split(string, token)
                 }
             }
             text += string[i];
-//             debugPrint("text: " + text, "val");
         }
         results[matchNumber] = text;
     }

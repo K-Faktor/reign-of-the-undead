@@ -229,7 +229,6 @@ init()
         setdvar("surv_medic_unlocksecondary3", "deserteaglegold_mp");
     }
 
-
     // Set default values for weapon upgrade base costs
 
     // Primary weapons
@@ -295,10 +294,11 @@ init()
         newWeapon = getdvar("surv_extra_unlock"+(i+1));
         if (newWeapon=="") {break;}
         level.specialWeps[i] = newWeapon;
-//         debugPrint("Special weapon loaded: " + newWeapon, "val");
+        // log("dev", "msg|Special weapon loaded: " + newWeapon + "||");
         i++;
     }
 }
+
 
 /**
  * @brief Upgrades the players weapon

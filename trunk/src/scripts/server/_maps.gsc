@@ -83,8 +83,29 @@ init()
     }
 }
 
+
+/**
+ * @brief We need a dummy method to occupy the callback on line 41 above.
+ *        This is that dummy.
+ *
+ * @param arg1 null Dummy parameter
+ * @param arg2 null Dummy parameter
+ * @param arg3 null Dummy parameter
+ * @param arg4 null Dummy parameter
+ * @param arg5 null Dummy parameter
+ * @param arg6 null Dummy parameter
+ * @param arg7 null Dummy parameter
+ * @param arg8 null Dummy parameter
+ * @param arg9 null Dummy parameter
+ * @param arg10 null Dummy parameter
+ *
+ * @returns nothing
+ */
 blank(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-{}
+{
+    // quality:ignore_trace
+}
+
 
 /**
  * @brief Apply map-specific fixes
@@ -92,6 +113,9 @@ blank(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
  * Many maps contain programming errors that lead to runtime errors.  Since we
  * don't have access to the source code for the maps, we apply custom fixes here
  * as a work around when we can.
+ *
+ * Not quite deprecated, but try *mightily* to fix map issues in a custom *.gsc
+ * for the map.  That is more helpful to others than hard-coding it in the main scripts.
  *
  * @returns nothing
  */
@@ -101,17 +125,13 @@ applyMapFixes()
 
     currentMap = getdvar("mapname");
 
-    debugPrint(currentMap + ": bg_falldamagemaxheight: " + getdvar("bg_falldamagemaxheight"), "val");
-    debugPrint(currentMap + ": bg_falldamageminheight: " + getdvar("bg_falldamageminheight"), "val");
-    debugPrint(currentMap + ": jump_height: " + getdvar("jump_height"), "val");
+    // log("dev", "msg|" + currentMap + ": bg_falldamagemaxheight: " + getdvar("bg_falldamagemaxheight") + "||");
+    // log("dev", "msg|" + currentMap + ": bg_falldamageminheight: " + getdvar("bg_falldamageminheight") + "||");
+    // log("dev", "msg|" + currentMap + ": jump_height: " + getdvar("jump_height") + "||");
 
     switch (currentMap) {
         case "mp_fnrp_quake3_arena": // fixed in the map itself, leave fn for other maps.
-            // jump_height is 350
-/*            setdvar("bg_falldamagemaxheight", 750);
-            setdvar("bg_falldamageminheight", 700);
-            level.fallDamageMaxHeight = 750;
-            level.fallDamageMinHeight = 700;*/
+            // Do nothing
             break;
     }
 }
@@ -201,14 +221,14 @@ logPlayersAtGameEnd()
     flag = true;
     while (flag) {
         level waittill("game_ended");
-        noticePrint("Players in the game when the game ended:");
+        log("server", "msg|Players in the game when the game ended:||");
         for (i=0; i<level.players.size; i++) {
             playerGuid = "";
             playerName = "";
             playerGuid = level.players[i].guid;
             playerName = level.players[i].name;
 
-            noticePrint(playerGuid + ":" + playerName);
+            log("server", "msg|" + playerGuid + ":" + playerName + "||");
         }
         flag = false;
     }
@@ -225,10 +245,10 @@ changeMap(mapname)
      * ban them for behavior that can crash the server.
      */
 
-    noticePrint("Changing map to " + mapname);
+    log("server", "msg|Changing map to " + mapname + "||");
     // Don't change the map if there aren't any players (because we can't!!!)
     if (level.players.size < 1) {
-        errorPrint("There are no players, so we can't change the map, as we depend on using a player's console to change the map.");
+        log("error", "msg|There are no players, so we can't change the map, as we depend on using a player's console to change the map.||");
         map_restart(false);
         return;
     }
@@ -241,7 +261,7 @@ changeMap(mapname)
     rconBackupPassword = getdvar("rcon_password_backup");
 
     if ((rconPassword == "") || (rconBackupPassword == "")) {
-        errorPrint("You need to set rcon_password and rcon_password_backup in the server.cfg file for the server to run properly.");
+        log("error", "msg|You need to set rcon_password and rcon_password_backup in the server.cfg file for the server to run properly.||");
         return;
     }
 
@@ -269,7 +289,7 @@ changeMap(mapname)
         } else if (level.players.size > 1) {
             playerIndex = randomint(level.players.size - 1);
         } else {
-            errorPrint("All players left the game before we could ask them to change the map, so we can't change the map");
+            log("error", "msg|All players left the game before we could ask them to change the map, so we can't change the map||");
             map_restart(false);
             // Restore rcon password from backup
             setdvar("rcon_password", rconBackupPassword);
@@ -282,11 +302,11 @@ changeMap(mapname)
         if (isdefined(level.players[playerIndex])) {
             // have that random player execute the commands to restart the
             // server and change the map
-            noticePrint("Asking " + selectedPlayerName + ":" + selectedPlayerGuid + " to restart the server.");
+            log("server", "msg|Asking " + selectedPlayerName + ":" + selectedPlayerGuid + " to restart the server.||");
             level.players[playerIndex] scripts\players\_players::execClientCommand("rcon login " + tempPassword + ";rcon vstr mapchange");
         } else {
-            errorPrint("The selected player left the game after he was selected, but before he could restart the server.");
-            errorPrint("The selected player was: " + selectedPlayerName + ":" + selectedPlayerGuid);
+            log("error", "msg|The selected player left the game after he was selected, but before he could restart the server.||");
+            log("error", "The selected player was: " + selectedPlayerName + ":" + selectedPlayerGuid + ". They should be BANNED.||");
         }
         wait 1;
 
@@ -296,14 +316,14 @@ changeMap(mapname)
 
         // Log whether the rcon password was properly reset or not
         if (getdvar("rcon_password") != rconBackupPassword) {
-            errorPrint("Your rcon password was not properly reset after server restart attempt " + serverRestartAttempts + ".");
+            log("error", "msg|Your rcon password was not properly reset after server restart attempt " + serverRestartAttempts + ".||");
         } else {
-            noticePrint("Your rcon password was properly reset after restart attempt " + serverRestartAttempts + ".");
+            log("server", "msg|Your rcon password was properly reset after restart attempt " + serverRestartAttempts + ".||");
         }
 
         // give up after six (why six Bipo?) attempts
         if (serverRestartAttempts > 5) {
-            errorPrint("Failed to restart the server after " + serverRestartAttempts + ".");
+            log("error", "msg|Failed to restart the server after " + serverRestartAttempts + ".||");
             map_restart(false);
             level notify("map_change_failed");
         }

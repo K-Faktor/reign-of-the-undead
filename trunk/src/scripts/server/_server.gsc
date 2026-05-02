@@ -101,6 +101,7 @@ init()
     runTestCode();
 }
 
+
 /**
  * @brief Checks for and tries to fix an incorrect rcon password
  *
@@ -115,13 +116,13 @@ verifyRconPassword()
     while ((getdvar("rcon_password") != getdvar("rcon_password_backup")) &&
            (resetCount < 4))
     {
-        warnPrint("rcon_password is incorrect.  Resetting it using the backup rcon password.");
+        log("warn", "msg|rcon_password is incorrect.  Resetting it using the backup rcon password.||");
         setdvar("rcon_password", getdvar("rcon_password_backup"));
         resetCount++;
         wait 3;
     }
     if (getdvar("rcon_password") != getdvar("rcon_password_backup")) {
-        errorPrint("We failed to fix the incorrect rcon password.");
+        log("error", "msg|We failed to fix the incorrect rcon password.||");
         return;
     }
 }
@@ -159,35 +160,11 @@ showDevelopmentConsoleMessages()
 }
 
 
+// This was a failed attempt to read log files from within running mod.
+// It can't be done on stock CoD4 1.7.  Leaving this here as a warning to
+// future me.
+// readLogMessages() {}
 
-readLogMessages()
-{
-    log("trace", "msg|in _server::readLogMessages()||");
-    /// To use the file commands, we need to be inside /# ... #/ tags
-    /#
-
-    /// N.B. These file commands require +set developer 1 in the game command line
-    logFilename = "C:\\Program Files (x86)\\Activision\\Call of Duty 4 - Modern Warfare\\Mods\\rotu21\\oct_mp.log";
-    chatFilename = "C:\\Program Files (x86)\\Activision\\Call of Duty 4 - Modern Warfare\\Mods\\rotu21\\chat.log";
-    debugPrint("logFilename: " + logFilename, "val");
-    debugPrint("chatFilename: " + chatFilename, "val");
-    logFile = 0;
-    logFile = openfile(logFilename, "read");
-//     assertex( logFile != -1, "Could not open file: " + logFilename );
-    chatFile = openfile(chatFilename, "write");
-//     assertex( chatFile != -1, "Could not open file: " + chatFilename );
-
-    /// @todo still can't work with files
-    line = FReadLn(logFile);
-    line = "test lorem ipsum\n";
-    fprintln(chatFile, line);
-
-    CloseFile(logFile);
-    CloseFile(chatFile);
-    debugPrint("test", "val");
-
-    #/
-}
 
 /**
  * @brief Shows 'Did You Know' messages between waves
@@ -214,6 +191,7 @@ intermissionDidYouKnowMessages()
     }
 }
 
+
 /**
  * @brief Loads the did you know data from the config file
  *
@@ -231,6 +209,7 @@ buildIntermissionDidYouKnowMessages()
     }
 }
 
+
 /**
  * @brief A convenient spot to put test code that will be executed when the server starts
  *
@@ -240,7 +219,7 @@ runTestCode()
 {
     log("trace", "msg|in _server::runTestCode()||");
 
-//     maps\mp\_umi::devDumpEntities();
-//     maps\mp\_umi::devDumpCsvWaypointsToBtd();
-    //     thread maps\mp\_umiEditor::devDrawWaypoints(true);
+    // maps\mp\_umi::devDumpEntities();
+    // maps\mp\_umi::devDumpCsvWaypointsToBtd();
+    // thread maps\mp\_umiEditor::devDrawWaypoints(true);
 }

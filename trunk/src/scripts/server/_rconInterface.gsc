@@ -145,7 +145,7 @@ changeMap(args)
     if (scripts\server\_adminCommands::validateMap(mapname)) {
         scripts\server\_adminCommands::changeMap(level.rconAdmin, mapname);
     } else {
-        noticePrint("Admin " + level.rconAdmin.name + " changed the map to " + mapname + ", which may be an invalid map");
+        log("server", "msg|Admin " + level.rconAdmin.name + " changed the map to " + mapname + ", which may be an invalid map||");
         scripts\server\_maps::changeMap(mapname);
     }
 }

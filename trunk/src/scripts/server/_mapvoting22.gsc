@@ -70,6 +70,12 @@ init()
     level.numberOfMaps = getdvarInt("game_mapvote_count");
 }
 
+
+/**
+ * @brief Loads lists of 'reduced' and 'greatly-reduced' frequency maps
+ *
+ * @returns nothing
+ */
 reducedFrequencyMaps()
 {
     log("trace", "msg|in _mapvoting22::reducedFrequencyMaps()||");
@@ -231,12 +237,12 @@ randomMapSelection(mapList, numberOfMaps, illegal)
                 // use this map, remove it from future consideration, then continue
                 selectedMaps[index] = availableMaps[randomIndex];
                 index++;
-                debugPrint("Reduced frequency map " + availableMaps[randomIndex].name + " being used.", "val");
+                log("server", "msg|Reduced frequency map " + availableMaps[randomIndex].name + " being used.||");
                 availableMaps = removeElementByIndex(availableMaps, randomIndex);
                 continue;
             } else {
                 // do not use this map, remove it from future consideration, then continue
-                debugPrint("Reduced frequency map " + availableMaps[randomIndex].name + " NOT being used.", "val");
+                log("server", "msg|Reduced frequency map " + availableMaps[randomIndex].name + " NOT being used.||");
                 availableMaps = removeElementByIndex(availableMaps, randomIndex);
                 continue;
             }
@@ -249,12 +255,12 @@ randomMapSelection(mapList, numberOfMaps, illegal)
                 // use this map, remove it from future consideration, then continue
                 selectedMaps[index] = availableMaps[randomIndex];
                 index++;
-                debugPrint("Greatly reduced frequency map " + availableMaps[randomIndex].name + " being used.", "val");
+                log("server", "msg|Greatly reduced frequency map " + availableMaps[randomIndex].name + " being used.||");
                 availableMaps = removeElementByIndex(availableMaps, randomIndex);
                 continue;
             } else {
                 // do not use this map, remove it from future consideration, then continue
-                debugPrint("Greatly reduced frequency map " + availableMaps[randomIndex].name + " NOT being used.", "val");
+                log("server", "msg|Greatly reduced frequency map " + availableMaps[randomIndex].name + " NOT being used.||");
                 availableMaps = removeElementByIndex(availableMaps, randomIndex);
                 continue;
             }
@@ -408,11 +414,13 @@ newMapItem(mapname, gametype)
  */
 countMapNames()
 {
+    log("trace", "msg|in _mapvoting22::countMapNames()||");
+
     names = "";
     for (i=1; i<=25; i++) { // 20 should be enough for ~550 maps
         packed = getDvar( "sv_mapnames" + i );
         if ((!isDefined(packed)) || (packed == "")) {
-            // noticePrint("Last map name dvar counter: " + int(i-1));  // 1-based counter adjustment
+            // log("dev", "msg|Last map name dvar counter: " + int(i-1) + "||");  // 1-based counter adjustment
             break;
         } else {
             if (names == "") { // first
@@ -455,7 +463,7 @@ mapTextName(mapname)
     for (i=1; i<=25; i++) { // 20 should be enough for ~550 maps
         packed = getDvar( "sv_mapnames" + i );
         if ((!isDefined(packed)) || (packed == "")) {
-            // noticePrint("Last map name dvar counter: " + int(i-1));  // 1-based counter adjustment
+            // log("dev", "msg|Last map name dvar counter: " + int(i-1) + "||");  // 1-based counter adjustment
             break;
         } else {
             if (names == "") { // first
@@ -468,11 +476,11 @@ mapTextName(mapname)
     // tokenize our concatenated list of comma-separated sv_mapnames[N] dvars
     tokens = strTok(names, ",");
 
-    // noticePrint("Found " + tokens.size + " map names key:value pairs");
+    // log("dev", "masg|Found " + tokens.size + " map names key:value pairs||");
     for(i=0; i<tokens.size; i++) {
         pair = strTok(tokens[i], ":");  // colon-separated key:value pairs
         if ((pair.size == 2) && ("mp_" + pair[0] == mapname)) {
-            // noticePrint("Found map name in packed string: " + "mp_" + pair[0] + " yields: " + pair[1]);
+            log("dev", "msg|Found map name in packed string: " + "mp_" + pair[0] + " yields: " + pair[1] + "||");
             textName = pair[1];
         }
     }
@@ -487,7 +495,7 @@ mapTextName(mapname)
         message = "English name for the map " + mapname + " not set in configuration files (mapvote.cfg sv_mapnames[N] dvars).\n";
         message += "\t\t\t\t\t\t If this is a playable map in RotU, please file a bug report on github about the missing name in our master map name json file.\n";
         message += "\t\t\t\t\t\t For now, you can set the name manually via: \t" + "set name_" + mapname + " \"Custom Map Name\"";
-        warnPrint(message);
+        log("warn", "msg|" + message + "||");
         return mapname;
     }
     return textName;
@@ -773,6 +781,14 @@ updateVotingResults()
     }
 }
 
+
+/**
+ * @brief Updates the voting results HUD as players vote
+ *
+ * @param votingResultsText string Concatenated, formatted, text list that comprises teh HUD's text elements
+ *
+ * @returns nothing
+ */
 updateVotingResultsHUD(votingResultsText)
 {
     log("trace", "msg|in _mapvoting22::updateVotingResultsHUD()||");

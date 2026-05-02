@@ -57,6 +57,7 @@ precache()
     precacheMenu("admin_changemap");
 }
 
+
 /**
  * @brief Parses the admin data from admin.cfg into admin data structures
  *
@@ -162,7 +163,6 @@ newAdmin(adminConfigId)
         admin.canRestoreWeapons = 1;
         admin.canGiveUpgradePoints = 1;
     } else {
-//         debugPrint("is not superAdmin", "val");
         admin.canConnectToRcon = 0;
         admin.canDownPlayer = 0;
         admin.canBoomPlayer = 0;
@@ -412,13 +412,13 @@ onPlayerConnect()
         player.isAdmin = false;
 
         guid = getSubStr(player getGuid(), 24, 32);
-        debugPrint("connecting guid: " + guid, "val");
+        log("dev", "msg|Connecting guid: " + guid + "||");
 
         // force admin guid if required
         if (level.dedicated == "listen server") {
             // getGuid() returns garbage if a listen server, so force admin
             guid = getDvar("admin_forced_guid");
-            debugPrint("Listen server: Host player's guid forced to " + guid, "val");
+            log("server", "msg|Listen server: Host player's guid forced to " + guid + "||");
             if (level.autoMapTesting) {
                 fmt = "msg|The server is up.||serverIsUp|true:b";
                 log("automaptest", sprintfLog(fmt, ""));
@@ -431,10 +431,10 @@ onPlayerConnect()
 
         player.shortGuid = guid;
 
-        /// @todo just for testing new prestige levels
-//         if (player.shortGuid == "") {
-//             player scripts\players\_rank::setPrestige(55);
-//         }
+        // just for testing new prestige levels
+        // if (player.shortGuid == "") {
+        //     player scripts\players\_rank::setPrestige(55);
+        // }
 
         // Is the connecting player an admin?
         for (i=0; i< self.admins.size; i++) {
@@ -461,16 +461,15 @@ onAdminConnect(admin)
     admin.playerNumber = self getEntityNumber();
     admin.playerNumberInt = Int(admin.playerNumber);
     admin.isAdmin = true;
-    noticePrint(admin.playerName + " recognized as an admin.");
+    log("server", "msg|" + admin.playerName + " recognized as an admin.||");
 
     self.admin = admin;
     self.admin.adminMenuOpen = false;
     self.admin.isAdminMenuDirty = false;
 
     // this is the player the admin has selected in the menu
-    debugPrint("level.players.size: " + level.players.size + ", self.admin.playerNumberInt: " + self.admin.playerNumberInt, "val");
     self.selectedPlayerIndex = getPlayerIndexByNum(self.admin.playerNumberInt);
-    debugPrint("self.selectedPlayerIndex: " + self.selectedPlayerIndex, "val");
+    log("dev", sprintfLog("msg|Admin menu selected player data||playersSize|$1||adminPlayerNumber|$2||selectedPlayerIndex|$3||", level.players.size, self.admin.playerNumberInt, self.selectedPlayerIndex));
     self.selectedPlayersName = self.admin.playerName;
 
     // Show admin name and permissions in admin menu
@@ -484,15 +483,6 @@ onAdminConnect(admin)
     self thread scripts\server\_adminInterface::watchAdminMenuResponses();
     self thread maps\mp\_umiEditor::watchDevelopmentMenuResponses();
     self thread scripts\server\_adminInterface::watchForAdminSpectatorOpenMenuRequests();
-}
-
-getPlayer(playerEntityNumber, pickingType)
-{
-    log("trace", "msg|in adminCommon::getPlayer()||");
-
-    if (pickingType == "number") {
-        return getPlayerByEntityNumber(playerEntityNumber);
-    }
 }
 
 

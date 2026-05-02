@@ -586,7 +586,7 @@ isInvertible(A)
 //         printMatrix(B);
         // By I.M.T. part c, Linear Algebra, Lay 4th Ed. pg 112
         n = countPivots(B);
-//         debugPrint("n: " + n, "val");
+        // log("dev", "msg|n: " + n +"||");
         if (n == A.rowCount) {return true;}
         else {return false;}
     }
@@ -719,8 +719,8 @@ partition(matrix, rows, columns)
     for (i=beginRow; i<beginRow + numberOfRows; i++) {
         for (j=beginColumn; j<beginColumn + numberOfColumns; j++) {
             partition.data[row][col] = matrix.data[i][j];
-            debugPrint("matrix.data[i][j]: " + matrix.data[i][j], "val");
-            debugPrint("partition.data[row][col]: " + partition.data[row][col], "val");
+            log("pre", "matrix.data[i][j]: " + matrix.data[i][j]);
+            log("pre", "partition.data[row][col]: " + partition.data[row][col]);
             col++;
         }
         col = 0;
@@ -940,7 +940,7 @@ rref(matrix)
         if (isDefined(foundPivot)) {
             pivotRow = foundPivot[0];
             pivotColumn = foundPivot[1];
-            debugPrint("pivotRow: " + pivotRow + " pivotColumn: " + pivotColumn, "val");
+            log("dev", "msg|pivotRow: " + pivotRow + " pivotColumn: " + pivotColumn +"||");
 
             // the ref() call ensures the pivot is already a one
 

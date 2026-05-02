@@ -100,7 +100,7 @@ onOpenAdminMenu()
 
     if (isAdmin(self)) {
         self.admin.adminMenuOpen = true;
-        debugPrint("Enabling god mode for admin: " + self.admin.playerName, "val");
+        log("server", "msg|Enabling god mode for admin: " + self.admin.playerName + "||");
         self.isGod = true;
         self.god = true;
         self.isTargetable = false;
@@ -108,7 +108,7 @@ onOpenAdminMenu()
     } else {
         self closeMenu();
         self closeInGameMenu();
-        warnPrint(self.name + " opened the admin menu, but we forced it closed.");
+        log("warn", "msg|" + self.name + " opened the admin menu, but we forced it closed.||");
         self thread ACPNotify( "You don't have permission to access this menu.", 3 );
         return;
     }
@@ -134,7 +134,7 @@ watchAdminMenuData()
                 selectNextPlayer();
                 self.admin.isAdminMenuDirty = false;
                 displayAdminCommandFeedback("Player invalid, selecting next player.");
-                debugPrint("Admin menu's displayed player info is no longer valid, selecting next player.", "val");
+                log("server", "msg|Admin menu's displayed player info is no longer valid, selecting next player.||");
             }
         }
         wait 1;
@@ -346,12 +346,12 @@ onCloseAdminMenu()
     wait level.adminMenuGodModeTimeout;
     if (self.admin.adminMenuOpen) {
         // Do nothing if admin menu was reopend in the last 2 seconds
-        debugPrint("Disabling god mode canceled because menu re-opened within timeout for admin: " + self.admin.playerName, "val");
+        log("server", "msg|Disabling god mode canceled because menu re-opened within timeout for admin: " + self.admin.playerName + "||");
     } else {
         self.isGod = false;
         self.god = false;
         self.isTargetable = true;
-        debugPrint("Disabling god mode for admin: " + self.admin.playerName, "val");
+        log("server", "msg|Disabling god mode for admin: " + self.admin.playerName + "||");
     }
 }
 
@@ -383,7 +383,7 @@ watchAdminMenuResponses()
 
     while (1) {
         self waittill( "menuresponse", menu, response );
-        debugPrint("menu: " + menu + " response: " + response, "val");
+        log("dev", "msg|menu: " + menu + " response: " + response + "||");
 
         // menu "-1" is the main in-game popup menu bound to the 'b' key
         if ((menu == "-1") && (response == "admin_menu_open_request")) {
@@ -399,7 +399,7 @@ watchAdminMenuResponses()
             (menu != "admin_changemap") &&
             (menu != "admin_warn"))
         {
-            debugPrint("Menu is not an admin menu.", "val"); // <debug />
+            log("dev", "msg|Menu is not an admin menu.||"); // <debug />
             continue;
         }
 
@@ -407,7 +407,7 @@ watchAdminMenuResponses()
         if(!self validateSelectedPlayer()) {
             selectNextPlayer();
             displayAdminCommandFeedback("Player invalid, admin command canceled, next player selected.");
-            debugPrint("Player invalid, admin command canceled, selecting next player.", "val");
+            log("server", "msg|Player invalid, admin command canceled, selecting next player.||");
             continue;
         }
 
@@ -415,7 +415,7 @@ watchAdminMenuResponses()
         if ((menu == "admin_changemap") && isSubStr(response, "filter:")) {
             tokens = StrTok(response, ":");
             character = tokens[1];
-//             debugPrint("Detected filter character: " + character, "val");
+            // log("dev", "msg|Detected filter character: " + character + "||");
             switch(character) {
                 case "space": character = " "; break;
                 case "[":     character = "("; break;
@@ -427,7 +427,7 @@ watchAdminMenuResponses()
             changeMapUpdateFilter(character);
         }
 
-//         debugPrint("menu repsonse is: " + response, "val");
+        // log("dev", "msg|menu repsonse is: " + response + "||");
         switch(response)
         {
         case "admin_next":
@@ -606,7 +606,7 @@ watchAdminMenuResponses()
             onCancelChangeMap();
             break;
         case "admin_changemap_apply_filter":
-//             debugPrint("Filter: " + filter, "val");
+            // log("dev", "msg|Filter: " + filter + "||");
             applyMapFilter();
             break;
         case "admin_open_changemap":
@@ -634,9 +634,9 @@ intPlayerNumber(stringPlayerNumber)
 {
     log("trace", "msg|in _adminInterface::intPlayerNumber()||");
 
-    debugPrint("stringPlayerNumber: " + stringPlayerNumber, "val");
+    // log("dev", "msg|stringPlayerNumber: " + stringPlayerNumber + "||");
     if (!isDefined(level.players)) {
-        debugPrint("level.players is undefined.", "val");
+        log("bug", "msg|level.players is undefined.||");
     }
     return int(level.players[stringPlayerNumber] getEntityNumber());
 }
@@ -708,7 +708,6 @@ selectPreviousPlayer()
 }
 
 
-
 /**
  * @brief Updates the selected player's info in the admin menu
  *
@@ -719,7 +718,7 @@ showPlayerInfo()
     log("trace", "msg|in _adminInterface::showPlayerInfo()||");
 
     if (!isDefined(self.selectedPlayerIndex)) {
-        debugPrint("for " + self.name + " self.selectedPlayerIndex is undefined; cannot show player info.", "val");
+        log("bug", "msg|for " + self.name + " self.selectedPlayerIndex is undefined; cannot show player info.||");
         return;
     }
     player = level.players[self.selectedPlayerIndex];
@@ -1529,7 +1528,7 @@ filterMaps(filter)
 {
     log("trace", "msg|in _adminInterface::filterMaps()||");
 
-    debugPrint("Filtering maps for " + filter, "val");
+    log("server", "msg|Admin filtering maps for " + filter + "||");
     filteredMaps = [];
     index = 0;
     for (i=0; i<level.mapList.size; i++) {

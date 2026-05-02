@@ -72,7 +72,7 @@ catchBot()
     // Listen server host is always client 0
     if (level.dedicated == "listen server") {
         if (clientNum == 0) {
-            noticePrint("Listen server host detected (client 0): " + self.name);
+            log("server", "msg|Listen server host detected (client 0): " + self.name + "||");
             self.isHost = true;
             self.isBot = false;
             return 0;
