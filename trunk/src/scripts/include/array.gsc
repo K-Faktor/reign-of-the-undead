@@ -78,7 +78,7 @@ quicksort(data, first, n)
             }
             if (tooBigIndex < tooSmallIndex) {
                 temp = data[tooBigIndex];
-                debugPrint("swapping data", "val");
+                // log("dev", "msg|swapping data||");
                 data[tooBigIndex] = data[tooSmallIndex];
                 data[tooSmallIndex] = temp;
             }
@@ -98,7 +98,6 @@ quicksort(data, first, n)
     }
     return data;
 }
-
 
 
 /**
@@ -235,7 +234,6 @@ removeElementByIndex(data, index)
 }
 
 
-
 /**
  * @brief Finds the index of a given value in a sorted array
  *
@@ -274,7 +272,7 @@ binarySearch(data, leftBound, rightBound, value)
         }
     }
     // value not found
-    noticePrint("Value " + value + " was not found in the array.");
+    // log("dev", "msg|Value " + value + " was not found in the array.||");
     return -1;
 }
 
@@ -309,9 +307,10 @@ inArray(data, value)
         if(found) {return true;}
     }
     // value not found
-//     noticePrint("Value " + value + " was not found in the array.");
+    // log("dev", "msg|Value " + value + " was not found in the array.||");
     return false;
 }
+
 
 /**
  * @brief Determines whether \c value is an element of \c data
@@ -332,6 +331,6 @@ inIntArray(data, value)
         }
     }
     // value not found
-//     noticePrint("Value " + value + " was not found in the array.");
+    // log("dev", "msg|Value " + value + " was not found in the array.||");
     return false;
 }

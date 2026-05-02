@@ -265,7 +265,7 @@ processResponse(response)
                     self iprintlnbold("Sorry! Maximum of " + level.maxTntPerPlayer + " TNT per player");
                     return;
                 } else if (amount < 0) {
-                    errorPrint(self.name + " TNT purchase amount is negative: " + amount + " deployed TNT: " + self.emplacedTnt.size);
+                    log("bug", "msg|" + self.name + " TNT purchase amount is negative: " + amount + " deployed TNT: " + self.emplacedTnt.size + "||");
                     self iprintlnbold("Oops! The game incorrectly thinks you have too much TNT already. Sorry!");
                     return;
                 }

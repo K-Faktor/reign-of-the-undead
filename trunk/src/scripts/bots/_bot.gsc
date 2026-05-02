@@ -31,7 +31,7 @@
     EULA.
 ******************************************************************************/
 
-#include scripts\include\int_stack;
+#include scripts\include\stack;
 #include scripts\include\matrix;
 #include scripts\include\waypoints;
 #include scripts\include\utility;
@@ -506,11 +506,11 @@ wander(bot)
     while (1)
     {
         // Get a fresh path if our stack is empty
-        // if (!isDefined(bot.pathStack) || bot.pathStack isEmpty()) {
+        // if (!isDefined(bot.pathStack) || bot.pathStack stIsEmpty()) {
         if ((!isDefined(bot.smoothedPath)) || (bot.smoothedPath.size == 0)) {
             stackEmptyCount++;
             getPath(bot);                    // This loads bot.pathStack internally
-            // bot.pathStack print("New path loaded");
+            // bot.pathStack stPrint("New path loaded");
             if (stackEmptyCount >= 3) {wait 0.5;}
         }
 
@@ -529,11 +529,11 @@ wander(bot)
         }
 
         if ((isDefined(bot.smoothedPath)) && (bot.smoothedPath.size > 0)) {
-        // if (!(bot.pathStack isEmpty())) {
+        // if (!(bot.pathStack stIsEmpty())) {
             stackEmptyCount = 0;
             // Process ONE waypoint per iteration
             bot.lastKnownWp = bot.myWaypoint;
-            bot.nextWp = bot.pathStack pop();
+            bot.nextWp = bot.pathStack stPop();
 
             // @todo force normal for now.  will need to split A* paths into 'normal' sections,
             // and 'special' sections
@@ -553,8 +553,8 @@ wander(bot)
             } else if (bot.pathType == level.PATH_TELEPORT) {
                 bot teleport(bot);
             } else if (bot.pathType == level.PATH_MANTLE) {
-                if ((!(bot.pathStack isEmpty())) &&
-                    (pathType(bot.nextWp, bot.pathStack peek()) == level.PATH_FALL))
+                if ((!(bot.pathStack stIsEmpty())) &&
+                    (pathType(bot.nextWp, bot.pathStack stPeek()) == level.PATH_FALL))
                 {
                     bot.pathType = level.PATH_MANTLE_OVER;
                     bot mantleOver(bot);
@@ -709,7 +709,7 @@ mantleOver(bot)
         else if (bot.speed <= 250) {speed = 200;}
         else {speed = 300;}
         mantleMovement = cachedMovement(bot.myWaypoint, bot.nextWp, level.MANTLE_SPEED);
-        lastWp = bot.pathStack peek();
+        lastWp = bot.pathStack stPeek();
         fallMovement = cachedMovement(bot.nextWp, lastWp, speed);
         if ((isDefined(mantleMovement)) && (isDefined(fallMovement))) {
             // use the first motion from mantle
@@ -741,7 +741,7 @@ mantleOver(bot)
             }
             bot.myWaypoint = bot.nextWp;
             bot.nextWp = lastWp;
-            bot.pathStack pop();
+            bot.pathStack stPop();
             self postFall(fallMovement.closest);
             return;
         } else {
@@ -980,7 +980,7 @@ postFall(bot, closest)
     //     }
     // }
 
-    bot.pathStack print("postFall() initial path: ");
+    bot.pathStack stPrint("postFall() initial path: ");
     noticePrint(bot, "bot.origin: " + bot.origin);
 
     nearestWp = nearestWaypoints(bot.origin, 1)[0];
@@ -993,17 +993,17 @@ postFall(bot, closest)
         self enqueueMovement(level.Wp[bot.goalWp].origin, time, facing);
         self executeMovementQueue();
         bot.myWaypoint = bot.goalWp;
-        bot.pathStack empty();
+        bot.pathStack stEmpty();
         return;
     }
 
     // invalidate any waypoints up to nearestWp
-    while ((bot.pathStack size() > 0) && (bot.pathStack peek() != nearestWp)) {
+    while ((bot.pathStack stSize() > 0) && (bot.pathStack stPeek() != nearestWp)) {
         // remove all wp not equal tp nearestWp, until nearestWp is top of stack, or stack is empty
-        bot.pathStack pop();
+        bot.pathStack stPop();
     }
 
-    if (bot.pathStack isEmpty()) {
+    if (bot.pathStack stIsEmpty()) {
         // we need a new path
 //         iPrintLnBold("post-fall: getting a new path");
         if (nearestWp == bot.goalWp) {
@@ -1012,15 +1012,15 @@ postFall(bot, closest)
             warnPrint("994: Temp: Went idle; already at goal Waypoint.");
             return;
         }
-        bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
+        bot.pathStack stPushMany(AStarNew(bot.myWaypoint, bot.targetWp));
         noticePrint("998: A* call (bot, myWaypoint, bot.goalWp): (" + bot.name + ", " + bot.myWaypoint + ", " + bot.goalWp + ")");
-        bot.pathStack print("1000: bot " + bot.index + " postFall path");
+        bot.pathStack stPrint("1000: bot " + bot.index + " postFall path");
     }
 
     // decide which of the remaining nodes to go to, and how to get there
     // do we go to nearestWp, or to a point on a waypoint link to one of
     // the waypoints in pathStack?
-    testWp = bot.pathStack peek();
+    testWp = bot.pathStack stPeek();
     directDistance = distance(bot.origin, level.Wp[testWp].origin);
     linkDistance = distance(level.Wp[nearestWp].origin, level.Wp[testWp].origin);
     if (directDistance < linkDistance) {
@@ -1035,7 +1035,7 @@ postFall(bot, closest)
             self enqueueMovement(level.Wp[testWp].origin, time, facing);
             self executeMovementQueue();
             bot.nextWp = testWp;
-            bot.pathStack pop();
+            bot.pathStack stPop();
             bot.myWaypoint = bot.nextWp;
             return;
         } else {
@@ -1060,7 +1060,7 @@ postFall(bot, closest)
                 self enqueueMovement(level.Wp[testWp].origin, time, facing);
                 self executeMovementQueue();
                 bot.nextWp = testWp;
-                bot.pathStack pop();                
+                bot.pathStack stPop();                
                 bot.myWaypoint = bot.nextWp;
                 return;
             }
@@ -1074,10 +1074,10 @@ postFall(bot, closest)
     facing = vectorToAngles(level.Wp[nearestWp].origin - bot.origin);
     self enqueueMovement(level.Wp[nearestWp].origin, time, facing);
     self executeMovementQueue();
-    bot.pathStack pop();        
+    bot.pathStack stPop();        
     bot.nextWp = nearestWp;
     bot.myWaypoint = bot.nextWp;
-    bot.pathStack print("post-fall path: ");
+    bot.pathStack stPrint("post-fall path: ");
     noticePrint("testWp: " + testWp);
 }
 
@@ -1205,7 +1205,7 @@ getToBestWaypoint(bot, pathId)
                 bot.myWaypoint = bot.nPathList[bot.nPathList.size-1];
 
                 // Do I need to pop() here?
-                bot.pathStack pop();
+                bot.pathStack stPop();
             } else {
                 log("bug", "msg|Can't move to second waypoint without backtracking either; Unhandled case.||theta2|" + theta2 + "||");
                 // in this case, centroid and proj_point remain ~(0,0,0)
@@ -1254,7 +1254,7 @@ posToJson(pos)
 getOnPath(bot)
 {
     directDistance = distance(bot.origin, level.Wp[bot.nextWp].origin);
-    testWp = bot.pathStack peek();
+    testWp = bot.pathStack stPeek();
     pathDistance = distance(level.Wp[bot.nextWp].origin, level.Wp[testWp].origin);
     pathQueued = false;
     if (directDistance < pathDistance) {
@@ -1289,7 +1289,7 @@ getOnPath(bot)
         enqueueMovement(level.Wp[bot.myWaypoint].origin, time, facing);
     }
     // executeMovement() ???
-    bot.pathStack pop();
+    bot.pathStack stPop();
 }
 
 /*
@@ -1999,18 +1999,18 @@ normalPath(bot)
             log("bug", "msg|bot.speed is 0. Setting to 30 for divide by zero protection.  Fix the bug.||");
         }
 
-        if (bot.pathStack size() == 0) {
-            log("bug", "msg|bot.pathStack size() is 0. Why are we in normalPath() with nowhere to go?||");
+        if (bot.pathStack stSize() == 0) {
+            log("bug", "msg|bot.pathStack stSize() is 0. Why are we in normalPath() with nowhere to go?||");
             if (!isDefined(bot.smoothedPath)) {
                 // this happens when bot.pathStack is a single node, so no smoothing
-                log("warn", "msg|bot.smoothedPath is undefined when bot.pathStack size() is 0||");
+                log("warn", "msg|bot.smoothedPath is undefined when bot.pathStack stSize() is 0||");
                 return;
             } else {
                 log("warn", "msg|bot.smoothedPath.size is " + bot.smoothedPath.size + "||");
             }
         }
 
-        log("dev", "msg|bot.pathStack size() is " + bot.pathStack size() + "||");
+        log("dev", "msg|bot.pathStack stSize() is " + bot.pathStack stSize() + "||");
         if (!isDefined(bot.smoothedPath)) {
             // this happens when bot.pathStack is a single node, so no smoothing
             log("warn", "msg|bot.smoothedPath is undefined||");
@@ -2120,7 +2120,7 @@ botPathfindWaypointsNew(bot) {
         log("warn", "msg|bot.pathStack is undefined. Should had been defined at spawning.");
         return;
     }
-    // if (bot.pathStack isEmpty()) {
+    // if (bot.pathStack stIsEmpty()) {
     if ((!isDefined(bot.smoothedPath)) || (bot.smoothedPath.size == 0)) {
         // I need myWaypoint, and a targetWp (which means I need a target)
         if (!isDefined(bot.targetedPlayer)) {
@@ -2144,21 +2144,21 @@ botPathfindWaypointsNew(bot) {
             return;
         } else {
             bot.nPathList = biDirectionalAStar(bot.myWaypoint, bot.targetWp); // new: fist N waypoints, icl. myWaypoint
-            bot.pathStack pushMany(bot.nPathList);
-            if (bot.pathStack isEmpty()) {
+            bot.pathStack stPushMany(bot.nPathList);
+            if (bot.pathStack stIsEmpty()) {
                 log("warn", "msg|bot.pathStack is undefined; we couldn't find a path. Would be a BUG.||");
                 log("bug", sprintfLog("msg|Call was biDirectionalAStar($1, $2)||", bot.myWaypoint, bot.targetWp));
                 // debugPrint("Call was AStarNew(" + bot.myWaypoint + ", " + bot.targetWp + ")");
                 return;
             }
-            bot.pathStack pop(); // toss away myWaypoint for compat w/existing code
+            bot.pathStack stPop(); // toss away myWaypoint for compat w/existing code
             bot.interpolatedCount = 2;
             steps = bot getToBestWaypoint(bot, pathId);
             bot.smoothedPath = getSmoothedPath(bot.nPathList, pathId, 5, steps);
             // @todo we really need to know how many steps are in each segment
 
             // bot.pathStack pushMany(AStarNew(bot.myWaypoint, bot.targetWp));
-            bot.pathStack print("1931: bot " + bot.index + " initialization path");
+            bot.pathStack stPrint("1931: bot " + bot.index + " initialization path");
             // save the target wp we used for the A* call
             // may be useful to detect a dirty bot.pathStack
             bot.previousAStarCallTargetWp =  bot.targetWp;

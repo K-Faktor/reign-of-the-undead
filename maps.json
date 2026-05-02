@@ -6375,19 +6375,19 @@
       "md5Iwd": "6c4734f013b59ff4c801e233a0f9f633 mp_surv_gold_rush.iwd",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "9f3776d",
+        "gitRevision": "9345b8e",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
         "didSpawnZombie": true,
-        "timestamp": "2026-05-01 19:22:20 CDT (UTC-5)",
+        "timestamp": "2026-05-02 09:34:28 CDT (UTC-5)",
         "waypointsValid": "Valid, after fixes",
         "waypointCount": 129,
         "waypointType": "internal",
         "weaponShopCount": 1,
         "equipmentShopCount": 1,
         "compileErrors": 0,
-        "runtimeErrors": 19523,
+        "runtimeErrors": 0,
         "overallSuccess": true
       },
       "notes": ""

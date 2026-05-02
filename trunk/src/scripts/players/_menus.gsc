@@ -276,7 +276,7 @@ onMenuResponse()
         {
             self closeMenu();
             self closeInGameMenu();
-            noticePrint("279: soldier class respone is: " + response);
+            // log("dev", "msg|279: soldier class respone is: " + response + "||");
             thread  scripts\players\_classes::pickClass(response);
             continue;
         }

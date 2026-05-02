@@ -38,7 +38,7 @@
 
 #include scripts\bots\_bot;
 #include scripts\include\utility;
-#include scripts\include\int_stack;
+#include scripts\include\stack;
 
 init()
 {
@@ -362,7 +362,8 @@ spawnZombie(zombieType, spawnpoint, bot)
     bot.targetPosition = undefined;
     bot.type = zombieType;
     // bot.pathNodes = [];
-    bot.pathStack = scripts\include\int_stack::new();
+    // bot.pathStack = scripts\include\int_stack::new();
+    bot.pathStack = scripts\include\stack::stNew("int_stack");
     bot.myWaypoint = undefined;
     bot.smoothedPath = undefined;
     bot.goalWp = undefined;
@@ -917,20 +918,20 @@ zomMoveTowards(target_position)
         } else {
             if ((self.previousAStarCallTargetWp != targetWp) ||     // our target wp has changed since our last A* call
 //                 (self.myWaypoint != self.lastAStarWp) ||    // our current wp is not the waypoint we were supposed to go to
-                (self.pathStack isEmpty()))                 // we are out of path nodes
+                (self.pathStack stIsEmpty()))                 // we are out of path nodes
             {
                 // invalidate the pathStack and get a fresh stack from A*
                 if (self.previousAStarCallTargetWp != targetWp) {noticePrint(self.name + ": self.lastAStarTargetWp != targetWp");}
                 if (self.myWaypoint != self.lastAStarWp) {noticePrint(self.name + ": self.myWaypoint != self.lastAStarWp");}
-                if (self.pathStack isEmpty()) {noticePrint(self.name + ": self.pathStack is empty");}
+                if (self.pathStack stIsEmpty()) {noticePrint(self.name + ": self.pathStack is empty");}
                 noticePrint("A* call (bot, myWaypoint, targetWp): (" + self.name + ", " + self.myWaypoint + ", " + targetWp + ")");
-                self.pathStack pushMany(AStarNew(self.myWaypoint, self.targetWp));
+                self.pathStack stPushMany(AStarNew(self.myWaypoint, self.targetWp));
                 self.previousAStarCallTargetWp = targetWp;
             } else {
                 level.savedAStarCalls++;
             }
             // pop the next wp to head towards off the stack
-            nextWp = self.pathStack pop();
+            nextWp = self.pathStack stPop();
             self.previousAStarCallTargetWp = nextWp;
 
             self.nextWp = nextWp;

@@ -38,11 +38,9 @@ init()
     log("trace", "msg|in _persistence::init()||");
 
     level.persistentDataInfo = [];
-
     level.persPlayerData = [];
-
     level thread onPlayerConnect();
-//     debugStatsTable();
+    // debugStatsTable();
 }
 
 
@@ -59,6 +57,12 @@ onPlayerConnect()
 
 }
 
+
+/**
+ * @brief Loads existing persisted player data, or initializes it for new players
+ *
+ * @returns nothing
+ */
 restoreData()
 {
     log("trace", "msg|in _persistence::restoreData()||");
@@ -94,69 +98,70 @@ restoreData()
 }
 
 
+/**
+ * @brief Prints a player's stats table to g_log
+ *
+ * @returns nothing
+ */
 debugStatsTable()
 {
     log("trace", "msg|in _persistence::debugStatsTable()||");
 
     for (i=0; i<2500; i++) {
-        debugPrint(tableLookup("mp/playerStatsTable.csv", 0, i, 0) + ":" + tableLookup("mp/playerStatsTable.csv", 0, i, 1), "val");
+        log("dev", "msg|" + tableLookup("mp/playerStatsTable.csv", 0, i, 0) + ":" + tableLookup("mp/playerStatsTable.csv", 0, i, 1) + "||");
     }
 }
 
 
-// ==========================================
-// Script persistent data functions
-// These are made for convenience, so persistent data can be tracked by strings.
-// They make use of code functions which are prototyped below.
+/**
+ * Script persistent data functions
+ * These are made for convenience, so persistent data can be tracked by strings.
+ * They make use of code functions which are prototyped below.
+ */
 
-/*
-=============
-statGet
-
-Returns the value of the named stat
-=============
-*/
+/**
+ * @brief Gets a stat value from the player's stats table
+ *
+ * @param dataName string The name of the stat to retrieve
+ *
+ * @returns integer The value of the stat
+ */
 statGet(dataName)
 {
     log("trace", "msg|in _persistence::statGet()||");
 
-    //if ( !level.onlineGame )
-    //  return 0;
-
     return self getStat(int(tableLookup("mp/playerStatsTable.csv", 1, dataName, 0)));
 }
 
-/*
-=============
-setStat
 
-Sets the value of the named stat
-=============
-*/
+/**
+ * @brief Sets a stat value in the player's stats table
+ *
+ * @param dataName string The name of the stat to set
+ * @param value unknown The value of the stat to set - probably ints, but maybe strings; needs testing
+ *
+ * @returns nothing
+ */
 statSet(dataName, value)
 {
     log("trace", "msg|in _persistence::statSet()||");
 
-    //if ( !level.rankedMatch )
-    //  return;
-
     self setStat(int(tableLookup("mp/playerStatsTable.csv", 1, dataName, 0)), value);
 }
 
-/*
-=============
-statAdd
 
-Adds the passed value to the value of the named stat
-=============
-*/
-statAdd(dataName, value)
+/**
+ * @brief Sets a stat to it's current value plus some delta
+ *
+ * @param dataName string The name of the stat to set
+ * @param delta integer The value to change the current stat by
+ *
+ * @returns nothing
+ */
+statAdd(dataName, delta)
 {
     log("trace", "msg|in _persistence::statAdd()||");
 
-    //if ( !level.rankedMatch )
-    //  return;
-
     curValue = self getStat(int(tableLookup("mp/playerStatsTable.csv", 1, dataName, 0)));
-    self setStat(int(tableLookup("mp/playerStatsTable.csv", 1, dataName, 0)), value + curValue);
+    self setStat(int(tableLookup("mp/playerStatsTable.csv", 1, dataName, 0)), delta + curValue);
 }

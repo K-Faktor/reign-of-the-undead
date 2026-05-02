@@ -202,10 +202,10 @@ playerGoZombie()
     if ((self.points >= level.dvar["shop_item3_costs"]) &&
         (curableTime >= 9000)) // in ms
     {
-        debugPrint("Demeriting " + self.name + " for becoming a zombie. self.points: " + self.points + " curableTime: " + curableTime, "val");
+        log("debug", "msg|Demeriting " + self.name + " for becoming a zombie. self.points: " + self.points + " curableTime: " + curableTime + "||");
         self thread scripts\players\_rank::increaseDemerits(level.becomingZombieDemeritSize, "gone_zombie");
     } else {
-        debugPrint("Not demeriting " + self.name + " for becoming a zombie. self.points: " + self.points + " curableTime: " + curableTime, "val");
+        log("debug", "msg|Not demeriting " + self.name + " for becoming a zombie. self.points: " + self.points + " curableTime: " + curableTime + "||");
     }
 
     self.tombEnt = spawn( "script_model", self.origin );
@@ -313,16 +313,16 @@ deleteKillZombieObjective()
     /// We can't endon "death" because it gets emmitted whan a player-zombie is killed
     //self endon("death");
 
-    /// @bug FIXED: Once you have been a zombie, this loop will run every time a
+    /// FIXED: Once you have been a zombie, this loop will run every time a
     /// player-zombie is killed, which causes runtime errors after you have
     /// already been killed, as your self.zombieObjectiveIndex is out of range.
     /// the isZombie flag should fix this.
     isZombie = true; // flag to ensure loop only runs once
 
     while(isZombie) {
-        debugPrint("waiting for signal no_longer_a_zombie for " + self.name, "val");
+        log("debug", "msg|Waiting for signal no_longer_a_zombie for " + self.name + "||");
         self waittill("no_longer_a_zombie");
-        debugPrint("caught signal no_longer_a_zombie for " + self.name, "val");
+        log("signal", "msg|Caught signal no_longer_a_zombie for " + self.name + "||");
         if (self.zombieObjectiveIndex == -1) {return;}
 
         objective_state(self.zombieObjectiveIndex, "empty"); // "done" is apprently invalid, despite Zeroy's documentation

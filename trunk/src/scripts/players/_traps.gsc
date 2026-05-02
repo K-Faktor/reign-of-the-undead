@@ -51,6 +51,8 @@ init()
 
 precache()
 {
+    log("trace", "msg|in _traps::precache()||");
+
     level.fireTrapFx = loadfx("fire/firelp_med_pm_nodistort");
     level.electricTrapFx = loadfx("explosions/sparks_d");
 }
@@ -142,7 +144,7 @@ watchTrap(activatingPlayer)
                 // suicide() sets the parameters to _bot::killed() wrong, so we just
                 // ensure we do enough damage to kill the bot
                 iDamage = triggeringEntity.maxHealth + 300;
-                //if (isDefined(triggeringEntity.name)) {noticePrint(self.type + " trap attempting to damage " + triggeringEntity.name + " at " + now);}
+                // if (isDefined(triggeringEntity.name)) {log("dev", "msg|" + self.type + " trap attempting to damage " + triggeringEntity.name + " at " + now + "||");}
                 triggeringEntity scripts\bots\_bots::Callback_BotDamage(self.trigger, activatingPlayer, iDamage, 0, "MOD_MELEE", self.type, (0,0,0), (0,0,0), "head", 0);
             } else {
                 iDamage = triggeringEntity.maxHealth + 300;

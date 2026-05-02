@@ -35,17 +35,23 @@
 /**
  * @brief Creates a new generic stack
  *
+ * @param type string The type of stack [int_stack|str_stack|generic_stack]
+ *
  * @returns struct A new stack with capacity=10 and count=0
  */
-new()
+stNew(type)
 {
+    // quality:ignore_trace
+
+    if (!isDefined(type)) {type = "generic_stack";}
     stack = spawnStruct();
     stack.data = [];
     stack.count = 0;
     stack.capacity = 10;
-    stack.type = "generic_stack";
+    stack.type = type;
     return stack;
 }
+
 
 /**
  * @brief Pushes a single item onto the stack
@@ -56,8 +62,10 @@ new()
  *
  * @returns nothing (modifies stack.data and stack.count)
  */
-push(value)
+stPush(value)
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.count)) { self.count = 0; }
     if (!isDefined(self.capacity)) { self.capacity = 10; }
     if (!isDefined(self.data)) { self.data = []; }
@@ -70,6 +78,7 @@ push(value)
     self.count++;
 }
 
+
 /**
  * @brief Pushes multiple objects onto the stack from an array
  *
@@ -77,20 +86,25 @@ push(value)
  *
  * @returns nothing
  */
-pushMany(values)
+stPushMany(values)
 {
+    // quality:ignore_trace
+
     for (i = 0; i < values.size; i++) {
-        self push(values[i]);
+        self stPush(values[i]);
     }
 }
+
 
 /**
  * @brief Pops and returns the top object from the stack
  *
  * @returns object The top object, or undefined if stack is empty
  */
-pop()
+stPop()
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.count) || self.count <= 0) {
         return undefined;
     }
@@ -101,13 +115,16 @@ pop()
     return value;
 }
 
+
 /**
  * @brief Returns the top object without removing it
  *
  * @returns obj The top object, or undefined if stack is empty
  */
-peek()
+stPeek()
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.count) || self.count <= 0) {
         return undefined;
     }
@@ -115,13 +132,16 @@ peek()
     return self.data[self.count - 1];
 }
 
+
 /**
  * @brief Returns the bottom object without removing it
  *
  * @returns obj The bottom object, or undefined if stack is empty
  */
-peekBottom()
+stPeekBottom()
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.count) || self.count <= 0) {
         return undefined;
     }
@@ -129,26 +149,32 @@ peekBottom()
     return self.data[0];
 }
 
+
 /**
  * @brief Returns the number of elements in the stack
  *
  * @returns int The number of elements
  */
-size()
+stSize()
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.count)) {
         return 0;
     }
     return self.count;
 }
 
+
 /**
  * @brief Returns whether the stack is empty or not
  *
  * @returns bool Is the stack empty
  */
-isEmpty()
+stIsEmpty()
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.count)) {
         return true;
     }
@@ -156,16 +182,20 @@ isEmpty()
     return false;
 }
 
+
 /**
  * @brief Removes all elements from the stack
  *
  * @returns nothing
  */
-empty()
+stEmpty()
 {
+    // quality:ignore_trace
+
     self.count = 0;
     self.data = [];
 }
+
 
 /**
  * @brief Ensures the stack has at least the requested capacity
@@ -177,8 +207,10 @@ empty()
  *
  * @returns nothing
  */
-ensureCapacity(requestedCapacity)
+stEnsureCapacity(requestedCapacity)
 {
+    // quality:ignore_trace
+
     if (!isDefined(self.capacity)) {
         self.capacity = 10;
     }
@@ -188,15 +220,61 @@ ensureCapacity(requestedCapacity)
     }
 }
 
-// /**
-//  * NOT IMPLEMENTED - Do Not Implement
-//  *
-//  * This generic class will hold, potentially, unprintable data types, like ents and structs.
-//  * Trying to implement printing whatever object ends up in the stack is begging for disaster.
-//  *
-//  * @returns nothing
-//  */
-// print()
-// {
-//     return;
-// }
+
+/**
+ * @brief Prints the stack as a formatted integer list on one line
+ *
+ * @param prefix (optional) String to prepend to the output line
+ *
+ * Examples:
+ *   stack stPrint();                    → "int_stack: [1, 2, 3]"
+ *   stack stPrint("Path:");             → "Path: [1, 2, 3]"
+ *   stack stPrint("Current path:");     → "Current path: [1, 2, 3]"
+ *
+ * @returns nothing
+ */
+stPrint(prefix)
+{
+    // quality:ignore_trace
+
+    // We can only safely print a stack if it is only primitives
+    // Printing stacks of structs and such will need their own custom
+    // methods outside of this class
+    if (self.type == "int_stack") {
+        // Default prefix if none provided
+        if (!isDefined(prefix) || prefix == "") {prefix = "int_stack";}
+
+        if (!isDefined(self.count) || self.count <= 0) {
+            log("dev", "msg|" + prefix + ": []||");
+            return;
+        }
+        output = prefix + ": [";
+        for (i=0; i<self.count; i++) {
+            if (i > 0) {
+                output += ", ";
+            }
+            output += self.data[i];
+        }
+        output += "]";
+
+        log("dev", "msg|" + output + "||");
+    } else if (self.type == "string_stack") {
+        // Default prefix if none provided
+        if (!isDefined(prefix) || prefix == "") {prefix = "str_stack";}
+
+        if (!isDefined(self.count) || self.count <= 0) {
+            log("dev", "msg|" + prefix + ": []||");
+            return;
+        }
+        output = prefix + ": [";
+        for (i=0; i<self.count; i++) {
+            if (i > 0) {
+                output += ", ";
+            }
+            output += self.data[i];
+        }
+        output += "]";
+
+        log("dev", "msg|" + output + "||");
+    }
+}

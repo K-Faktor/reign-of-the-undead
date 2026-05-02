@@ -36,7 +36,6 @@
 #include scripts\include\utility;
 #include scripts\include\realtime;
 #include scripts\include\stack;
-// #include scripts\include\int_stack;
 #include scripts\include\priority_queue;
 
 /**
@@ -757,7 +756,7 @@ kdWaypointNearestNeighborsIterative(root, origin, staticIndex)
     // Stack that simulates the recursion "call frames" for backtracking.
     // Each frame holds the node we have already visited and the information needed
     // to decide whether its "other" child needs to be explored later.
-    pathStack = scripts\include\stack::new();
+    pathStack = scripts\include\stack::stNew("generic_stack");
 
     current = root;
     currentDepth = 0;
@@ -802,7 +801,7 @@ kdWaypointNearestNeighborsIterative(root, origin, staticIndex)
             frame.node = current;
             frame.depth = currentDepth;
             frame.dimDelta = dimDelta;
-            pathStack push(frame);
+            pathStack stPush(frame);
 
             // Move to the preferred child (exactly as recursive version)
             if (dimDelta > 0) {
@@ -818,9 +817,9 @@ kdWaypointNearestNeighborsIterative(root, origin, staticIndex)
          * for each node (exactly the unwind logic from the
          * original recursive function).
          */
-        while (pathStack size() > 0) {
+        while (pathStack stSize() > 0) {
             // Pop the top frame (this is the node we are now considering for its other child)
-            frame = pathStack pop();
+            frame = pathStack stPop();
 
             dimDelta = frame.dimDelta;
             nodeForCheck = frame.node;
@@ -863,7 +862,7 @@ kdWaypointNearestNeighborsIterative(root, origin, staticIndex)
         }
 
         // If stack is empty, we are done
-        if (pathStack size() == 0 && !isDefined(current)) {
+        if (pathStack stSize() == 0 && !isDefined(current)) {
             break;
         }
     }
