@@ -357,24 +357,24 @@ LANG_ENGLISH        "Explosive Expertise (^3lvl 10^7)"
 
 
 REFERENCE			DES_ENGINEER_PS_AB2
-LANG_ENGLISH		"The engineer is able to carry more explosives with him, he can also rig explosives to his companions."
+LANG_ENGLISH		"The engineer is able to carry more C4 & Claymores with him."
 
 REFERENCE			DES_ENGINEER_PS_AB2D
-LANG_ENGLISH		"The engineer is able to carry more explosives with him, he can also rig explosives to his companions. ^3Unlocked at Engineer rank 10."
+LANG_ENGLISH		"The engineer is able to carry more C4 & Claymores with him. ^3Unlocked at Engineer rank 10."
 
 		// ABILITY 3 //
 REFERENCE			ENGINEER_PS_AB3
-LANG_ENGLISH        "Repair Tools"
+LANG_ENGLISH        "Bottomless Grenades"
 
 REFERENCE			ENGINEER_PS_AB3D
-LANG_ENGLISH        "Repair Tools (^3lvl 20^7)"
+LANG_ENGLISH        "Bottomless Grenades (^3lvl 20^7)"
 
 
 REFERENCE			DES_ENGINEER_PS_AB3
-LANG_ENGLISH		"The engineer is able to repair turrets and vehicles."
+LANG_ENGLISH		"The engineer gets a free grenade every 30 seconds."
 
 REFERENCE			DES_ENGINEER_PS_AB3D
-LANG_ENGLISH		"The engineer is able to repair turrets and vehicles. ^3Unlocked ^3at Engineer rank 20."
+LANG_ENGLISH		"The engineer gets a free grenade every 30 seconds. ^3Unlocked ^3at Engineer rank 20."
 
 		// ABILITY 4 //
 REFERENCE			ENGINEER_PS_AB4

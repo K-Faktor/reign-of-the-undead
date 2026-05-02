@@ -200,7 +200,7 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
             (distance(self.origin, useObjects[i].origin) < 80))
         {
             self setOrigin(self.originalSpawnLocation);
-            debugPrint(self.name + " is down within 80 units of shop/ammo crate. Teleporting to spawn point.", "val");
+            log("server", "msg|" + self.name + " is down within 80 units of shop/ammo crate. Teleporting to spawn point.||");
             break;
         }
     }

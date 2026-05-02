@@ -90,24 +90,24 @@ processResponse(response)
         }
         break;
         case "item3": // Grenades
-        if (self.points >= level.dvar["shop_item4_costs"] + cureHoldback)
-        {
+        if (self.points >= level.dvar["shop_item4_costs"] + cureHoldback) {
             self scripts\players\_weapons::swapWeapons("grenade", "frag_grenade_mp");
             self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item4_costs"]);
         }
         break;
         case "item4":  // C4
-            if (self.points >= level.dvar["shop_item5_costs"] + cureHoldback)
-            {
+            if (self.points >= level.dvar["shop_item5_costs"] + cureHoldback) {
                 // extra check to make sure race conditions haven't made the emplaced array inaccurate
                 self scripts\players\_weapons::rebuildPlayersEmplacedExplosives();
-                if (level.maxC4PerPlayer - self.emplacedC4.size == 0) {
-                    self iprintlnbold("Sorry! Maximum of " + level.maxC4PerPlayer + " C4 per player");
+                limit =  level.maxC4PerPlayer;
+                if (self.explosiveExpert) {limit++;}        // ranked up engineers carry extra explosives
+                if (limit - self.emplacedC4.size == 0) {
+                    self iprintlnbold("Sorry! Maximum of " + limit + " C4 per player");
                     return;
                 }
                 self giveweapon("c4_mp");
                 self switchtoweapon("c4_mp");
-                self setweaponammostock ("c4_mp", level.maxC4PerPlayer - self.emplacedC4.size);
+                self setweaponammostock ("c4_mp", limit - self.emplacedC4.size);
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item5_costs"]);
             }
             break;
@@ -150,19 +150,22 @@ processResponse(response)
             {
                 // extra check to make sure race conditions haven't made the emplaced array inaccurate
                 self scripts\players\_weapons::rebuildPlayersEmplacedExplosives();
-                amount = level.maxClaymoresPerPlayer - self.emplacedClaymores.size;
+                limit =  level.maxClaymoresPerPlayer;
+                if (self.explosiveExpert) {limit++;}        // ranked up engineers carry extra explosives
+
+                amount = limit - self.emplacedClaymores.size;
                 if (amount == 0) {
-                    self iprintlnbold("Sorry! Maximum of " + level.maxClaymoresPerPlayer + " claymores per player");
+                    self iprintlnbold("Sorry! Maximum of " + limit + " claymores per player");
                     return;
                 } else if (amount < 0) {
-                    errorPrint(self.name + " Claymore purchase amount is negative: " + amount + " deployed claymores: " + self.emplacedClaymores.size);
+                    log("bug", "msg|" + self.name + " Claymore purchase amount is negative: " + amount + " deployed claymores: " + self.emplacedClaymores.size + "||");
                     self iprintlnbold("Oops! The game incorrectly thinks you have too many claymores already. Sorry!");
                     return;
                 }
                 self giveweapon("claymore_mp");
                 self switchtoweapon("claymore_mp");
-                // Up to 8 claymores, but max set at 4 in claymore_mp
-                self setweaponammostock ("claymore_mp", level.maxClaymoresPerPlayer - self.emplacedClaymores.size);
+                // Up to 8 claymores, but max set at 4 in claymore_mp  @todo test: may need to make this 5 for engineers
+                self setweaponammostock ("claymore_mp", limit - self.emplacedClaymores.size);
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_defensive2_costs"]);
             }
         break;

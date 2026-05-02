@@ -714,18 +714,19 @@ loadEngineerPassiveAbility(ability)
         case "AB1": // Engineering
             self.weaponMod += "engineer";
         break;
-        case "AB2": // Explosive Expertise
-            self.explosiveExpert = true;
+        case "AB2": // Explosive Expertise - carry more explosives
+            self.explosiveExpert = true;  // @todo need to test the extra C4 & Claymores
         break;
-        case "AB3": // Repair Tools
-            // ability to repair turrets and vehicles
-            // @todo in UI, but not implemented
+        case "AB3": // Bottomless Grenades
+            // every 30 seconds, they get a free grenade if they have < 4
+            self thread bottomlessGrenades();            
         break;
         case "AB4": // Incendiary Ammunition
             self.bulletMod = "incendary";
         break;
     }
 }
+
 
 /**
  * @brief Loads the primary abilities for scouts
@@ -808,6 +809,32 @@ rechargeSpecial(delta)
     // Update the special recharge HUD bar graph
     self setclientdvar("ui_specialrecharge", self.specialRecharge/100);
 }
+
+
+/**
+ * @brief Gives a free grenade every 30 seconds, unless they are already at max grenades
+ *        Engineer ability
+ *
+ * @returns nothing
+ */
+bottomlessGrenades()
+{
+    log("trace", "msg|in _abilities::bottomlessGrenades()||");
+
+    self endon("reset_abilities");
+    self endon("disconnect");
+
+    while (1) {
+        wait 30;       
+        ammoStock = self GetWeaponAmmoStock("frag_grenade_mp");
+        if (ammoStock == 0) {
+            self scripts\players\_weapons::swapWeapons("grenade", "frag_grenade_mp");
+            self setWeaponAmmoStock("frag_grenade_mp", 1);
+            continue;
+        } else if (ammoStock < 4) {self setWeaponAmmoStock("frag_grenade_mp", ammoStock + 1);}
+    }
+}
+
 
 /**
  * @brief Main logic for throwing and restoring medkits
