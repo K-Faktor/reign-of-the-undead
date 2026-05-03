@@ -51,7 +51,7 @@ instantiate()
     bot = addTestClient();
 
     if (!isDefined(bot)) {
-        warnPrint("Failed to instatiate a bot!");
+        log("warn", "msg|Failed to instatiate a bot!||");
         wait 0.5;
         return false;
     }
@@ -367,7 +367,7 @@ findPathToTarget()
         speed = self.cur_speed * 5; // assume spec'd speeds are per 0.2s, not per second, so scale them
         maxDistance = speed * 0.2;
         maxStepDistance = maxDistance / 4;
-        noticePrint("speed: " + speed + " maxDistance: " + maxDistance + " maxStepDistance: " + maxStepDistance);
+        log("dev", "msg|speed: " + speed + " maxDistance: " + maxDistance + " maxStepDistance: " + maxStepDistance + "||");
         distance = distance(self.origin, self.targetedPlayer.origin);
         trace = bulletTrace(self.origin + (0,0,20), self.targetedPlayer.origin + (0,0,20), false, self.targetedPlayer);
         if ((trace["fraction"] == 1) ||
@@ -541,13 +541,13 @@ move()
     i = 0;
     while (i < 100) {
         self findPathToTarget();
-        noticePrint("target position: " + self.targetedPlayer.origin);
+        log("dev", "msg|target position: " + self.targetedPlayer.origin + "||");
         self walk();
         while (self.movement.first != self.movement.last) {
             position = self.movement.orders[self.movement.first].origin;
             time = self.movement.orders[self.movement.first].time;
             angles = self.movement.orders[self.movement.first].angles;
-            noticePrint("moving:" + position + ", " + time);
+            log("dev", "msg|moving:" + position + ", " + time + "||");
             self setPlayerAngles(angles);
             self.mover moveTo(position, time);
             wait time;

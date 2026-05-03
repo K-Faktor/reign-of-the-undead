@@ -139,7 +139,7 @@ instantiateBots(botCount)
     }
 
     if (failedCount != 0) {
-        errorPrint("Failed to load " + failedCount + " of " + botCount + " bots.");
+        log("error", "msg|Failed to load " + failedCount + " of " + botCount + " bots.||");
     }
 
     level notify("bots_loaded");
@@ -180,9 +180,9 @@ availableBot()
 {
     log("trace", "msg|in bots::availableBot()||");
 
-    noticePrint(level.availableBots.size + " bots available.");
+    log("server", "msg|" + level.availableBots.size + " bots available.||");
     if (level.availableBots.size == 0) {
-        errorPrint("No available bots!");
+        log("error", "msg|No available bots!||");
         return undefined;
     } else {
         // pop a bot off the stack and return it
@@ -229,11 +229,11 @@ monitorBotSlots()
 
         if (botDelta >= tolerance) {
             // add bots
-            noticePrint("Flexible Slot System: Adding " + botDelta + " bots.");
+            log("server", "msg|Flexible Slot System: Adding " + botDelta + " bots.||");
             instantiateBots(botDelta);
         } else if (botDelta <= (-1 * tolerance)) {
             // remove bots
-            noticePrint("Flexible Slot System: Removing " + (-1 * botDelta) + " bots.");
+            log("server", "msg|Flexible Slot System: Removing " + (-1 * botDelta) + " bots.||");
             deleteBots(botDelta);
         }
     }
@@ -252,7 +252,7 @@ spawnZombie(zombieType, spawnpoint, bot)
 {
     log("trace", "msg|in bots::spawnZombie()||");
 
-    noticePrint("trying to spawn zombie");
+    log("dev", "msg|trying to spawn zombie||");
 
     if (!isDefined(bot)) {
         bot = availableBot();

@@ -177,7 +177,7 @@ autoText(message)
     log("trace", "msg|in _players::autoText()||");
 
     if(!isDefined(message)) {
-        errorPrint("_players::autoText() called with undefined message.");
+        log("errpr", "msg|_players::autoText() called with undefined message.||");
         return;
     }
     message = "^1[autotext] ^7" + message;
@@ -235,9 +235,9 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
         ent = level.useObjects[i];
         if (ent != self) {continue;}
         if (ent.type == "revive") {
-            debugPrint(self.name + " has a revive usable.", "val");
+            log("debug", "msg|" + self.name + " has a revive usable.||");
         } else {
-            debugPrint(self.name + " does NOT have a revive usable.", "val");
+            log("debug", "msg|" + self.name + " does NOT have a revive usable.||");
         }
     }
 
@@ -457,7 +457,7 @@ onPlayerConnect()
     // read. We read it here just to stop the runtime error; it won't actually
     // make the map playable--for that I need to overload the map's main GSC file.
     if (!isDefined(level.canBuyRaygun)) {
-        warnPrint("The map might not be set up for RotU. See: _players::onPlayerConnect()");
+        log("warn", "msg|The map might not be set up for RotU. See: _players::onPlayerConnect()||");
     }
     level.canBuyRaygun = getDvarInt("surv_buy_raygun_anytime");
     if ((level.canBuyRaygun) && (self.canGetSpecialWeapons)) {
@@ -559,7 +559,7 @@ onWaveIntermissionEnds()
         printPlayersData();
 
         downPlayerCount = level.activePlayers - level.alivePlayers;
-        debugPrint("level.waveBeganTime: " + level.waveBeganTime, "val");
+        // log("dev", "msg|level.waveBeganTime: " + level.waveBeganTime + "||");
 
         if (downPlayerCount > 0) {
             // We may need to punish for failing to revive
@@ -568,7 +568,7 @@ onWaveIntermissionEnds()
                 if ((players[i].isDown) && (players[i].lastDownTime < level.waveEndedTime)) {
                     // player was down when wave ended, and was still down when the next wave began
                     // so we need to see who we punish, if anyone
-                    debugPrint("Punish players for: " + players[i].name + " lastDownTime: " + players[i].lastDownTime + " waveEndedTime: " + level.waveEndedTime, "val");
+                    log("server", "msg|Punish players for: " + players[i].name + " lastDownTime: " + players[i].lastDownTime + " waveEndedTime: " + level.waveEndedTime + "||");
                     punishPlayers = true;
                     break;
                 }
@@ -625,29 +625,29 @@ onWaveIntermissionEnds()
                     }
 
 //                     aliveTime = level.waveBeganTime - players[i].lastUpTime;
-                    debugPrint(players[i].name + " lastUpTime: " + players[i].lastUpTime, "val");
-                    debugPrint(players[i].name + " aliveTime: " + aliveTime, "val");
+                    log("debug", "msg|" + players[i].name + " lastUpTime: " + players[i].lastUpTime + "||");
+                    log("debug", "msg|" + players[i].name + " aliveTime: " + aliveTime + "||");
                     timeout = level.dvar["surv_timeout"];
                     twoReviveTime = (timeout - 2) * 1000;
                     oneReviveTime = (int(timeout / 2) + 1) * 1000;
-                    debugPrint("twoReviveTime: " + twoReviveTime + "ms oneReviveTime: " + oneReviveTime + "ms", "val");
+                    log("debug", "msg|twoReviveTime: " + twoReviveTime + "ms oneReviveTime: " + oneReviveTime + "ms||");
                     if (aliveTime > twoReviveTime) { // time in ms
                         // player was alive long enough to revive at least two people
                         if (players[i].intermissionReviveCount < 2) {
-                            debugPrint(downPlayerCount + " down players, " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived two.", "val");
+                            log("debug", "msg|" +  downPlayerCount + " down players, " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived two.||");
                             demeritCount = int((2 - players[i].intermissionReviveCount) * level.reviveFailureDemeritFactor);
                             players[i] thread scripts\players\_rank::increaseDemerits(demeritCount, "wave_intermission_revive");
                         } else {
-                            debugPrint("No Demerits: " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived two.", "val");
+                            log("debug", "msg|No Demerits: " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived two.||");
                         }
                     } else if (aliveTime > oneReviveTime) { // time in ms
                         // player was alive long enough to revive at least one person
                         if (players[i].intermissionReviveCount < 1) {
-                            debugPrint(downPlayerCount + " down players, " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived one.", "val");
+                            log("debug", "msg|" + downPlayerCount + " down players, " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived one.||");
                             demeritCount = int((1 * level.reviveFailureDemeritFactor));
                             players[i] thread scripts\players\_rank::increaseDemerits(demeritCount, "wave_intermission_revive");
                         } else {
-                            debugPrint("No Demerit: " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived one.", "val");
+                            log("debug", "msg|No Demerit: " + players[i].name + " revived " + players[i].intermissionReviveCount + ", could have revived one.||");
                         }
                     }
                     players[i].intermissionReviveCount = 0;
@@ -684,7 +684,7 @@ onPlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHit
         self.isZombie = false;
         self.lastUpTime = getTime();
         self notify("no_longer_a_zombie");
-        debugPrint("signal no_longer_a_zombie emitted for " + self.name, "val");
+        log("debug", "msg|Emitting signal: no_longer_a_zombie emitted for " + self.name + "||");
         if (self.myBody != "") {self setmodel(self.myBody);}
         if (self.myHead != "") {self attach(self.myHead);}
         self setclientdvar("cg_thirdperson", 0);
@@ -969,7 +969,7 @@ printPlayersData()
                + leftPad(botHeader, " ", maxBot) + colSep
                + leftPad(spectatingHeader, " ", maxSpectating);
 
-    debugPrint(headerLine, "val");
+    log("pre", headerLine);
 
     for (i = 0; i < players.size; i++) {
         if (!isDefined(players[i])) {continue;}
@@ -991,13 +991,13 @@ printPlayersData()
         line = name + colSep + index + colSep + playerNumber + colSep + guid + colSep
              + active + colSep + alive + colSep + down + colSep + bot + colSep + spectating;
 
-        debugPrint(line, "val");
+        log("pre", line);
     }
 
     alive = level.alivePlayers;
     active = level.activePlayers;
     down = active - alive;
-    debugPrint("alive: " + alive + " active: " + active + " down: " + down, "val");
+    log("pre", "alive: " + alive + " active: " + active + " down: " + down);
 }
 
 watchPlayersData()
@@ -1043,12 +1043,12 @@ correctPlayerCounts()
         if (level.activePlayers != activePlayers) {
             level.activePlayers = activePlayers;
             level.downPlayers = downPlayers;
-            debugPrint("level.activePlayers was incorrect; correcting.", "val");
+            log("bug", "msg|level.activePlayers was incorrect; correcting.||");
         }
         if (level.alivePlayers != alivePlayers) {
             level.alivePlayers = alivePlayers;
             level.downPlayers = downPlayers;
-            debugPrint("level.alivePlayers was incorrect; correcting.", "val");
+            log("bug", "msg|level.alivePlayers was incorrect; correcting.||");
         }
     }
 }
@@ -1059,8 +1059,8 @@ cleanup(message)
     log("trace", "msg|in _players::cleanup()||");
 
     if(!isDefined(self)) {
-        noticePrint("Player disconnected before _players::cleanup() could run.");
-        if (isDefined(message)) {noticePrint(message);}
+        log("server", "msg|Player disconnected before _players::cleanup() could run.||");
+        if (isDefined(message)) {log("server", "msg|" + message + "||");}
         markAdminMenuAsDirty();
         level.activePlayers -= 1;
         level.alivePlayers -= 1;
@@ -1069,13 +1069,13 @@ cleanup(message)
 
     for (i=0; i<level.minigunTurrets.size; i++) {
         if ((isDefined(level.minigunTurrets[i].gun.owner)) && (level.minigunTurrets[i].gun.owner == self)) {
-            debugPrint("From players::cleanup(), trying to remove turret " + level.minigunTurrets[i].id, "val");
+            log("debug", "msg|From players::cleanup(), trying to remove turret " + level.minigunTurrets[i].id + "||");
             thread scripts\players\_turrets::removeTurret(level.minigunTurrets[i]);
         }
     }
     for (i=0; i<level.grenadeTurrets.size; i++) {
         if ((isDefined(level.grenadeTurrets[i].gun.owner)) && (level.grenadeTurrets[i].gun.owner == self)) {
-            debugPrint("From players::cleanup(), trying to remove turret " + level.grenadeTurrets[i].id, "val");
+            log("debug", "msg|From players::cleanup(), trying to remove turret " + level.grenadeTurrets[i].id + "||");
             thread scripts\players\_turrets::removeTurret(level.grenadeTurrets[i]);
         }
     }
@@ -1104,7 +1104,7 @@ cleanup(message)
             turret.gun unlink();
             thread scripts\players\_turrets::removeTurret(turret);
         } else {
-            debugPrint("Deleting self.carryObj", "val");
+            log("debug", "msg|Deleting self.carryObj||");
             self.carryObj delete();
         }
     }
@@ -1160,7 +1160,7 @@ cleanup(message)
     self notify("end_trance");
     self updateHealthHud(-1);
 
-    debugPrint("Finished _players::cleanup() for player: " + playerName, "val");
+    log("debug", "msg|Finished _players::cleanup() for player: " + playerName + "||");
 }
 
 
@@ -1208,7 +1208,7 @@ spawnPlayerWhenMorePlayersAreAlive()
 //     self endon("spawned");
     self endon("spawned_player");
 
-    debugPrint("Waiting until enough players are alive to spawn " + self.name, "val");
+    log("server", "msg|Waiting until enough players are alive to spawn " + self.name + "||");
 
     while (1) {
         wait 2;
@@ -1229,7 +1229,6 @@ spawnPlayerWhenMorePlayersAreAlive()
 changeClass(cost)
 {
     log("trace", "msg|in _players::changeClass()||");
-    debugPrint("in _players::changeClass()", "val");
 
     // Force dead player's body to be their old class, not their new class
     self setclientdvar("ui_loadout_class", self.curClass);
@@ -1259,12 +1258,12 @@ changeClassNextIntermission()
     self endon("join_spectator");
     self endon("menu_changeclass_allies_closed");
 
-    debugPrint("Waiting until wave intermission to change " + self.name + " class from " + self.curClass + " to " + self.class, "val");
+    log("server", "msg|Waiting until wave intermission to change " + self.name + " class from " + self.curClass + " to " + self.class + "||");
 
     while (1) {
         level waittill("wave_finished");
         wait 1;
-        debugPrint("Wave intermission began, changing class of " + self.name, "val");
+        log("server", "msg|Wave intermission began, changing class of " + self.name + "||");
         self changeClass();
         break;
     }
@@ -1278,14 +1277,14 @@ spawnPlayerNextIntermission(preserveState)
     level endon("game_ended");
     self endon("spawned_player");
 
-    debugPrint("Waiting until wave intermission to spawn " + self.name, "val");
+    log("server", "msg|Waiting until wave intermission to spawn " + self.name + "||");
 
     if (!isDefined(preserveState)) {preserveState = false;}
 
     while (1) {
         level waittill("wave_finished");
         wait 1;
-        debugPrint("Wave intermission began, trying to spawn " + self.name, "val");
+        log("server", "msg|Wave intermission began, trying to spawn " + self.name + "||");
         self.curClass = self.class;
         self.mayRespawn = true;
         self joinAllies();
@@ -1297,22 +1296,22 @@ spawnPlayer(preserveState)
 {
     log("trace", "msg|in _players::spawnPlayer()||");
 
-    debugPrint(self.name + ": sessionstate: " + self.sessionstate, "val");
-    debugPrint(self.name + ": sessionteam: " + self.sessionteam, "val");
-    debugPrint("level.waveIntermission: " + level.waveIntermission, "val");
+    isIntermission = false;
+    if (level.waveIntermission == 1) {isIntermission = true;}
 
-    debugPrint(self.name + " spawning as " + self.class, "val");
+    log("server", sprintfLog("msg|player state||name|$1||sessionState|$2||sessionTeam|$3||isIntermission|$4||", self.name, self.sessionstate, self.sessionteam, isIntermission));
+    log("server", "msg|" + self.name + " spawning as " + self.class + "||");
 
     if (!isDefined(preserveState)) {preserveState = false;}
 
     if (level.gameEnded) {return;}
 
     if (self.sessionteam == "spectator") {
-        debugPrint(self.name + "'s self.sessionteam is spectator, aborting spawnPlayer()", "val");
+        log("server", "msg|" + self.name + "'s self.sessionteam is spectator, aborting spawnPlayer()||");
         return;
     }
 
-    debugPrint(self.name + " about to emit 'spawned' signal", "val");
+    log("server", "msg|" + self.name + " about to emit 'spawned' signal||");
     self notify("spawned");
 
     // Setting neccesary variables
@@ -1534,7 +1533,7 @@ incUpgradePoints(inc)
     if (!isDefined(self)) {return;}
 
     if (!isDefined(self.points)) {
-        errorPrint("self.points is undefined for " + self.name);
+        log("error", "msg|self.points is undefined for " + self.name + "||");
         return;
     }
 
@@ -1577,7 +1576,7 @@ joinSpectator()
             self suicide();
         }
 
-        debugPrint(self.name + " spawning as a spectator", "val");
+        log("server", "msg|" + self.name + " spawning as a spectator||");
         self.isActive = false;
         self.zombie = false;
         self.isAlive = false;
@@ -1590,7 +1589,7 @@ joinSpectator()
         self.sessionstate = "spectator";
 
         spawns = getentarray("mp_global_intermission", "classname");
-        debugPrint("Trying to spawn " + self.name + " as spectator; spawns.size = " + spawns.size, "val");
+        log("server", "msg|Trying to spawn " + self.name + " as spectator; spawns.size = " + spawns.size + "||");
         spawn = spawns[randomint(spawns.size)]; /// @bug randomint param 0 bug
 
         self setclientdvar("cg_thirdperson", 1);

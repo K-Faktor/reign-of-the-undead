@@ -160,13 +160,13 @@ initKdWaypointTree()
             }
             kdPrintNode(level.kdWpTree, 0);
             for (i=0; i<9; i++) {
-                noticePrint("depth: " + i + "  " + level.kdText[i]);
+                log("server", "msg|depth: " + i + "  " + level.kdText[i] + "||");
             }
 
             // validate tree
             level.maxDepth = 0;
             kdValidateNode(level.kdWpTree, 0);
-            noticePrint("maxDepth: " + level.maxDepth);
+            log("server", "msg|maxDepth: " + level.maxDepth + "||");
         }
     }
 }
@@ -397,6 +397,7 @@ printArray(array, axis, pivotIndex)
     return data;
 }
 
+
 printTrace(trace, from, to, ignoreEntity)
 {
     fraction = trace["fraction"];
@@ -404,13 +405,13 @@ printTrace(trace, from, to, ignoreEntity)
     entity = trace["entity"];
     surface = trace["surfacetype"];
     switch (surface) {
-        case "wood":       // fall through
-        case "metal":      // fall through
-        case "brick":      // fall through
-        case "plaster":      // fall through
-        case "plastic":      // fall through
-        case "asphalt":      // fall through
-        case "dirt":      // fall through
+        case "wood":        // fall through
+        case "metal":       // fall through
+        case "brick":       // fall through
+        case "plaster":     // fall through
+        case "plastic":     // fall through
+        case "asphalt":     // fall through
+        case "dirt":        // fall through
         case "rubber":      // fall through
         case "concrete":
 //             return;
@@ -424,18 +425,18 @@ printTrace(trace, from, to, ignoreEntity)
         else if ((isDefined(trace["entity"].isCorpse)) && (trace["entity"].isCorpse)) {entity = "corpse";}
         else {
             entity = "defined";
-//             number = trace["entity"] getEntityNumber();
-//             ignoreNumber = ignoreEntity getEntityNumber();
-//             if (number == ignoreNumber) {
-//                 noticePrint("hit entity is the ignore entity.  number: " + number);
-//             }
+            // number = trace["entity"] getEntityNumber();
+            // ignoreNumber = ignoreEntity getEntityNumber();
+            // if (number == ignoreNumber) {
+            //     log("dev", "msg|hit entity is the ignore entity.  number: " + number + "||");
+            // }
         }
         if (isDefined(trace["entity"].name)) {name = trace["entity"].name;}
     }
     if (trace["fraction"] == 0) {
     }
 
-    noticePrint("trace(from, to, fraction, position, entity, name, surface, normal): (" + from + ", " + to + ", " + fraction + ", " + position + ", " + entity + ", " + name + ", " + surface + ", " + normal + ")");
+    log("dev", "msg|trace(from, to, fraction, position, entity, name, surface, normal): (" + from + ", " + to + ", " + fraction + ", " + position + ", " + entity + ", " + name + ", " + surface + ", " + normal + ")||");
 }
 
 isPathClear(from, to, ignoreEntity)
@@ -508,13 +509,13 @@ isPathClear(from, to, ignoreEntity)
     } // end while
 
     if (count >= 10) {
-        errorPrint("could not complete a trace within 10 tries, debugging");
+        log("error", "msg|Could not complete a trace within 10 tries, debugging||");
         iPrintLnBold("Limit Error");
         debugIsPathClear(origin, originalTo, originalEntity);
         clearDistance = distance(origin + (0,0,40), trace["position"]);
         return clearDistance;
     } else {
-        errorPrint("reached end of function without returning, debugging. count: " + count);
+        log("error", "msg|Reached end of function without returning, debugging. count: " + count + "||");
         iPrintLnBold("Return Error");
         debugIsPathClear(origin, originalTo, originalEntity);
     }
@@ -554,20 +555,20 @@ debugIsPathClear(from, to, ignoreEntity)
             }
 
             if ((isDefined(trace["entity"].isCorpse)) && (trace["entity"].isCorpse)) {
-                noticePrint("hit a corpse");
+                log("dev", "msg|hit a corpse||");
             } else if ((isDefined(trace["entity"].isBot)) && (trace["entity"].isBot)) {
-                noticePrint("hit another bot");
+                log("dev", "msg|hit another bot||");
             } else if ((isDefined(trace["entity"].isBarrel)) && (trace["entity"].isBarrel)) {
-                noticePrint("hit a barrel");
+                log("dev", "msg|hit a barrel||");
             } else if ((isDefined(trace["entity"].isBarricade)) && (trace["entity"].isBarricade)) {
-                noticePrint("hit a barricade");
+                log("dev", "msg|hit a barricade||");
             } else if ((isDefined(trace["entity"].isTurret)) && (trace["entity"].isTurret)) {
-                noticePrint("hit a turret");
+                log("dev", "msg|hit a turret||");
             } else if ((isDefined(trace["entity"].isTeleporter)) && (trace["entity"].isTeleporter)) {
-                noticePrint("hit a teleporter");
+                log("dev", "msg|hit a teleporter||");
             } else {
                 // we hit something solid that should stop us, like a wall, ceiling, etc.
-                noticePrint("hit entity is defined, but it isn't one we should ignore");
+                log("dev", "msg|hit entity is defined, but it isn't one we should ignore||");
             }
 
             if (((isDefined(trace["entity"].isCorpse)) && (trace["entity"].isCorpse)) ||    // ignore corpses other than ours
@@ -933,12 +934,12 @@ kdValidateNode(node, depth)
     // parent's, and the rightChild's axis dimension must be greater than the parent's.
     if (isDefined(node.leftChild)) {
         if (level.Wp[node.leftChild.id].origin[axis] > level.Wp[node.id].origin[axis]) {
-            noticePrint("Node " + node.id + "'s .leftChild " + dim + "-axis is > the node's " + dim + "-axis, but it should be smaller or equal!");
+            log("dev", "msg|Node " + node.id + "'s .leftChild " + dim + "-axis is > the node's " + dim + "-axis, but it should be smaller or equal!||");
         }
     }
     if (isDefined(node.rightChild)) {
         if (level.Wp[node.rightChild.id].origin[axis] <= level.Wp[node.id].origin[axis]) {
-            noticePrint("Node " + node.id + "'s .rightChild " + dim + "-axis is <= the node's " + dim + "-axis, but it should be larger!");
+            log("dev", "msg|Node " + node.id + "'s .rightChild " + dim + "-axis is <= the node's " + dim + "-axis, but it should be larger!||");
         }
     }
     kdValidateNode(node.leftChild, depth+1);
@@ -1485,9 +1486,10 @@ printAStarData()
 {
     while (1) {
         wait 120;
-        noticePrint("A* (calls, saved calls, distance() calls): (" + level.astarCalls + ", " + level.savedAStarCalls + ", " + level.astarDistanceCalls + ")");
+        log("server", "msg|A* (calls, saved calls, distance() calls): (" + level.astarCalls + ", " + level.savedAStarCalls + ", " + level.astarDistanceCalls + ")||");
     }
 }
+
 
 /**
  * @brief Perfoms testing comparing the old A* algorithm and the new A* alorithm
@@ -1513,11 +1515,11 @@ validateAStar(n)
         if (oldAStar == newAStar) {right++;}
         else {
             wrong++;
-            noticePrint("old: " + oldAStar + " new: " + newAStar);
+            log("dev", "msg|old: " + oldAStar + " new: " + newAStar + "||");
         }
     }
 
-    noticePrint("A* validity (right, wrong): (" + right + ", " + wrong + ")");
+    log("server", "msg|A* validity (right, wrong): (" + right + ", " + wrong + ")||");
 }
 
 

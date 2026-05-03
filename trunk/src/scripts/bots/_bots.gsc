@@ -46,35 +46,6 @@ init()
 
     precache();
 
-    // runtime errors on maps with no waypoints.  Test: mp_4nuketown
-    // same map has Error: Could not load stringtable "waypoints/mp_4nuketown_wp.csv".
-
-    // runtime errors on maps with no waypoints.  Test: mp_ancient_final_wp
-    // same map has Error: Could not load stringtable "waypoints/mp_ancient_final_wp.csv".
-    // no such path/file in the *.iwd.  In the *.ff?
-
-        // Error: Could not load stringtable "waypoints/mp_ancient_final_wp.csv".
-
-        // ******* script runtime error *******
-        // type undefined is not a float: (file 'scripts/include/waypoints.gsc', line 804)
-        //         x = randomFloatRange(level.waypointMinX, level.waypointMaxX);
-        //                                 *
-        // Error: called from:
-        // (file 'scripts/include/waypoints.gsc', line 934)
-        //         origin = random3dPoint(useMapExtents);   // if true, generate points within 3D volume covered by waypoints
-        //                 *
-        // Error: called from:
-        // (file 'scripts/include/waypoints.gsc', line 66)
-        //     nearestWaypointsTest(100, true);
-        //     *
-        // Error: called from:
-        // (file 'scripts/bots/_bots.gsc', line 51)
-        //     scripts\include\waypoints::initializeWaypoints();
-        //     *
-        // Error: called from:
-        // (file 'scripts/server/_server.gsc', line 124)
-        //     thread scripts\bots\_bots::init();
-
     scripts\include\waypoints::initializeWaypoints();
 
     if (getDvarInt("use_flexible_slots") != 1) {level.useFlexibleSlots = false;}
@@ -114,7 +85,7 @@ init()
     wait 1;
     if (level.loadBots) {
         // this is a server restart, so create bots
-        noticePrint("Calling to load " + level.dvar["bot_count"] + " bots.");
+        log("server", "msg|Calling to load " + level.dvar["bot_count"] + " bots.||");
         instantiateBots(level.dvar["bot_count"]);
     } else {
         // this is a map restart, so existing bots will reconnect
@@ -204,7 +175,7 @@ instantiateBots(botCount)
     }
 
     if (failedCount != 0) {
-        errorPrint("Failed to load " + failedCount + " of " + botCount + " bots.");
+        log("error", "msg|Failed to load " + failedCount + " of " + botCount + " bots.||");
     }
 
     level notify("bots_loaded");
@@ -229,7 +200,7 @@ deleteBots(botCount)
         while (!isDefined(bot)) {
             wait 0.1;
             bot = availableBot();
-            noticePrint("trying to pop a bot off the stack so we can delete it.");
+            log("dev", "msg|trying to pop a bot off the stack so we can delete it.||");
         }
         botsToRemove[botsToRemove.size] = bot.index;
     }
@@ -275,15 +246,17 @@ monitorBotSlots()
 
         if (botDelta >= tolerance) {
             // add bots
-            noticePrint("Flexible Slot System: Adding " + botDelta + " bots.");
+            log("server", "msg|Flexible Slot System: Adding " + botDelta + " bots.||");
             instantiateBots(botDelta);
         } else if (botDelta <= (-1 * tolerance)) {
             // remove bots
-            noticePrint("Flexible Slot System: Removing " + (-1 * botDelta) + " bots.");
+            log("server", "msg|Flexible Slot System: Removing " + (-1 * botDelta) + " bots.||");
             deleteBots(botDelta);
         }
     }
 }
+
+
 /**
  * @brief Resets bot count to bot_count dvar when a map is reloaded without a server restart
  *
@@ -298,14 +271,15 @@ resetFlexibleSlots()
     botDelta = botCount - level.bots.size;
     if (botDelta < 0) {
         // remove bots
-        noticePrint("Flexible Slot System: Removing " + (botDelta * -1) + " bots.");
+        log("server", "msg|Flexible Slot System: Removing " + (botDelta * -1) + " bots.||");
         deleteBots(botDelta * -1);
     } else if (botDelta > 0) {
         // add bots
-        noticePrint("Flexible Slot System: Adding " + botDelta + " bots.");
+        log("server", "msg|Flexible Slot System: Adding " + botDelta + " bots.||");
         instantiateBots(botDelta);
     }
 }
+
 
 /**
  * @brief Finds a bot that is available for spawning
@@ -316,7 +290,7 @@ availableBot()
 {
     log("trace", "msg|in _bots::availableBot()||");
 
-    // noticePrint("level.availableBots.size: " + level.availableBots.size);
+    // log("dev", "msg|level.availableBots.size: " + level.availableBots.size + "||");
     if (level.availableBots.size == 0) {
         if (false) {
             // for debugging.  this usually only happens when we all of our bot slots are
@@ -325,7 +299,7 @@ availableBot()
             for (i=0; i<level.bots.size; i++) {
                 if (level.bots[i].hasSpawned) {spawnedBots++;}
             }
-            warnPrint("No available bots! Already " + spawnedBots + " alive.");
+            log("warn", "msg|No available bots! Already " + spawnedBots + " alive.||");
         }
         return undefined;
     } else {
@@ -351,7 +325,7 @@ spawnZombie(zombieType, spawnpoint, bot)
     log("trace", "msg|in _bots::spawnZombie()||");
 
     if (!isDefined(bot)) {
-//         noticePrint("asking for a bot so we can spawn a zombie");
+        // log("dev", "msg|asking for a bot so we can spawn a zombie||");
         bot = availableBot();
         if (!isDefined(bot)) {return undefined;}
     }
@@ -516,7 +490,7 @@ Callback_BotDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeap
         }
 
         if(!isDefined(self.incdammod)) {
-            debugPrint("BUG: self.incdammod not set; setting to 1 for : " + self.name, "val");
+            log("bug", "msg|self.incdammod not set; setting to 1 for : " + self.name + "||");
             self.incdammod = 1;
         }
         iDamage = int(iDamage * eAttacker scripts\players\_abilities::getDamageModifier(sWeapon, sMeansOfDeath, self, iDamage) * self.incdammod);
@@ -535,12 +509,12 @@ Callback_BotDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeap
     if(!(iDFlags & level.iDFLAGS_NO_PROTECTION)) {
         if(iDamage < 1) {iDamage = 1;}
 
-//         // for debugging many_bosses damage bugs
-//         if ((isDefined(level.waveType)) && (level.waveType == "many_bosses")) {
-//             if (isDefined(eAttacker.name)) {attackerName = eAttacker.name;}
-//             else {attackerName = "N/A";}
-//             noticePrint("finishPlayerDamage(," + attackerName + "," + iDamage + ",N/A," + sMeansOfDeath + "," + sWeapon + ",,,,)");
-//         }
+        // // for debugging many_bosses damage bugs
+        // if ((isDefined(level.waveType)) && (level.waveType == "many_bosses")) {
+        //     if (isDefined(eAttacker.name)) {attackerName = eAttacker.name;}
+        //     else {attackerName = "N/A";}
+        //     log("debug", "msg|finishPlayerDamage(," + attackerName + "," + iDamage + ",N/A," + sMeansOfDeath + "," + sWeapon + ",,,,)||");
+        // }
         self finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
     }
 }
@@ -601,7 +575,7 @@ addToAssist(player, damage)
 //     while (1) {
 //         count++;
 //         if (count > 100) {
-//             noticePrint("Bot " + self.index + " bailing on main loop.");
+//            log("dev", "msg|Bot " + self.index + " bailing on main loop.||");
 //             break;
 //         }
 //         switch (self.status) {
@@ -611,7 +585,7 @@ addToAssist(player, damage)
 //                 self.previousStatus = 9;
 //                 self.alertLevel = 100;
 //                 setSpeed();
-//                 noticePrint("Bot " + self.index + " Idle --> Searching");
+//                 log("dev", "msg|Bot " + self.index + " Idle --> Searching||");
 //                 iPrintLnBold("Bot " + self.index + " Idle --> Searching");
 //                 break;
 //             case 0: // BOT_STATE_SEARCHING
@@ -623,7 +597,7 @@ addToAssist(player, damage)
 //                     self.targetedPlayer = self.bestTarget;  // temp hack, think we have 2 variables for the same things indifferent parts of the code
 //                     setTargetedPlayer(self.bestTarget);
 //                     self.status = 1; // BOT_STATE_STALKING;
-//                     noticePrint("Bot " + self.index + " Searching --> Stalking " + self.bestTarget.name);
+//                     log("dev", "msg|Bot " + self.index + " Searching --> Stalking " + self.bestTarget.name + "||");
 //                     iPrintLnBold("Bot " + self.index + " Searching --> Stalking " + self.bestTarget.name);
 //                     // iPrintLnBold("Targeting: " + self.bestTarget.name);
 //                 }
@@ -633,7 +607,7 @@ addToAssist(player, damage)
 //                 // if found, set state stalking
 //                 break;
 //             case 1: // BOT_STATE_STALKING
-//                 noticePrint("Bot " + self.index + " Stalking " + self.bestTarget.name);
+//                 log("dev", "msg|Bot " + self.index + " Stalking " + self.bestTarget.name + "||");
 //                 // canWeSeeTarget() if no, set state reacquire target; break;
 //                 // checkForBetterTarget() // every Nth iteration
 //                 // if not found, break;  keep stalking current target
@@ -844,16 +818,16 @@ zomWaitToBeTriggered()
     // 17th most-called function (1% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
-    debugPrint("Zombie at " + self.origin + " checking for players", "val");
+    log("dev", "msg|Zombie at " + self.origin + " checking for players" + "||");
     for (i=0; i<level.players.size; i++) {
         player = level.players[i];
-        debugPrint("Checking player " + player.name + " at " + player.origin + ", distance: " + distance(self.origin, player.origin), "val");
+        log("dev", "msg|Checking player " + player.name + " at " + player.origin + ", distance: " + distance(self.origin, player.origin) + "||");
         if (self canSeeTarget(player)) {
-            debugPrint("Zombie can see player " + player.name + ", triggering!", "val");
+            log("dev", "msg|Zombie can see player " + player.name + ", triggering!||");
             self zomGoTriggered();
             break;
         } else {
-            debugPrint("Zombie cannot see player " + player.name, "val");
+            log("dev", "msg|Zombie cannot see player " + player.name + "||");
         }
     }
 }
@@ -907,7 +881,7 @@ zomMoveTowards(target_position)
 
         // both are vaild
         if ((self.myWaypoint) && (targetWp)) {
-            debugPrint("myWaypoint: " + self.myWaypoint + " targetWp: " + targetWp, "val");
+            log("dev", "msg|myWaypoint: " + self.myWaypoint + " targetWp: " + targetWp + "||");
         }
 
         if (targetWp == self.myWaypoint) {
@@ -921,10 +895,10 @@ zomMoveTowards(target_position)
                 (self.pathStack stIsEmpty()))                 // we are out of path nodes
             {
                 // invalidate the pathStack and get a fresh stack from A*
-                if (self.previousAStarCallTargetWp != targetWp) {noticePrint(self.name + ": self.lastAStarTargetWp != targetWp");}
-                if (self.myWaypoint != self.lastAStarWp) {noticePrint(self.name + ": self.myWaypoint != self.lastAStarWp");}
-                if (self.pathStack stIsEmpty()) {noticePrint(self.name + ": self.pathStack is empty");}
-                noticePrint("A* call (bot, myWaypoint, targetWp): (" + self.name + ", " + self.myWaypoint + ", " + targetWp + ")");
+                if (self.previousAStarCallTargetWp != targetWp) {log("dev", "msg|" + self.name + ": self.lastAStarTargetWp != targetWp||");}
+                if (self.myWaypoint != self.lastAStarWp) {log("dev", "msg|" + self.name + ": self.myWaypoint != self.lastAStarWp||");}
+                if (self.pathStack stIsEmpty()) {log("dev", "msg|" + self.name + ": self.pathStack is empty||");}
+                log("dev", "msg|A* call (bot, myWaypoint, targetWp): (" + self.name + ", " + self.myWaypoint + ", " + targetWp + ")||");
                 self.pathStack stPushMany(AStarNew(self.myWaypoint, self.targetWp));
                 self.previousAStarCallTargetWp = targetWp;
             } else {

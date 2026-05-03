@@ -49,7 +49,7 @@ instantiate()
     bot = addTestClient();
 
     if (!isDefined(bot)) {
-        warnPrint("Failed to instantiate a bot!");
+        log("warn", "msg|Failed to instantiate a bot!||");
         wait 0.5;
         return false;
     }
@@ -83,7 +83,7 @@ initialize(bot)
     {
         if (limit <= 0)
         {
-            warnPrint("Bot failed to connect in time!");
+            log("warn", "msg|Bot failed to connect in time!||");
             return false;
         }
         wait 0.05;
@@ -355,7 +355,7 @@ changeState(bot, newState) {
     // how many control ticks has the bot been in this state?
     // each tick is level.zomInterval second, i.e. 0.2 seconds, or 4 frames.
     bot.stateTickCount = 0;
-    noticePrint("Bot " + bot.index + " " + botStateToString(bot.previousStatus) + " --> " + botStateToString(bot.status));
+    log("dev", "msg|Bot " + bot.index + " " + botStateToString(bot.previousStatus) + " --> " + botStateToString(bot.status) + "||");
 
     bot notify("state_changed");
 }
@@ -381,10 +381,10 @@ botMain(bot)
 
         bot.tickCount++;
         if (bot.tickCount > 2000) {
-            noticePrint("Bot " + bot.index + " bailing on main loop.");
+            log("dev", "msg|Bot " + bot.index + " bailing on main loop.||");
             break;
         }
-        if (bot.status > 2) {noticePrint("bot.status: " + bot.status);}
+        if (bot.status > 2) {log("dev", "msg|bot.status: " + bot.status + "||");}
         switch (bot.status) {
             case 0: // BOT_STATE_IDLE
                 bot.stateTickCount++;
@@ -433,7 +433,7 @@ botMain(bot)
                 // stalk now, until state changes
                 if (bot.stateTickCount == 0) {
                     bot.stateTickCount++;
-                    noticePrint("Bot " + bot.index + " Stalking " + bot.bestTarget.name + " pos: " + bot.bestTarget.origin);
+                    log("dev", "msg|Bot " + bot.index + " Stalking " + bot.bestTarget.name + " pos: " + bot.bestTarget.origin + "||");
                     bot thread wander(bot);
                 } else {
                     bot.stateTickCount++;
@@ -497,7 +497,7 @@ wander(bot)
 
     if (level.waypointsInvalid)
     {
-        noticePrint("Waypoints Invalid - using old wandering method");
+        log("dev", "msg|Waypoints Invalid - using old wandering method||");
         // TODO: old direct wandering fallback
         return;
     }
@@ -520,10 +520,10 @@ wander(bot)
             // the player and the zombie might still be quite far away from each other.
             dis = distanceSquared(bot.origin, bot.targetedPlayer.origin);
             if (dis < level.meleeRangeSquared) {
-                noticePrint("In melee range");
+                log("dev", "msg|In melee range||");
             }
             if (dis < level.pursuitRangeSquared) {
-                noticePrint("In pursuit range");
+                log("dev", "msg|In pursuit range||");
                 // enter pursuit mode
             }
         }
@@ -629,7 +629,7 @@ teleport(bot)
 
     if (bot.isFollowingWaypoints) {
         // since we are following waypoints, we assume no solid objects or obstructions
-        noticePrint("Teleport!");
+        log("dev", "msg|Teleport!||");
         iPrintLnBold("Teleport!");
 
         direction = vectorNormalize(level.Wp[bot.nextWp].origin - level.Wp[bot.myWaypoint].origin);
@@ -651,7 +651,7 @@ ladder(bot)
 
     if (bot.isFollowingWaypoints) {
         // since we are following waypoints, we assume no solid objects or obstructions
-        noticePrint("Ladder!");
+        log("dev", "msg|Ladder!||");
         iPrintLnBold("Ladder!");
 
         bot.motionType = level.BOT_CLIMB;
@@ -701,7 +701,7 @@ mantleOver(bot)
     level endon("game_ended");
 
     if (bot.isFollowingWaypoints) {
-        noticePrint("Mantle Over!");
+        log("dev", "msg|Mantle Over!||");
         iPrintLnBold("Mantle Over!");
         // since we are following waypoints, we assume no solid objects or obstructions
 
@@ -723,7 +723,7 @@ mantleOver(bot)
             distance = distance(from, to);
             if (speed == 0) {speed = 10;} // temp div by zero protection
             time = distance / speed;
-            warnPrint("768: Divide by Zero: (time, distance, speed): " + time + " " + distance + " " + speed);
+            log("warn", "msg|726: Divide by Zero: (time, distance, speed): " + time + " " + distance + " " + speed + "||");
             bot.mover moveTo(to, time, 0, 0);
             bot.mover waittill("movedone");
 
@@ -746,7 +746,7 @@ mantleOver(bot)
             return;
         } else {
             // cache miss!
-            noticePrint("Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")");
+            log("dev", "msg|Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")||");
             // treat it as a mantle path as a fail-safe
             bot mantle(bot);
             bot executeMovementQueue(bot);
@@ -779,7 +779,7 @@ mantle(bot)
         return;
     } else {
         // cache miss!
-        noticePrint("Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")");
+        log("dev", "msg|Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")||");
         // treat it as a clamped path as a fail-safe
         bot clamped(bot);
         bot executeMovementQueue(bot);
@@ -805,7 +805,7 @@ clamped(bot)
     level endon("game_ended");
 
     if (bot.isFollowingWaypoints) {
-        noticePrint("Clamped!");
+        log("dev", "msg|Clamped!||");
         // since we are following waypoints, we assume no solid objects or obstructions
 
         /** This is the code we would like to apply to the bots, but Activision's
@@ -835,7 +835,7 @@ clamped(bot)
         time = distance / bot.speed;
         self enqueueMovement(level.Wp[bot.nextWp].origin, time, facing);
     } else {
-        noticePrint("In clamped(), but .isFollowingWaypoints is false!");
+        log("dev", "msg|In clamped(), but .isFollowingWaypoints is false!||");
     }
 }
 
@@ -903,7 +903,7 @@ devDrawLocalCoordinateSystem(bot, direction, origin)
 jump(bot)
 {
     iPrintLnBold("Jump!");
-    noticePrint("Jump!");
+    log("dev", "msg|Jump!||");
 
     speed = 10; // in jump() case, an arbitrary number we used in calculating hash
     movement = cachedMovement(bot.myWaypoint, bot.nextWp, speed);
@@ -923,7 +923,7 @@ jump(bot)
         return;
     } else {
         // cache miss!
-        noticePrint("Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")");
+        log("dev", "msg|Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")||");
         // treat it as a clamped path as a fail-safe
         self clamped();
         self executeMovementQueue();
@@ -934,7 +934,7 @@ jump(bot)
 fall(bot)
 {
     iPrintLnBold("Fall!");
-    noticePrint("Fall!");
+    log("dev", "msg|Fall!||");
 
     if (bot.speed <= 150) {speed = 100;}
     else if (bot.speed <= 250) {speed = 200;}
@@ -957,7 +957,7 @@ fall(bot)
         return;
     } else {
         // cache miss!
-        noticePrint("Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")");
+        log("dev", "msg|Motion cache miss (from, to, speed): (" + bot.myWaypoint + ", " + bot.nextWp + ", " + speed + ")||");
         // treat it as a clamped path as a fail-safe
         self clamped();
         self executeMovementQueue();
@@ -972,16 +972,16 @@ postFall(bot, closest)
     // potentialNodes = bot.pathNodes;
     // potentialNodes[potentialNodes.size] = bot.nextWp;
     // for(i=0; i<closest.size; i++) {
-    //     noticePrint("Closest: " + i +":"+ closest[i]);
+    //     log("dev", "msg|Closest: " + i +":"+ closest[i] + "||");
     //     for (j=0; j<potentialNodes.size; j++) {
     //         if (closest[i] == potentialNodes[j]) {
-    //             noticePrint(closest[i] + " found in potentialNodes");
+    //             log("dev", "msg|", closest[i] + " found in potentialNodes||");
     //         }
     //     }
     // }
 
     bot.pathStack stPrint("postFall() initial path: ");
-    noticePrint(bot, "bot.origin: " + bot.origin);
+    log("dev", "msg|" + bot, "bot.origin: " + bot.origin + "||");
 
     nearestWp = nearestWaypoints(bot.origin, 1)[0];
     if (nearestWp == bot.goalWp) {
@@ -1009,11 +1009,11 @@ postFall(bot, closest)
         if (nearestWp == bot.goalWp) {
             // No path exists from one point the the *same* point
             bot.status = 0; // for now, go idle
-            warnPrint("994: Temp: Went idle; already at goal Waypoint.");
+            log("warn", "msg|1012: Temp: Went idle; already at goal Waypoint.||");
             return;
         }
         bot.pathStack stPushMany(AStarNew(bot.myWaypoint, bot.targetWp));
-        noticePrint("998: A* call (bot, myWaypoint, bot.goalWp): (" + bot.name + ", " + bot.myWaypoint + ", " + bot.goalWp + ")");
+        log("dev", "msg|1016: A* call (bot, myWaypoint, bot.goalWp): (" + bot.name + ", " + bot.myWaypoint + ", " + bot.goalWp + ")||");
         bot.pathStack stPrint("1000: bot " + bot.index + " postFall path");
     }
 
@@ -1028,7 +1028,7 @@ postFall(bot, closest)
         // if we have a clear path to the next pathnode, go there directly
         trace = bulletTrace(bot.origin + (0,0,20), level.Wp[testWp].origin + (0,0,20), false, self);
         if (trace["fraction"] == 1) {
-            noticePrint("post-fall: moving directly to testWp");
+            log("dev", "msg|post-fall: moving directly to testWp||");
             distance = distance(bot.origin, level.Wp[testWp].origin);
             time = distance / bot.speed;
             facing = vectorToAngles(level.Wp[testWp].origin - bot.origin);
@@ -1047,7 +1047,7 @@ postFall(bot, closest)
             if (trace["fraction"] == 1) {
                 // we have a clear path
                 // move to line
-                noticePrint("post-fall: moving testWp via nearest point on link line");
+                log("dev", "msg|post-fall: moving testWp via nearest point on link line||");
                 distance = distance(bot.origin, linePosition);
                 time = distance / zeroGuard(bot.speed, 30, "_bot::postFall() line 1033 bot.speed");
                 facing = vectorToAngles(vectorToLine);
@@ -1068,7 +1068,7 @@ postFall(bot, closest)
     }
 
     // go to nearestWp
-    noticePrint("post-fall: moving directly to nearestWp: " + nearestWp);
+    log("dev", "msg|post-fall: moving directly to nearestWp: " + nearestWp + "||");
     distance = distance(bot.origin, level.Wp[nearestWp].origin);
     time = distance / zeroGuard(bot.speed, 30, "_bot::postFall() line 1054 bot.speed");
     facing = vectorToAngles(level.Wp[nearestWp].origin - bot.origin);
@@ -1078,7 +1078,7 @@ postFall(bot, closest)
     bot.nextWp = nearestWp;
     bot.myWaypoint = bot.nextWp;
     bot.pathStack stPrint("post-fall path: ");
-    noticePrint("testWp: " + testWp);
+    log("dev", "msg|testWp: " + testWp + "||");
 }
 
 /*
@@ -1094,7 +1094,7 @@ postFall(bot, closest)
 zeroGuard(divisor, replacement, reference) {
     if (!isDefined(divisor)) {return undefined;} // don't make things worse
     if (divisor == 0) {
-        errorPrint("DivideByZero: " + reference);
+        log("error", "msg|DivideByZero: " + reference + "||");
         if (replacement == 0) { // What the hell, man!
             ret = 1;
         } else {ret = replacement;}
@@ -1395,7 +1395,7 @@ computeJump(from, to, mover, movement)
     D = (2 * (x_displacement - y_displacement)) / g;
     if (D < 0) {
         // no real solutions
-        errorPrint("No real solution(s).  Solution(s) are imaginary!");
+        log("error", "msg|No real solution(s).  Solution(s) are imaginary!||");
         // hack to ensure a cache miss, so the impossible jump will be treated as
         // a clamped path
         movement.speed = 100;
@@ -1449,7 +1449,7 @@ computeJump(from, to, mover, movement)
  */
 computeBallistic(v_0_hat, r_0, s_0, mover, movement, recurseCount, drawPath)
 {
-//     noticePrint("(v_0_hat, r_0, s_0): " + v_0_hat + ", " + r_0 + ", " + s_0);
+    // log("dev", "msg|(v_0_hat, r_0, s_0): " + v_0_hat + ", " + r_0 + ", " + s_0 + "||");
     onGround = false;
     if (!isDefined(recurseCount)) {recurseCount = 0;}
     if (!isDefined(drawPath)) {drawPath = false;}
@@ -1541,7 +1541,7 @@ computeBallistic(v_0_hat, r_0, s_0, mover, movement, recurseCount, drawPath)
             recurseCount++;
             movement = computeBallistic(v_0_hat, position, s_1, mover, movement, recurseCount, drawPath);
         } else {
-            noticePrint("Recursion limit reached, only using first ballistic trajectory.");
+            log("dev", "msg|Recursion limit reached, only using first ballistic trajectory.||");
             /// When recursion limit is reached, just use the first moveGravity segment
             /// For example, sometimes we wind up inside a pallet, bouncing back and forth
             /// against the inside surfaces of pallet slats.
@@ -1565,7 +1565,7 @@ computeMotions()
                 linkedID = level.Wp[i].linked[j].ID;
                 if (pathType(i, linkedID) == level.PATH_FALL) {
                     // a falling path
-//                     noticePrint("found fall path from " + i + " to " + linkedID);
+                    // log("dev", "msg|found fall path from " + i + " to " + linkedID + "||");
                     edge = findFallEdge(i, linkedID);
                     if (isDefined(edge.position)) {
                         distance = distance(level.Wp[i].origin, edge.position);
@@ -1579,7 +1579,7 @@ computeMotions()
                             movement.motions = [];
                             if (speed == 0) {speed = 10;} // temp div by zero protection                            
                             t = distance / speed;
-                            warnPrint("1455: (time, distance, speed): " + t + " " + distance + " " + speed);
+                            log("warn", "msg|1582: (time, distance, speed): " + t + " " + distance + " " + speed + "||");
                             motion = spawnStruct();
                             motion.type = "to";
                             motion.position = edge.position;
@@ -1616,7 +1616,7 @@ computeMotions()
                     /// these are the level.PATH_MANTLE_OVER we want to cache
 
                     // also, the reversed path is a level.PATH_FALL
-//                     noticePrint("found fall (mantle down) path from " + linkedID + " to " + i);
+                    // log("dev", "msg|found fall (mantle down) path from " + linkedID + " to " + i + "||");
                     edge = findFallEdge(linkedID, i);
                     if (isDefined(edge.position)) {
                         distance = distance(level.Wp[i].origin, edge.position);
@@ -1630,7 +1630,7 @@ computeMotions()
                             movement.motions = [];
                             if (speed == 0) {speed = 10;} // temp div by zero protection
                             t = distance / speed;
-                            warnPrint("1506: Divide by zero: (time, distance, speed): " + t + " " + distance + " " + speed);
+                            log("warn", "msg:1633: Divide by zero: (time, distance, speed): " + t + " " + distance + " " + speed + "||");
                             motion = spawnStruct();
                             motion.type = "to";
                             motion.position = edge.position;
@@ -1651,7 +1651,7 @@ computeMotions()
             for (j=0; j<level.Wp[i].linkedCount; j++) {
                 linkedID = level.Wp[i].linked[j].ID;
                 if (pathType(i, linkedID) == level.PATH_JUMP) {
-//                     noticePrint("found jump path from " + i + " to " + linkedID);
+                    // log("dev", "msg|found jump path from " + i + " to " + linkedID + "||");
                     speed = 10;
                     movement = spawnStruct();
                     movement.type = level.PATH_JUMP;
@@ -1688,10 +1688,10 @@ cacheMovement(movement)
 printMovementCacheDistribution()
 {
     // prob not needed for DEPLOY
-    // noticePrint("bot: printing movement cache");
+    // log("dev", "msg|bot: printing movement cache||");
     for (i=0; i<level.movementCache.size; i++) {
         count = level.movementCache[i].size;
-        // noticePrint("1497: bot: " + i + ":" + count);
+        // log("dev", "msg|1694: bot: " + i + ":" + count + "||");
     }
 }
 
@@ -1747,18 +1747,18 @@ xor(a, b)
 printMovement(movement)
 {
     if (!isDefined(movement)) {
-        errorPrint("movement is undefined!");
+        log("error", "msg|movement is undefined!||");
         return;
     }
 
     if (movement.type == level.PATH_FALL) {
-        noticePrint("movement.type: " + movement.type);
-        noticePrint("Movement (from, to, speed): (" + movement.from + ", " + movement.to + ", " + movement.speed + ")");
+        log("dev", "msg|movement.type: " + movement.type + "||");
+        log("dev", "msg|Movement (from, to, speed): (" + movement.from + ", " + movement.to + ", " + movement.speed + ")||");
         for (i=0; i<movement.motions.size; i++) {
             if (movement.motions[i].type == "to") {
-                noticePrint("motion: moveTo(" + movement.motions[i].position + ", " + movement.motions[i].time + ", " + movement.motions[i].facing + ")");
+                log("dev", "msg|motion: moveTo(" + movement.motions[i].position + ", " + movement.motions[i].time + ", " + movement.motions[i].facing + ")||");
             } else if (movement.motions[i].type == "gravity") {
-                noticePrint("motion: moveGravity(" + movement.motions[i].velocity + ", " + movement.motions[i].time + ", " + movement.motions[i].facing + ")");
+                log("dev", "msg|motion: moveGravity(" + movement.motions[i].velocity + ", " + movement.motions[i].time + ", " + movement.motions[i].facing + ")||");
             }
         }
     }
@@ -1799,7 +1799,7 @@ findFallEdge(fromWp, toWp)
     if (trace["fraction"] == 1) {
         // we couldn't find the edge!
         /// This is probably very bad!
-        noticePrint("could not find edge!");
+        log("dev", "msg|could not find edge!||");
         return undefined;
     } else {
         position = trace["position"] + (0,0,1);
@@ -1837,7 +1837,7 @@ pathType(fromWp, toWp)
     if (!isDefined(toWp)) {return undefined;}
 
     if (fromWp == toWp) {
-        errorPrint("fromWp equals toWp (" + fromWp + "), there cannot be a path type!");
+        log("error", "msg|fromWp equals toWp (" + fromWp + "), there cannot be a path type!||");
     }
 
     // almost always true, so check it first
@@ -1992,7 +1992,7 @@ canSeeTarget(bot, target)
 normalPath(bot)
 {
     if (bot.isFollowingWaypoints) {
-        // noticePrint("In normalPath(), .isFollowingWaypoints is true");
+        // log("dev", "msg|In normalPath(), .isFollowingWaypoints is true||");
         // since we are following waypoints, we assume no solid objects or obstructions
         if (bot.speed == 0) {
             bot.speed = 30; // sensible default for divide by zero protection
@@ -2079,7 +2079,7 @@ normalPath(bot)
         log("warn", "msg|2067: End of method: bot.smoothedPath.size is " + bot.smoothedPath.size + "||");
 
     } else {
-        noticePrint("In computeMovement(), but .isFollowingWaypoints is false!");
+        log("dev", "msg|In computeMovement(), but .isFollowingWaypoints is false!||");
     }
 }
 
@@ -2094,14 +2094,14 @@ validateWaypoint(bot, wp, label) {
             (wp == -2) ||  // we hit our own corpse
             (wp == -4))    // returned waypoint index exceeds array bounds
         {
-            errorPrint(label + " " + wp);
+            log("error", "msg|" + label + " " + wp + "||");
             return undefined;
         } else if (wp == -3) { // no visible waypoints from our position
             // this can happen if we are inside an object we shouldn't be in,
             // like a shipping container
             wp = nearestWaypoints(bot.origin, 1)[0];
             if (wp < 0) {
-                errorPrint("bot.myWaypoint: " + wp);
+                log("error", "msg|bot.myWaypoint: " + wp + "||");
                 return undefined;
             }
         }
@@ -2148,7 +2148,6 @@ botPathfindWaypointsNew(bot) {
             if (bot.pathStack stIsEmpty()) {
                 log("warn", "msg|bot.pathStack is undefined; we couldn't find a path. Would be a BUG.||");
                 log("bug", sprintfLog("msg|Call was biDirectionalAStar($1, $2)||", bot.myWaypoint, bot.targetWp));
-                // debugPrint("Call was AStarNew(" + bot.myWaypoint + ", " + bot.targetWp + ")");
                 return;
             }
             bot.pathStack stPop(); // toss away myWaypoint for compat w/existing code
@@ -2212,7 +2211,7 @@ moveToPoint(bot, goalPosition, speed)
         newPos = (dropNewPos[0], dropNewPos[1], bot compareZ(bot, goalPosition[2], dropNewPos[2]));
     }
     if (true) {
-        noticePrint("(dis, speed, step): " + dis + ", " + speed + ", " + step);
+        log("dev", "msg|(dis, speed, step): " + dis + ", " + speed + ", " + step + "||");
         // draw a line from current position to new position, for debugging purposes
         line(bot.mover.origin + (0,0,40), newPos, (1,0,0));
     }
@@ -2286,7 +2285,7 @@ findPathToTarget(bot)
         speed = bot.cur_speed * 5; // assume spec'd speeds are per 0.2s, not per second, so scale them
         maxDistance = speed * 0.2;
         maxStepDistance = maxDistance / 4;
-        noticePrint("speed: " + speed + " maxDistance: " + maxDistance + " maxStepDistance: " + maxStepDistance);
+        log("dev", "msg|speed: " + speed + " maxDistance: " + maxDistance + " maxStepDistance: " + maxStepDistance + "||");
         distance = distance(bot.origin, bot.targetedPlayer.origin);
         trace = bulletTrace(bot.origin + (0,0,20), bot.targetedPlayer.origin + (0,0,20), false, bot.targetedPlayer);
         if ((trace["fraction"] == 1) ||
@@ -2383,8 +2382,8 @@ enqueueMovement(bot, origin, time, facing)
             bot.movement.orders[i] = order;
         }
     }
-//     noticePrint("enqueueing movement: (" + origin + ", " + time + ", " + facing + ")");
-//     noticePrint("size, first, last: (" + bot.movement.orders.size + ", " + bot.movement.first + ", " + bot.movement.last + ")");
+    // log("dev", "msg|enqueueing movement: (" + origin + ", " + time + ", " + facing + ")||");
+    // log("dev", "msg|size, first, last: (" + bot.movement.orders.size + ", " + bot.movement.first + ", " + bot.movement.last + ")||");
     // insert the movement order into the queue
     bot.movement.orders[bot.movement.last].origin = origin;
     bot.movement.orders[bot.movement.last].time = time;
@@ -2453,7 +2452,7 @@ findGround(position)
         }
     }
     // we somehow failed to find the ground!
-    errorPrint("Failed to find the ground!");
+    log("error", "msg|Failed to find the ground!||");
     return position;
 }
 
@@ -2470,7 +2469,7 @@ bestTarget(bot)
         if (!isDefined(player)) {continue;}
         if ((isDefined(player.isTargetable)) && (!player.isTargetable)) {continue;}
         if (player.isAlive) {
-            // noticePrint("2604: playerName: " + player.name);
+            // log("dev", "msg|2472: playerName: " + player.name + "||");
             dis = distanceSquared(bot.origin, player.origin);
             if (dis < closestDis) {
                 closestDis = dis;
@@ -2563,22 +2562,21 @@ executeMovementQueue(bot)
     bot endon("state_changed");    
 
     log("trace", "msg|in _bot::executeMovementQueue()||");
-    // noticePrint("2533: in _bot::executeMovementQueue()");
 
     bot endon("disconnect");
     bot endon("death");
     bot endon("movement_invalidated");
 
     if (bot.movement.first == bot.movement.last) {
-        noticePrint("2540: Bot " + bot.index + " No movements queued; nothing to do.");
+        log("dev", "msg|2571: Bot " + bot.index + " No movements queued; nothing to do.||");
         return;
     }
 
     if (isdefined(bot.bestTarget)) {movingToName = bot.bestTarget.name;}
     else {movingToName = bot.closestTarget.name;}
-    // noticePrint("2624: Target waypoint position for player: " + movingToName + " " + level.Wp[bot.targetWp].origin);
+    // log("dev", "msg|2577: Target waypoint position for player: " + movingToName + " " + level.Wp[bot.targetWp].origin + "||");
 
-    // noticePrint("Moving!");
+    // log("dev", "msg|Moving!||");
     // iPrintLnBold("Moving to target " + bot.targetedPlayer.name);
     // iPrintLnBold("Moving to target " + movingToName);
     initialPosition = bot.origin;  // where the bot is before we start moving
@@ -2589,7 +2587,7 @@ executeMovementQueue(bot)
         if (time <= 0) {
             // movement.orders queue is initialized with 20 items, with 0 time, and two (0,0,0) positions
             // usually a bug if you get here
-            noticePrint("2560: time <= 0: : " + time + " size: " + bot.movement.orders.size);
+            log("dev", "msg|2590: time <= 0: : " + time + " size: " + bot.movement.orders.size + "||");
             break;
         }
         angles = bot.movement.orders[bot.movement.first].angles;
@@ -2605,7 +2603,7 @@ executeMovementQueue(bot)
         bot.mover moveTo(position, time, 0, 0); // internally-threaded
         bot.mover waittill("movedone");
         endStep = bot.mover.origin;
-        // noticePrint("2563: Bot " + bot.index + " Step Pos (from, to): " + beginStep + " -> " + endStep);
+        // log("dev", "msg|2606: Bot " + bot.index + " Step Pos (from, to): " + beginStep + " -> " + endStep + "||");
         bot.movement.first++;
     }
     // we have executed all the queued movement orders, so reset the queue
@@ -2827,7 +2825,7 @@ fixStuck(bot)
                 }
             }
             skipCount = 0;
-            warnPrint("Fixing potentially stuck bot at " + bot.origin + " on map " + getdvar("mapname"));
+            log("warn", "msg|Fixing potentially stuck bot at " + bot.origin + " on map " + getdvar("mapname") + "||");
             // we are stuck!  Move us to a random spawnpoint
             spawnpoint = scripts\gamemodes\_survival::randomSpawnpoint();
             bot.mover.origin = spawnpoint.origin;
@@ -2888,7 +2886,7 @@ killed(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psO
                         if (attacker != players[i]) { // if attacker is not iteration player
                             if ((!players[i].isDown) &&     // if iteration player isn't down && was close enough to be damaged due to attacker
                                 (distance(self.origin, players[i].origin) < 150)) {
-                                noticePrint(attacker.name + " hurt " + players[i].name + " by killing an exploding zombie.");
+                                log("dev", "msg|" + attacker.name + " hurt " + players[i].name + " by killing an exploding zombie.||");
                                 attacker thread scripts\players\_rank::increaseDemerits(level.burningZombieDemeritSize, "burning");
                                 isBadKill = true;
                             }
@@ -2943,6 +2941,6 @@ killed(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psO
     self.targetslastKnownWp = undefined;
 
     makeBotAvailable(self);
-//     noticePrint("zombie killed, making bot available");
+    // log("dev", "msg|zombie killed, making bot available||");
     level notify("bot_killed");
 }
