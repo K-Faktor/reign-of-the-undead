@@ -480,7 +480,7 @@ mapTextName(mapname)
     for(i=0; i<tokens.size; i++) {
         pair = strTok(tokens[i], ":");  // colon-separated key:value pairs
         if ((pair.size == 2) && ("mp_" + pair[0] == mapname)) {
-            log("dev", "msg|Found map name in packed string: " + "mp_" + pair[0] + " yields: " + pair[1] + "||");
+            // log("dev", "msg|Found map name in packed string: " + "mp_" + pair[0] + " yields: " + pair[1] + "||");
             textName = pair[1];
         }
     }

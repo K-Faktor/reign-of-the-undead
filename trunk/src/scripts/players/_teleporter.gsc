@@ -193,7 +193,7 @@ spawnTeleporter(origin, angles, spawnDelay)
 
     wait spawnDelay;
 
-    level scripts\players\_usables::addUsable(teleporter, "teleporter", "Press [Use] to teleport", 128);
+    level scripts\players\_usables::addUsable(teleporter, "teleporter", "Press [USE] to teleport", 128);
 
     teleporter thread destroyInTime(level.dvar["game_portal_time"]);
     while(isDefined(teleporter)) {

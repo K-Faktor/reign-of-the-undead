@@ -89,7 +89,7 @@ goInfected()
 
     // If they aren't down, they can be cured by another player
     if (!self.isDown) {
-        level scripts\players\_usables::addUsable(self, "infected", "Press USE to cure", 96);
+        level scripts\players\_usables::addUsable(self, "infected", "Press [USE] to cure", 96);
     }
 
     // Infect the player

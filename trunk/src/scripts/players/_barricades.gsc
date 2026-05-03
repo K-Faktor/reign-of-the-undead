@@ -583,7 +583,7 @@ doBarricadeDamage(damage)
 
             if (!self.isUsable) {
                 self.isUsable = true;
-                level scripts\players\_usables::addUsable(self, "barricade", "Hold [Use] to rebuild", 96);
+                level scripts\players\_usables::addUsable(self, "barricade", "Hold [USE] to rebuild", 96);
             }
 
             self.parts[self.workingPart] thread removePart();

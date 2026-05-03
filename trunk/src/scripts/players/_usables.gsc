@@ -70,7 +70,7 @@ addUsable(ent, type, hintstring, distance)
     else {ent.distance = 96;}
 
     if (ent.type == "revive") {
-        debugPrint("Added revive usable to: " + ent.name, "val");
+        log("dev", "msg|Added revive usable to: " + ent.name + "||");
     }
 }
 
@@ -90,10 +90,16 @@ removeUsable(ent)
 
     self.useObjects = removeFromArray(self.useObjects, ent);
     if ((isDefined(ent.isPlayer)) && (ent.isPlayer)) {
-        debugPrint("Finished removing usables from: " + ent.name, "val");
+        log("dev", "msg|Finished removing usables from: " + ent.name + "||");
     }
 }
 
+
+/**
+ * @brief Manages a player's interactions with usables
+ *
+ * @returns nothing
+ */
 checkForUsableObjects()
 {
     log("trace", "msg|in _usables::checkForUsableObjects()||");
@@ -110,84 +116,85 @@ checkForUsableObjects()
     while (1) {
         // Don't let the player use this usable if they aren't allowed to use it
         if (!self.canUse) {
-//             debugPrint(self.name + " can't use this " + self.curEnt.type + " usable, aborting.", "val");
+            log("dev", "msg|117:" + self.name + " can't use this " + self.curEnt.type + " usable, aborting.||");
             self usableAbort();
             wait .1;
             continue;
         }
+
         // If player isn't near a usable, try to find a usable
         if (!isdefined(self.curEnt)) {
-//             debugPrint(self.name + " self.curEnt is undefined", "val");
+            // normal whenever player isn't near a usable
+            // log("dev", "msg|124:" + self.name + " self.curEnt is undefined||");
+
             /// @bug: unreviveable: seems to be self.curEnt is undefined, and getBetterUseObj(1024)
             /// is not finding the revive usable
             if (self.isBusy) {self.isBusy = false;}
 
-            if (getBetterUseObj(1024)) {
-//                 debugPrint(self.name + " Found a better use object: 1024", "val");
-                continue;
+            if (self getBetterUseObj(1024)) {
+                // log("dev", "msg|130:" + self.name + " Found a better use object within 1024 units||");
+                wait 0.05;
             }
-            wait .2;
+        }
+
+        // try again
+        if (!isdefined(self.curEnt)) {
+            // still no usable the player can use.  This is the expected case most of the time
+            wait 0.2;
+            continue;
         } else {
             // player is near a usable
-/*            if (self.curEnt.type == 1) {
-                debugPrint("entity type '1' bug, name: " + self.name, "val");
-                debugPrint("entity type '1' bug, hintstring: " + self.curEnt.hintstring, "val");
-            }*/
-            log = false;
+            extraLogging = false;
             if (self.curEnt.type == "revive") {
-                //log = true;
+                extraLogging = true;
             }
-            if(log) {debugPrint(self.name + "'s current usable entity is of type: " + self.curEnt.type, "val");}
+
             dis = distance(self.origin, self.curEnt.origin);
-            if(log) {debugPrint("distance between " + self.name + " and usable origin is: " + dis, "val");}
-            if (!self.isBusy) {
-                if(log) {debugPrint(self.name + " is not busy", "val");}
-                if (self.curEnt.occupied) {
+            if (extraLogging) {log("dev", sprintfLog("msg|Revive data||name|$1||entType|$2||distance|$3:n||isBusy|$4:b||", self.name, self.curEnt.type, dis, self.isBusy));}
+
+            // Is the player not busy, and within range of this usable?
+            if ((!self.isBusy) && (dis <= self.curEnt.distance)) {
+                if (self.curEnt.occupied) { // this must be a revive usable, and someone else is already mid-revive
                     // another player is using this usable
-                    if(log) {debugPrint("The " + self.curEnt.type + " usable is occupied", "val");}
+                    if (extraLogging) {log("dev", "msg|The " + self.curEnt.type + " usable is occupied||");}
+                    log("dev", "msg|150:The " + self.curEnt.type + " usable is occupied||");
                     self.curEnt = undefined;
                     self setclientdvar("ui_hintstring", "" );
+                    wait 0.05;
                     continue;
                 }
-                if (getBetterUseObj(dis)) {
-                    if(log) {debugPrint("Found a better usable object within " + dis + " of type: " + self.curEnt.type, "val");}
-                    continue;
-                }
-            }
-            // Is the player within range of this usable?
-            if (dis <= self.curEnt.distance) {
-                if(log) {debugPrint(self.name + " dis: " + dis + " is <= self.curEnt.distance: " + self.curEnt.distance, "val");}
-                if(log) {debugPrint(self.name + " is within range of the usable of type: " + self.curEnt.type, "val");}
 
-                /// @bug Attempt to solve the unrevivable bug--doesn't seem to be the issue
+                // Attempt to solve the unrevivable bug--doesn't seem to be the issue
                 // Ensure the UI hintstring is properly set
-                if ((self.curEnt.type == "revive") && (self.curEnt.hintstring != "Hold USE to revive")) {
-                    errorPrint("Revive hintstring was incorrect; correcting.");
+                if ((self.curEnt.type == "revive") && (self.curEnt.hintstring != "Hold [USE] to revive")) {
+                    log("error", "msg|Revive hintstring was incorrect; correcting.||");
                     // correct for this player
-                    self.curEnt.hintstring = "Hold USE to revive";
+                    self.curEnt.hintstring = "Hold [USE] to revive";
                     self setclientdvar("ui_hintstring", self.curEnt.hintstring);
                     // correct for the level
                     for (i=0; i<level.useObjects.size; i++) {
                         if (level.useObjects[i] == self.curEnt) {
-                            level.useObjects[i].hintstring = "Hold USE to revive";
+                            level.useObjects[i].hintstring = "Hold [USE] to revive";
                             break;
                         }
                     }
                 }
+
                 if (self useButtonPressed()) {
                     if (hasPressedF == false && self isOnGround() && !self.curEnt.occupied ) {
+                        // log("dev", "msg|Starting to use usable||");
                         self thread usableUse();
                         hasPressedF = true;
                     }
                 } else {
                     if (hasPressedF == true) {
+                        // log("dev", "msg|hasPressedF is true, calling usableAbort()||");
                         self usableAbort();
                         hasPressedF = false;
                     }
                 }
             } else {
-                if(log) {debugPrint(self.name + " is NOT within range of the usable of type: " + self.curEnt.type, "val");}
-                if(log) {debugPrint("dis: " + dis + " is > self.curEnt.distance: " + self.curEnt.distance + ", Aborting", "val");}
+                // log("dev", "msg|" + self.name + " is busy or NOT within range of the usable of type: " + self.curEnt.type + "||");
                 self usableAbort();
             }
             wait .05;
@@ -195,12 +202,18 @@ checkForUsableObjects()
     }
 }
 
+
+/**
+ * @brief Prints usables data for dev purposes.  Usually unused.
+ *
+ * @returns nothing
+ */
 watchUsablesData()
 {
     log("trace", "msg|in _usables::watchUsablesData()||");
 
     while(!isDefined(level.players)) {
-        debugPrint("Waiting for level.players to be defined", "val");
+        log("dev", "msg|Waiting for level.players to be defined||");
         wait 2;
     }
 
@@ -209,8 +222,8 @@ watchUsablesData()
     // <debug>
     taffJoined = false;
     while (!taffJoined) {
-        debugPrint("Waiting for taff to join", "val");
-        player = scripts\include\adminCommon::getPlayerByShortGuid("dcf4d9e5"); // taff
+        log("dev", "msg|Waiting for taff to join||");
+        player = scripts\include\adminCommon::getPlayerByShortGuid("dcf4d9e5"); // taff @todo this'll wait for this old guid forever
         if (isDefined(player)) {
             taffJoined = true;
             break;
@@ -227,13 +240,87 @@ watchUsablesData()
     // </debug>
 }
 
+
+/**
+ * @brief Print a level usable to the log as JSON
+ *
+ * @param ent entity The entity to print
+ *
+ * @returns nothing
+ */
+printLevelUsableJson(ent)
+{
+    // quality:ignore_trace
+
+    canUse = self canUseObj(ent);
+    isPlayer = isPlayer(ent);
+    occupied = ent.occupied;
+    entOrigin = ent.origin;
+    if (isDefined(ent.name)) {
+        name = ent.name;
+    } else {name = "undefined";}
+    if (isDefined(ent.type)) {
+        type = ent.type;
+    } else {type = "undefined";}
+    if (isDefined(ent.hintstring)) {
+        hintstring = ent.hintstring;
+    } else {hintstring = "undefined";}
+    if (isDefined(ent.distance)) {
+        range = ent.distance;
+    } else {range = "undefined";}
+    fmt = "msg|Entity data||canUse|$1||isPlayer|$2||isOccupied|$3||entOrigin|$4||name|$5||type|$6||range|$7||hintstring|$8||";
+    log("dev", sprintfLog(fmt, canUse, isPlayer, occupied, entOrigin, name, type, range, hintstring));
+}
+
+
+/**
+ * @brief Print a player usable to the log as JSON
+ *
+ * @param ent entity The entity to print
+ *
+ * @returns nothing
+ */
+printPlayerUsableJson(ent)
+{
+    // quality:ignore_trace
+
+    canUse = self canUseObj(ent);
+    isPlayer = isPlayer(ent);
+    occupied = ent.occupied;
+    entOrigin = ent.origin;
+
+    selfOrigin = self.origin;
+    distance = distance(self.origin, ent.origin);
+
+    if (isDefined(ent.name)) {
+        name = ent.name;
+    } else {name = "undefined";}
+    if (isDefined(ent.type)) {
+        type = ent.type;
+    } else {type = "undefined";}
+    if (isDefined(ent.hintstring)) {
+        hintstring = ent.hintstring;
+    } else {hintstring = "undefined";}
+    if (isDefined(ent.distance)) {
+        range = ent.distance;
+    } else {range = "undefined";}
+    fmt = "msg|Entity data||canUse|$1||isPlayer|$2||isOccupied|$3||entOrigin|$4||name|$5||type|$6||range|$7||hintstring|$8||playerOrigin|$9||distance|$10||";
+    log("dev", sprintfLog(fmt, canUse, isPlayer, occupied, entOrigin, name, type, range, hintstring, selfOrigin, distance));
+}
+
+
+/**
+ * @brief Prints all level usables data to to g_log as pre-formatted text
+ *
+ * @returns nothing
+ */
 printLevelUsablesData()
 {
     log("trace", "msg|in _usables::printLevelUsablesData()||");
 
     if (level.useObjects.size == 0) {return;}
     header = "name           canUse isPlayer  occupied   origin                range   type        hintstring";
-    debugPrint(header, "val");
+    log("pre", header);
     for (i=0; i<level.useObjects.size; i++) {
         ent = level.useObjects[i];
         canUse = self canUseObj(ent);
@@ -255,10 +342,16 @@ printLevelUsablesData()
             range = ent.distance;
         } else {range = "undefined";}
         line = name + " \t" + canUse + " \t" + isPlayer + " \t" + occupied + " \t" + entOrigin + " \t\t" + range + " \t" + type + " \t" + hintstring;
-        debugPrint(line, "val");
+        log("pre", line);
     }
 }
 
+
+/**
+ * @brief Prints all player usables data to to g_log as pre-formatted text
+ *
+ * @returns nothing
+ */
 printPlayerUsablesData()
 {
     log("trace", "msg|in _usables::printPlayerUsablesData()||");
@@ -266,12 +359,13 @@ printPlayerUsablesData()
 
     while (1) {
         wait 2;
-//         debugPrint("Checking self.useObjects.size", "val");
+        // log("dev", "msg|Checking self.useObjects.size||");
         if (self.useObjects.size == 0) {continue;}
-        debugPrint("Checking self.shortGuid", "val");
+        // log("dev", "msg|Checking self.shortGuid||");
         if (self.shortGuid != "dcf4d9e5") {continue;} // only for taff
+
         header = "playerName   name           canUse isPlayer  occupied   origin                range   distance   type        hintstring";
-        debugPrint(header, "val");
+        log("pre", header);
         for (i=0; i<self.useObjects.size; i++) {
             ent = self.useObjects[i];
             canUse = self canUseObj(ent);
@@ -293,37 +387,52 @@ printPlayerUsablesData()
                 range = ent.distance;
             } else {range = "undefined";}
             line = self.name + " \t" + name + " \t" + canUse + " \t" + isPlayer + " \t" + occupied + " \t" + entOrigin + " \t\t" + range + " \t" + distance + " \t" + type + " \t" + hintstring;
-            debugPrint(line, "val");
+            log("pre", line);
         }
     }
 }
 
-getBetterUseObj(distance)
+
+/**
+ * @brief Finds a better usable within \c searchDistance from the player
+ *        If successful, it sets self.curEnt to the found entity, and
+ *        set the client's UI hintstring
+ *
+ * @param searchDistance integer Check for usables closer than this
+ *
+ * @returns boolean indicating whether a better usable was found
+ */
+getBetterUseObj(searchDistance)
 {
+    // quality:ignore_trace
     // 15th most-called function (1% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
-    foundEnt = 0;
-
-    // self is the player running around
-
-    /// @todo need to re-write this function for clarity and to fix logic errors
-
     // search for better usable objects in the level array
+    // "revive" usables go in the level array
+    bestEnt = undefined;
     for (i=0; i<level.useObjects.size; i++) {
         /// @todo need a debugEntity() to print entity info for debugging
         ent = level.useObjects[i];
-        if (!canUseObj(ent)) {continue;}
-        if ((foundEnt == 1) && (!isplayer(ent))) {continue;}
+        playerCanUse = self canUseObj(ent);
+        isEntPlayer = isplayer(ent); // stock method?
+        // log("debug", sprintfLog("msg|Useable data||canUseObject|$1:b||entityIsPlayer|$2:b||isEntityOccupied|$3:b||", playerCanUse, isEntPlayer, ent.occupied));
+        if ((!playerCanUse) || (ent.occupied)) {continue;}
+
         dis = distance(self.origin, ent.origin);
-        if (dis <= ent.distance && !ent.occupied  && dis < distance) {
-            self setclientdvar("ui_hintstring",ent.hintstring );
-            self.curEnt = ent;
-            foundEnt = 1;
+        // log("debug", sprintfLog("msg|Useable data||dis|$1:n||entDistance|$2:n||searchDistance|$3:n||", dis, ent.distance, searchDistance));
+        if ((dis <= ent.distance) && (dis < searchDistance)) { // ent.distance is the range of the usable
+            if (!isEntPlayer) {
+                bestEnt = ent;
+                if (ent.type == "revive") {break;} // the first revive usable we can use trumps everything else
+            }
         }
     }
-    if (foundEnt) {
-//         debugPrint("Found better level usable", "val");
+    if (isDefined(bestEnt)) {
+        self setclientdvar("ui_hintstring", bestEnt.hintstring );
+        self.curEnt = bestEnt;
+        // log("dev", "msg|Found better level usable||");
+        // printLevelUsableJson(bestEnt);
         return 1;
     }
 
@@ -331,27 +440,32 @@ getBetterUseObj(distance)
     for (i=0; i<self.useObjects.size; i++) {
         ent = self.useObjects[i];
         dis = distance(self.origin, ent.origin);
-        if (dis <= ent.distance && !ent.occupied && dis < distance ) {
+        if ((dis <= ent.distance) && (!ent.occupied) && (dis < searchDistance)) {
             self setclientdvar("ui_hintstring",ent.hintstring );
             self.curEnt = ent;
-//             debugPrint("Found better player usable", "val");
+            // log("dev", "msg|Found better player usable||");
+            // printPlayerUsableJson(ent);
             return 1;
         }
     }
     return 0;
 }
 
+
 canUseObj(obj)
 {
+    // quality:ignore_trace
     // 3rd most-called function (13% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
     if (obj == self) {return 0;}
     if (!isDefined(obj.type)) {
         /// @bug somehow, we are getting objects with no .type property!
-        errorPrint("Usable object has no type! Printing current usables.");
-        printLevelUsablesData();
-        printPlayerUsablesData();
+        log("bug", "msg|Usable object has no type! Printing current usables.");
+        printLevelUsableJson(obj);
+        printPlayerUsableJson(obj);
+        // printLevelUsablesData();
+        // printPlayerUsablesData();
         return 0;
     }
     if (obj.type == "infected" && !self.canCure) {return 0;}
@@ -497,34 +611,33 @@ usableAbort()
 
     self notify("usable_abort");
     self setclientdvar("ui_hintstring", "");
-    if (isdefined(self.curEnt))
-    {
-        switch ( self.curEnt.type )
+    if (isdefined(self.curEnt)) {
+        switch (self.curEnt.type)
         {
-                case "revive":
-                    self.isBusy = false;
-                    self.isReviving = false;
-                    self.curEnt setclientdvar("ui_infostring", "");
-                    self.curEnt.occupied = false;
-                    self freezecontrols(0);
-                    self EnableWeapons();
-                    self destroyProgressBar();
-                break;
-                case "ammobox":
-                    if (level.ammoStockType == "ammo")
-                    {
-                        self.isBusy = false;
-                        self freezecontrols(0);
-                        self EnableWeapons();
-                        self destroyProgressBar();
-                    }
-                break;
-                case "barricade":
+            case "revive":
+                self.isBusy = false;
+                self.isReviving = false;
+                self.curEnt setclientdvar("ui_infostring", "");
+                self.curEnt.occupied = false;
+                self freezecontrols(0);
+                self EnableWeapons();
+                self destroyProgressBar();
+            break;
+            case "ammobox":
+                if (level.ammoStockType == "ammo")
+                {
                     self.isBusy = false;
                     self freezecontrols(0);
                     self EnableWeapons();
                     self destroyProgressBar();
-                break;
+                }
+            break;
+            case "barricade":
+                self.isBusy = false;
+                self freezecontrols(0);
+                self EnableWeapons();
+                self destroyProgressBar();
+            break;
         }
         self.curEnt = undefined;
     }
@@ -620,7 +733,7 @@ finishRevive(player, startCovering)
                     if (startCovering[i] == endCovering[j]) {
                         // this player covered during the revive, give them credit for it
                         coveringPlayer = scripts\include\adminCommon::getPlayerByEntityNumber(startCovering[i]);
-                        debugPrint(coveringPlayer.name + " covered the revival of " + player.name, "val");
+                        log("dev", "msg|" + coveringPlayer.name + " covered the revival of " + player.name + "||");
                         coveringPlayer thread scripts\players\_rank::giveRankXP("revive_cover");
                         coveringPlayer scripts\players\_players::incUpgradePoints(30*level.dvar["game_rewardscale"]);
                         coveringPlayer scripts\players\_abilities::rechargeSpecial(10);

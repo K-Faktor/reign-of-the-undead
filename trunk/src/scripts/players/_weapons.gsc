@@ -52,18 +52,18 @@ init()
     attachment_num = 150;
     for( i = 0; i <= max_weapon_num; i++ )
     {
-        weapon_name = tablelookup( "mp/statstable.csv", 0, i, 4 );
-        if( !isdefined( weapon_name ) || weapon_name == "" )
-        {
+        weapon_name = tablelookup("mp/statstable.csv", 0, i, 4);
+        if ((!isdefined( weapon_name)) || (weapon_name == "")) {
             level.weaponIDs[i] = "";
             continue;
         }
         level.weaponIDs[i] = weapon_name + "_mp";
 
         // generating attachment combinations
-        attachment = tablelookup( "mp/statstable.csv", 0, i, 8 );
-        if( !isdefined( attachment ) || attachment == "" )
+        attachment = tablelookup("mp/statstable.csv", 0, i, 8);
+        if ((!isdefined(attachment)) || (attachment == "")) {
             continue;
+        }
 
         attachment_tokens = strtok( attachment, " " );
         if( !isdefined( attachment_tokens ) )
@@ -82,41 +82,39 @@ init()
                 attachment_num++;
             }
         }
-//         debugPrint("level.weaponIDs[i] : " + i + ":" + level.weaponIDs[i], "val");
+        // log("dev", "msg|level.weaponIDs[i] : " + i + ":" + level.weaponIDs[i] + "||");
     }
-    /// @hack: since tnt_mp isn't one of the common_weapons in statstable.csv,
-    /// append tnt_mp to weaponIDs[] array manually
+    // Since tnt_mp isn't one of the common_weapons in statstable.csv,
+    // append tnt_mp to weaponIDs[] array manually
     level.weaponIDs[level.weaponIDs.size] = "tnt_mp";
-
 
     // generating weaponNames array
     level.weaponNames = [];
-    for ( index = 0; index < max_weapon_num; index++ )
-    {
-        if ( !isdefined( level.weaponIDs[index] ) || level.weaponIDs[index] == "" )
+    for (index=0; index<max_weapon_num; index++) {
+        if ((!isdefined(level.weaponIDs[index])) || (level.weaponIDs[index] == "")) {
             continue;
+        }
 
         level.weaponNames[level.weaponIDs[index]] = index;
-//         debugPrint("level.weaponNames[level.weaponIDs[index]] : " + index + ":" + level.weaponIDs[index] + ":" + level.weaponNames[level.weaponIDs[index]], "val");
+        // log("dev", "msg|level.weaponNames[level.weaponIDs[index]] : " + index + ":" + level.weaponIDs[index] + ":" + level.weaponNames[level.weaponIDs[index]] + "||");
     }
 
     // generating weaponlist array
     level.weaponList = [];
-    assertex( isdefined( level.weaponIDs.size ), "level.weaponIDs is corrupted" );
-    for( i = 0; i < level.weaponIDs.size; i++ )
-    {
-        if( !isdefined( level.weaponIDs[i] ) || level.weaponIDs[i] == "" )
+    assertex(isdefined(level.weaponIDs.size), "level.weaponIDs is corrupted");
+    for (i=0; i<level.weaponIDs.size; i++) {
+        if ((!isdefined(level.weaponIDs[i])) || (level.weaponIDs[i] == "")) {
             continue;
+        }
         // appending to array
-//         debugPrint("level.weaponList[level.weaponList.size] : " + level.weaponList.size + ":" + level.weaponIDs[i], "val");
+        // log("dev", "msg|level.weaponList[level.weaponList.size] : " + level.weaponList.size + ":" + level.weaponIDs[i] + "||");
         level.weaponList[level.weaponList.size] = level.weaponIDs[i];
     }
 
     // based on weaponList array, precache weapons in list
-    for ( index = 0; index < level.weaponList.size; index++ )
-    {
+    for (index=0; index<level.weaponList.size; index++) {
         precacheItem(level.weaponList[index]);
-        // debugPrint("Precached weapon: " + level.weaponList[index], "val");
+        // log("dev", "msg|Precached weapon: " + level.weaponList[index] + "||");
     }
 
     //precacheItem("c4_mp");
@@ -663,6 +661,7 @@ isPistol(weapon)
     return false;
 }
 
+
 /**
  * @brief Determines if the weapon is suppressed
  *
@@ -678,6 +677,7 @@ isSilenced(weapon)
 
     return false;
 }
+
 
 watchClaymores()
 {
@@ -696,7 +696,7 @@ watchClaymores()
             claymore waitUntilExplosivesEmplaced();
             /// runtime error if claymore becomes undefined while waiting to be emplaced
             if (!isDefined(claymore)) {
-                errorPrint(self.name + " claymore became undefined while waiting to be emplaced");
+                log("error", "msg|" + self.name + " claymore became undefined while waiting to be emplaced.||");
                 continue;
             }
             claymore thread c4Damage();
@@ -705,6 +705,7 @@ watchClaymores()
         }
     }
 }
+
 
 /**
  * @brief Shows the claymore's lasers beams
@@ -734,6 +735,7 @@ playClaymoreEffects()
         fx delete();
     }
 }
+
 
 claymoreDetonation()
 {

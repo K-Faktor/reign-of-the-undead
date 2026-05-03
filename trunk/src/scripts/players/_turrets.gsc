@@ -185,7 +185,7 @@ createGrenadeTurret()
     // Add the turret to the level array
     level.grenadeTurrets[level.grenadeTurrets.size] = turret;
 
-    level scripts\players\_usables::addUsable(turret, "turret", "Press [use] to pickup turret", 80);
+    level scripts\players\_usables::addUsable(turret, "turret", "Press [USE] to pickup turret", 80);
 
     thread watchTurretOwnership(turret);
 }
@@ -270,14 +270,21 @@ createMinigunTurret()
     // Add the turret to the level array
     level.minigunTurrets[level.minigunTurrets.size] = turret;
 
-    level scripts\players\_usables::addUsable(turret, "turret", "Press [use] to pickup turret", 80);
+    level scripts\players\_usables::addUsable(turret, "turret", "Press [USE] to pickup turret", 80);
 
     thread watchTurretOwnership(turret);
 }
 
-/// runs some code to test the matrix library for development purposes
+
+/**
+ * @brief Runs some code to test the matrix library for development purposes
+ *
+ * @returns nothing
+ */
 testMatrix()
 {
+    // quality:ignore_trace
+
     /// linear algebra testing
     matrix = zeros(3,3);
     printMatrix(matrix);
@@ -296,7 +303,7 @@ testMatrix()
 
     setValue(matrix, 2, 1, 8);
     data = value(matrix, 2, 1);
-    debugPrint("data: " + data, "val");
+    log("dev", "msg|data: " + data + "||");
     printMatrix(matrix);
     setValue(matrix, 4, 4, 6);
     printMatrix(matrix);
@@ -374,7 +381,7 @@ testMatrix()
     printMatrix(BA);
 
     detB = determinant(B);
-    debugPrint("determinant of B: " + detB, "val");
+    log("dev", "msg|determinant of B: " + detB + "||");
 
     printMatrix(B);
     inverseB = inverseMatrix(B);
@@ -450,8 +457,9 @@ testMatrix()
 
     X = stringToIntegerMatrix("[2 -8 6 8; 3 -9 5 10; -3 0 1 -2; 1 -4 0 6]");
     detX = determinant(X);
-    debugPrint("detX: " + detX, "val");
+    log("dev", "msg|detX: " + detX + "||");
 }
+
 
 /**
  * @brief Finds the first available deployable turret
@@ -486,6 +494,7 @@ deployableTurret(turretType)
     }
 }
 
+
 /**
  * @brief Gives a grenade turret to the player
  *
@@ -499,8 +508,8 @@ giveGrenadeTurret(turret)
 
     if (isDefined(turret)) {
         level.grenadeTurretCount++;
-        debugPrint("level.grenadeTurretCount: " + level.grenadeTurretCount, "val");
-        debugPrint("Giving turret " + turret.id + " to " + self.name, "val");
+        log("dev", "msg|level.grenadeTurretCount: " + level.grenadeTurretCount + "||");
+        log("server", "msg|Giving turret " + turret.id + " to " + self.name + "||");
 
         turret show();
         turret.gun show();
@@ -526,8 +535,7 @@ giveGrenadeTurret(turret)
         // There aren't any deployable grenade turrets
         // We can't get here, since _shop.gsc prevents us from buying a grenade turret
         // unless there is less than the maximum deployed
-        errorPrint("There isn't a deployable grenade turret, but level.grenadeTurretCount says there is.");
-        debugPrint("level.grenadeTurretCount: " + level.grenadeTurretCount, "val");
+        log("bug", "msg|No deployable grenade turret, but level.grenadeTurretCount says there is.||grenadeTurretCount|" + level.grenadeTurretCount + "||");
     }
 }
 
@@ -544,7 +552,7 @@ giveMinigunTurret(turret)
 
     if (isDefined(turret)) {
         level.minigunTurretCount++;
-        debugPrint("Giving turret " + turret.id + " to " + self.name, "val");
+        log("server", "msg|Giving turret " + turret.id + " to " + self.name + "||");
 
         turret show();
         turret.gun show();
@@ -570,11 +578,18 @@ giveMinigunTurret(turret)
         // There aren't any deployable minigun turrets
         // We can't get here, since _shop.gsc prevents us from buying a minigun turret
         // unless there is less than the maximum deployed
-        errorPrint("There isn't a deployable minigun turret, but level.minigunTurretCount says there is.");
+        log("bug", "msg|No deployable minigun turret, but level.minigunTurretCount says there is.||minigunTurretCount|" + level.minigunTurretCount + "||");
     }
 }
 
-/// Only used for development
+
+/**
+ * @brief Draws a laser beam along the turrent's primary sector.  Dev purposes only.
+ *
+ * @param turret The turret to give to the player
+ *
+ * @returns nothing
+ */
 primarySectorLaser(turret)
 {
     log("trace", "msg|in _turrets::primarySectorLaser()||");
@@ -621,8 +636,8 @@ emplaceDefenseTurret(turret)
             tooCloseToTeleporter = false;
 
             for (i=0; i<useObjects.size; i++) {
-                /// @bug Fixed. On Madhouse Alaska map, somehow useObjects[i].type is undefined sometimes;
-                /// The error prevents emplacing the turret, and generates infinite errors until the game ends normally.
+                // Fixed. On Madhouse Alaska map, somehow useObjects[i].type is undefined sometimes;
+                // The error prevents emplacing the turret, and generates infinite errors until the game ends normally.
                 if ((!isDefined(useObjects[i])) || (!isDefined(useObjects[i].type))) {continue;}
                 if ((useObjects[i].type == "extras") ||
                     (useObjects[i].type == "ammobox")) {
@@ -905,29 +920,29 @@ trackTarget(turret)
                     if (t_slew_min <= 0) {t_slew = 0.00001;}
                     else {t_slew = t_slew_min;}
 
-    //                 debugPrint("delta_theta: " + delta_theta + " t_slew: " + t_slew + " t_slew_min: " + t_slew_min, "val");
+                    // log("dev", sprintfLog("msg|Tracking data||deltaTheta|$1||tSlew|$2||tSlewMin|$3||", delta_theta, t_slew, t_slew_min));
                     if (turret.isBeingKilled) {return;}
                     if (delta_theta < tolerance) {
                         // the turret is generally pointing int the target's direction
                         trackingTime = (getTime() - turret.gun.trackingBegan) / 1000;
                         if (turret isInView(turret.gun.targetPlayer) == -1) {
                             // zombie isn't in view anymore!
-//                             debugPrint("Zombie isn't in view anymore.", "val");
+                            // log("dev", "msg|Zombie isn't in view anymore.||");
                             // move on to next target
                             self nextTarget(turret);
                             continue;
                         } else {
                             visibilityAmount = turret.gun.targetPlayer SightConeTrace(turret.gun.origin, turret);
-//                             debugPrint("Target visibility: " + visibilityAmount, "val");
+                            // log("dev", "msg|Target visibility: " + visibilityAmount + "||");
                         }
                         if ((!isAlive(turret.gun.targetPlayer)) || (turret.gun.targetPlayer.sessionstate == "dead")) {
                             // zombie isn't alive anymore!
-//                             debugPrint("Zombie isn't alive anymore.", "val");
+                            // log("dev", "msg|Zombie isn't alive anymore." + "||");
                             // move on to next target
                             self nextTarget(turret);
                             continue;
                         }
-//                         debugPrint("Engaging target.  Tracking time was: " + trackingTime + " seconds.", "val");
+                        // log("dev", "msg|Engaging target.  Tracking time was: " + trackingTime + " seconds." + "||");
                         if (!self engageTarget(turret)) {
                             if (turret.isBeingKilled) {return;}
                             if (!isDefined(turret.gun.targetPlayer)) {
@@ -939,7 +954,7 @@ trackTarget(turret)
                             turret.gun.engagementCount++;
                             turret.gun.trackingBegan = getTime();
                             if (turret.gun.engagementCount >= turret.gun.engagementLimit) {
-//                                 debugPrint("Engagement count exceeded on bot: " + turret.gun.targetPlayer.name, "val");
+                                // log("dev", "msg|Engagement count exceeded on bot: " + turret.gun.targetPlayer.name + "||");
                                 // move on to next target
                                 turret.gun.badTarget = turret.gun.targetPlayer.name;
                                 self nextTarget(turret);
@@ -966,7 +981,7 @@ trackTarget(turret)
                         if (turret.gun.trackingCount > turret.gun.trackingLimit) {
                             // if we can't zero in on target within trackingLimit tries,
                             // move on to next target
-//                             debugPrint("Failed to track target.", "val");
+                            // log("dev", "msg|Failed to track target.||");
                             self nextTarget(turret);
                             continue;
                         }
@@ -983,12 +998,12 @@ trackTarget(turret)
                     /* Not Implemented */
                 }
             } // end while targetPlayer is defined
-            /// @bug FIXED. This hackish delay is required or COD thinks I have an infinite loop, even when I don't
+            // FIXED. Only loop once per frame
             wait 0.05;
-//             debugPrint("turret.gun.targetPlayer is undefined, looking for new targets.", "val");
+            // log("dev", "msg|turret.gun.targetPlayer is undefined, looking for new targets.||");
             self selectTarget(turret);
             if (isDefined(turret.gun.targetPlayer)) {
-//                 debugPrint("Found one target.", "val");
+                log("dev", "msg|Found one target.||");
             } else {
                 // no targets were found, wait one second before we try again
                 wait 1;
@@ -999,6 +1014,7 @@ trackTarget(turret)
     } // end while(1)
 
 }
+
 
 /**
  * @brief Prepares trackTarget() to get a new target
@@ -1019,6 +1035,7 @@ nextTarget(turret)
 
     wait level.turretTargetDelay;
 }
+
 
 /**
  * @brief Engages a target when requested by trackTarget()
@@ -1085,16 +1102,16 @@ engageTarget(turret)
         }
     }
 
-//     debugPrint("engagements   unknownEntityHits    undefinedTraceEntities   players  bots", "val");
-//     debugPrint(level.engagements + "\t\t    " + level.unknownEntityHits + "\t\t\t" + level.undefinedTraceEntities + "\t\t    " + level.playersHit + "\t    " + level.botsHit, "val");
-//     debugPrint("Hit percentage: " + (((level.botsHit + level.unknownEntityHits) / level.engagements) * 100) + " percent", "val");
+    // log("pre", "engagements   unknownEntityHits    undefinedTraceEntities   players  bots");
+    // log("pre", level.engagements + "\t\t    " + level.unknownEntityHits + "\t\t\t" + level.undefinedTraceEntities + "\t\t    " + level.playersHit + "\t    " + level.botsHit);
+    // log("pre", "Hit percentage: " + (((level.botsHit + level.unknownEntityHits) / level.engagements) * 100) + " percent");
 
     if (!engageTarget) {
-//         debugPrint("We can not engage this target.", "val");
+        // log("dev", "msg|We can not engage this target.||");
         wait 0.2;
         return false;
     } else {
-//         debugPrint("Firing at target.", "val");
+        // log("dev", "msg|Firing at target.||");
         if (turret.gun.turretType == "gl") { // grenade turret
             for (i=0; i<turret.gun.numBullets; i++) {
                 if ((!isAlive(ent)) || (ent.sessionstate == "dead")) {
@@ -1119,11 +1136,9 @@ engageTarget(turret)
                         target thread [[level.callbackPlayerDamage]](turret, turret.gun.owner, damage, 0, "MOD_EXPLOSIVE", "turret_mp", hitPosition, vectornormalize((target.origin + (0,0,30)) - hitPosition), "none", 0);
                     }
                 }
-//                 damage = int(turret.gun.minDamage + randomInt(12));
-//                 ent thread [[level.callbackPlayerDamage]](turret, turret.gun.owner, damage, 0, "MOD_EXPLOSIVE", "turret_mp", turret.gun.origin, vectornormalize(endOrigin - startOrigin), "none", 0);
                 turret.gun.ammo--;
                 if (turret.gun.ammo <= 0) {
-                    debugPrint("Turret is out of ammo.", "val");
+                    // log("dev", "msg|Turret is out of ammo.||");
                     turret.gun.targetPlayer = undefined;
                     turret.isBeingKilled = true;
                     removeTurret(turret);
@@ -1150,7 +1165,7 @@ engageTarget(turret)
                 ent thread [[level.callbackPlayerDamage]](turret, turret.gun.owner, int(turret.gun.minDamage + randomInt(12)), 0, "MOD_RIFLE_BULLET", "turret_mp", turret.gun.origin, vectornormalize(endOrigin - startOrigin), "none", 0);
                 turret.gun.ammo--;
                 if (turret.gun.ammo <= 0) {
-                    debugPrint("Turret is out of ammo.", "val");
+                    // log("dev", "msg|Turret is out of ammo.||");
                     turret.gun.targetPlayer = undefined;
                     // relink barrel
                     turret.gunBarrel LinkTo(turret.gun, "j_barrel_anchor", (0,0,0), (0,0,0));
@@ -1170,6 +1185,7 @@ engageTarget(turret)
         return true;
     }
 }
+
 
 /**
  * @brief Intelligently selects the best target for the turret
@@ -1202,7 +1218,7 @@ selectTarget(turret)
     players = level.players;
 
     level.targetRequests++;
-//     debugPrint("Target requests: " + level.targetRequests, "val");
+    // log("dev", "msg|Target requests: " + level.targetRequests + "||");
 
     // search through the bots looking for the best targets
     for(i=0; i<level.bots.size; i++) {
@@ -1214,7 +1230,7 @@ selectTarget(turret)
         else if ((isDefined(turret.gun.badTarget)) && (zombie.name == turret.gun.badTarget)) {
             // On occasion, we miss a target.  This makes sure we don't constantly
             // keep trying to hit a target that we can't hit.
-//             debugPrint("Skipping this zombie because we just failed to hit it.", "val");
+            // log("dev", "msg|Skipping this zombie because we just failed to hit it.||");
             continue;
         } else if (zombie.origin[2] < -9300) {
             // bots are hidden at (0,0,-10000), so bail if bot is on it's way to limbo
@@ -1226,7 +1242,7 @@ selectTarget(turret)
                     turret.gun.targetPlayer = zombie;
                     endTime = getTime();
                     selectionTime = endTime - beginTime;
-//                     debugPrint("Target selection took " + selectionTime + " ms.", "val");
+                    // log("dev", "msg|Target selection took " + selectionTime + " ms.||");
                     return;
                 } else {
                     // cyclops isn't in view, try next zombie
@@ -1249,7 +1265,7 @@ selectTarget(turret)
                         }
                     }
                     if (!safeToEngageTarget) {
-//                         debugPrint("It isn't safe to engage this zombie.", "val");
+                        // log("dev", "msg|It isn't safe to engage this zombie.||");
                         continue;
                     }
                 }
@@ -1285,11 +1301,12 @@ selectTarget(turret)
         endTime = getTime();
     } else {
         endTime = getTime();
-//         debugPrint("No targets found.", "val");
+        // log("dev", "msg|No targets found.||");
     }
     selectionTime = endTime - beginTime;
-//     debugPrint("Target selection took " + selectionTime + " ms.", "val");
+    // log("dev", "msg|Target selection took " + selectionTime + " ms.||");
 }
+
 
 /**
  * @brief Determines if a given target is in range and view of the turret
@@ -1320,6 +1337,7 @@ isInView(target)
     return -1;
 }
 
+
 /**
  * @brief Ensures a turret gets recycled if a player doesn't leave the game cleanly
  *
@@ -1337,15 +1355,15 @@ watchTurretOwnership(turret)
     while (1) {
         wait 5;
         if (!isDefined(turret)) {
-            errorPrint("Returning from watchTurretOwnership() because " + type + " turret doesn't exist!");
+            log("error", "msg|Returning from watchTurretOwnership() because " + type + " turret doesn't exist!||");
             return;
         }
         if ((turret.isDeployed) && (!isDefined(turret.gun.owner))) {
-            /// @bug Fixed. Prevent a race condition--give players::cleanup()
-            /// enough time to remove the turret before we suspect it failed
+            // Fixed. Prevent a race condition--give players::cleanup()
+            // enough time to remove the turret before we suspect it failed
             wait 1;
             if ((turret.isDeployed) && (!isDefined(turret.gun.owner))) {
-                debugPrint("From watchTurretOwnership(), trying to remove turret " + turret.id, "val");
+                log("dev", "msg|Trying to remove turret " + turret.id + "||");
                 removeTurret(turret);
             }
         }
@@ -1363,7 +1381,7 @@ removeTurret(turret)
 {
     log("trace", "msg|in _turrets::removeTurret()||");
 
-    debugPrint("Removing turret " + turret.id, "val");
+    log("dev", "msg|Removing turret " + turret.id + "||");
 
     if (turret.gun.turretType == "gl") {
         turret hide();
@@ -1391,7 +1409,7 @@ removeTurret(turret)
         level.grenadeTurretCount--;
         turret.isBeingKilled = false;
         turret.isDeployed = false;
-        debugPrint("level.grenadeTurretCount: " + level.grenadeTurretCount, "val");
+        log("dev", "msg|level.grenadeTurretCount: " + level.grenadeTurretCount + "||");
     } else if (turret.gun.turretType == "minigun") {
         turret hide();
         turret.gun hide();
@@ -1418,9 +1436,10 @@ removeTurret(turret)
         level.minigunTurretCount--;
         turret.isBeingKilled = false;
         turret.isDeployed = false;
-        debugPrint("level.minigunTurretCount: " + level.minigunTurretCount, "val");
+        log("dev", "msg|level.minigunTurretCount: " + level.minigunTurretCount + "||");
     }
 }
+
 
 /**
  * @brief Allows a turret to be picked up and moved

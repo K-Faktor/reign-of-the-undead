@@ -228,7 +228,7 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
 
     self setclientdvars("ui_hintstring", "", "ui_specialtext", "^1Special Unavailable");
 
-    level scripts\players\_usables::addUsable(self, "revive", "Hold USE to revive", 96);
+    level scripts\players\_usables::addUsable(self, "revive", "Hold [USE] to revive", 96);
     wait 0.05;
 
     for (i=0; i<level.useObjects.size; i++) {
@@ -1082,8 +1082,8 @@ cleanup(message)
 
     playerName = self.name;
 
-    if (self.isDown) {level scripts\players\_usables::removeUsable(self);}
-    self scripts\players\_usables::usableAbort();
+    // if (self.isDown) {level scripts\players\_usables::removeUsable(self);}
+    // self scripts\players\_usables::usableAbort();
     if (isDefined(self.parachute)) {self.parachute delete();}
     if (isdefined(self.infection_overlay)) {self.infection_overlay destroy();}
     if (isdefined(self.tombEnt)) {self.tombEnt delete();}
@@ -1680,7 +1680,7 @@ revive()
     self notify("revived");
 
     if (self.infected)
-    level scripts\players\_usables::addUsable(self, "infected", "Press USE to cure", 96);
+    level scripts\players\_usables::addUsable(self, "infected", "Press [USE] to cure", 96);
 
     self scripts\players\_abilities::loadClassAbilities(self.curClass);
 

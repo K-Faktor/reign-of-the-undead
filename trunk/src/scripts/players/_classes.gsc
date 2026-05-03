@@ -375,24 +375,23 @@ acceptClass(forceSpawn)
             // The player has previously connected, then 'left' the game, is
             // now back, and has never spawned this session
             if (level.waveIntermission) {
-                /// spawn player
-                debugPrint(self.name + " has rejoined game for first time, spawning now", "val");
+                // spawn player
+                log("server", "msg|" + self.name + " has rejoined game for first time, spawning now||");
                 self thread scripts\players\_players::joinAllies();
                 self thread scripts\players\_players::spawnPlayer();
                 self notify("menu_changeclass_allies_closed");
                 return;
             } else {
                 if (scripts\server\_adminInterface::isAdmin(self)) {
-                    // Player is an admin
-                    /// spawn player
+                    // Player is an admin, override spawn delay
                     self iprintlnbold("Admin override: spawned admin that rejoined the game");
-                    debugPrint(self.name + " has rejoined game, has never spawned, mid-wave, admin override, spawning now", "val");
+                    log("server", "msg|" + self.name + " is an admin, overriding spawn delay.||");
                     self thread scripts\players\_players::joinAllies();
                     self thread scripts\players\_players::spawnPlayer();
                     self notify("menu_changeclass_allies_closed");
                 } else {
-                    /// spawn after current wave ends
-                    debugPrint(self.name + " has rejoined game for first time, spawning after wave", "val");
+                    // spawn after current wave ends
+                    log("server", "msg|" + self.name + " has rejoined game for first time, spawning after wave.||");
                     self iprintlnbold("You will spawn after this wave ends");
                     self thread scripts\players\_players::spawnPlayerNextIntermission();
                     self notify("menu_changeclass_allies_closed");
@@ -401,31 +400,29 @@ acceptClass(forceSpawn)
             }
         }
 
-        debugPrint(self.name + " .spawnCount: " + self.spawnCount + " .isChangingClass: " + self.isChangingClass + " .pers[team]: " + self.pers["team"] + " .isSpectating: " + self.isSpectating, "val");
+        log("dev", sprintfLog("msg|Player state data||name|$1||spawnCount|$2:n||isChangingClass|$3:b||team|$4||isSpectating|$5:b||", self.name, self.spawnCount, self.isChangingClass, self.pers["team"], self.isSpectating));
         cost = getDvarInt("shop_item1_costs") + getDvarInt("shop_item2_costs") + getDvarInt("shop_item3_costs");
 
         if (self.spawnCount == 0) {
             // Player has never spawned this session
             if (scripts\players\_players::enoughPlayersAlive()) {
-                // There are enough players alive to join the game
-                /// spawn player
-                debugPrint(self.name + " has never spawned, enough players, spawning now", "val");
+                // There are enough players alive to join the game; spawn player
+                log("server", "msg|" + self.name + " has never spawned, enough players, spawning now||");
                 self thread scripts\players\_players::joinAllies();
                 self thread scripts\players\_players::spawnPlayer();
                 self notify("menu_changeclass_allies_closed");
             } else {
                 if (scripts\server\_adminInterface::isAdmin(self)) {
                     // Player is an admin
-                    /// spawn player
                     self iprintlnbold("Admin override: spawned admin with not enough players alive");
-                    debugPrint(self.name + " has never spawned, not enough players, spawning now, admin override", "val");
+                    log("server", "msg|" + self.name + " has never spawned, not enough players, spawning now, admin override||");
                     self thread scripts\players\_players::joinAllies();
                     self thread scripts\players\_players::spawnPlayer();
                     self notify("menu_changeclass_allies_closed");
                 } else {
                     // Player is not admin
-                    debugPrint(self.name + " has never spawned, not enough players, spawning when more players alive", "val");
-                    /// spawn when enough players alive
+                    log("server", "msg|" + self.name + " has never spawned, not enough players, spawning when more players alive||");
+                    // spawn when enough players alive
                     self iprintlnbold("You will respawn when there are more survivors alive!");
                     self thread scripts\players\_players::spawnPlayerWhenMorePlayersAreAlive();
                     self notify("menu_changeclass_allies_closed");
@@ -440,7 +437,7 @@ acceptClass(forceSpawn)
                     if (self.points > cost) {
                         // Player has enough points to pay for class change
                         /// change class, respawn, charge cost
-                        debugPrint(self.name + " is spectator, has spawned, is changing class, has money, spawning now", "val");
+                        log("server", "msg|" + self.name + " is spectator, has spawned, is changing class, has money, spawning now||");
                         self scripts\players\_players::incUpgradePoints(-1*cost);
                         self thread scripts\players\_players::changeClass(cost);
                         self notify("menu_changeclass_allies_closed");
@@ -456,12 +453,12 @@ acceptClass(forceSpawn)
                         self setclientdvar("ui_loadout_class", self.curClass);
 
                         if (level.waveIntermission) {
-                            debugPrint(self.name + " is spectator, has spawned, is changing class, has no money, spawning now with same class", "val");
+                            log("server", "msg|" + self.name + " is spectator, has spawned, is changing class, has no money, spawning now with same class||");
                             self thread scripts\players\_players::joinAllies();
                             self thread scripts\players\_players::spawnPlayer(true);
                             self notify("menu_changeclass_allies_closed");
                         } else {
-                            debugPrint(self.name + " is spectator, has spawned, is changing class, has no money, spawning next intermission with same class", "val");
+                            log("server", "msg|" + self.name + " is spectator, has spawned, is changing class, has no money, spawning next intermission with same class||");
                             self iprintlnbold("You will spawn after this wave ends");
                             self thread scripts\players\_players::spawnPlayerNextIntermission();
                             self notify("menu_changeclass_allies_closed");
@@ -471,12 +468,12 @@ acceptClass(forceSpawn)
                     // Player is not trying to change their class
                     /// restore ammo, health, infected, respawn when wave ends
                     if (level.waveIntermission) {
-                        debugPrint(self.name + " is spectator, has spawned, is not changing class, spawning now with same class", "val");
+                        log("server", "msg|" + self.name + " is spectator, has spawned, is not changing class, spawning now with same class||");
                         self thread scripts\players\_players::joinAllies();
                         self thread scripts\players\_players::spawnPlayer(true);
                         self notify("menu_changeclass_allies_closed");
                     } else {
-                        debugPrint(self.name + " is spectator, has spawned, is not changing class, spawning next intermission with same class", "val");
+                        log("server", "msg|" + self.name + " is spectator, has spawned, is not changing class, spawning next intermission with same class||");
                         self iprintlnbold("You will spawn after this wave ends");
                         self thread scripts\players\_players::spawnPlayerNextIntermission(true);
                         self notify("menu_changeclass_allies_closed");
@@ -489,7 +486,7 @@ acceptClass(forceSpawn)
                     if ((self.isZombie) || (self.isDown)) {
                         // Player is down or a zombie
                         /// do nothing
-                        debugPrint(self.name + " is not spectator, has spawned, is changing class, not spawning: down or a zombie", "val");
+                        log("server", "msg|" + self.name + " is not spectator, has spawned, is changing class, not spawning: down or a zombie||");
                         self iprintlnbold("Cannot change class while down or a zombie");
                         self notify("menu_changeclass_allies_closed");
                         return;
@@ -498,14 +495,14 @@ acceptClass(forceSpawn)
                         if (self.points > cost) {
                             // Player has enough points to pay for class change
                             /// change class, respawn, charge cost
-                            debugPrint(self.name + " is not spectator, has spawned, is changing class, has money, spawning now", "val");
+                            log("server", "msg|" + self.name + " is not spectator, has spawned, is changing class, has money, spawning now||");
                             self scripts\players\_players::incUpgradePoints(-1*cost);
                             self thread scripts\players\_players::changeClass(cost);
                             self notify("menu_changeclass_allies_closed");
                         } else {
                             // Player does not have enough points
                             /// do nothing
-                            debugPrint(self.name + " is not spectator, has spawned, is changing class, has no money, not spawning", "val");
+                            log("server", "msg|" + self.name + " is not spectator, has spawned, is changing class, has no money, not spawning||");
                             self iprintlnbold("Not enough upgrade points to change classes: " + cost);
                             self notify("menu_changeclass_allies_closed");
                             return;
