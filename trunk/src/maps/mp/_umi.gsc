@@ -1789,6 +1789,7 @@ isSpawnpointOk(origin)
 
 /**
  * @brief UMI to build player spawn points by entities' classname property
+ * *NOT IMPLEMENTED*
  *
  * @param classname string The value of the classname to use for player spawn points
  * @param enabled boolean ???
@@ -1806,6 +1807,7 @@ addPlayerSpawnsByClassname(classname, enabled)      // quality:external_interfac
 
 /**
  * @brief UMI to build player spawn points by entities' targetname property
+ * *NOT IMPLEMENTED*
  *
  * @param targetname string The value of the targetname to use for player spawn points
  * @param enabled boolean ???
@@ -2341,6 +2343,8 @@ buildSurvSpawn(targetname, priority)                // quality:external_interfac
 
 /**
  * @brief Waits to start the game until the first player chooses their class and is spawned
+ *        You *must* precache() or load() all your map's items *before* any call to any
+ *        of the 'wait' methods.
  *
  * @returns nothing
  */

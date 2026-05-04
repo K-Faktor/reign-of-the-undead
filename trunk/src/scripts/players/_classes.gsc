@@ -34,6 +34,12 @@
 #include scripts\include\utility;
 #include scripts\include\strings;
 
+
+/**
+ * @brief Initializes the stat indexes we save class ranks in
+ *
+ * @returns nothing
+ */
 init()
 {
     log("trace", "msg|in _classes::init()||");
@@ -46,17 +52,27 @@ init()
     level.player_stat_rank["medic"] = 435;
 }
 
+
+/**
+ * @brief For the given rank, calculate how many skillpoints the player has available
+ *
+ * @param rank integer The rank to calculate skill points for
+ *
+ * @returns nothing
+ */
 getSkillpoints(rank)
 {
     log("trace", "msg|in _classes::getSkillpoints()||");
 
     modRank = rank + 110 * self.pers["prestige"];
     if (!level.dvar["game_class_ranks"]) {
+        // this block is called for LAN servers -- you can't rank up on a LAN
         self.skillpoints = 0;
         self skillPointsNotify(self.skillpoints);
         self setclientdvar("ui_skillpoints", self.skillpoints);
         return;
     }
+    // retrieve the player's class ranks
     self.rank["soldier"] = self getstat(level.player_stat_rank["soldier"]);
     wait 0.05;
     self.rank["stealth"] = self getstat(level.player_stat_rank["stealth"]);
@@ -88,6 +104,7 @@ getSkillpoints(rank)
     self skillPointsNotify(self.skillpoints);
     self setclientdvar("ui_skillpoints", self.skillpoints);
 }
+
 
 /**
  * @brief Notifies a player when they have skillpoints to spend
@@ -126,6 +143,14 @@ skillPointsNotify(points)
     }
 }
 
+
+/**
+ * @brief Spends a skillpoint on the given class
+ *
+ * @param type string The class type: [soldier|engineer|scout|...]
+ *
+ * @returns nothing
+ */
 increaseClassRank(type)
 {
     log("trace", "msg|in _classes::increaseClassRank()||");
@@ -143,6 +168,7 @@ increaseClassRank(type)
         }
     }
 }
+
 
 /**
  * @brief When a class is picked in the UI, sets class properties and opens abilities menu
@@ -254,6 +280,7 @@ isClassEnabled(class)
     return false;
 }
 
+
 /**
  * @brief Counts the number of each class currently in the game
  *
@@ -273,6 +300,7 @@ getClassPlayerCount(class)
     }
     return count;
 }
+
 
 /**
  * @brief Enables/disables certain classes in the choose class menu
@@ -295,6 +323,7 @@ enableClasses()
     else {self setclientdvar("engineer_enabled", 0);}
 }
 
+
 /**
  * @brief Monitors the number of each class in the game and updates the choose class menu
  *
@@ -314,6 +343,16 @@ monitorEnabledClasses()
 }
 
 
+/**
+ * @brief Loads the secondary ability the player selected
+ *        @todo No secondary abilities are implemented, although
+ *              some of the code to load them exists.  I think we
+ *              create 5 abilities, same for all classes.
+ *
+ * @param ability string The name of the secondary ability
+ *
+ * @returns nothing
+ */
 pickSecondary(ability)
 {
     log("trace", "msg|in _classes::pickSecondary()||");
@@ -326,6 +365,7 @@ pickSecondary(ability)
         }
     }
 }
+
 
 /**
  * @brief Accepts a player's choice of class and begins the spawning process
@@ -521,6 +561,14 @@ acceptClass(forceSpawn)
     }
 }
 
+
+/**
+ * @brief Gets the players rank for the given class
+ *
+ * @param class string The class the player choose
+ *
+ * @returns The player's class rank, or 29 if on a LAN server
+ */
 getClassRank(class)
 {
     log("trace", "msg|in _classes::getClassRank()||");

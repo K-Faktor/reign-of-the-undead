@@ -580,6 +580,7 @@ def rebuild_scripts_only(config, root_dir: Path, checksum_file: Path):
 def build_iwd_files(config, root_dir: Path):
     print("Building IWD files...")
     if config["rebuildServerScripts"]:
+        generateUmiInterface(config)
         if config["buildDebugScripts"]:
             folders = [root_dir / "src" / "custom_scripts", root_dir / "src" / "maps", root_dir / "src" / "scripts"]
             build_iwd("rotu_svr_scripts.iwd", folders, "debug version of rotu_svr_scripts.iwd", config["modPath"])
@@ -1003,6 +1004,125 @@ def quality_check(root_dir: Path, config):
 
     printFunctionUses()
 
+
+def generateUmiInterface(config):
+    frontmatter = """/******************************************************************************
+ *    Reign of the Undead, v2.x
+ *
+ *    Copyright (c) 2010-2026 Reign of the Undead Team.
+ *    See AUTHORS.txt for a listing.
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy
+ *    of this software and associated documentation files (the "Software"), to
+ *    deal in the Software without restriction, including without limitation the
+ *    rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ *    sell copies of the Software, and to permit persons to whom the Software is
+ *    furnished to do so, subject to the following conditions:
+ *
+ *    The above copyright notice and this permission notice shall be included in
+ *    all copies or substantial portions of the Software.
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *    SOFTWARE.
+ *
+ *    The contents of the end-game credits must be kept, and no modification of its
+ *    appearance may have the effect of failing to give credit to the Reign of the
+ *    Undead creators.
+ *
+ *    Some assets in this mod are owned by Activision/Infinity Ward, so any use of
+ *    Reign of the Undead must also comply with Activision/Infinity Ward's modtools
+ *    EULA.
+ ******************************************************************************/
+
+/** @file _unified_mapping_interface.gsc An unified interface specification for
+ * maps into CoD4 zombie mods.  Each mod should copy this interface as
+ * @code maps\\mp\\_umi.gsc @endcode and then implement the specified interface in
+ * @code _umi.gsc @endcode as required for their mod.
+ *
+ * Attention Mappers:
+ *      Use `#include maps\\mp\\_umi.gsc` in your main map file--
+ *      not `#include maps\\mp\\_unified_mapping_interface.gsc`.
+ *
+ *      This file is auto-generated, and doesn't contain the implementation.
+ *      It is a reference to methods we make available for mapmakers.
+ */
+
+"""
+
+    work_path = Path(config["workPath"])
+    input_file = work_path / "maps/mp/_umi.gsc"
+    output_file = work_path / "maps/mp/_unified_mapping_interface.gsc"
+
+    if not input_file.exists():
+        print(f"Error: {input_file} not found")
+        return
+
+    with open(input_file, 'r', encoding='utf-8', errors='ignore') as f:
+        lines = f.readlines()
+
+    buffer = []
+    i = 0
+    n = len(lines)
+    functions_found = 0
+
+    while i < n:
+        line = lines[i].rstrip()
+
+        # ONLY trigger on lines that contain the exact marker
+        if '// quality:external_interface' in line:
+            func_line_idx = i
+
+            # === BACKTRACK to find the start of THIS function's Doxygen block ===
+            doc_start = None
+            for j in range(func_line_idx - 1, -1, -1):
+                if lines[j].strip().startswith('/**'):
+                    doc_start = j
+                    break
+
+            # If no Doxygen found, just use the function line itself
+            if doc_start is None:
+                doc_start = func_line_idx
+
+            # === Copy the Doxygen block (unchanged) ===
+            for k in range(doc_start, func_line_idx):
+                buffer.append(lines[k].rstrip())
+
+            # === Clean the function line ===
+            # 1. Remove the quality comment
+            cleaned = re.sub(r'// quality:external_interface.*$', '', lines[func_line_idx]).rstrip()
+            # 2. Force empty body (replace anything after ) with {})
+            if not cleaned.strip().endswith('}'):
+                # Remove any existing body if present
+                cleaned = re.sub(r'\s*\{.*$', '', cleaned).rstrip()
+                cleaned += ' {}'
+
+            buffer.append(cleaned)
+
+            # Two blank lines between functions (as requested)
+            buffer.append('')
+            buffer.append('')
+
+            functions_found += 1
+            i = func_line_idx + 1
+            continue
+
+        i += 1
+
+    # Write the output
+    with open(output_file, 'w', encoding='utf-8') as f:
+        temp = frontmatter + '\n'.join(buffer)
+        f.write(temp)
+
+    print(f"Generated Unified Mapping Interface: {output_file}")
+    # print(f"   → Found and processed {len([b for b in buffer if b.strip().startswith('/**')])} functions")
+    
+    # if functions_found == 0:
+    #     print("   ⚠️  No functions with '// quality:external_interface' were found")
 
 
 def printList(lst, limit=None):

@@ -44,6 +44,11 @@ init()
 }
 
 
+/** @deprecated
+ * @brief Initializes one unused property (.enableText)
+ *
+ * @returns nothing
+ */
 onPlayerConnect()
 {
     log("trace", "msg|in _persistence::onPlayerConnect()||");

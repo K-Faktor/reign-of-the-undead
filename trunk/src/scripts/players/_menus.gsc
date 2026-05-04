@@ -119,6 +119,12 @@ onPlayerConnect()
     }
 }
 
+
+/**
+ * @brief Processes a player's menu selections
+ *
+ * @returns nothing
+ */
 onMenuResponse()
 {
     log("trace", "msg|in _menus::onMenuResponse()||");
@@ -128,23 +134,20 @@ onMenuResponse()
     for(;;) {
         self waittill("menuresponse", menu, response);
 
-        println( self getEntityNumber() + " menuresponse: " + menu + " " + response );
+        println(self getEntityNumber() + " menuresponse: " + menu + " " + response);
 
-        if ( menu == game["menu_skillpoints"]) {
-            switch(response)
-            {
+        // spend skillpoints menu
+        if (menu == game["menu_skillpoints"]) {
+            switch(response) {
             case "upgr_soldier":
                 self scripts\players\_classes::increaseClassRank("soldier");
                 break;
-
             case "upgr_stealth":
                 self scripts\players\_classes::increaseClassRank("stealth");
                 break;
-
             case "upgr_armored":
                 self scripts\players\_classes::increaseClassRank("armored");
                 break;
-
             case "upgr_engineer":
                 self scripts\players\_classes::increaseClassRank("engineer");
                 break;
@@ -157,98 +160,82 @@ onMenuResponse()
             }
         }
 
+        // prestige menu option
         if (response == "prestige") {
             self closeMenu();
             self closeInGameMenu();
             self scripts\players\_rank::prestigeUp();
         }
-        if ( response == "back" )
-        {
+
+        // 'back' menu option
+        if (response == "back") {
             self closeMenu();
             self closeInGameMenu();
-            if ( menu == game["menu_changeclass_ability"] )
-            {
-                self openMenu( game["menu_changeclass_allies"] );
+            if (menu == game["menu_changeclass_ability"]) {
+                self openMenu(game["menu_changeclass_allies"]);
             }
             continue;
         }
 
-        if( getSubStr( response, 0, 7 ) == "loadout" )
-        {
+        // @deprecated
+        if (getSubStr(response, 0, 7) == "loadout") {
             //self maps\mp\gametypes\_modwarfare::processLoadoutResponse( response );
             continue;
         }
 
-        if( response == "changeteam" )
-        {
+        // show team menu
+        if (response == "changeteam") {
             self closeMenu();
             self closeInGameMenu();
             self openMenu(game["menu_team"]);
         }
 
-        if( response == "changeclass_marines" )
-        {
+        if (response == "changeclass_marines") {
             self closeMenu();
             self closeInGameMenu();
             self openMenu( game["menu_changeclass_allies"] );
             continue;
         }
 
-        if( response == "changeclass_opfor" )
-        {
+        // @deprecated
+        if (response == "changeclass_opfor") {
             self closeMenu();
             self closeInGameMenu();
             self openMenu( game["menu_changeclass_axis"] );
             continue;
         }
-        if (response == "admin")
-        {
+
+        // @deprecated
+        if (response == "admin") {
             self closeMenu();
             self closeInGameMenu();
-            //self openMenu(game["menu_eog_unlock"]);
-            /*if (self.isAdmin)
-            {
-                self closeMenu();
-                self closeInGameMenu();
-                self openMenu( "bxmod_admin" );
-            }
-            else
-            self iprintlnbold("You are not allowed to use this menu");*/
         }
 
-        if( response == "endgame" )
-        {
+        if (response == "endgame") {
             continue;
         }
-        if ( isSubStr(response, "SC_") ) // Process secondary abilities
-        {
+
+        if (isSubStr(response, "SC_")) {            // Process secondary abilities
+            // NB: There are no secondary abilities implemented for any class yet
             ability = GetSubStr(response, 3);
             self thread  scripts\players\_classes::pickSecondary(ability);
         }
-        if ( menu == game["menu_changeclass_ability"])
-        {
-            if (response == "accept")
-            {
+        if (menu == game["menu_changeclass_ability"]) {
+            if (response == "accept") {
                 self closeMenu();
                 self closeInGameMenu();
-                //self openmenu(game["menu_changeweapon"]);
-
             }
             self thread scripts\players\_classes::acceptClass();
-
         }
 
-        if (menu == game["menu_extras"])
-        {
+        if (menu == game["menu_extras"]) {
             self closeMenu();
             self closeInGameMenu(
             scripts\players\_shop::processResponse(response));
         }
 
-        if( menu == game["menu_team"] )
-        {
-            switch(response)
-            {
+        if (menu == game["menu_team"]) {
+            switch(response) {
             case "allies":
                 self closeMenu();
                 self closeInGameMenu();
@@ -271,30 +258,12 @@ onMenuResponse()
                 self scripts\players\_players::joinSpectator();
                 break;
             }
-        }   // the only responses remain are change class events
-        else if( menu == game["menu_changeclass_allies"]  )
-        {
+        } else if (menu == game["menu_changeclass_allies"]) {
+            // the only responses remaining are change class events
             self closeMenu();
             self closeInGameMenu();
-            // log("dev", "msg|279: soldier class respone is: " + response + "||");
             thread  scripts\players\_classes::pickClass(response);
             continue;
         }
-/*      else if( menu == game["menu_changeclass"] )
-        {
-            self closeMenu();
-            self closeInGameMenu();
-
-            self.selectedClass = true;
-            //self maps\mp\gametypes\_modwarfare::menuAcceptClass();
-        }*/
-        else
-        {
-            //if(menu == game["menu_playermenu"])
-            //  maps\mp\gametypes\_players::processPlayerMenu(response);
-            //else if(menu == game["menu_playermenu"])
-            //  zombiesurvival\_main::processPlayerMenu(response);
-        }
-
     }
 }

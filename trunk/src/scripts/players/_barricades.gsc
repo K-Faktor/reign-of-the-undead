@@ -56,6 +56,7 @@ init()
     thread createMgBarrels();
 }
 
+
 /**
  * @brief Gives a regular or exploding barrel to a player
  *
@@ -97,6 +98,12 @@ giveBarrel(type)
     self thread placeBarrel();
 }
 
+
+/**
+ * @brief Initializes a few barricade properties for UMI-loaded barricades
+ *
+ * @returns nothing
+ */
 makeBarricade()
 {
     log("trace", "msg|in _barricades::makeBarricade()||");
@@ -105,6 +112,7 @@ makeBarricade()
     self.workingPart = 0;
     self.isUsable = 0;
 }
+
 
 /**
  * @brief Force-emplace a barrel when the player carrying it goes down
@@ -133,6 +141,7 @@ placeBarrelOnDeath()
 
     iprintln( "^2"+ self.name + " ^2placed an obstacle." );
 }
+
 
 /**
  * @brief Places a barrel a player is carrying in an acceptable spot in the map
@@ -290,6 +299,7 @@ createMgBarrel()
     level.MgBarrels[level.MgBarrels.size] = barrel;
 }
 
+
 /**
  * @brief Creates the maximum number of MG+Barrels at startup
  *
@@ -304,6 +314,7 @@ createMgBarrels()
         wait 0.5;
     }
 }
+
 
 /**
  * @brief Gives a deployable MG+Barrel to a player
@@ -344,6 +355,7 @@ giveMgBarrel()
     }
 }
 
+
 /**
  * @brief Removes a MG+barrel from game-play when it is destroyed or times out
  *
@@ -381,6 +393,7 @@ removeMgBarrel()
     self.turret.usedTime = 0;
 }
 
+
 /**
  * @brief Finds the first available deployable MG+Barrel
  *
@@ -399,6 +412,7 @@ deployableMgBarrel()
         }
     }
 }
+
 
 /**
  * @brief Watches machine gun temperature and firing time
@@ -497,6 +511,7 @@ watchMGBarrel()
     }
 }
 
+
 /**
  * @brief Cools down a MG while it isn't firing
  *
@@ -520,6 +535,7 @@ cooldown()
         wait 0.05;
     }
 }
+
 
 /**
  * @brief Removes a barrel from the game when it is destroyed
@@ -556,6 +572,7 @@ barrelDeath()
         self delete();
     }
 }
+
 
 /**
  * @brief Does damage to a destructible barricade or barrel
@@ -603,6 +620,12 @@ doBarricadeDamage(damage)
     }
 }
 
+
+/**
+ * @brief Restore a barricade part to full strength
+ *
+ * @returns boolean indicating whether the part was restored or not
+ */
 restorePart()
 {
     log("trace", "msg|in _barricades::restorePart()||");

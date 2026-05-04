@@ -42,6 +42,12 @@ init()
     level thread onPlayerConnect();
 }
 
+
+/**
+ * @brief Initializes the player's HUD damage feedback element
+ *
+ * @returns nothing
+ */
 onPlayerConnect()
 {
     log("trace", "msg|in _damagefeedback::onPlayerConnect()||");
@@ -60,6 +66,12 @@ onPlayerConnect()
     }
 }
 
+
+/**
+ * @brief Plays a feedback sound on the player when they take damage
+ *
+ * @returns nothing
+ */
 updateDamageFeedbackSound()
 {
     log("trace", "msg|in _damagefeedback::updateDamageFeedbackSound()||");
@@ -69,6 +81,12 @@ updateDamageFeedbackSound()
     self playlocalsound("MP_hit_alert");
 }
 
+
+/**
+ * @brief Shows a feedback visual on the player when they take damage
+ *
+ * @returns nothing
+ */
 updateDamageFeedback(hitBodyArmor)
 {
     log("trace", "msg|in _damagefeedback::updateDamageFeedback()||");
