@@ -206,22 +206,14 @@ tokenizeMessage(encodedJson)
 }
 
 
-// Will be deperecated ASAP
-// convenience function to wrap existing *old* debug calls with the req'd JSON tokens
-wrap(msg){
-    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
-
-    return "msg|" + msg + "||";
-}
-
-
 /**
  * @brief Writes JSON-formatted log messages to logfile specified in g_log dvar
  *
  * @param eventType string The type of message. Any of the values in the switch:
  *                           [value|warn|error|debug|server|criticalbug|...]
  *
- * @param message string The pipe-encoded JSON message to write
+ * @param message string The pipe-encoded JSON message to write.  The first JSON
+ *                       key in the message ahould be 'msg|`.
  * @param includeEpoch bool Include the Unix epoch, i.e. integer seconds?
  *
  * @returns nothing
@@ -354,93 +346,6 @@ log(eventType, message, includeEpoch)
 //     s = replace(s, "\t", "\\t");
 //     return s;
 // }
-
-
-/**
- * @deprecated Forwards to log() until I do a global replace
- * @brief Writes debug messages to logfile specified in g_log dvar
- *
- * @param message string The message to write
- * @param type string The type of debug message ["fn"|"val"]
- * @param verbosity integer The verbosity level [0-3].  0 is low verbosity, 3 is high verbosity
- *
- * @returns nothing
- */
-debugPrint(message, type, verbosity)
-{
-    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
-
-    // Function entry messages
-    if ((level.printFunctionEntryMessages) &&
-        (type == "fn") &&
-        (verbosity <= level.debugVerbosity))
-    {
-        log("trace", wrap(message), false);
-    }
-
-    // Variable value messages
-    else if ((level.printValueMessages) && (type == "val")) {
-        log("value", wrap(message), false);
-    }
-
-    // Signals notified or received
-    else if ((level.printSignalMessages) && (type == "sig")) {
-        log("signal", wrap(message), false);
-    }
-}
-
-
-/**
- * @deprecated
- * @brief Writes warning messages to logfile specified in g_log dvar
- *
- * @param message string The message to write
- *
- * @returns nothing
- */
-warnPrint(message)
-{
-    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
-
-    // @todo print deprecation notice to find any warnPrint's not ported, *after gloabl replace
-    log("warn", wrap(message), false);
-}
-
-
-/**
- * @deprecated
- * @brief Always writes error messages to logfile specified in g_log dvar
- *
- * @param message string The message to write
- *
- * @returns nothing
- */
-errorPrint(message)
-{
-    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
-
-    // @todo print deprecation notice to find any noticePrint's not ported
-    log("error", wrap(message), false);
-}
-
-
-/**
- * @deprecated
- * @brief Always writes a message to logfile specified in g_log dvar
- * This function is used for messages we always want to write, yet aren't
- * really error messages.
- *
- * @param message string The message to write
- *
- * @returns nothing
- */
-noticePrint(message)
-{
-    // quality:ignore_trace  trace messages on low-level functions can cause stack overflows
-
-    // @todo print deprecation notice to find any noticePrint's not ported
-    log("server", wrap(message), false);
-}
 
 
 /**

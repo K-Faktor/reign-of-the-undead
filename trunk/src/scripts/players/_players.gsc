@@ -969,7 +969,7 @@ printPlayersData()
                + leftPad(botHeader, " ", maxBot) + colSep
                + leftPad(spectatingHeader, " ", maxSpectating);
 
-    log("pre", headerLine);
+    log("pre", headerLine + "\n");
 
     for (i = 0; i < players.size; i++) {
         if (!isDefined(players[i])) {continue;}
@@ -991,13 +991,13 @@ printPlayersData()
         line = name + colSep + index + colSep + playerNumber + colSep + guid + colSep
              + active + colSep + alive + colSep + down + colSep + bot + colSep + spectating;
 
-        log("pre", line);
+        log("pre", line + "\n");
     }
 
     alive = level.alivePlayers;
     active = level.activePlayers;
     down = active - alive;
-    log("pre", "alive: " + alive + " active: " + active + " down: " + down);
+    log("pre", "alive: " + alive + " active: " + active + " down: " + down + "\n");
 }
 
 watchPlayersData()
@@ -1299,7 +1299,7 @@ spawnPlayer(preserveState)
     isIntermission = false;
     if (level.waveIntermission == 1) {isIntermission = true;}
 
-    log("server", sprintfLog("msg|player state||name|$1||sessionState|$2||sessionTeam|$3||isIntermission|$4||", self.name, self.sessionstate, self.sessionteam, isIntermission));
+    log("server", sprintfLog("msg|player state||name|$1||sessionState|$2||sessionTeam|$3||isIntermission|$4:b||", self.name, self.sessionstate, self.sessionteam, isIntermission));
     log("server", "msg|" + self.name + " spawning as " + self.class + "||");
 
     if (!isDefined(preserveState)) {preserveState = false;}

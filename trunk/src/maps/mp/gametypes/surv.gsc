@@ -31,7 +31,6 @@
     EULA.
 ******************************************************************************/
 
-#include maps\mp\_debug;
 #include scripts\include\utility;
 
 
@@ -42,8 +41,6 @@
  */
 main()
 {
-    // source the settings the debug system depends on
-    initializeDebugSystem();  // @deprecated, once *all* of debug statements are removed, 
     scripts\include\constants::init();
 
     // Used to let maps know what mod is trying to load them
