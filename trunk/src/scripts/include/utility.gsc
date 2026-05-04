@@ -159,7 +159,11 @@ tokenizeMessage(encodedJson)
         // logPrint("k: " + k + "\n");
 
         v = tokens[1];
-        if (!isDefined(v)) {logPrint("v is undefined. Bailing\n"); return;}
+        if (!isDefined(v)) {
+            v = "null";
+            // logPrint("v is undefined. Bailing\n");
+            // return;
+        }
         // logPrint("v: " + v + "\n");
 
         // All | as separators are removed now.

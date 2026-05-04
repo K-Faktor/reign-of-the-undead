@@ -74,8 +74,6 @@ Note: If you run the non-debug version of the scripts on your server, most log()
 
 ## Non-Debug Scripts
 
-N.B. makeMod.pl stills needs to be updated to handle removing these new logging calls.
-
 The non-debug scripts have most logging statements removed. They are intended for running a normal released version of the mod on a production server.  If you are running a alpha, beta, nightly, or git version, please use the debug version of the scripts, so potentially more useful debug output is written to the logs.
 
 The new build system, makeMod.py, deprecates makMod.pl, and creates debug and non-debug versions of the rotu server scripts.  For the non-debug version, it removes certain lines from the source code, while preserving the new line characters so error messages in console_mp.log still refer to the correct lines.  The three types of code the script removes, in precedence order, are:

@@ -37,36 +37,6 @@ This script is intended to replicate the current makeMod.pl behavior for no-argu
 builds and the common build/install workflows.
 """
 
-# Globals (assumed declared at module level)
-license = []
-tab = []
-todo = []
-bug = []
-deprecated = []
-hack = []
-fixme = []
-oldLogging = []
-functions = ""
-documentedFunctions = ""
-functionEntrance = []
-doxErrors = []
-deprecatedFiles = ""
-unusedFunctions = ""
-unusedIncludes = ""
-quality = ""
-sloc = 0
-funcKeysByFile = {}
-funcDefs = {}
-processedFiles = {}
-functionCounts = {}
-uses = []
-
-# @files and load_files() assumed available
-# config dict also available
-# # Assuming these are defined in the broader scope (like in Perl)
-# config = {}  # populated from .env as described
-
-
 import argparse
 import hashlib
 import os
@@ -76,6 +46,30 @@ import subprocess
 import sys
 import zipfile
 from pathlib import Path
+
+# Globals (assumed declared at module level)
+license = []
+tab = []
+todo = []
+bug = []
+deprecated = []
+hack = []
+fixme = []
+oldLogging = []
+undocumentedFunctions = []
+documentedFunctions = []
+functionEntrance = []
+doxErrors = []
+deprecatedFiles = []
+unusedFunctions = []
+unusedIncludes = []
+quality = ""
+sloc = 0
+funcKeysByFile = {}
+funcDefs = {}
+processedFiles = {}
+functionCounts = {}
+uses = []
 
 
 def parse_env(env_path: Path):
@@ -196,11 +190,17 @@ def build_non_debug_script_file(source_file: Path, dest_file: Path):
                 in_multiline = False
             elif "//" in line and "<debug />" in line:
                 remove_line = True
-            elif line.lstrip().startswith("debugPrint("):
+            elif line.lstrip().startswith("log(\"trace\""):
                 remove_line = True
             elif line.lstrip().startswith("log(\"debug\""):
                 remove_line = True
+            elif line.lstrip().startswith("log(\"value\""):
+                remove_line = True
+            elif line.lstrip().startswith("log(\"signal\""):
+                remove_line = True
             elif line.lstrip().startswith("log(\"dev\""):
+                remove_line = True
+            elif line.lstrip().startswith("log(\"automaptest\""):
                 remove_line = True
             if remove_line:
                 line = "\n"
@@ -580,7 +580,7 @@ def rebuild_scripts_only(config, root_dir: Path, checksum_file: Path):
 def build_iwd_files(config, root_dir: Path):
     print("Building IWD files...")
     if config["rebuildServerScripts"]:
-        if not config["opt_d"]:
+        if config["buildDebugScripts"]:
             folders = [root_dir / "src" / "custom_scripts", root_dir / "src" / "maps", root_dir / "src" / "scripts"]
             build_iwd("rotu_svr_scripts.iwd", folders, "debug version of rotu_svr_scripts.iwd", config["modPath"])
         else:
@@ -678,9 +678,10 @@ def print_version():
 
 
 def print_help():
-    print("Usage: makeMod.py [-f] [-s] [-c] [-q] [-h] [-v] [-r RELEASE_NAME]")
+    print("Usage: makeMod.py [-f] [-s] [-d] [-c] [-q] [-h] [-v] [-r RELEASE_NAME]")
     print("  -f  Force a full rebuild")
     print("  -s  Force rebuild of server scripts only")
+    print("  -d  Creates the debug version of the server script files")
     print("  -c  Clean build outputs")
     print("  -q  Quality checks")
     print("  -h  Show help")
@@ -688,10 +689,56 @@ def print_help():
     print("  -r  Prepare a release")
 
 
+def countSloc(config):
+    global sloc
+    sloc = 0  # reset counter
+
+    work_path = Path(config["workPath"])  # should end with /trunk/src
+
+    # Define the folders and their rules
+    folders = [
+        (work_path / "scripts",         "*.gsc", None),
+        (work_path / "maps/mp",         "*.gsc", None),
+        (work_path / "custom_scripts",  "*.gsc", None),
+        (work_path / "custom_maps/maps/mp", "*.gsc", {"tradespawns", "waypoints"}),
+    ]
+
+    for base_dir, pattern, exclude_keywords in folders:
+        if not base_dir.exists():
+            print(f"Warning: Directory not found: {base_dir}")
+            continue
+
+        for file_path in base_dir.rglob(pattern):
+            filename = file_path.name.lower()
+            
+            # Skip excluded files in the last folder
+            if exclude_keywords and any(kw in filename for kw in exclude_keywords):
+                continue
+
+            # Process the file
+            lines = stripCommentsPure(str(file_path))
+            sloc += count_meaningful_lines(lines)
+
+    # print(f"Total SLOC: {sloc}")
+    return sloc
+
+def count_meaningful_lines(lines):
+    """Count lines that are actual code (exclude empty, braces-only, whitespace)"""
+    count = 0
+    for line in lines:
+        stripped = line.strip()
+        if (stripped and 
+            stripped not in {'{', '}', '};', '}; ', '{ }', '} ;'} and
+            not stripped.startswith('#') and          # in case any preprocessor left
+            len(stripped) > 1):                       # avoid single-char noise
+            count += 1
+    return count
+
+
 def quality_check(root_dir: Path, config):
     """Run code quality checks on GSC files."""
     global license, tab, todo, bug, deprecated, hack, fixme, oldLogging
-    global functions, documentedFunctions, functionEntrance, doxErrors
+    global undocumentedFunctions, documentedFunctions, functionEntrance, doxErrors
     global deprecatedFiles, unusedFunctions, unusedIncludes, quality, sloc
 
     print("Running quality checks...")
@@ -718,7 +765,7 @@ def quality_check(root_dir: Path, config):
             continue
         if not file_str.endswith('.gsc'):
             continue
-        stripComments(file_str)
+        stripCommentsQuality(file_str)
     print("done.")
 
     print("Checking files for a proper license...", end="")
@@ -809,13 +856,8 @@ def quality_check(root_dir: Path, config):
             elif re.search(r'^\w+\s*\([^)]*\)\s*(?://.*quality:external_interface)?', line, re.IGNORECASE):
                 functionLines.append(lineIndex)
 
-# // quality:external_interface
-
             lineNumber += 1
             lineIndex += 1
-
-        sloc += len(lines)
-        # print(f"length of function lines: {len(functionLines)}")
 
         for index in functionLines:
             if index - 1 < 0 or index >= len(lines):
@@ -842,10 +884,6 @@ def quality_check(root_dir: Path, config):
                 continue
 
             testLine = lines[index + 2] if index + 2 < len(lines) else ""
-            # pattern = re.compile(
-            #     r'    debugPrint\("in ' + re.escape(filename) +
-            #     r'::' + re.escape(functionName) + r'\(\)", "fn", level'
-            # )
             pattern = re.compile(
                 r'    log\("trace", "msg|in ' + re.escape(filename) +
                 r'::' + re.escape(functionName) + r'\(\)"'
@@ -884,14 +922,16 @@ def quality_check(root_dir: Path, config):
                                'maps\\mp\\gametypes\\dm.gsc',
                                'maps\\mp\\gametypes\\surv.gsc',
                                'maps\\mp\\gametypes\\war.gsc'):
-                deprecatedFiles += f"Possibly deprecated file: {file_str}\n"
+                deprecatedFiles.append(f"Possibly deprecated file: {file_str}")
 
     # Unused functions
     for key in sorted(funcDefs.keys()):
         if len(funcDefs[key]['uses']) == 0 and not re.search(r'zombiescript', key):
             if not re.search(r'custom_maps\\maps\\mp', key) and not funcDefs[key]['isExternalInterface']:
-                unusedFunctions += f"Unused function found: {key}()  line: {str(funcDefs[key]['lineNumber'])}\n"
+                unusedFunctions.append(f"Unused function found: {key}()  line: {str(funcDefs[key]['lineNumber'])}")
     print("done.")
+
+    sloc = countSloc(config)
 
     # === Build summary ===
     global quality
@@ -905,98 +945,76 @@ def quality_check(root_dir: Path, config):
         f"  Found {len(fixme)} fixme items\n"
         f"  Found {len(oldLogging)} old logging items\n"
         f"  Found {len(funcDefs)} function definitions\n"
-        f"  Found {functions.count('\n')} undocumented functions\n"
-        f"  Found {documentedFunctions.count('\n')} documented functions\n"
+        f"  Found {len(undocumentedFunctions)} undocumented functions\n"
+        f"  Found {len(documentedFunctions)} documented functions\n"
         f"  Found {len(functionEntrance)} functions with missing or improper function entrance debug statements\n"
         f"  Found {len(doxErrors)} doxygen errors\n"
-        f"  Found {deprecatedFiles.count('\n')} possibly deprecated files\n"
-        f"  Found {unusedFunctions.count('\n')} apparently unused functions\n"
-        f"  Found {unusedIncludes.count('\n')} unused #include statements\n"
+        f"  Found {len(deprecatedFiles)} possibly deprecated files\n"
+        f"  Found {len(unusedFunctions)} apparently unused functions\n"
+        f"  Found {len(unusedIncludes)} unused #include statements\n"
         f"\n  {sloc} Source Lines of Code in *.gsc files\n"
     )
 
     # Print to console
-    for item in license:
-        print(item)
-    for item in tab:
-        print(item)
-    for item in todo:
-        print(item)
-    for item in bug:
-        print(item)
-    for item in hack:
-        print(item)
-    for item in fixme:
-        print(item)
-    for item in oldLogging:
-        print(item)
-    print(functions, end='')
-    for item in functionEntrance:
-        print(item)
-    for item in doxErrors:
-        print(item)
-    print(deprecatedFiles, end='')
-    print(unusedFunctions, end='')
-    print(unusedIncludes, end='')
+    printList(license, 25)
+    printList(tab, 25)
+    printList(todo, 25)
+    printList(bug, 25)
+    printList(hack, 25)
+    printList(fixme, 25)
+    printList(oldLogging, 25)
+    printList(undocumentedFunctions, 25)
+    printList(functionEntrance, 25)
+    printList(doxErrors, 25)
+    printList(deprecatedFiles, 25)
+    printList(unusedFunctions, 25)
+    printList(unusedIncludes, 25)
     print(quality, end='')
 
-    # print(license, end='')
     # Write report
     with open("qualityReport.log", "w", encoding="utf-8") as Q:
         Q.write(quality + "\n")
         for item in license:
             Q.write(f"{item}\n")
-        # Q.write(license)
         for item in tab:
             Q.write(f"{item}\n")
-        # Q.write(tab)
         for item in todo:
             Q.write(f"{item}\n")
-        # Q.write(todo)
-        # Q.write(bug)
         for item in bug:
             Q.write(f"{item}\n")
-        # Q.write(hack)
         for item in hack:
             Q.write(f"{item}\n")
-        # Q.write(fixme)
         for item in fixme:
             Q.write(f"{item}\n")
         for item in oldLogging:
             Q.write(f"{item}\n")
-        Q.write(functions)
-        # Q.write(functionEntrance)
+        for item in undocumentedFunctions:
+            Q.write(f"{item}\n")
         for item in functionEntrance:
             Q.write(f"{item}\n")
-        # Q.write(doxErrors)
         for item in doxErrors:
             Q.write(f"{item}\n")
-        Q.write(deprecatedFiles)
-        Q.write(unusedFunctions)
-        Q.write(unusedIncludes)
+        for item in deprecatedFiles:
+            Q.write(f"{item}\n")
+        for item in unusedFunctions:
+            Q.write(f"{item}\n")
+        for item in unusedIncludes:
+            Q.write(f"{item}\n")
 
     printFunctionUses()
 
 
-# # Assuming these are defined in the broader scope (like in Perl)
-# funcKeysByFile = {}
 
-# # Globals assumed to exist in the broader module scope
-# functions = ""
-# documentedFunctions = ""
-# funcDefs = {}
-# funcKeysByFile = {}
-# # @uses is used below - assuming it's a global list defined elsewhere
-# # If not, it will be an empty list or you can initialize it
-# uses = []   # fallback if not defined globally
+def printList(lst, limit=None):
+    if limit is None:
+        limit = len(lst)          # print all
+    # max(0, ...) protects against negative limits
+    for item in lst[:max(0, limit)]:
+        print(item)
 
-# # Global variable used by the Perl code (assumed to exist in the broader scope)
-# doxErrors = ""
-
-# # Globals assumed to exist in the broader module scope
-# processedFiles = {}
-# unusedIncludes = ""
-# config = {}  # populated from .env as described
+    delta = len(lst) - limit;
+    if delta > 0:
+        print(f"Plus {delta} more items not shown.")
 
 
 def printFunctionUses():
@@ -1035,8 +1053,68 @@ def printFunctionUses():
         raise Exception(f"can't open file: {e}")
     
 
+# Create a version of file $contents without comments, but preserving line numbers,
+def stripCommentsPure(file):
+    try:
+        with open(file, 'r', encoding='utf-8', errors='ignore') as R:
+            lineNumber = 0
+            openCommentCount = 0
+            lines = []
+            lines.append("")
+            for line in R:
+                # $open =()= $line =~ /\/\*/gi;
+                open_matches = re.findall(r'/\*', line, re.IGNORECASE)
+                open_count = len(open_matches)
+                
+                # $close =()= $line =~ /\*\//gi;
+                close_matches = re.findall(r'\*/', line, re.IGNORECASE)
+                close_count = len(close_matches)
+                
+                if open_count == 1 and close_count == 1:
+                    # This line has a single /* comment */, remove it
+                    line = re.sub(r'/\*.*?\*/', '', line, flags=re.IGNORECASE | re.DOTALL)
+                
+                # Add number of opening multi-line comment delimiters in this line
+                openCommentCount += open_count
+                # Subtract number of closing multi-line comment delimiters in this line
+                openCommentCount -= close_count
+                
+                # If $openCommentCount is non-zero, we are in a multiline comment
+                if openCommentCount:
+                    # replace contents of line with \n
+                    line = "\n"
+                    lineNumber += 1
+                    lines.append(line)
+                    #             print $line;
+                    continue
+                
+                # this is the last line of a multi-line comment
+                if re.search(r'(.*\*/)(.*)', line, re.IGNORECASE):
+                    match = re.match(r'(.*\*/)(.*)', line, re.IGNORECASE)
+                    if match:
+                        part1 = match.group(1)
+                        part2 = match.group(2)
+                        pad = ' ' * len(part1)
+                        line = pad + part2 + "\n"
+                        lineNumber += 1
+                        lines.append(line)
+                        #             print $line;
+                        continue
+                
+                # strip // comments
+                line = re.sub(r'//.*', '', line)
+                lineNumber += 1
+                lines.append(line)
+                #         print $line;
+            return lines
+    except Exception as e:
+        raise Exception(f"can't open file {file}: {e}")
+
+
 # Create a version of file $contents without comments, but preserving line numbers
-def stripComments(file):
+# This method does some extra stuff for code quality at the end, so worthless as a standalone
+# method now.
+def stripCommentsQuality(file):
     #     print "$file\n";
     try:
         with open(file, 'r', encoding='utf-8', errors='ignore') as R:
@@ -1271,7 +1349,7 @@ def findFunctionCalls(file, config):
             if re.search(r'common_scripts', includeKey):
                 continue
             # global unusedIncludes
-            unusedIncludes += f"Unused include file {includeKey} included in {file}\n"
+            unusedIncludes.append(f"Unused include file {includeKey} included in {file}")
 
 
 
@@ -1340,13 +1418,13 @@ def findFunctionDefinitions(file):
                 
                 # We found a function definition, now check if it is properly documented
                 if not re.search(r' \*/\n', lines[lineNumber - 1]):
-                    global functions
-                    functions += f"Undocumented function found: {relFile}:{lineNumber}:{fnPrototype}\n"
+                    global undocumentedFunctions
+                    undocumentedFunctions.append(f"Undocumented function found: {relFile}:{lineNumber}:{fnPrototype}")
                 else:
                     # todo check the validity of the comment block
                     validateDocumentation(lines, lineNumber, relFile)
                     global documentedFunctions
-                    documentedFunctions += f"Documented function found: {relFile}:{lineNumber}:{fnPrototype}\n"
+                    documentedFunctions.append(f"Documented function found: {relFile}:{lineNumber}:{fnPrototype}")
                 
                 # Build regexes
                 tmp = key
@@ -1435,7 +1513,7 @@ def release(config, root_dir: Path, release_name: str, bash_path: str):
     """Prepare a release package."""
     print(f"Creating a RotU release named {release_name}...")
     
-    config["opt_d"] = False
+    config["buildDebugScripts"] = False
     release_folder = config["releasePath"] / release_name
     ensure_dir(release_folder)
     
@@ -1554,9 +1632,10 @@ def main():
         "workPath": normalize_path(env.get("WORK_PATH"), project_path),
         "buildTarget": env.get("BUILD_TARGET", "DEBUG"),
         "platform": env.get("PLATFORM", "LINUX"),
+        "server": env.get("PLATFORM", "OFFICIAL"),
         "projectPath": project_path,
         "configFiles": [item.strip() for item in env.get("CONFIG_FILES", "").split(",") if item.strip()],
-        "opt_d": False,
+        "buildDebugScripts": False,
         "rebuild2D": False,
         "rebuildWeapons": False,
         "rebuildSound": False,
@@ -1577,11 +1656,11 @@ def main():
     parser.add_argument("-f", action="store_true")
     parser.add_argument("-s", action="store_true")
     parser.add_argument("-c", action="store_true")
+    parser.add_argument("-d", action="store_true")
     parser.add_argument("-q", action="store_true")
     parser.add_argument("-h", action="store_true")
     parser.add_argument("-v", action="store_true")
     parser.add_argument("-r", type=str, default=None)
-    parser.add_argument("-d", action="store_true")
     args = parser.parse_args()
 
     if args.h:
@@ -1600,7 +1679,14 @@ def main():
         release(config, root_dir, args.r, bash_path)
         return
 
-    config["opt_d"] = args.d
+    if config["buildTarget"] == "DEBUG":
+        config["buildDebugScripts"] = True  # build the debug version for DEBUG
+    else:
+        config["buildDebugScripts"] = False  # build the non-debug version for DEPLOY
+
+    if args.d:
+        config["buildDebugScripts"] = args.d  # force the debug version
+
 
     if args.f:
         print("Forcing a full rebuild")
