@@ -85,6 +85,8 @@ updateDamageFeedbackSound()
 /**
  * @brief Shows a feedback visual on the player when they take damage
  *
+ * @param hitBodyArmor boolean indicating whether player was hit in body armor
+ *
  * @returns nothing
  */
 updateDamageFeedback(hitBodyArmor)

@@ -58,6 +58,17 @@ debugUsables()
     }
 }
 
+
+/**
+ * @brief Adds a usable item to the game
+ *
+ * @param ent entity The entity to place the usable on
+ * @param type string The type of usable
+ * @param hintstring string The UI activation hintstring
+ * @param distance integer The activation distance for the usable
+ *
+ * @returns nothing
+ */
 addUsable(ent, type, hintstring, distance)
 {
     log("trace", "msg|in _usables::addUsable()||");
@@ -74,6 +85,14 @@ addUsable(ent, type, hintstring, distance)
     }
 }
 
+
+/**
+ * @brief Removes a usable from the game.
+ *
+ * @param ent entity The usable entity to remove
+ *
+ * @returns nothing
+ */
 removeUsable(ent)
 {
     log("trace", "msg|in _usables::removeUsable()||");
@@ -452,31 +471,44 @@ getBetterUseObj(searchDistance)
 }
 
 
-canUseObj(obj)
+/**
+ * @brief Can the player use this usable?
+ *
+ * @param ent entity The usable entity
+ *
+ * @returns boolean indicating whether player can use this usable
+ */
+canUseObj(ent)
 {
     // quality:ignore_trace
     // 3rd most-called function (13% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
-    if (obj == self) {return 0;}
-    if (!isDefined(obj.type)) {
-        /// @bug somehow, we are getting objects with no .type property!
-        log("bug", "msg|Usable object has no type! Printing current usables.");
-        printLevelUsableJson(obj);
-        printPlayerUsableJson(obj);
+    if (ent == self) {return 0;}
+    if (!isDefined(ent.type)) {
+        /// @bug somehow, we are getting entities with no .type property!
+        log("bug", "msg|Usable entity has no type! Printing current usables.");
+        printLevelUsableJson(ent);
+        printPlayerUsableJson(ent);
         // printLevelUsablesData();
         // printPlayerUsablesData();
         return 0;
     }
-    if (obj.type == "infected" && !self.canCure) {return 0;}
-    else if (obj.type == "turret") {
-        if ((!isDefined(obj.gun.owner)) || (self != obj.gun.owner)) {return 0;}
+    if (ent.type == "infected" && !self.canCure) {return 0;}
+    else if (ent.type == "turret") {
+        if ((!isDefined(ent.gun.owner)) || (self != ent.gun.owner)) {return 0;}
         else {return 1;}
     }
 
     return 1;
 }
 
+
+/**
+ * @brief Main logic for actually using a usable item, based on player.curEnt
+ *
+ * @returns nothing
+ */
 usableUse()
 {
     log("trace", "msg|in _usables::usableUse()||");
@@ -605,6 +637,12 @@ usableUse()
 }
 
 
+/**
+ * @brief Aborts using a useable, or finishes using a usable.
+ *        Unsets player.curEnt, so we are in a consistent state after each usable use
+ *
+ * @returns nothing
+ */
 usableAbort()
 {
     log("trace", "msg|in _usables::usableAbort()||");
@@ -643,6 +681,14 @@ usableAbort()
     }
 }
 
+
+/**
+ * @brief Starts restoration a barricade a player repairs
+ *
+ * @param time integer Time to delay restoring the barricade
+ *
+ * @returns nothing
+ */
 restoreBarricadeInTime(time)
 {
     log("trace", "msg|in _usables::restoreBarricadeInTime()||");
@@ -653,10 +699,15 @@ restoreBarricadeInTime(time)
     wait time;
 
     self thread restoreBarricade();
-
     self thread usableAbort();
 }
 
+
+/**
+ * @brief Restores a barricade a player repaired
+ *
+ * @returns nothing
+ */
 restoreBarricade()
 {
     log("trace", "msg|in _usables::restoreBarricade()||");
@@ -665,6 +716,15 @@ restoreBarricade()
     self scripts\players\_players::incUpgradePoints(3*level.dvar["game_rewardscale"]);
 }
 
+
+/**
+ * @brief Starts reviving a player
+ *
+ * @param time integer Time to delay reviving
+ * @param player entity The player being revived
+ *
+ * @returns nothing
+ */
 reviveInTime(time, player)
 {
     log("trace", "msg|in _usables::reviveInTime()||");
@@ -681,6 +741,13 @@ reviveInTime(time, player)
     self thread finishRevive(player, covering);
 }
 
+
+/**
+ * @brief Finds players that were defending the player reviving the downed player
+ *        We compare this list at start of revive with list at end of revive
+ *
+ * @returns entity list List of players that defended the revival
+ */
 coveringPlayers()
 {
     log("trace", "msg|in _usables::coveringPlayers()||");
@@ -702,6 +769,15 @@ coveringPlayers()
     return covering;
 }
 
+
+/**
+ * @brief Finished reviving a player, & credits defending players
+ *
+ * @param player entity The player being revived
+ * @param startCovering list The players that were defending the revive at the start
+ *
+ * @returns nothing
+ */
 finishRevive(player, startCovering)
 {
     log("trace", "msg|in _usables::finishRevive()||");
@@ -710,8 +786,7 @@ finishRevive(player, startCovering)
     self endon("disconnect");
     self destroyProgressBar();
     self freezecontrols(0);
-    if (isdefined(player) && isalive(player))
-    {
+    if (isdefined(player) && isalive(player)) {
         endCovering = self coveringPlayers();
         player thread scripts\players\_players::revive();
         player notify ("damage", 0);
@@ -725,7 +800,7 @@ finishRevive(player, startCovering)
         self.reviveCount++;
 
         // No credit for covering during wave intermission
-        if(level.waveIntermission) {
+        if (level.waveIntermission) {
             self.intermissionReviveCount++;
         } else {
             for (i=0; i<startCovering.size; i++) {
@@ -750,6 +825,14 @@ finishRevive(player, startCovering)
     self thread usableAbort();
 }
 
+
+/**
+ * @brief Restores ammo from weapon crates
+ *
+ * @param time integer Time to delay ammmo reload
+ *
+ * @returns nothing
+ */
 ammoInTime(time)
 {
     log("trace", "msg|in _usables::ammoInTime()||");

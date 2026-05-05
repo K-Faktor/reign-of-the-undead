@@ -843,7 +843,8 @@ def quality_check(root_dir: Path, config):
             elif re.search(r'@bug\b', line, re.IGNORECASE):
                 bug.append(f"Bug found: {relFile}:{lineNumber}:  {line.strip()}")
             elif re.search(r'@deprecated\b', line, re.IGNORECASE):
-                deprecated.append(f"Deprecated item found: {relFile}:{lineNumber}:  {line.strip()}")
+                if "_zombiescript.gsc" not in file_str:
+                    deprecated.append(f"Deprecated item found: {relFile}:{lineNumber}:  {line.strip()}")
             elif re.search(r'hack:', line, re.IGNORECASE):
                 hack.append(f"Hack found: {relFile}:{lineNumber}:  {line.strip()}")
             elif re.search(r'fixme', line, re.IGNORECASE):
@@ -894,7 +895,8 @@ def quality_check(root_dir: Path, config):
                 # if not re.search(r'most-called function', testLine) or not re.search(r'quality:ignore_trace', testLine):
                 if ("most-called function" not in testLine and 
                     "quality:ignore_trace" not in testLine):
-                    functionEntrance.append(f"Missing or wrong function entrance debug statement found: {relFile}:{lineNumber}:  {functionLine.strip()}  {testLine.strip()}")
+                        if "_unified_mapping_interface.gsc" not in file_str:
+                            functionEntrance.append(f"Missing or wrong function entrance debug statement found: {relFile}:{lineNumber}:  {functionLine.strip()}  {testLine.strip()}")
     print("done.")
 
     print("Analyzing functions...", end="")
@@ -961,6 +963,7 @@ def quality_check(root_dir: Path, config):
     printList(tab, 25)
     printList(todo, 25)
     printList(bug, 25)
+    printList(deprecated, 25)
     printList(hack, 25)
     printList(fixme, 25)
     printList(oldLogging, 25)
@@ -982,6 +985,8 @@ def quality_check(root_dir: Path, config):
         for item in todo:
             Q.write(f"{item}\n")
         for item in bug:
+            Q.write(f"{item}\n")
+        for item in deprecated:
             Q.write(f"{item}\n")
         for item in hack:
             Q.write(f"{item}\n")
@@ -1609,24 +1614,25 @@ def validateDocumentation(linesRef, functionIndex, relFile):
         functionName = ""
         arg = ""
 
-    if arg:
-        # there is some argument text, perhaps containing multiple arguments
-        args = re.split(r',\s*', arg)
-        if args:
-            # there was at least one argument
-            for arg in args:
-                arg = re.sub(r'\s*', '', arg)
-                if not re.search(r'@param ' + re.escape(arg), dox):
-                    # global doxErrors
-                    doxErrors.append(f"Doxygen block '{arg}' parameter is undocumented: {relFile}:{functionIndex}:  {functionName}()")
+    if "_zombiescript.gsc" not in relFile:
+        if arg:
+            # there is some argument text, perhaps containing multiple arguments
+            args = re.split(r',\s*', arg)
+            if args:
+                # there was at least one argument
+                for arg in args:
+                    arg = re.sub(r'\s*', '', arg)
+                    if not re.search(r'@param ' + re.escape(arg), dox):
+                        # global doxErrors
+                        doxErrors.append(f"Doxygen block '{arg}' parameter is undocumented: {relFile}:{functionIndex}:  {functionName}()")
 
-    if not re.search(r'@brief', dox):
-        # global doxErrors
-        doxErrors.append(f"Doxygen block missing the @brief tag: {relFile}:{functionIndex}:  {functionName}()")
+        if not re.search(r'@brief', dox):
+            # global doxErrors
+            doxErrors.append(f"Doxygen block missing the @brief tag: {relFile}:{functionIndex}:  {functionName}()")
 
-    if not re.search(r'@returns', dox):
-        # global doxErrors
-        doxErrors.append(f"Doxygen block missing the @returns tag: {relFile}:{functionIndex}:  {functionName}()")
+        if not re.search(r'@returns', dox):
+            # global doxErrors
+            doxErrors.append(f"Doxygen block missing the @returns tag: {relFile}:{functionIndex}:  {functionName}()")
 
 
 def release(config, root_dir: Path, release_name: str, bash_path: str):

@@ -36,6 +36,8 @@
 
 init()
 {
+    // quality:ignore_trace
+    
     level.MAX_INT = 2147483647; // 32-bit ints
 
     /// bot movement modes

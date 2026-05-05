@@ -37,6 +37,12 @@
 
 #include scripts\include\utility;
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::setGameMode(mode)
+ * directly.
+ */
 setGameMode(mode)
 {
     log("trace", "msg|in maps/mp/_zombiescript::setGameMode()||");
@@ -45,6 +51,12 @@ setGameMode(mode)
     maps\mp\_umi::setGameMode(mode);
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::setPlayerSpawns(targetname)
+ * directly.
+ */
 setPlayerSpawns(targetname)
 {
     log("trace", "msg|in maps/mp/_zombiescript::setPlayerSpawns()||");
@@ -53,6 +65,12 @@ setPlayerSpawns(targetname)
     maps\mp\_umi::setPlayerSpawns(targetname);
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::setWorldVision(vision, transitiontime)
+ * directly.
+ */
 setWorldVision(vision, transitiontime)
 {
     log("trace", "msg|in _zombiescript::setWorldVision()||");
@@ -60,6 +78,11 @@ setWorldVision(vision, transitiontime)
     maps\mp\_umi::setWorldVision(vision, transitiontime);
 }
 
+/**
+ * @deprecated
+ *
+ * NOOP. RotU does not support parachute drops.
+ */
 buildParachutePickup(targetname)
 {
     log("trace", "msg|in _zombiescript::buildParachutePickup()||");
@@ -67,6 +90,12 @@ buildParachutePickup(targetname)
     maps\mp\_umi::buildParachutePickup(targetname);
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType)
+ * directly.
+ */
 buildWeaponPickup(targetname, itemtext, weapon, type)
 {
     log("trace", "msg|in maps/mp/_zombiescript::buildWeaponPickup()||");
@@ -75,6 +104,12 @@ buildWeaponPickup(targetname, itemtext, weapon, type)
     maps\mp\_umi::buildWeaponPickup(targetname, itemtext, weapon, type);
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::buildWeaponShopsByTargetname(targetname, loadTime)
+ * directly.
+ */
 buildAmmoStock(targetname, loadtime)
 {
     log("trace", "msg|in maps/mp/_zombiescript::buildAmmoStock()||");
@@ -83,8 +118,13 @@ buildAmmoStock(targetname, loadtime)
     maps\mp\_umi::buildAmmoStock(targetname, loadtime);
 }
 
-// Weaponshop actually
-buildWeaponUpgrade(targetname)
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::buildShopsByTargetname(targetname)
+ * directly.
+ */
+buildWeaponUpgrade(targetname) // equipment shops, actually
 {
     log("trace", "msg|in maps/mp/_zombiescript::buildWeaponUpgrade()||");
     
@@ -92,6 +132,12 @@ buildWeaponUpgrade(targetname)
     maps\mp\_umi::buildWeaponUpgrade(targetname);
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::setWeaponHandling(onGiveWeapons)
+ * directly.
+ */
 setWeaponHandling(id)
 {
     log("trace", "msg|in _zombiescript::setWeaponHandling()||");
@@ -99,6 +145,12 @@ setWeaponHandling(id)
     maps\mp\_umi::setWeaponHandling(id);
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::setSpawnWeapons(primary, secondary)
+ * directly.
+ */
 setSpawnWeapons(primary, secondary)
 {
     log("trace", "msg|in _zombiescript::setSpawnWeapons()||");
@@ -106,17 +158,23 @@ setSpawnWeapons(primary, secondary)
     maps\mp\_umi::setSpawnWeapons(primary, secondary);
 }
 
-// ONSLAUGHT MODE
-/// @deprecated
+/**
+ * @deprecated
+ *
+ * NOOP. Onslaught mode has been deprecated and removed.
+ */
 beginZomSpawning()
 {
     log("trace", "msg|in _zombiescript::beginZomSpawning()||");
     log("error", "msg|" + getdvar("mapname") + " calling the deprecated function _zombiescript::beginZomSpawning().||");
-    //scripts\gamemodes\_onslaught::startSpawning();
 }
 
-//SURVIVAL MODE
-// Loading spawns for survival mode (incomming waves)
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::buildZombieSpawnByTargetname(targetname, priority)
+ * directly.
+ */
 buildSurvSpawn(targetname, priority)
 {
     log("trace", "msg|in _zombiescript::buildSurvSpawn()||");
@@ -126,6 +184,12 @@ buildSurvSpawn(targetname, priority)
 
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::startGame()
+ * directly.
+ */
 startSurvWaves()
 {
     log("trace", "msg|in maps/mp/_zombiescript::startSurvWaves()||");
@@ -134,13 +198,11 @@ startSurvWaves()
     maps\mp\_umi::startSurvWaves(); // redirects to maps\mp\_umi::startGame()
 }
 
-//GENERAL SCRIPTS
 /**
- * @brief Waits until players are in the game before starting the game
- * N.B. Map makers: You *must* precache your resources before you call this function!
- * You can not precache anything after a call to wait().
+ * @deprecated
  *
- * @returns nothing
+ * New maps should call _umi::waitUntilFirstPlayerSpawns()
+ * directly.
  */
 waittillStart()
 {
@@ -150,6 +212,12 @@ waittillStart()
     maps\mp\_umi::waittillStart(); // redirects to maps\mp\_umi::waitUntilFirstPlayerSpawns();
 }
 
+/**
+ * @deprecated
+ *
+ * New maps should call _umi::buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll)
+ * directly.
+ */
 buildBarricade(targetname, parts, health, deathFx, buildFx, dropAll)
 {
     log("trace", "msg|in _zombiescript::buildBarricade()||");

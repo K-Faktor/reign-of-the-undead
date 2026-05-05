@@ -1419,7 +1419,7 @@ spawnPlayer(preserveState)
     // only one instance is running in case we are respawning a player
     self thread scripts\players\_usables::checkForUsableObjects();
     self thread scripts\players\_weapons::watchWeaponUsage();
-    self thread scripts\players\_weapons::watchWeaponSwitching();
+    // self thread scripts\players\_weapons::watchWeaponSwitching();
     self thread scripts\players\_weapons::watchC4();
     self thread scripts\players\_weapons::watchTnt();
     self thread scripts\players\_weapons::watchClaymores();
@@ -1710,7 +1710,7 @@ revive()
     self thread scripts\players\_usables::checkForUsableObjects();
 
     self thread scripts\players\_weapons::watchWeaponUsage();
-    self thread scripts\players\_weapons::watchWeaponSwitching();
+    // self thread scripts\players\_weapons::watchWeaponSwitching();
     // We call watchC4() here because c4 shouldn't work while down, but
     // needs to be restarted upon revive.  We do not call watchClaymores() or
     // watchTnt(), because those should keep working while down.  Calling it here

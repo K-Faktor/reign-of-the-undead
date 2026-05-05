@@ -356,6 +356,7 @@ deleteCtfEntities()                                 // quality:external_interfac
     }
 }
 
+
 /**
  * @brief UMI deletes built-in turrets from maps
  *
@@ -371,6 +372,7 @@ deleteTurrets()                                     // quality:external_interfac
         ents[i] delete();
     }
 }
+
 
 /**
  * @brief UMI deletes from memory unused headquarters entities from maps
@@ -401,6 +403,7 @@ deleteHqEntities()                                  // quality:external_interfac
     }
 }
 
+
 /**
  * @brief UMI changes the model of barrels to be a blue rusty barrel
  *
@@ -424,6 +427,7 @@ disambiguateBarrelsByTargetname(targetname)         // quality:external_interfac
         ents[i] setmodel("com_barrel_blue_rust");
     }
 }
+
 
 /**
  * @brief UMI deletes from memory unused sabotage entities from maps
@@ -457,6 +461,7 @@ deleteSabotageEntities()                            // quality:external_interfac
         deleteNearbyEntities(origins[i], 5, 30);
     }
 }
+
 
 /**
  * @brief Loads a central trap specified in the map
@@ -501,6 +506,7 @@ loadCentralTrap(trigger, bat, base, activator, price)   // quality:external_inte
     }
 }
 
+
 /**
  * @brief Loads a rotating trap specified in the map
  *
@@ -542,6 +548,7 @@ loadRotatingTrap(trigger, death, activator, price)  // quality:external_interfac
     }
 }
 
+
 /**
  * @brief Loads a spike trap specified in the map
  *
@@ -582,6 +589,7 @@ loadSpikeTrap(trigger, death, activator, price)     // quality:external_interfac
         level.mapTraps[level.mapTraps.size] = trap;
     }
 }
+
 
 /**
  * @brief Loads a fire trap specified in the map
@@ -631,6 +639,7 @@ loadFireTrap(trigger, fire1, fire2, fire3, fire4, death, activator, price)  // q
         level.mapTraps[level.mapTraps.size] = trap;
     }
 }
+
 
 /**
  * @brief Loads an electric trap specified in the map
@@ -684,6 +693,7 @@ loadElectricTrap(trigger, elec1, elec2, elec3, elec4, elec5, elec6, death, activ
         level.mapTraps[level.mapTraps.size] = trap;
     }
 }
+
 
 /**
  * @brief Loads a glide pad specified in the map
@@ -767,6 +777,7 @@ loadGlidePad(trigger, origin1, origin2, origin3, origin4, origin5, origin6, velo
     level.glidePads[level.glidePads.size] = pad;
 }
 
+
 /**
  * @brief Loads a continuous animation
  *
@@ -823,6 +834,7 @@ loadCyclicalAnimation(model, type, steps, reversible, delay)    // quality:exter
     level.mapAnimations[level.mapAnimations.size] = animation;
 }
 
+
 /**
  * @brief Loads an elevator or moving platform from a map
  *
@@ -860,6 +872,7 @@ loadElevator(model, trigger, positionA, positionB, velocity)    // quality:exter
     level.elevators[level.elevators.size] = elevator;
 }
 
+
 /**
  * @brief Loads a teleporter specified in a map
  *
@@ -884,6 +897,7 @@ loadMapTeleporter(trigger, destination)             // quality:external_interfac
     level.mapTeleporters[level.mapTeleporters.size] = mapTeleporter;
 }
 
+
 /**
  * @brief Loads a hurt trigger specified in a map
  *
@@ -906,6 +920,7 @@ loadHurtTriggers(trigger)                           // quality:external_interfac
         level.mapHurtTriggers[level.mapHurtTriggers.size] = hurtTrigger;
     }
 }
+
 
 /**
  * @brief UMI to build equipment stores by tradespawns
@@ -976,6 +991,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
     }
 }
 
+
 /**
  * @brief UMI to build equipment shops by targetname
  *
@@ -1007,6 +1023,7 @@ buildShopsByTargetname(targetname)                  // quality:external_interfac
         createTeamObjpoint(ent.origin+(0,0,72), "hud_ammo", 1);
     }
 }
+
 
 /**
  * @brief UMI to build weapons shop/upgrade by targetname
@@ -1049,6 +1066,7 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
         }
     }
 }
+
 
 /**
  * @brief UMI to build weapons shop/upgrade by tradespawns
@@ -1285,6 +1303,7 @@ loadExternalWaypoints()
     return true;
 }
 
+
 /**
  * @brief Pre-compute and save distances between linked waypoints to optimize A*
  * We compute and store each distance twice to minimize the work A* has to do to
@@ -1305,6 +1324,7 @@ loadWaypointLinkDistances()
         }
     }
 }
+
 
 /**
  * @brief Validates the waypoints for this map
@@ -1554,6 +1574,7 @@ buildZombieSpawnsByClassname(classname)             // quality:external_interfac
     }
 }
 
+
 /**
  * @brief UMI to build a zombie spawn point by an entity's targetname property
  *
@@ -1586,6 +1607,7 @@ buildZombieSpawnByTargetname(targetname, priority)  // quality:external_interfac
         level.botSpawnpoints[level.botSpawnpoints.size] = spawnpoint;
     }
 }
+
 
 /**
  * @brief Finds and loads additional zombie spawnpoints, and loads the spawnpoint queue
@@ -1789,7 +1811,8 @@ isSpawnpointOk(origin)
 
 /**
  * @brief UMI to build player spawn points by entities' classname property
- * *NOT IMPLEMENTED*
+ *
+ *        NOOP. RotU doesn't need to add player spawns
  *
  * @param classname string The value of the classname to use for player spawn points
  * @param enabled boolean ???
@@ -1802,12 +1825,14 @@ addPlayerSpawnsByClassname(classname, enabled)      // quality:external_interfac
     log("trace", "msg|in _umi::addPlayerSpawnsByClassname()||");
 
     // Do nothing, RotU doesn't need to add player spawns
+    log("warn", "msg|Adding player spawns is unsupported.||");
 }
 
 
 /**
  * @brief UMI to build player spawn points by entities' targetname property
- * *NOT IMPLEMENTED*
+ *
+ *        NOOP. RotU doesn't need to add player spawns
  *
  * @param targetname string The value of the targetname to use for player spawn points
  * @param enabled boolean ???
@@ -1820,6 +1845,7 @@ addPlayerSpawnsByTargetname(targetname, enabled)    // quality:external_interfac
     log("trace", "msg|in _umi::addPlayerSpawnsByTargetname()||");
 
     // Do nothing, RotU doesn't need to add player spawns
+    log("warn", "msg|Adding player spawns is unsupported.||");
 }
 
 
@@ -1916,6 +1942,8 @@ buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dro
 /**
  * @brief UMI builds all barricades of the given classname in the map
  *
+ *        NOOP. RotU doesn't build barricades by classname
+ *
  * @param classname string The value of the entities' classname property
  * @param partCount int The number of parts in barricades with this targetname
  * @param health int The initial and max hitpoints for the barricade
@@ -1963,6 +1991,8 @@ buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType) // quali
 /**
  * @brief UMI builds weapons that can be picked up based on a classname
  *
+ *        NOOP. RotU doesn't build pickup weapons by classname
+ *
  * @param classname string The name of the entities' classname property
  * @param itemText string The English name of the weapon
  * @param weapon string The game name of the weapon, i.e. m14_mp
@@ -1976,6 +2006,7 @@ buildWeaponPickupByClassname(classname, itemText, weapon, weaponType)   // quali
     log("trace", "msg|in _umi::buildWeaponPickupByClassname()||");
 
     // Do nothing, RotU doesn't build pickup weapons by classname
+    log("warn", "msg|Weapon pickups by classname is unsupported. Use _umi::buildWeaponPickupByTargetname() instead.||");
 }
 
 
@@ -2233,8 +2264,9 @@ privateGuessModName()                               // quality:external_interfac
 // or a runtime error, but they are't implemented. Any mod developer can implement
 // and begin using one of these reserved functions at any time.
 //
+
 /**
- * @brief A hook for a function to initialize waypoints
+ * @brief A hook for a function to initialize waypoints. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -2245,7 +2277,7 @@ initWaypoints()                                     // quality:external_interfac
 }
 
 /**
- * @brief A hook for a function to initialize game setup
+ * @brief A hook for a function to initialize game setup. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -2256,7 +2288,7 @@ initSetup()                                         // quality:external_interfac
 }
 
 /**
- * @brief A hook for a function to initialize barricades
+ * @brief A hook for a function to initialize barricades. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -2267,7 +2299,7 @@ initBarricades()                                    // quality:external_interfac
 }
 
 /**
- * @brief A hook for a function to load tradespawns
+ * @brief A hook for a function to load tradespawns. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -2289,6 +2321,12 @@ loadTradespawn()                                    // quality:external_interfac
 
 /**
  * @brief Builds weapon shops for RotU maps using old _zombiescript.gsc calls
+ *        
+ *        Compatability method. Catches calls to _zombiescript::buildAmmoStock()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildWeaponShopsByTargetname(targetname, loadTime) directly.
  *
  * @param targetname string The value of the entities' targetname property
  * @param loadTime int ???
@@ -2309,6 +2347,12 @@ buildAmmoStock(targetname, loadTime)                // quality:external_interfac
 /**
  * @brief Builds equipment shops for RotU maps using old _zombiescript.gsc calls
  *
+ *        Compatability method. Catches calls to _zombiescript::buildWeaponUpgrade()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildShopsByTargetname(targetname) directly.
+ * 
  * @param targetname string The value of the entities' targetname property
  *
  * @returns nothing
@@ -2327,8 +2371,14 @@ buildWeaponUpgrade(targetname)                      // quality:external_interfac
 /**
  * @brief Builds a zombie spawn point for RotU maps using old _zombiescript.gsc calls
  *
+ *        Compatability method. Catches calls to _zombiescript::buildSurvSpawn()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildZombieSpawnByTargetname(targetname, priority) directly.
+ * 
  * @param targetname string The value of the entities' targetname property,
- * traditionally "spawngroup[n]", where n is an integer
+ *                          traditionally "spawngroup[n]", where n is an integer
  * @param priority int A zombie has a priority / totalPriority chance of being spawned here
  *
  * @returns nothing
@@ -2342,10 +2392,17 @@ buildSurvSpawn(targetname, priority)                // quality:external_interfac
 
 
 /**
- * @brief Waits to start the game until the first player chooses their class and is spawned
+ * @brief Waits to start the game until the first player chooses their class and is spawned.
+ *
  *        You *must* precache() or load() all your map's items *before* any call to any
  *        of the 'wait' methods.
  *
+ *        Compatability method. Catches calls to _zombiescript::waittillStart()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::waitUntilFirstPlayerSpawns() directly.
+ * 
  * @returns nothing
  */
 waittillStart()                                     // quality:external_interface
@@ -2359,6 +2416,12 @@ waittillStart()                                     // quality:external_interfac
 /**
  * @brief Begins the first wave of a RotU survival game
  *
+ *        Compatability method. Catches calls to _zombiescript::startSurvWaves()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::startGame() directly.
+ * 
  * @returns nothing
  */
 startSurvWaves()                                    // quality:external_interface
@@ -2372,6 +2435,12 @@ startSurvWaves()                                    // quality:external_interfac
 /**
  * @brief Builds all barricades of the given targetname in the map
  *
+ *        Compatability method. Catches calls to _zombiescript::buildBarricade()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll) directly.
+ * 
  * @param targetname string The value of the entities' targetname property
  * @param partCount int The number of parts in barricades with this targetname
  * @param health int The initial and max hitpoints for the barricade
@@ -2391,6 +2460,12 @@ buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll)    // q
 
 /**
  * @brief Builds a weapon that can be picked up from an old RotU map using _zombiescript.gsc
+ *
+ *        Compatability method. Catches calls to _zombiescript::buildWeaponPickup()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType) directly.
  *
  * @param targetname string The name of the entities' targetname property
  * @param itemText string The English name of the weapon
@@ -2450,11 +2525,14 @@ setSpawnWeapons(primary, secondary)                 // quality:external_interfac
 
 
 /** @deprecated
- * @brief  Related to dropping supplies by parachute?
+ * @brief Related to dropping supplies by parachute?
  *
- *         NOOP.  Must be from RotU 2.1 or earlier. The file _parachutes.gsc
- *         doesn't exist anywhere from 2.2.0 onwards.
+ *        NOOP.  Must be from RotU 2.1 or earlier. The file _parachutes.gsc
+ *        doesn't exist anywhere from 2.2.0 onwards.
  *
+ *        Compatability method. Catches calls to _zombiescript::buildWeaponPickup()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ * 
  * @param targetname string The entities to load as parachute drop points
  *
  * @returns nothing
@@ -2488,8 +2566,13 @@ setWorldVision(vision, transitiontime)              // quality:external_interfac
 
 // This is probably a terrible idea
 /**
- * @brief Allows a mapmaker to override the server's game mode
+ * @brief Allows a mapmaker to override the server's game mode.
  *
+ *        This method includes a 'wait' call, so you must precache & load
+ *        all your assets prior to this call.
+ *
+ *        Note: Only modes "waves_special" and "waves_endless" are supported.
+ *              "onslaught" & "scripted" are deprecated
  * @param mode string The level.gameMode value for this map
  *
  * @returns nothing
@@ -2498,8 +2581,6 @@ setGameMode(mode)                                   // quality:external_interfac
 {
     log("trace", "msg|in _umi::setGameMode()||");
 
-    // note: only modes "waves_special" and "waves_endless" are supported.
-    //       "onslaught" & "scripted" are deprecated
     level.gameMode = mode;
 
     log("server", "msg|Map: First call to wait(), it is now too late to precache models or load fx.||");
@@ -2538,6 +2619,8 @@ setPlayerSpawns(targetname)                         // quality:external_interfac
 /**
  * @brief Builds zombie spawn points for old ROZO maps
  *
+ *        This method should not be used by RotU maps, old or new.
+ *
  * @returns nothing
  */
 addDefaultZombieSpawns()                            // quality:external_interface
@@ -2550,6 +2633,8 @@ addDefaultZombieSpawns()                            // quality:external_interfac
 
 /**
  * @brief Builds weapon shops and equipment shops using old ROZO calls
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param weapons string Space-separated list of tradespawn array indices
  * @param shops string Space-separated list of tradespawn array indices
@@ -2576,6 +2661,8 @@ placeShops(weapons, shops)                          // quality:external_interfac
 /**
  * @brief Converts waypoints for old ROZO maps
  *
+ *        This method should not be used by RotU maps, old or new.
+ *
  * @returns nothing
  */
 convertWaypoints()                                  // quality:external_interface
@@ -2587,7 +2674,9 @@ convertWaypoints()                                  // quality:external_interfac
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param origin A tuple containing the map position to be the default target
  *
@@ -2602,7 +2691,9 @@ zombieDefaultTarget(origin)                         // quality:external_interfac
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @returns nothing
  */
@@ -2615,7 +2706,9 @@ mapThink()                                          // quality:external_interfac
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @returns nothing
  */
@@ -2628,7 +2721,9 @@ setPlayerModels()                                   // quality:external_interfac
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param structs n/a
  * @param additional n/a
@@ -2644,7 +2739,9 @@ getFreeStruct(structs, additional)                  // quality:external_interfac
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param swap n/a
  *
@@ -2659,7 +2756,9 @@ addDefaultPlayerSpawns(swap)                        // quality:external_interfac
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param classname n/a
  * @param enabled n/a

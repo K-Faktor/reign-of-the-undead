@@ -33,6 +33,11 @@
 
 #include scripts\include\utility;
 
+/**
+ * @brief Loads all the real weapons in the mod
+ *
+ * @returns nothing
+ */
 init()
 {
     log("trace", "msg|in _weapons::init()||");
@@ -50,10 +55,9 @@ init()
     level.weaponIDs = [];
     max_weapon_num = 149;
     attachment_num = 150;
-    for( i = 0; i <= max_weapon_num; i++ )
-    {
+    for( i = 0; i <= max_weapon_num; i++ ) {
         weapon_name = tablelookup("mp/statstable.csv", 0, i, 4);
-        if ((!isdefined( weapon_name)) || (weapon_name == "")) {
+        if ((!isdefined(weapon_name)) || (weapon_name == "")) {
             level.weaponIDs[i] = "";
             continue;
         }
@@ -65,19 +69,16 @@ init()
             continue;
         }
 
-        attachment_tokens = strtok( attachment, " " );
-        if( !isdefined( attachment_tokens ) )
+        attachment_tokens = strtok(attachment, " ");
+        if (!isdefined(attachment_tokens)) {
             continue;
+        }
 
-        if( attachment_tokens.size == 0 )
-        {
+        if (attachment_tokens.size == 0) {
             level.weaponIDs[attachment_num] = weapon_name + "_" + attachment + "_mp";
             attachment_num++;
-        }
-        else
-        {
-            for( k = 0; k < attachment_tokens.size; k++ )
-            {
+        } else {
+            for (k=0; k<attachment_tokens.size; k++) {
                 level.weaponIDs[attachment_num] = weapon_name + "_" + attachment_tokens[k] + "_mp";
                 attachment_num++;
             }
@@ -122,8 +123,8 @@ init()
     //precacheItem( "tnt_mp" );
     precacheItem("crossbow_mp");
 
-    precacheShellShock( "default" );
-    precacheShellShock( "concussion_grenade_mp" );
+    precacheShellShock("default");
+    precacheShellShock("concussion_grenade_mp");
 
     claymoreDetectionConeAngle = 70;
     level.claymoreDetectionDot = cos(claymoreDetectionConeAngle);
@@ -137,9 +138,8 @@ init()
     level.c4explodethisframe = false;
     level.C4FXid = loadfx("misc/light_c4_blink");
     level.claymoreFXid = loadfx("misc/claymore_laser");
-
-
 }
+
 
 /**
  * @brief Is the weapon a special weapon?
@@ -159,6 +159,11 @@ isSpecialWeap(weapon)
 }
 
 
+/**
+ * @brief Initializes player weapon slots
+ *
+ * @returns nothing
+ */
 initPlayerWeapons()
 {
     log("trace", "msg|in _weapons::initPlayerWeapons()||");
@@ -167,6 +172,7 @@ initPlayerWeapons()
     self.secondary = "none";
     self.extra = "none";
 }
+
 
 /**
  * @brief Should a weapon flash be shown when the weapon is fired?
@@ -193,6 +199,12 @@ checkWeaponFlash(weapon)
     return true;
 }
 
+
+/**
+ * @brief Gives a player their weapons
+ *
+ * @returns nothing
+ */
 givePlayerWeapons()
 {
     log("trace", "msg|in _weapons::givePlayerWeapons()||");
@@ -221,6 +233,7 @@ givePlayerWeapons()
         self giveMaxAmmo(self.extra);
     }
 }
+
 
 /**
  * @brief Can the weapon have its ammo restored in the shop?
@@ -273,6 +286,12 @@ canRestoreAmmoByAmmoBoxes(weapon)
     return true;
 }
 
+
+/**
+ * @brief Main logic for a player firing their weapons
+ *
+ * @returns nothing
+ */
 watchWeaponUsage()
 {
     log("trace", "msg|in _weapons::watchWeaponUsage()||");
@@ -286,7 +305,7 @@ watchWeaponUsage()
     self.firingWeapon = false;
 
     for ( ;; ) {
-        self waittill ( "begin_firing" );
+        self waittill ("begin_firing");
 
         weap = self getcurrentweapon();
 
@@ -295,10 +314,10 @@ watchWeaponUsage()
         self.hasDoneCombat = true;
         self.firingWeapon = true;
 
-        if (weap=="saw_acog_mp") { // minigun
+        if (weap == "saw_acog_mp") { // minigun
             self stoplocalsound("weap_minigun_spin_over_plr");
             self thread minigunQuake();
-        } else if (weap=="skorpion_acog_mp") { // flamethrower
+        } else if (weap == "skorpion_acog_mp") { // flamethrower
             self stoplocalsound("flamethrower_cooldown_plr");
             ent = spawn("script_model", self.origin);
             ent linkto(self);
@@ -309,7 +328,7 @@ watchWeaponUsage()
 
             self playsound("flamethrower_fire_npc");
             self playlocalsound("flamethrower_ignite_plr");
-        } else if (weap=="g3_acog_mp") { // thundergun
+        } else if (weap == "g3_acog_mp") { // thundergun
             for (i=0; i<level.bots.size; i++) {
                 bot = level.bots[i];
                 if (!isdefined(bot)) {continue;}
@@ -317,8 +336,12 @@ watchWeaponUsage()
                 if (isalive(bot)) {
                     dis = distance(bot.origin, self.origin);
                     if (dis < 768) {
-                        dam = int((600-600*dis/768));
-                        realdam = int(200 * (1 - (dis/521)));
+                        // @todo debug, don't rely on order of operations, be explicit with parens
+                        // I think for special weapons, need to prestige, then buy raygun,
+                        // then upgrade to thundergun to test this
+                        dam = int((600-600 * dis / 768));
+                        realdam = int(200 * (1 - (dis / 521)));
+                        log("bug", sprintfLog("msg|thundegun damage||dis|$1:n||dam|$2:n||realdam|$3:n||", dis, dam, realdam));
                         if (realdam < 0) {realdam = 0;}
                         else if (realdam < 40) {realdam = 40;}
 
@@ -330,26 +353,26 @@ watchWeaponUsage()
             }
         }
 
-        self waittill ( "end_firing" );
+        self waittill ("end_firing");
 
-        if (weap=="saw_acog_mp") { // minigun
+        if (weap == "saw_acog_mp") { // minigun
             self playlocalsound("weap_minigun_spin_over_plr");
-        } else if (weap=="skorpion_acog_mp") { // flamethrower
+        } else if (weap == "skorpion_acog_mp") { // flamethrower
             self stoplocalsound("flamethrower_ignite_plr");
             self playlocalsound("flamethrower_cooldown_plr");
             ent stopLoopSound("flamethrower_fire_npc");
             ent delete();
         }
 
-        if (weap == self.primary){
+        if (weap == self.primary) {
             self.persData.primaryAmmoClip = self getweaponammoclip(self.primary);
             self.persData.primaryAmmoStock = self getweaponammostock(self.primary);
         }
-        else if (weap == self.secondary){
+        else if (weap == self.secondary) {
             self.persData.secondaryAmmoClip = self getweaponammoclip(self.secondary);
             self.persData.secondaryAmmoStock = self getweaponammostock(self.secondary);
         }
-        else if (weap == self.extra){
+        else if (weap == self.extra) {
             self.persData.extraAmmoClip = self getweaponammoclip(self.extra);
             self.persData.extraAmmoStock = self getweaponammostock(self.extra);
         }
@@ -358,6 +381,16 @@ watchWeaponUsage()
     }
 }
 
+
+/**
+ * @brief Handles bot damage from the ThunderGun @todo needs testing for clarification
+ *
+ * @param dam integer Damage done to the bot
+ * @param realdam integer Damage done to the bot
+ * @param bot entity The bot that is taking damage
+ *
+ * @returns nothing
+ */
 thunderBlast(dam, realdam, bot)
 {
     log("trace", "msg|in _weapons::thunderBlast()||");
@@ -369,21 +402,30 @@ thunderBlast(dam, realdam, bot)
     } else {
         // bot gets stunned, and damage is done
         bot thread scripts\bots\_bot::stun();
-        bot thread [[level.callbackPlayerDamage]](
-            self, // eInflictor The entity that causes the damage.(e.g. a turret)
-            self, // eAttacker The entity that is attacking.
-            realdam, // iDamage Integer specifying the amount of damage done
-            0, // iDFlags Integer specifying flags that are to be applied to the damage
-            "MOD_EXPLOSIVE", // sMeansOfDeath Integer specifying the method of death
-            "g3_acog_mp", // sWeapon The weapon number of the weapon used to inflict the damage
-            self.origin, // vPoint The point the damage is from?
-            direction, // vDir The direction of the damage
-            "none", // sHitLoc The location of the hit
-            0 // psOffsetTime The time offset for the damage
+        // callback is _clients::Callback_PlayerDamage()
+        bot thread [[level.callbackPlayerDamage]] (
+            self,               // eInflictor entity The entity that causes the damage.(e.g. a turret)
+            self,               // eAttacker entity The entity that is attacking.
+            realdam,            // iDamage integer The amount of damage done
+            0,                  // iDFlags integer Flags that are to be applied to the damage
+            "MOD_EXPLOSIVE",    // sMeansOfDeath string The method of death
+            "g3_acog_mp",       // sWeapon string The weapon used to inflict the damage
+            self.origin,        // vPoint vector The position the damage is from
+            direction,          // vDir vector The direction the damage is from
+            "none",             // sHitLoc string The location of the hit
+            0                   // psOffsetTime integer The time offset for the damage, ms
         );
     }
 }
 
+
+/**
+ * @brief Removes flamethrower when player is downed
+ *
+ * @param ent entity The entity (flamethrower) to remove
+ *
+ * @returns nothing
+ */
 removeEntOnDowned(ent)
 {
     log("trace", "msg|in _weapons::removeEntOnDowned()||");
@@ -395,6 +437,13 @@ removeEntOnDowned(ent)
 }
 
 
+/**
+ * @brief Removes flamethrower when player dies
+ *
+ * @param ent entity The entity (flamethrower) to remove
+ *
+ * @returns nothing
+ */
 removeEntOnDeath(ent)
 {
     log("trace", "msg|in _weapons::removeEntOnDeath()||");
@@ -405,6 +454,14 @@ removeEntOnDeath(ent)
     ent delete();
 }
 
+
+/**
+ * @brief Removes flamethrower when player disconnects
+ *
+ * @param ent entity The entity (flamethrower) to remove
+ *
+ * @returns nothing
+ */
 removeEntOnDisconnect(ent)
 {
     log("trace", "msg|in _weapons::removeEntOnDisconnect()||");
@@ -414,6 +471,12 @@ removeEntOnDisconnect(ent)
     ent delete();
 }
 
+
+/**
+ * @brief Plays a rumble while the minigun fires
+ *
+ * @returns nothing
+ */
 minigunQuake()
 {
     log("trace", "msg|in _weapons::minigunQuake()||");
@@ -429,6 +492,12 @@ minigunQuake()
     }
 }
 
+
+/**
+ * @brief Alerts zombies when a weapon if fired near them
+ *
+ * @returns nothing
+ */
 alertTillEndFiring()
 {
     log("trace", "msg|in _weapons::alertTillEndFiring()||");
@@ -453,15 +522,16 @@ alertTillEndFiring()
 }
 
 /// @deprecated
-watchWeaponSwitching()
-{
-    log("trace", "msg|in _weapons::watchWeaponSwitching()||");
+// watchWeaponSwitching()
+// {
+//     log("trace", "msg|in _weapons::watchWeaponSwitching()||");
 
-    self endon("death");
-    self endon("disconnect");
-    self endon("spawned");      // end this instance before a respawn
+//     self endon("death");
+//     self endon("disconnect");
+//     self endon("spawned");      // end this instance before a respawn
 
-}
+// }
+
 
 /**
  * @brief Replaces a player's weapon with a new weapon
@@ -519,6 +589,7 @@ swapWeapons(type, weapon)
         break;
     }
 }
+
 
 /**
  * @brief Determines if the weapon is a sniper rifle
@@ -679,6 +750,11 @@ isSilenced(weapon)
 }
 
 
+/**
+ * @brief Main logic for Claymore mine use
+ *
+ * @returns nothing
+ */
 watchClaymores()
 {
     log("trace", "msg|in _weapons::watchClaymores()||");
@@ -718,7 +794,7 @@ playClaymoreEffects()
 
     self endon("death");
 
-    while(1) {
+    while (1) {
         origin = self getTagOrigin("tag_fx");
         angles = self getTagAngles("tag_fx");
         fx = spawnFx(level.claymoreFXid, origin, anglesToForward(angles), anglesToUp(angles));
@@ -728,7 +804,7 @@ playClaymoreEffects()
 
         originalOrigin = self.origin;
 
-        while(1) {
+        while (1) {
             wait .25;
             if (self.origin != originalOrigin) {break;}
         }
@@ -737,6 +813,11 @@ playClaymoreEffects()
 }
 
 
+/**
+ * @brief Handle a claymore detonation
+ *
+ * @returns nothing
+ */
 claymoreDetonation()
 {
     log("trace", "msg|in _weapons::claymoreDetonation()||");
@@ -747,8 +828,7 @@ claymoreDetonation()
     damageArea = spawn("trigger_radius", self.origin + (0,0,0-level.claymoreDetonateRadius), 0, level.claymoreDetonateRadius, level.claymoreDetonateRadius*2);
     self thread deleteEntityOnPlayerDeath(damageArea);
 
-    while(1)
-    {
+    while (1) {
         damageArea waittill("trigger", ent);
 
         if ((isDefined(ent.isBot)) && (ent.isBot) ||        // entity is a bot
@@ -757,14 +837,8 @@ claymoreDetonation()
             // Don't detonate if player isn't in detection cone
             if (!ent shouldAffectClaymore(self)) {continue;}
             // Detonate if the player is in the damage cone
-            if (ent damageConeTrace(self.origin, self) > 0)
-            break;
+            if (ent damageConeTrace(self.origin, self) > 0) {break;}
         }
-
-            /// don't blow if the player is moving too slow?????
-//         if ( lengthsquared( player getVelocity() ) < 10 )
-//         continue;
-
     }
 
     self playsound ("claymore_activated");
@@ -775,6 +849,7 @@ claymoreDetonation()
     self.owner thread rebuildPlayersEmplacedExplosives();
     self detonate();
 }
+
 
 /**
  * @brief Waits until the explosive is no longer moving
@@ -787,13 +862,14 @@ waitUntilExplosivesEmplaced()
 
     // self is claymore
     previousLocation = (0,0,0); // Init
-    while(isDefined(self)) {
+    while (isDefined(self)) {
         if (self.origin == previousLocation) {break;}
 
         previousLocation = self.origin;
         wait .15;
     }
 }
+
 
 /**
  * @brief Deletes an entity when a player dies
@@ -811,6 +887,7 @@ deleteEntityOnPlayerDeath(entity)
 
     if (isdefined(entity)) {entity delete();}
 }
+
 
 /**
  * @brief Rebuilds a player's deployed explosives arrays
@@ -864,7 +941,13 @@ rebuildPlayersEmplacedExplosives()
 }
 
 
-
+/**
+ * @brief Is the zombie (self) in the Claymore's detection cone?
+ *
+ * @param claymore entity Should this entity trigger the claymore?
+ *
+ * @returns boolean indicating whether it should trigger the claymore or not
+ */
 shouldAffectClaymore(claymore)
 {
     log("trace", "msg|in _weapons::shouldAffectClaymore()||");
@@ -873,17 +956,19 @@ shouldAffectClaymore(claymore)
     pos = self.origin + (0,0,32);
 
     dirToPos = pos - claymore.origin;
-    claymoreForward = anglesToForward( claymore.angles );
+    claymoreForward = anglesToForward(claymore.angles);
 
-    dist = vectorDot( dirToPos, claymoreForward );
-    if ( dist < level.claymoreDetectionMinDist )
-    return false;
+    dist = vectorDot(dirToPos, claymoreForward);
+    if (dist < level.claymoreDetectionMinDist) {
+        return false;
+    }
 
-    dirToPos = vectornormalize( dirToPos );
+    dirToPos = vectornormalize(dirToPos);
 
-    dot = vectorDot( dirToPos, claymoreForward );
-    return ( dot > level.claymoreDetectionDot );
+    dot = vectorDot(dirToPos, claymoreForward);
+    return (dot > level.claymoreDetectionDot);
 }
+
 
 /**
  * @brief Removes deployed explosives when a player leaves the game
@@ -902,24 +987,28 @@ deleteExplosivesOnDisconnect()
     wait .05;
 
     if (isDefined(self.emplacedC4)) {
-        for (i=0; i<self.emplacedC4.size; i++) {        // C4
+        for (i=0; i<self.emplacedC4.size; i++) {            // C4
             if (isdefined(self.emplacedC4[i])) {self.emplacedC4[i] delete();}
         }
     }
     if (isDefined(self.emplacedClaymores)) {
-        for (i=0; i<self.emplacedClaymores.size; i++) {  // Claymores
+        for (i=0; i<self.emplacedClaymores.size; i++) {     // Claymores
             if (isdefined(self.emplacedClaymores[i])) {self.emplacedClaymores[i] delete();}
         }
     }
     if (isDefined(self.emplacedTnt)) {
-        for (i=0; i<self.emplacedTnt.size; i++) {  // TNT
+        for (i=0; i<self.emplacedTnt.size; i++) {           // TNT
             if (isdefined(self.emplacedTnt[i])) {self.emplacedTnt[i] delete();}
         }
     }
 }
 
 
-
+/**
+ * @brief Main logic for employment of C4
+ *
+ * @returns nothing
+ */
 watchC4()
 {
     log("trace", "msg|in _weapons::watchC4()||");
@@ -931,8 +1020,8 @@ watchC4()
     self thread triggerThrowable();
 
     while(1) {
-        self waittill( "grenade_fire", throwable, weapname );
-        if ( weapname == "c4" || weapname == "c4_mp" ) {
+        self waittill("grenade_fire", throwable, weapname);
+        if (weapname == "c4" || weapname == "c4_mp") {
             //if ( !self.emplacedC4.size )
             //  self thread watchC4AltDetonate();
 
@@ -940,7 +1029,7 @@ watchC4()
             throwable.owner = self;
             throwable.activated = false;
 
-            throwable thread maps\mp\gametypes\_shellshock::c4_earthQuake();
+            throwable thread maps\mp\gametypes\_shellshock::c4_earthQuake(); // stock method
             //throwable thread c4Activate();
             throwable thread c4Damage();
             throwable thread playC4Effects();
@@ -948,6 +1037,12 @@ watchC4()
     }
 }
 
+
+/**
+ * @brief Main logic for employment of TNT
+ *
+ * @returns nothing
+ */
 watchTnt()
 {
     log("trace", "msg|in _weapons::watchTnt()||");
@@ -969,7 +1064,7 @@ watchTnt()
             throwable.owner = self;
             throwable.activated = false;
 
-            throwable thread maps\mp\gametypes\_shellshock::c4_earthQuake();
+            throwable thread maps\mp\gametypes\_shellshock::c4_earthQuake(); // stock method
             //throwable thread c4Activate();
             throwable thread c4Damage();
             throwable thread playC4Effects();
@@ -977,6 +1072,12 @@ watchTnt()
     }
 }
 
+
+/**
+ * @brief Triggers a throwable explosive: C4 & TNT
+ *
+ * @returns nothing
+ */
 triggerThrowable()
 {
     log("trace", "msg|in _weapons::triggerThrowable()||");
@@ -1010,6 +1111,14 @@ triggerThrowable()
     }
 }
 
+
+/**
+ * @brief Detonates C4 & TNT after a small delay
+ *
+ * @param delay float How long to wait before detonation, ms
+ *
+ * @returns nothing
+ */
 waitAndDetonate(delay)
 {
     log("trace", "msg|in _weapons::waitAndDetonate()||");
@@ -1020,6 +1129,12 @@ waitAndDetonate(delay)
     self detonate();
 }
 
+
+/**
+ * @brief Plays detonation effects for C4 & TNT
+ *
+ * @returns nothing
+ */
 playC4Effects()
 {
     log("trace", "msg|in _weapons::playC4Effects()||");
@@ -1027,30 +1142,32 @@ playC4Effects()
     self endon("death");
     self waittill("activated");
 
-    while(1)
-    {
-        org = self getTagOrigin( "tag_fx" );
-        ang = self getTagAngles( "tag_fx" );
+    while (1) {
+        org = self getTagOrigin("tag_fx");
+        ang = self getTagAngles("tag_fx");
 
-        fx = spawnFx( level.C4FXid, org, anglesToForward( ang ), anglesToUp( ang ) );
-        triggerfx( fx );
-
-        self thread clearFXOnDeath( fx );
+        fx = spawnFx(level.C4FXid, org, anglesToForward(ang), anglesToUp(ang));
+        triggerfx(fx);
+        self thread clearFXOnDeath(fx);
 
         originalOrigin = self.origin;
-
-        while(1)
-        {
+        while (1) {
             wait .25;
-            if ( self.origin != originalOrigin )
+            if (self.origin != originalOrigin) {
                 break;
+            }
         }
 
         fx delete();
-        //self waittillNotMoving();
     }
 }
 
+
+/**
+ * @brief Handles damage calls for Claymores, C4, and TNT
+ *
+ * @returns nothing
+ */
 c4Damage()
 {
     log("trace", "msg|in _weapons::c4Damage()||");
@@ -1063,53 +1180,62 @@ c4Damage()
 
     attacker = undefined;
 
-    while(1)
-    {
-        self waittill ( "damage", damage, attacker, direction_vec, point, type, modelName, tagName, partName, iDFlags );
-        if ( !isplayer(attacker) )
-            continue;
+    while (1) {
+        self waittill ("damage", damage, attacker, direction_vec, point, type, modelName, tagName, partName, iDFlags);
+        if (!isplayer(attacker)) {continue;}
 
         // don't allow people to destroy C4 on their team if FF is off
-        if (self.owner != attacker && !getDvarInt("game_allowfriendlyfire"))
+        if (self.owner != attacker && !getDvarInt("game_allowfriendlyfire")) {
             continue;
+        }
 
-        if ( damage < 5 ) // ignore concussion grenades
-            continue;
+        // ignore concussion grenades
+        if (damage < 5) {continue;}
 
         break;
     }
 
-    if ( level.c4explodethisframe )
+    if (level.c4explodethisframe) {
         wait .1 + randomfloat(.4);
-    else
+    } else {
         wait .05;
+    }
 
-    if (!isdefined(self))
+    if (!isdefined(self)) {
         return;
+    }
 
     level.c4explodethisframe = true;
-
     thread resetC4ExplodeThisFrame();
 
-    if ( isDefined( type ) && (isSubStr( type, "MOD_GRENADE" ) || isSubStr( type, "MOD_EXPLOSIVE" )) )
+    if (isDefined(type) && (isSubStr(type, "MOD_GRENADE") || isSubStr(type, "MOD_EXPLOSIVE"))) {
         self.wasChained = true;
+    }
 
-    if ( isDefined( iDFlags ) && (iDFlags & level.iDFLAGS_PENETRATION) )
+    if (isDefined(iDFlags) && (iDFlags & level.iDFLAGS_PENETRATION)) {
         self.wasDamagedFromBulletPenetration = true;
+    }
 
     self.wasDamaged = true;
 
     // "destroyed_explosive" notify, for challenges
-    if ( isdefined( attacker ) && isdefined( attacker.pers["team"] ) && isdefined( self.owner ) && isdefined( self.owner.pers["team"] ) )
+    if (isdefined(attacker)   && isdefined(attacker.pers["team"]) &&
+        isdefined(self.owner) && isdefined(self.owner.pers["team"]))
     {
-        if ( attacker.pers["team"] != self.owner.pers["team"] )
+        if (attacker.pers["team"] != self.owner.pers["team"]) {
             attacker notify("destroyed_explosive");
+        }
     }
 
-    self detonate( attacker );
-    // won't get here; got death notify.
+    self detonate(attacker);
 }
 
+
+/**
+ * @brief Sets level.c4explodethisframe to false
+ *
+ * @returns nothing
+ */
 resetC4ExplodeThisFrame()
 {
     log("trace", "msg|in _weapons::resetC4ExplodeThisFrame()||");
@@ -1118,6 +1244,14 @@ resetC4ExplodeThisFrame()
     level.c4explodethisframe = false;
 }
 
+
+/**
+ * @brief Deletes the fx on death
+ *
+ * @param fx entity The fx to delete
+ *
+ * @returns nothing
+ */
 clearFXOnDeath(fx)
 {
     log("trace", "msg|in _weapons::clearFXOnDeath()||");

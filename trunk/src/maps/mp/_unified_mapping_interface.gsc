@@ -447,7 +447,8 @@ buildZombieSpawnByTargetname(targetname, priority) {}
 
 /**
  * @brief UMI to build player spawn points by entities' classname property
- * *NOT IMPLEMENTED*
+ *
+ *        NOOP. RotU doesn't need to add player spawns
  *
  * @param classname string The value of the classname to use for player spawn points
  * @param enabled boolean ???
@@ -460,7 +461,8 @@ addPlayerSpawnsByClassname(classname, enabled) {}
 
 /**
  * @brief UMI to build player spawn points by entities' targetname property
- * *NOT IMPLEMENTED*
+ *
+ *        NOOP. RotU doesn't need to add player spawns
  *
  * @param targetname string The value of the targetname to use for player spawn points
  * @param enabled boolean ???
@@ -489,6 +491,8 @@ buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dro
 
 /**
  * @brief UMI builds all barricades of the given classname in the map
+ *
+ *        NOOP. RotU doesn't build barricades by classname
  *
  * @param classname string The value of the entities' classname property
  * @param partCount int The number of parts in barricades with this targetname
@@ -519,6 +523,8 @@ buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType) {}
 
 /**
  * @brief UMI builds weapons that can be picked up based on a classname
+ *
+ *        NOOP. RotU doesn't build pickup weapons by classname
  *
  * @param classname string The name of the entities' classname property
  * @param itemText string The English name of the weapon
@@ -632,7 +638,7 @@ privateGuessModName() {}
 
 
 /**
- * @brief A hook for a function to initialize waypoints
+ * @brief A hook for a function to initialize waypoints. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -641,7 +647,7 @@ initWaypoints() {}
 
 
 /**
- * @brief A hook for a function to initialize game setup
+ * @brief A hook for a function to initialize game setup. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -650,7 +656,7 @@ initSetup() {}
 
 
 /**
- * @brief A hook for a function to initialize barricades
+ * @brief A hook for a function to initialize barricades. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -659,7 +665,7 @@ initBarricades() {}
 
 
 /**
- * @brief A hook for a function to load tradespawns
+ * @brief A hook for a function to load tradespawns. NOOP.
  * @reserved
  *
  * @returns nothing
@@ -669,6 +675,12 @@ loadTradespawn() {}
 
 /**
  * @brief Builds weapon shops for RotU maps using old _zombiescript.gsc calls
+ *
+ *        Compatability method. Catches calls to _zombiescript::buildAmmoStock()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildWeaponShopsByTargetname(targetname, loadTime) directly.
  *
  * @param targetname string The value of the entities' targetname property
  * @param loadTime int ???
@@ -681,6 +693,12 @@ buildAmmoStock(targetname, loadTime) {}
 /**
  * @brief Builds equipment shops for RotU maps using old _zombiescript.gsc calls
  *
+ *        Compatability method. Catches calls to _zombiescript::buildWeaponUpgrade()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildShopsByTargetname(targetname) directly.
+ *
  * @param targetname string The value of the entities' targetname property
  *
  * @returns nothing
@@ -691,8 +709,14 @@ buildWeaponUpgrade(targetname) {}
 /**
  * @brief Builds a zombie spawn point for RotU maps using old _zombiescript.gsc calls
  *
+ *        Compatability method. Catches calls to _zombiescript::buildSurvSpawn()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildZombieSpawnByTargetname(targetname, priority) directly.
+ *
  * @param targetname string The value of the entities' targetname property,
- * traditionally "spawngroup[n]", where n is an integer
+ *                          traditionally "spawngroup[n]", where n is an integer
  * @param priority int A zombie has a priority / totalPriority chance of being spawned here
  *
  * @returns nothing
@@ -701,9 +725,16 @@ buildSurvSpawn(targetname, priority) {}
 
 
 /**
- * @brief Waits to start the game until the first player chooses their class and is spawned
+ * @brief Waits to start the game until the first player chooses their class and is spawned.
+ *
  *        You *must* precache() or load() all your map's items *before* any call to any
  *        of the 'wait' methods.
+ *
+ *        Compatability method. Catches calls to _zombiescript::waittillStart()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::waitUntilFirstPlayerSpawns() directly.
  *
  * @returns nothing
  */
@@ -713,6 +744,12 @@ waittillStart() {}
 /**
  * @brief Begins the first wave of a RotU survival game
  *
+ *        Compatability method. Catches calls to _zombiescript::startSurvWaves()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::startGame() directly.
+ *
  * @returns nothing
  */
 startSurvWaves() {}
@@ -720,6 +757,12 @@ startSurvWaves() {}
 
 /**
  * @brief Builds all barricades of the given targetname in the map
+ *
+ *        Compatability method. Catches calls to _zombiescript::buildBarricade()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildBarricadesByTargetname(targetname, partCount, health, deathFx, buildFx, dropAll) directly.
  *
  * @param targetname string The value of the entities' targetname property
  * @param partCount int The number of parts in barricades with this targetname
@@ -735,6 +778,12 @@ buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll) {}
 
 /**
  * @brief Builds a weapon that can be picked up from an old RotU map using _zombiescript.gsc
+ *
+ *        Compatability method. Catches calls to _zombiescript::buildWeaponPickup()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
+ *
+ *        New maps, or a complete porting job, should call
+ *        _umi::buildWeaponPickupByTargetname(targetname, itemText, weapon, weaponType) directly.
  *
  * @param targetname string The name of the entities' targetname property
  * @param itemText string The English name of the weapon
@@ -770,10 +819,13 @@ setSpawnWeapons(primary, secondary) {}
 
 
 /** @deprecated
- * @brief  Related to dropping supplies by parachute?
+ * @brief Related to dropping supplies by parachute?
  *
- *         NOOP.  Must be from RotU 2.1 or earlier. The file _parachutes.gsc
- *         doesn't exist anywhere from 2.2.0 onwards.
+ *        NOOP.  Must be from RotU 2.1 or earlier. The file _parachutes.gsc
+ *        doesn't exist anywhere from 2.2.0 onwards.
+ *
+ *        Compatability method. Catches calls to _zombiescript::buildWeaponPickup()
+ *        when the include is simply changed from _zombiescript.gsc to _umi.gsc.
  *
  * @param targetname string The entities to load as parachute drop points
  *
@@ -794,8 +846,13 @@ setWorldVision(vision, transitiontime) {}
 
 
 /**
- * @brief Allows a mapmaker to override the server's game mode
+ * @brief Allows a mapmaker to override the server's game mode.
  *
+ *        This method includes a 'wait' call, so you must precache & load
+ *        all your assets prior to this call.
+ *
+ *        Note: Only modes "waves_special" and "waves_endless" are supported.
+ *              "onslaught" & "scripted" are deprecated
  * @param mode string The level.gameMode value for this map
  *
  * @returns nothing
@@ -816,6 +873,8 @@ setPlayerSpawns(targetname) {}
 /**
  * @brief Builds zombie spawn points for old ROZO maps
  *
+ *        This method should not be used by RotU maps, old or new.
+ *
  * @returns nothing
  */
 addDefaultZombieSpawns() {}
@@ -823,6 +882,8 @@ addDefaultZombieSpawns() {}
 
 /**
  * @brief Builds weapon shops and equipment shops using old ROZO calls
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param weapons string Space-separated list of tradespawn array indices
  * @param shops string Space-separated list of tradespawn array indices
@@ -837,13 +898,17 @@ placeShops(weapons, shops) {}
 /**
  * @brief Converts waypoints for old ROZO maps
  *
+ *        This method should not be used by RotU maps, old or new.
+ *
  * @returns nothing
  */
 convertWaypoints() {}
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param origin A tuple containing the map position to be the default target
  *
@@ -853,7 +918,9 @@ zombieDefaultTarget(origin) {}
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @returns nothing
  */
@@ -861,7 +928,9 @@ mapThink() {}
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @returns nothing
  */
@@ -869,7 +938,9 @@ setPlayerModels() {}
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param structs n/a
  * @param additional n/a
@@ -880,7 +951,9 @@ getFreeStruct(structs, additional) {}
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param swap n/a
  *
@@ -890,7 +963,9 @@ addDefaultPlayerSpawns(swap) {}
 
 
 /**
- * @brief NOOP
+ * @brief NOOP. Old ROZO call.
+ *
+ *        This method should not be used by RotU maps, old or new.
  *
  * @param classname n/a
  * @param enabled n/a

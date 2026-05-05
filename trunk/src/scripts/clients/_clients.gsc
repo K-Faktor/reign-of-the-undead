@@ -179,6 +179,22 @@ Callback_PlayerDisconnect()
     self notify( "disconnect" );
 }
 
+/**
+ * @brief Forwards a damage call to the appropriate method for bots or real players
+ *
+ * @param eInflictor entity The entity that causes the damage.(e.g. a turret)
+ * @param eAttacker entity The entity that is attacking
+ * @param iDamage integer The amount of damage done
+ * @param iDFlags integer Flags that are to be applied to the damage
+ * @param sMeansOfDeath string The method of death
+ * @param sWeapon string The weapon used to inflict the damage
+ * @param vPoint vector The position the damage is from
+ * @param vDir vector The direction the damage is from
+ * @param sHitLoc string The location of the hit
+ * @param psOffsetTime integer The time offset for the damage, ms  
+ *
+ * @returns nothing
+ */
 Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime)
 {
     log("trace", "msg|in _clients::Callback_PlayerDamage()||");
@@ -188,8 +204,8 @@ Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sW
     } else {
         self thread scripts\players\_players::onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
     }
-
 }
+
 
 Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {

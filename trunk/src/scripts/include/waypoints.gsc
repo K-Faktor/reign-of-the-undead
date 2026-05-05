@@ -400,6 +400,8 @@ printArray(array, axis, pivotIndex)
 
 printTrace(trace, from, to, ignoreEntity)
 {
+    log("trace", "msg|in waypoints::printTrace()||");
+
     fraction = trace["fraction"];
     position = trace["position"];
     entity = trace["entity"];
@@ -441,6 +443,8 @@ printTrace(trace, from, to, ignoreEntity)
 
 isPathClear(from, to, ignoreEntity)
 {
+    // quality:ignore_trace
+
     origin = from;
     originalEntity = ignoreEntity;
     originalTo = to;
@@ -526,6 +530,8 @@ isPathClear(from, to, ignoreEntity)
 
 debugIsPathClear(from, to, ignoreEntity)
 {
+    // quality:ignore_trace
+    
     origin = from;
     originalEntity = ignoreEntity;
     from = from + (0,0,40);
@@ -1008,7 +1014,10 @@ findWaypointExtents()
  *
  * @returns array of integers representing the indices of the nearest waypoint(s)
  */
-nearestWaypoints(origin, n) {
+nearestWaypoints(origin, n)
+{
+    // quality:ignore_trace
+
     // KD Tree (Iterative) is always good, but on modern hardware, direct iteration is
     // better on small waypoint maps.  They break even at about 250 waypoints.
 
@@ -1035,7 +1044,7 @@ nearestWaypoints(origin, n) {
  */
 nearestWaypointsKD(origin, n)
 {
-    // 10th most-called function (2% of all function calls).
+    // quality:ignore_trace
     // Do *not* put a function entrance debugPrint statement here!
 
     if (!isDefined(n)) {n = 3;}
@@ -1128,6 +1137,8 @@ nearestWaypointsKDIterative(origin, n)
  */
 nearestWaypointsIteration(origin, n)
 {
+    // quality:ignore_trace
+
     closest = [];
     // ensure the initial array is sorted
     for (i=0; i<n; i++) {
@@ -1177,6 +1188,8 @@ nearestWaypointsIteration(origin, n)
  */
 nearestWaypointsBFS(origin, n, hintWp)
 {
+    // quality:ignore_trace
+
     if (!isDefined(n)) {
         n = 3;
     }
@@ -1297,6 +1310,8 @@ nearestWaypointsBFS(origin, n, hintWp)
  */
 insertCandidate(staticIndex, wpId, origin)
 {
+    // quality:ignore_trace
+
     if (!isDefined(level.Wp[wpId])) {
         return;
     }
@@ -1339,6 +1354,8 @@ insertCandidate(staticIndex, wpId, origin)
  */
 nearestWaypointsTest(n, useMapExtents)
 {
+    log("trace", "msg|in waypoints::nearestWaypointsTest()||");
+
     level.useKdWaypointTree = false;
     if (level.Wp.size > 250) {
         level.useKdWaypointTree = true;
@@ -1401,6 +1418,8 @@ nearestWaypointsTest(n, useMapExtents)
  */
 nearestWaypointsTimedTest()
 {
+    // quality:ignore_trace
+
     log("dev", "msg|Starting nearestWaypointsTimedTest||");
 
     n = 50000;
@@ -1484,6 +1503,8 @@ nearestWaypointsTimedTest()
  */
 printAStarData()
 {
+    log("trace", "msg|in waypoints::printAStarData()||");
+
     while (1) {
         wait 120;
         log("server", "msg|A* (calls, saved calls, distance() calls): (" + level.astarCalls + ", " + level.savedAStarCalls + ", " + level.astarDistanceCalls + ")||");
@@ -1500,6 +1521,8 @@ printAStarData()
  */
 validateAStar(n)
 {
+    log("trace", "msg|in waypoints::validateAStar()||");
+
     right = 0;
     wrong = 0;
 
@@ -1530,6 +1553,8 @@ validateAStar(n)
  */
 randomWaypointPairIndices()
 {
+    // quality:ignore_trace
+    
     start = 0;
     goal = 0;
     while (start == goal) {
@@ -1570,6 +1595,8 @@ randomWaypointPairIndices()
  */
 biDirectionalAStar(startWp, goalWp, validateWaypoints)
 {
+    // quality:ignore_trace
+
     level.astarCalls++;
     if (!isDefined(validateWaypoints)) validateWaypoints = false;
     if (startWp == goalWp) {
@@ -1868,7 +1895,7 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
  */
 CatmullRomPoint(p0, p1, p2, p3, t)
 {
-    // good candidate for no "trace" statement
+    // quality:ignore_trace
 
     // parameter weights
     t2 = t * t;
@@ -1899,6 +1926,8 @@ CatmullRomPoint(p0, p1, p2, p3, t)
  */
 getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
 {
+    // quality:ignore_trace
+    
     smoothPath = [];    // array of segments, as a stack
     segment = [];       // array of positions this segment, as a stack
 
@@ -2065,6 +2094,8 @@ getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
 
 reverseArray(arr)
 {
+    // quality:ignore_trace
+
     result = [];
     for (i=arr.size-1; i>=0; i--) {
         result[result.size] = arr[i];
@@ -2096,21 +2127,10 @@ reverseArray(arr)
  */
 AStarNew(startWp, goalWp, validateWaypoints)
 {
-    // ans = biDirectionalAStar(startWp, goalWp, false);
-    // if (isDefined(ans.size)) {
-    //     buf = "biDirectionalAStar("+startWp+", " + goalWp + ") path: [";
-    //     for (i=0; i<ans.size; i++) {
-    //         buf += ans[i] + ", ";
-    //     }
-    //     buf += "]\n";
-    //     logPrint(buf);
-    // } else if (ans == -1) {
-    //     // failed to find path
-    // }
-    // logPrint(ans + "\n");
-
+    // quality:ignore_trace
     // 20th most-called function (0.4% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
+
     level.astarCalls++;
     if (!isDefined(validateWaypoints)) {validateWaypoints = false;}
 
@@ -2284,7 +2304,7 @@ AStarNew(startWp, goalWp, validateWaypoints)
 // PQIsEmpty(Q, QSize)
 PQIsEmpty(QSize)
 {
-    /// Why are we passing in Q if we aren't using it?
+    // quality:ignore_trace
     // 5th most-called function (5% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
@@ -2304,6 +2324,7 @@ PQIsEmpty(QSize)
  */
 PQExists(Q, n, QSize)
 {
+    // quality:ignore_trace
     // 2nd most-called function (22% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
 
@@ -2330,6 +2351,7 @@ PQExists(Q, n, QSize)
  */
 AStarOriginal(startWp, goalWp)
 {
+    // quality:ignore_trace
     list = AStarNew(startWp, goalWp, false);
     // AStarNew() returns a list ready to be pushed onto a stack, but not a stack
     return list[list.size - 1];

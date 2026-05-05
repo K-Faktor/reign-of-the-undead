@@ -33,6 +33,12 @@
 
 #include scripts\include\utility;
 
+
+/**
+ * @brief Sets all the client dvars to enable the equipment shops
+ *
+ * @returns nothing
+ */
 playerSetupShop()
 {
     log("trace", "msg|in _shop::playerSetupShop()||");
@@ -58,6 +64,14 @@ playerSetupShop()
     }
 }
 
+
+/**
+ * @brief Process the player's purchase
+ *
+ * @param reponse string The response from the menu
+ *
+ * @returns nothing
+ */
 processResponse(response)
 {
     log("trace", "msg|in _shop::processResponse()||");
@@ -65,35 +79,33 @@ processResponse(response)
     // Always hold back enough points so the player can buy an infection cure
     cureHoldback = level.dvar["shop_item3_costs"];
 
-    switch (response)
-    {
+    switch (response) {
+        // N.B. The off-by-one differnece between "itemN" and "shop_itemN_costs" is correct & by design
         case "item0": // Health
-            if (self.points >= level.dvar["shop_item1_costs"] + cureHoldback)
-            {
+            if (self.points >= level.dvar["shop_item1_costs"] + cureHoldback) {
                 self thread scripts\players\_players::fullHeal(3);
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item1_costs"]);
             }
         break;
         case "item1": // Ammo
-            if (self.points >= level.dvar["shop_item2_costs"] + cureHoldback)
-            {
+            if (self.points >= level.dvar["shop_item2_costs"] + cureHoldback) {
                 self scripts\players\_players::restoreAmmo();
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item2_costs"]);
             }
         break;
         case "item2": // Cure
-        if (self.points >= level.dvar["shop_item3_costs"]) // no cureHoldback for the cure itself
-        {
-            self scripts\players\_infection::cureInfection();
-            self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item3_costs"]);
-            iprintln("^2"+self.name+" is no longer infected!");
-        }
+            // no cureHoldback for the cure itself
+            if (self.points >= level.dvar["shop_item3_costs"]) {
+                self scripts\players\_infection::cureInfection();
+                self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item3_costs"]);
+                iprintln("^2"+self.name+" is no longer infected!");
+            }
         break;
         case "item3": // Grenades
-        if (self.points >= level.dvar["shop_item4_costs"] + cureHoldback) {
-            self scripts\players\_weapons::swapWeapons("grenade", "frag_grenade_mp");
-            self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item4_costs"]);
-        }
+            if (self.points >= level.dvar["shop_item4_costs"] + cureHoldback) {
+                self scripts\players\_weapons::swapWeapons("grenade", "frag_grenade_mp");
+                self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item4_costs"]);
+            }
         break;
         case "item4":  // C4
             if (self.points >= level.dvar["shop_item5_costs"] + cureHoldback) {
@@ -110,16 +122,14 @@ processResponse(response)
                 self setweaponammostock ("c4_mp", limit - self.emplacedC4.size);
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_item5_costs"]);
             }
-            break;
-
+        break;
         case "item5": // raygun
-            if (self.points >= level.dvar["shop_item6_costs"] + cureHoldback)
-            {
-                if (self.unlock["extra"]==0) {
+            if (self.points >= level.dvar["shop_item6_costs"] + cureHoldback) {
+                if (self.unlock["extra"] == 0) {
                     self.extra = getdvar("surv_extra_unlock1");
 
-                    self.unlock["extra"] ++;
-                    self.persData.unlock["extra"] ++;
+                    self.unlock["extra"]++;
+                    self.persData.unlock["extra"]++;
 
                     self giveweapon(self.extra);
                     self givemaxammo(self.extra);
@@ -129,25 +139,18 @@ processResponse(response)
                 }
             }
         break;
-
         case "item10": // Barrel
-            if (self.points >= level.dvar["shop_defensive1_costs"] + cureHoldback)
-            {
-                if (level.barrels[0] + level.barrels[2] < level.dvar["game_max_barrels"])
-                {
+            if (self.points >= level.dvar["shop_defensive1_costs"] + cureHoldback) {
+                if (level.barrels[0] + level.barrels[2] < level.dvar["game_max_barrels"]) {
                     self scripts\players\_barricades::giveBarrel();
                     self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_defensive1_costs"]);
-                }
-                else
-                {
+                } else {
                     self iprintlnbold("Sorry! Maximum of " + level.dvar["game_max_barrels"] + " barrels");
                 }
             }
         break;
-
         case "item11": // Claymore
-            if (self.points >= level.dvar["shop_defensive2_costs"] + cureHoldback)
-            {
+            if (self.points >= level.dvar["shop_defensive2_costs"] + cureHoldback) {
                 // extra check to make sure race conditions haven't made the emplaced array inaccurate
                 self scripts\players\_weapons::rebuildPlayersEmplacedExplosives();
                 limit =  level.maxClaymoresPerPlayer;
@@ -169,25 +172,18 @@ processResponse(response)
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_defensive2_costs"]);
             }
         break;
-
         case "item12": // Exploding Barrel
-            if (self.points >= level.dvar["shop_defensive3_costs"] + cureHoldback)
-            {
-                if (level.barrels[0] + level.barrels[2] < level.dvar["game_max_barrels"])
-                {
+            if (self.points >= level.dvar["shop_defensive3_costs"] + cureHoldback) {
+                if (level.barrels[0] + level.barrels[2] < level.dvar["game_max_barrels"]) {
                     self scripts\players\_barricades::giveBarrel(2);
                     self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_defensive3_costs"]);
-                }
-                else
-                {
+                } else {
                     self iprintlnbold("Sorry! Maximum of " + level.dvar["game_max_barrels"] + " barrels");
                 }
             }
         break;
-
         case "item13": // Grenade Turret
-            if (self.points >= level.dvar["shop_defensive4_costs"] + cureHoldback)
-            {
+            if (self.points >= level.dvar["shop_defensive4_costs"] + cureHoldback) {
                 if (self scripts\players\_persistence::statGet("plevel") < level.grenadeTurretPrestigeUnlock) {
                     self iprintlnbold("Grenade turrets are unlocked at prestige level " + level.grenadeTurretPrestigeUnlock);
                     return;
@@ -205,10 +201,8 @@ processResponse(response)
                     self iprintlnbold("Sorry! Maximum of " + level.maxGrenadeTurrets + " grenade turrets");
                 }
             }
-            break;
-
+        break;
         case "item14":  // MG+Barrel
-
             if (self.points >= level.dvar["shop_defensive5_costs"] + cureHoldback) {
                 if (level.barrels[1] < level.dvar["game_max_mg_barrels"]) {
                     self scripts\players\_barricades::giveMgBarrel();
@@ -248,10 +242,8 @@ processResponse(response)
                 }
             }
         break;
-
         case "item17":  // TNT (2,4,6-trinotrotoluene)
-            if (self.points >= level.dvar["shop_defensive8_costs"] + cureHoldback)
-            {
+            if (self.points >= level.dvar["shop_defensive8_costs"] + cureHoldback) {
                 // extra check to make sure race conditions haven't made the emplaced array inaccurate
                 self scripts\players\_weapons::rebuildPlayersEmplacedExplosives();
                 weapon = self getcurrentweapon();
@@ -274,20 +266,15 @@ processResponse(response)
                 self setweaponammostock ("tnt_mp", amount);
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_defensive8_costs"]);
             }
-            break;
-
-
-        case "item20":
-            if (self.points >= level.dvar["shop_support1_costs"] + cureHoldback && self.support_level == 0)
-            {
+        break;
+        case "item20":  // Night Vision - Deprecated. Part of unused 'Support' category.  We give Night Vision automatically
+            if (self.points >= level.dvar["shop_support1_costs"] + cureHoldback && self.support_level == 0) {
                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["shop_support1_costs"]);
                 self.support_level++;
                 self setclientdvar("ui_supupgrade", self.support_level);
-                self setActionSlot( 1, "nightvision" );
+                self setActionSlot( 1, "nightvision");
                 self.nighvision = true;
             }
-
         break;
-
     }
 }

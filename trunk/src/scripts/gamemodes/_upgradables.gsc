@@ -259,7 +259,6 @@ init()
         setdvar("surv_unlocksecondary4_points", 750);
     }
 
-
     // Set default base costs for special weapons
     if (getdvar("surv_unlockextra1_points") == "") {
         setdvar("surv_unlockextra1_points", 1000);
@@ -289,12 +288,14 @@ init()
     }
 
     // Find special weapons (i.e. extra_unlocks)
+    // surv_extra_unlock5 is g3_acog_mp which is thundergun
+    // surv_extra_unlock6 is m1014_reflex_mp which is spas12 shotgun
     i = 0;
     while (1) {
         newWeapon = getdvar("surv_extra_unlock"+(i+1));
-        if (newWeapon=="") {break;}
+        if (newWeapon == "") {break;}
         level.specialWeps[i] = newWeapon;
-        // log("dev", "msg|Special weapon loaded: " + newWeapon + "||");
+        log("server", "msg|Extra special weapon loaded: " + newWeapon + "||");
         i++;
     }
 }
@@ -314,7 +315,7 @@ doUpgrade(weaponType)
     // get integer portion of the dvar name of next weapon upgrade
     upgradeIndex = self.unlock[weaponType] + 1;
 
-    if (weaponType=="extra") {
+    if (weaponType == "extra") {
         if (!self.canGetSpecialWeapons) {
             self iprintlnbold("You must prestige to upgrade special weapons!");
             return;
