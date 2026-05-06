@@ -1687,14 +1687,13 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
     meetFromF = 0;
     meetFromB = 0;
 
-    while (openF pqSize() > 0 && openB pqSize() > 0)
-    {
+    while ((openF pqSize() > 0) && (openB pqSize() > 0)) {
         // Expand Forward
         nF = openF pqPop();
         if (!isDefined(nF)) {break;}
 
         // Check if this node was reached by backward search
-        if (closedB pqWaypointExists(nF.wpIdx) || openB pqWaypointExists(nF.wpIdx)) {
+        if ((closedB pqWaypointExists(nF.wpIdx)) || (openB pqWaypointExists(nF.wpIdx))) {
             meetWp = nF.wpIdx;
             // shove the meet node back into closedF so we can find it there
             // later when we need to walk it's parents to recover the
@@ -1761,8 +1760,7 @@ biDirectionalAStar(startWp, goalWp, validateWaypoints)
         }
 
         // Backward neighbors
-        for (i = 0; i < level.Wp[nB.wpIdx].linkedCount; i++)
-        {
+        for (i=0; i<level.Wp[nB.wpIdx].linkedCount; i++) {
             ncIdx = level.Wp[nB.wpIdx].linked[i].ID;
             // cost calculation (same as forward)
             if (isDefined(level.Wp[nB.wpIdx].distance)) {

@@ -33,7 +33,17 @@
 
 #include scripts\include\utility;
 
-updateWaveHud(killed,total)
+
+/**
+ * @brief Update the wave progress HUD in lower left corner of HUD
+ *        For example, this display shows '3/25' over a progress bar
+ *
+ * @param killed integer Number of zombies killed this wave
+ * @param total integer Number of zombies in this wave
+ *
+ * @returns nothing
+ */
+updateWaveHud(killed, total)
 {
     // 19th most-called function (0.5% of all function calls).
     // Do *not* put a function entrance debugPrint statement here!
@@ -47,20 +57,46 @@ updateWaveHud(killed,total)
     }
 }
 
+
+/**
+ * @brief Creates a team objective point, such as over an equipment shop
+ *
+ * @param origin vector The position for the objecttive display
+ * @param shader string The name of the shader, usu. [hud_ammo|hud_weapons]
+ * @param alpha numeric Transparency of the shader, defaults to 1 (opaque)
+ *
+ * @returns nothing
+ */
 createTeamObjpoint(origin, shader, alpha)
 {
     log("trace", "msg|in hud::createTeamObjpoint()||");
 
-    scripts\gamemodes\_hud::createTeamObjpoint( origin, shader, alpha);
+    scripts\gamemodes\_hud::createTeamObjpoint(origin, shader, alpha);
 }
 
-addTimer(label, string, time)
+
+/**
+ * @brief Creates a countdown timer, used for medkits and ammo cans
+ *
+ * @param label string The localized label for the timer
+ * @param text string The UI text for the timer, usu. empty
+ * @param time numeric The duration of the timer
+ *
+ * @returns nothing
+ */
+addTimer(label, text, time)
 {
     log("trace", "msg|in hud::addTimer()||");
 
-    thread scripts\gamemodes\_hud::addTimer(label, string, time);
+    thread scripts\gamemodes\_hud::addTimer(label, text, time);
 }
 
+
+/**
+ * @brief Removes all HUD timers
+ *
+ * @returns nothing
+ */
 removeTimers()
 {
     log("trace", "msg|in hud::removeTimers()||");
@@ -68,29 +104,82 @@ removeTimers()
     thread scripts\gamemodes\_hud::removeTimers();
 }
 
-announceMessage(label, text, glowcolor, duration, speed, size)
+
+/**
+ * @brief Displays a glowing, pulsing message on the HUD
+ *
+ * @param label string The localized label for the message, like &"ZOMBIE_INFECTED"
+ * @param text string The UI text for the message
+ * @param glowcolor tuple A CoD4 color tuple, basically RGB with each component divided by 255
+ *                        @see utilty::decimalRgbToColor()
+ * @param duration numeric How long to show the message
+ * @param speed integer The speed of the pulsing effect
+ * @param fontscale float The size of the font; a scalar to apply--probably <= 2
+ *
+ * @returns nothing
+ */
+announceMessage(label, text, glowcolor, duration, speed, fontscale)
 {
     log("trace", "msg|in hud::announceMessage()||");
 
     for (i=0; i<level.players.size; i++) {
-        level.players[i] thread scripts\gamemodes\_hud::glowMessage(label, text, glowcolor, duration, speed, size);
+        level.players[i] thread scripts\gamemodes\_hud::glowMessage(label, text, glowcolor, duration, speed, fontscale);
     }
 }
 
-overlayMessage(label, text, glowcolor, size)
+/**
+ * @brief Displays a glowing, static message on the HUD.
+ *        Used for the Players Alive, Players Down counters, et al.
+ *
+ * @param label string The localized label for the message, like &"ZOMBIE_INFECTED"
+ * @param text string The UI text for the message
+ * @param glowcolor tuple A CoD4 color tuple, basically RGB with each component divided by 255
+ *                        @see utilty::decimalRgbToColor()
+ * @param fontscale float The size of the font; a scalar to apply--probably <= 2
+ *
+ * @returns nothing
+ */
+overlayMessage(label, text, glowcolor, fontscale)
 {
     log("trace", "msg|in hud::overlayMessage()||");
 
-    return self thread scripts\gamemodes\_hud::overlayMessage(label, text, glowcolor, size);
+    return self thread scripts\gamemodes\_hud::overlayMessage(label, text, glowcolor, fontscale);
 }
 
-glowMessage(label, text, glowcolor, duration, speed, size, sound)
+
+/**
+ * @brief Displays a glowing, pulsing message on the HUD
+ *
+ * @param label string The localized label for the message, like &"ZOMBIE_INFECTED"
+ * @param text string The UI text for the message
+ * @param glowcolor tuple A CoD4 color tuple, basically RGB with each component divided by 255
+ *                        @see utilty::decimalRgbToColor()
+ * @param duration numeric How long to show the message
+ * @param speed integer The speed of the pulsing effect
+ * @param fontscale float The size of the font; a scalar to apply--probably <= 2
+ * @param sound string The (optional) sound to play
+ *
+ * @returns nothing
+ */
+glowMessage(label, text, glowcolor, duration, speed, fontscale, sound)
 {
     log("trace", "msg|in hud::glowMessage()||");
 
-    self thread scripts\gamemodes\_hud::glowMessage(label, text, glowcolor, duration, speed, size, sound);
+    self thread scripts\gamemodes\_hud::glowMessage(label, text, glowcolor, duration, speed, fontscale, sound);
 }
 
+
+/**
+ * @brief Creates a glowing, pulsing, countdown timer, used for new wave countdown timer
+ *
+ * @param time numeric The duration of the timer
+ * @param label string The localized label for the timer
+ * @param glowcolor tuple A CoD4 color tuple, basically RGB with each component divided by 255
+ *                        @see utilty::decimalRgbToColor()
+ * @param text string The UI text for the timer, usu. empty
+ *
+ * @returns nothing
+ */
 timer(time, label, glowcolor, text)
 {
     log("trace", "msg|in hud::timer()||");
@@ -155,6 +244,14 @@ fontPulse(player)
     }
 }
 
+
+/**
+ * @brief Creates a progress bar that goes from empty to full over time, such as for reviving
+ *
+ * @param time numeric The duration of the progressbar
+ *
+ * @returns nothing
+ */
 progressBar(time)
 {
     log("trace", "msg|in hud::progressBar()||");
@@ -164,6 +261,16 @@ progressBar(time)
 }
 
 
+/**
+ * @brief Creates a cooldown bar, as used for machine gun barrels
+ *
+ * @param color tuple A CoD4 color tuple, basically RGB with each component divided by 255
+ *                    @see utilty::decimalRgbToColor()
+ * @param initial integer The initial value of the bar, usually 1
+ * @param y integer The on-scren y position of the bar
+ *
+ * @returns nothing
+ */
 bar(color, initial, y)
 {
     log("trace", "msg|in hud::bar()||");
@@ -172,12 +279,23 @@ bar(color, initial, y)
     self scripts\gamemodes\_hud::bar(color, initial, y);
 }
 
-bar_setscale(scale, color)
-{
-    log("trace", "msg|in hud::bar_setscale()||");
 
-    self thread scripts\gamemodes\_hud::bar_setscale(scale, color);
+/**
+ * @brief Creates a cooldown bar, as used for machine gun barrels
+ *
+ * @param scale float Decimal percentage of how full the bar is, ie. 0.60
+ * @param color tuple A CoD4 color tuple, basically RGB with each component divided by 255
+ *                    @see utilty::decimalRgbToColor()
+ *
+ * @returns nothing
+ */
+barSetScale(scale, color)
+{
+    log("trace", "msg|in hud::barSetScale()||");
+
+    self thread scripts\gamemodes\_hud::barSetScale(scale, color);
 }
+
 
 destroyProgressBar()
 {

@@ -626,6 +626,7 @@ newMatchTask(beginIndex, endIndex, type)
     task.type = type; //"stringLiteral";
 }
 
+
 /**
  * @brief Performs non-greedy matching for a substring in a given string
  *
@@ -860,6 +861,15 @@ rightPad(string, paddingCharacter, length)
     return string;
 }
 
+
+/**
+ * @brief Converts a numeric value to a string representation
+ *
+ * @param numeric numeric The number to convert
+ * @param precision integer The number of digits for rounding
+ *
+ * @returns string the numeric converted to a string
+ */
 numericToString(numeric, precision)
 {
     // quality:ignore_trace  trace messages on low-level functions can cause stack overflows

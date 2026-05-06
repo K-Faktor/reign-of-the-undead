@@ -32,53 +32,55 @@
  ******************************************************************************/
 /// @file _map_util.gsc Catches some ROZO map calls and hands them off to _umi.gsc
 
-#include scripts\include\utility;
+// @deprecated file?
 
-placeShops(weapon, shop)
-{
-    log("trace", "msg|in _map_utils::placeShops()||");
+// #include scripts\include\utility;
 
-    maps\mp\_umi::placeShops(weapon, shop);
-}
+// placeShops(weapon, shop)
+// {
+//     log("trace", "msg|in _map_utils::placeShops()||");
 
-addDefaultZombieSpawns()
-{
-    log("trace", "msg|in _map_utils::addDefaultZombieSpawns()||");
+//     maps\mp\_umi::placeShops(weapon, shop);
+// }
 
-    maps\mp\_umi::addDefaultZombieSpawns();
-}
+// addDefaultZombieSpawns()
+// {
+//     log("trace", "msg|in _map_utils::addDefaultZombieSpawns()||");
 
-addDefaultPlayerSpawns()
-{
-    log("trace", "msg|in _map_utils::addDefaultPlayerSpawns()||");
+//     maps\mp\_umi::addDefaultZombieSpawns();
+// }
 
-    // Do nothing
-}
+// addDefaultPlayerSpawns()
+// {
+//     log("trace", "msg|in _map_utils::addDefaultPlayerSpawns()||");
 
-zombieDefaultTarget(position)
-{
-    log("trace", "msg|in _map_utils::zombieDefaultTarget()||");
+//     // Do nothing
+// }
 
-    // Do Nothing
-}
+// zombieDefaultTarget(position)
+// {
+//     log("trace", "msg|in _map_utils::zombieDefaultTarget()||");
 
-convertWaypoints()
-{
-    log("trace", "msg|in _map_utils::convertWaypoints()||");
+//     // Do Nothing
+// }
 
-    maps\mp\_umi::convertWaypoints();
-}
+// convertWaypoints()
+// {
+//     log("trace", "msg|in _map_utils::convertWaypoints()||");
 
-setPlayerModels()
-{
-    log("trace", "msg|in _map_utils::setPlayerModels()||");
+//     maps\mp\_umi::convertWaypoints();
+// }
 
-    // Do Nothing
-}
+// setPlayerModels()
+// {
+//     log("trace", "msg|in _map_utils::setPlayerModels()||");
 
-mapThink()
-{
-    log("trace", "msg|in _map_utils::mapThink()||");
+//     // Do Nothing
+// }
 
-    // Do Nothing
-}
+// mapThink()
+// {
+//     log("trace", "msg|in _map_utils::mapThink()||");
+
+//     // Do Nothing
+// }

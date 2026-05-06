@@ -481,7 +481,7 @@ watchMGBarrel()
 
             //  update the UI
             delta = mg.barrelTemperature / 100;
-            player bar_setscale(delta, (delta,1-delta,0));
+            player barSetScale(delta, (delta, 1 - delta, 0));
 
 
             // Player has dropped the MG
@@ -498,7 +498,7 @@ watchMGBarrel()
             if (mg.usedTime >= level.dvar["game_mg_barrel_time"]) {
                 mg.barrelMelted = true;
                 delta = 100;
-                player bar_setscale(delta, (delta,1-delta,0));
+                player barSetScale(delta, (delta,1-delta,0));
                 if (!self.isBeingKilled) {
                     self.isBeingKilled = true;
                     self thread barrelDeath();

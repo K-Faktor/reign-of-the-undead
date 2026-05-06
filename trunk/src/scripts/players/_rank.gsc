@@ -35,6 +35,12 @@
 #include scripts\include\hud;
 #include scripts\include\utility;
 
+
+/**
+ * @brief Initializes rank, scores, UI strings, and stats data
+ *
+ * @returns nothing
+ */
 init()
 {
     log("trace", "msg|in _rank::init()||");
@@ -46,61 +52,63 @@ init()
 
     precacheShader("white");
 
-    precacheString( &"RANK_PLAYER_WAS_PROMOTED_N" );
-    precacheString( &"RANK_PLAYER_WAS_PROMOTED" );
-    precacheString( &"RANK_PROMOTED" );
-    precacheString( &"MP_PLUS" );
-    precacheString( &"RANK_ROMANI" );
-    precacheString( &"RANK_ROMANII" );
+    precacheString(&"RANK_PLAYER_WAS_PROMOTED_N");
+    precacheString(&"RANK_PLAYER_WAS_PROMOTED");
+    precacheString(&"RANK_PROMOTED");
+    precacheString(&"MP_PLUS");
+    precacheString(&"RANK_ROMANI");
+    precacheString(&"RANK_ROMANII");
 
-    registerScoreInfo( "kill", 10 );
-    registerScoreInfo( "assist0", 1 );
-    registerScoreInfo( "assist1", 2 );
-    registerScoreInfo( "assist2", 3 );
-    registerScoreInfo( "assist3", 5 );
-    registerScoreInfo( "assist4", 7 );
-    registerScoreInfo( "assist5", 10 );
-    registerScoreInfo( "revive", 50 );
-    registerScoreInfo( "revive_cover", 40 ); // providing covering fire for a revive
-    registerScoreInfo( "headshot", 10 );
-    registerScoreInfo( "suicide", 0 );
-    registerScoreInfo( "teamkill", 0 );
+    registerScoreInfo("kill", 10);
+    registerScoreInfo("assist0", 1);
+    registerScoreInfo("assist1", 2);
+    registerScoreInfo("assist2", 3);
+    registerScoreInfo("assist3", 5);
+    registerScoreInfo("assist4", 7);
+    registerScoreInfo("assist5", 10);
+    registerScoreInfo("revive", 50);
+    registerScoreInfo("revive_cover", 40); // providing covering fire for a revive
+    registerScoreInfo("headshot", 10);
+    registerScoreInfo("suicide", 0);
+    registerScoreInfo("teamkill", 0);
 
 
     registerScoreInfo( "challenge", 250 );
 
-    /// tableLookup(fileName, keyColumn, keyValue, dataColumn)
-    /// tableLookupIString(fileName, keyColumn, keyValue, dataColumn)
+    // @deprecated rankTable2.csv and rankicontable2.csv are deprecated, I guess
+
+    // tableLookup(fileName, keyColumn, keyValue, dataColumn)
+    // tableLookupIString(fileName, keyColumn, keyValue, dataColumn)
     // zero-indexed max number of ranks, i.e. 54
     level.maxRank = int(tableLookup( "mp/rankTable.csv", 0, "maxrank", 1 ));
-    // number of prestige levels, i.e. 45
+    // number of prestige levels, i.e. 65
     level.maxPrestige = int(tableLookup( "mp/rankIconTable.csv", 0, "maxprestige", 1 ));
 
     // For every row/column location in rankIconTable.csv, precache the rank icon
     for (column = 0; column <= level.maxPrestige; column++) {
         for (row = 0; row <= level.maxRank; row++) {
-            precacheShader(tableLookup( "mp/rankIconTable.csv", 0, row, column+1 ));
+            precacheShader(tableLookup("mp/rankIconTable.csv", 0, row, column+1));
         }
     }
 
     // Load all the basic info about the ranks from rankTable.csv
     rankId = 0;
     rankName = tableLookup("mp/ranktable.csv", 0, rankId, 1);
-    assert(isDefined( rankName ) && rankName != "");
-    while (isDefined(rankName) && rankName != "" ) {
+    assert ((isDefined(rankName)) && (rankName != ""));
+    while ((isDefined(rankName)) && (rankName != "")) {
         // rankID, i.e. "pfc1"
-        level.rankTable[rankId][1] = tableLookup( "mp/ranktable.csv", 0, rankId, 1 );
+        level.rankTable[rankId][1] = tableLookup("mp/ranktable.csv", 0, rankId, 1);
         // rank starts at this rankXP level, i.e. 0
-        level.rankTable[rankId][2] = tableLookup( "mp/ranktable.csv", 0, rankId, 2 );
+        level.rankTable[rankId][2] = tableLookup("mp/ranktable.csv", 0, rankId, 2);
         // need to earn this many rankXP points while this rank to get next rank, i.e. 10
-        level.rankTable[rankId][3] = tableLookup( "mp/ranktable.csv", 0, rankId, 3 );
+        level.rankTable[rankId][3] = tableLookup("mp/ranktable.csv", 0, rankId, 3);
         // next rank starts at this rankXP, i.e. 10
-        level.rankTable[rankId][7] = tableLookup( "mp/ranktable.csv", 0, rankId, 7 );
+        level.rankTable[rankId][7] = tableLookup("mp/ranktable.csv", 0, rankId, 7);
         // localized string name for the rank
-        precacheString( tableLookupIString( "mp/ranktable.csv", 0, rankId, 16 ) );
+        precacheString(tableLookupIString("mp/ranktable.csv", 0, rankId, 16));
 
         rankId++;
-        rankName = tableLookup( "mp/ranktable.csv", 0, rankId, 1 );
+        rankName = tableLookup("mp/ranktable.csv", 0, rankId, 1);
     }
 
     level.statOffsets = [];
@@ -120,6 +128,13 @@ init()
 }
 
 
+/**
+ * @brief Is \c type a registered scoring event type?
+ *
+ * @param type string The name of the type of score
+ *
+ * @returns boolean indicating whether type is a known type or not
+ */
 isRegisteredEvent(type)
 {
     log("trace", "msg|in _rank::isRegisteredEvent()||");
@@ -128,6 +143,15 @@ isRegisteredEvent(type)
     else {return false;}
 }
 
+
+/**
+ * @brief Registers a score value forthey given score type
+ *
+ * @param type string The name of the type of score
+ * @param value integer The score awarded for that type
+ *
+ * @returns nothing
+ */
 registerScoreInfo(type, value)
 {
     log("trace", "msg|in _rank::registerScoreInfo()||");
@@ -135,6 +159,14 @@ registerScoreInfo(type, value)
     level.scoreInfo[type]["value"] = value;
 }
 
+
+/**
+ * @brief Get the value for a given score type
+ *
+ * @param type string The name of the type of score
+ *
+ * @returns integer the value for that type of score
+ */
 getScoreInfoValue(type)
 {
     log("trace", "msg|in _rank::getScoreInfoValue()||");
@@ -142,6 +174,14 @@ getScoreInfoValue(type)
     return (level.scoreInfo[type]["value"]);
 }
 
+
+/**
+ * @brief Get the label for a given score type. Unused.
+ *
+ * @param type string The name of the type of score
+ *
+ * @returns string the label for that type of score
+ */
 getScoreInfoLabel(type)
 {
     log("trace", "msg|in _rank::getScoreInfoLabel()||");
@@ -149,165 +189,269 @@ getScoreInfoLabel(type)
     return (level.scoreInfo[type]["label"]);
 }
 
+
+/**
+ * @brief Get the minimum XP for a given rank
+ *
+ * @param rankId integer The Id for the rank.
+ *                       [0, 54] in rankTable.csv
+ *
+ * @returns integer the minimum XP for that rank
+ */
 getRankInfoMinXP(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoMinXP()||");
 
-    return int(level.rankTable[rankId][2]);
+    return int(level.rankTable[rankId][2]); // 2nd 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the range of XP for this rank. This rank's
+ *        minXP + XPAmt == next rank's minXP == this rank's maxXP
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns integer the range of XP for that rank
+ */
 getRankInfoXPAmt(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoXPAmt()||");
 
-    return int(level.rankTable[rankId][3]);
+    return int(level.rankTable[rankId][3]); // 3rd 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the maximum XP for this rank.
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns integer the maximum of XP for that rank
+ */
 getRankInfoMaxXp(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoMaxXp()||");
 
-    return int(level.rankTable[rankId][7]);
+    return int(level.rankTable[rankId][7]); // 7th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the UI key for the rank name
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the key for the rank name, like RANK_CPL_FULL_N
+ */
 getRankInfoFull(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoFull()||");
 
-    return tableLookupIString( "mp/ranktable.csv", 0, rankId, 16 );
+    return tableLookupIString("mp/ranktable.csv", 0, rankId, 16); // 16th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the UI key for the rank name
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ * @param prestigeId integer The Id for the prestige level.
+ *                           [1, 65] are real prestige levels, 0 is valid,
+ *                           and used for players that haven't prestiged.
+ *
+ * @returns string the key for the prestige Id, like rank_prestige_5, or rank_ltgen3
+ */
 getRankInfoIcon(rankId, prestigeId)
 {
     log("trace", "msg|in _rank::getRankInfoIcon()||");
 
-    return tableLookup( "mp/rankIconTable.csv", 0, rankId, prestigeId+1 );
+    return tableLookup("mp/rankIconTable.csv", 0, rankId, prestigeId+1); // prestigeId + 1 --> [2, 66]
 }
 
+
+/**
+ * @brief Gets the weapon unlocked at the rank, if any
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the weapon unlocked at that rank, if any, like ak74u
+ */
 getRankInfoUnlockWeapon(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoUnlockWeapon()||");
 
-    return tableLookup( "mp/ranktable.csv", 0, rankId, 8 );
+    return tableLookup("mp/ranktable.csv", 0, rankId, 8);   // 8th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the perk unlocked at the rank, if any
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the perk unlocked at that rank, if any, like specialty_fastreload
+ */
 getRankInfoUnlockPerk(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoUnlockPerk()||");
 
-    return tableLookup( "mp/ranktable.csv", 0, rankId, 9 );
+    return tableLookup("mp/ranktable.csv", 0, rankId, 9);     // 9th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the challenge unlocked at the rank, if any
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the challenge unlocked at that rank, if any, like 'ch_marksman_ak74u_1;ch_expert_ak74u_1'
+ */
 getRankInfoUnlockChallenge(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoUnlockChallenge()||");
 
-    return tableLookup( "mp/ranktable.csv", 0, rankId, 10 );
+    return tableLookup("mp/ranktable.csv", 0, rankId, 10);  // 10th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the challenge feature unlocked at the rank, if any
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the challenge feature unlocked at that rank, if any, like feature_sniper
+ */
 getRankInfoUnlockFeature(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoUnlockFeature()||");
 
-    return tableLookup( "mp/ranktable.csv", 0, rankId, 15 );
+    return tableLookup("mp/ranktable.csv", 0, rankId, 15);  // 15th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the weapon camo unlocked at the rank, if any
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the weapon camo unlocked at that rank, if any, like 'uzi camo_brockhaurd;uzi camo_bushdweller'
+ */
 getRankInfoUnlockCamo(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoUnlockCamo()||");
 
-    return tableLookup( "mp/ranktable.csv", 0, rankId, 11 );
+    return tableLookup("mp/ranktable.csv", 0, rankId, 11);  // 11th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the weapon attachment unlocked at the rank, if any
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns string the weapon attachment unlocked at that rank, if any, like 'm4 gl'
+ */
 getRankInfoUnlockAttachment(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoUnlockAttachment()||");
 
-    return tableLookup( "mp/ranktable.csv", 0, rankId, 12 );
+    return tableLookup("mp/ranktable.csv", 0, rankId, 12);  // 12th 0-based column in rankTable.csv
 }
 
+
+/**
+ * @brief Gets the level for the rank, equal to rankId + 1
+ *
+ * @param rankId integer The Id for the rank, [0, 54]
+ *
+ * @returns integer the level for that rank
+ */
 getRankInfoLevel(rankId)
 {
     log("trace", "msg|in _rank::getRankInfoLevel()||");
 
-    return int( tableLookup( "mp/ranktable.csv", 0, rankId, 13 ) );
+    return int(tableLookup("mp/ranktable.csv", 0, rankId, 13)); // 12th 0-based column in rankTable.csv
 }
 
 
+/**
+ * @brief Sets a player's rank & prestige when they connect
+ *
+ * @returns nothing
+ */
 onPlayerConnect()
 {
     log("trace", "msg|in _rank::onPlayerConnect()||");
 
-    //for(;;)
-    //{
-    //  level waittill( "connected", player );
+    self.pers["rankxp"] = self scripts\players\_persistence::statGet("rankxp");
+    rankId = self getRankForXp(self getRankXP());
+    self.pers["rank"] = rankId;
+    self.pers["participation"] = 0;
 
-        self.pers["rankxp"] = self scripts\players\_persistence::statGet( "rankxp" );
-        rankId = self getRankForXp( self getRankXP() );
-        self.pers["rank"] = rankId;
-        self.pers["participation"] = 0;
+    self scripts\players\_persistence::statSet("rank", rankId);
+    self scripts\players\_persistence::statSet("minxp", getRankInfoMinXp(rankId));
+    self scripts\players\_persistence::statSet("maxxp", getRankInfoMaxXp(rankId));
+    self scripts\players\_persistence::statSet("lastxp", self.pers["rankxp"]);
 
-        self scripts\players\_persistence::statSet( "rank", rankId );
-        self scripts\players\_persistence::statSet( "minxp", getRankInfoMinXp( rankId ) );
-        self scripts\players\_persistence::statSet( "maxxp", getRankInfoMaxXp( rankId ) );
-        self scripts\players\_persistence::statSet( "lastxp", self.pers["rankxp"] );
+    prestige = self getPrestigeLevel();
 
-        prestige = self getPrestigeLevel();
-
-        self.rankHacker = false;
-        if (prestige>1) {
-            stat = self getstat(253);
-            if (rankId>stat ) {
-                if (rankId<20) {
-                    self setstat(253, rankId);
-                } else {
-                    self.rankHacker = true;
-                    iprintln(self.name + " was kicked for rank hacking");
-                    Kick( self getEntityNumber());
-                }
-            } else { if (stat != rankId) self setstat(253, rankId); }
-        }
-        self.rankUpdateTotal = 0;
-
-        // for keeping track of rank through stat#251 used by menu script
-        // attempt to move logic out of menus as much as possible
-        self.cur_rankNum = rankId;
-        assertex( isdefined(self.cur_rankNum), "rank: "+ rankId + " does not have an index, check mp/ranktable.csv" );
-        self setStat( 251, self.cur_rankNum );
-
-
-
-        if (prestige!=self getstat(210)) {
-            self.rankHacker = true;
-            iprintln(self.name + " was kicked for prestige hacking");
-            Kick( self getEntityNumber());
-        }
-
-        self setRank( rankId, prestige );
-        self.pers["prestige"] = prestige;
-
-        self setclientdvar( "ui_lobbypopup", "" );
-
-
-        //player updateChallenges();
-        //player.explosiveKills[0] = 0;
-        self.xpGains = [];
-
-        self thread scripts\players\_classes::getSkillpoints(rankId);
-
-        // Initial upgrade point bonus for prestige level
-        if (!self.hasPreviouslyJoined) {
-            // Fixed: If prestige is 0, then bonus points is 0. This puts a red '0' on game join
-            // in the center of the HUD for every player that hasn't prestiged yet.
-            // Don't give a useless bonus.
-            if (prestige > 0) {
-                scripts\players\_players::incUpgradePoints(int(75 * prestige));
+    self.rankHacker = false;
+    if (prestige > 1) {
+        stat = self getstat(253);
+        if (rankId > stat ) {
+            if (rankId < 20) {
+                self setstat(253, rankId);
+            } else {
+                self.rankHacker = true;
+                iprintln(self.name + " was kicked for rank hacking");
+                Kick(self getEntityNumber());
             }
+        } else {
+            if (stat != rankId) {self setstat(253, rankId);}
         }
-    //}
-//         self thread doDemote();
+    }
+    self.rankUpdateTotal = 0;
+
+    // for keeping track of rank through stat#251 used by menu script
+    // attempt to move logic out of menus as much as possible
+    self.cur_rankNum = rankId;
+    assertex(isdefined(self.cur_rankNum), "rank: "+ rankId + " does not have an index, check mp/ranktable.csv");
+    self setStat(251, self.cur_rankNum);
+
+    if (prestige!=self getstat(210)) {
+        self.rankHacker = true;
+        iprintln(self.name + " was kicked for prestige hacking");
+        log("warn", "msg|" + self.name + " was kicked for prestige hacking||");
+        Kick(self getEntityNumber());
+    }
+
+    self setRank(rankId, prestige);
+    self.pers["prestige"] = prestige;
+    self setclientdvar("ui_lobbypopup", "");
+    //player updateChallenges();
+    //player.explosiveKills[0] = 0;
+    self.xpGains = [];
+
+    self thread scripts\players\_classes::getSkillpoints(rankId);
+
+    // Initial upgrade point bonus for prestige level
+    if (!self.hasPreviouslyJoined) {
+        // Fixed: If prestige is 0, then bonus points is 0. This puts a red '0' on game join
+        // in the center of the HUD for every player that hasn't prestiged yet.
+        // Don't give a useless bonus.
+        if (prestige > 0) {
+            scripts\players\_players::incUpgradePoints(int(75 * prestige));
+        }
+    }
 }
 
+
+/**
+ * @brief Initializes a player's spree to zero
+ *
+ * @returns nothing
+ */
 onPlayerSpawned()
 {
     log("trace", "msg|in _rank::onPlayerSpawned()||");
@@ -338,10 +482,11 @@ onPlayerSpawned()
     }*/
 }
 
+
 /**
  * @brief Rounds a float up to the next integer
  *
- * @param val float The flost to round up
+ * @param val float The float to round up
  *
  * @returns integer the rounded value
  */
@@ -353,6 +498,15 @@ roundUp(val)
     else {return int(val);}
 }
 
+
+/**
+ * @brief Awards rank XP points
+ *
+ * @param type string The type of points to award [kill|assistN|spree|revive|...]
+ * @param value integer The points to award
+ *
+ * @returns integer the rounded value
+ */
 giveRankXP(type, value)
 {
     log("trace", "msg|in _rank::giveRankXP()||");
@@ -362,16 +516,12 @@ giveRankXP(type, value)
     if (self.rankHacker)
     return;
 
-    /*if ( level.teamBased && (!level.playerCount["allies"] || !level.playerCount["axis"]) )
-        return;
-    else if ( !level.teamBased && (level.playerCount["allies"] + level.playerCount["axis"] < 2) )
-        return;*/
-
-    if ( !isDefined( value ) )
-        value = getScoreInfoValue( type );
-
-    if ( !isDefined( self.xpGains[type] ) )
+    if (!isDefined(value)) {
+        value = getScoreInfoValue(type);
+    }
+    if (!isDefined(self.xpGains[type])) {
         self.xpGains[type] = 0;
+    }
 
     /*switch( type )
     {
@@ -396,19 +546,11 @@ giveRankXP(type, value)
     }*/
 
     self.xpGains[type] += value;
+    self incRankXP(value);
 
-    self incRankXP( value );
-
-    if (  updateRank() )
+    if (updateRank()) {
         self thread updateRankAnnounceHUD();
-
-    //if ( isDefined( self.enableText ) && self.enableText && !level.hardcoreMode )
-    //{
-        if ( type == "teamkill" )
-            self thread updateRankScoreHUD( 0 - getScoreInfoValue( "kill" ) );
-        else
-            self thread updateRankScoreHUD( value );
-    //}
+    }
 
     /*switch( type )
     {
@@ -490,6 +632,8 @@ setPrestige(newPrestige)
 /**
  * @brief Increases a player's prestige level
  *
+ * Each prestige level is equal to to passing throght all the normal ranks again.
+ *
  * @returns nothing
  */
 prestigeUp()
@@ -501,31 +645,40 @@ prestigeUp()
 
     self.canGetSpecialWeapons = true;
 
-    self.pers["prestige"]+=int(self.pers["rankxp"]/(getRankInfoMaxXp(level.maxRank)-10));
+    self.pers["prestige"] += int(self.pers["rankxp"] / (getRankInfoMaxXp(level.maxRank) - 10));
     self setStat(2326, self.pers["prestige"]);
     self setStat(210, self.pers["prestige"]);
-    self scripts\players\_persistence::statSet( "rankxp", 0 );
-    self scripts\players\_persistence::statSet( "rank", 0 );
-    self scripts\players\_persistence::statSet( "minxp", int(level.rankTable[0][2]) );
-    self scripts\players\_persistence::statSet( "maxxp", int(level.rankTable[0][7]) );
-    self setStat( 252, 0 );
-    self setStat( 253, 0 );
+    self scripts\players\_persistence::statSet("rankxp", 0);
+    self scripts\players\_persistence::statSet("rank", 0);
+    self scripts\players\_persistence::statSet("minxp", int(level.rankTable[0][2]));
+    self scripts\players\_persistence::statSet("maxxp", int(level.rankTable[0][7]));
+    self setStat(252, 0);
+    self setStat(253, 0);
     self.pers["rankxp"] = 0;
     self setRank(0, self.pers["prestige"]);
     self thread resetRank(.5);
 }
 
+
+/**
+ * @brief Reloads a player's rank after a delay
+ *
+ * @param delay float How long to wait until reloading the rank
+ *
+ * @returns nothing
+ */
 resetRank(delay)
 {
     log("trace", "msg|in _rank::resetRank()||");
 
     self endon("disconnect");
     wait delay;
-    rankId = self getRankForXp( self getRankXP() );
+    rankId = self getRankForXp(self getRankXP());
     self.pers["rank"] = rankId;
 
     self scripts\players\_classes::getSkillpoints(rankId);
 }
+
 
 /**
  * @brief Updates a player's rank
@@ -546,17 +699,17 @@ updateRank()
     self.pers["rank"] = newRankId;
 
     while (rankId <= newRankId) {
-        self scripts\players\_persistence::statSet( "rank", rankId );
-        self scripts\players\_persistence::statSet( "minxp", int(level.rankTable[rankId][2]) );
-        self scripts\players\_persistence::statSet( "maxxp", int(level.rankTable[rankId][7]) );
+        self scripts\players\_persistence::statSet("rank", rankId);
+        self scripts\players\_persistence::statSet("minxp", int(level.rankTable[rankId][2]));
+        self scripts\players\_persistence::statSet("maxxp", int(level.rankTable[rankId][7]));
 
         // set current new rank index to stat#252
-        self setStat( 252, rankId );
-        self setStat( 253, rankId );
+        self setStat(252, rankId);
+        self setStat(253, rankId);
 
         rankId++;
     }
-    self logString( "promoted from " + oldRank + " to " + newRankId + " timeplayed: " + self scripts\players\_persistence::statGet( "time_played_total" ) );
+    self logString("promoted from " + oldRank + " to " + newRankId + " timeplayed: " + self scripts\players\_persistence::statGet("time_played_total"));
 
     self setRank( newRankId, self.pers["prestige"] );
     self scripts\players\_classes::getSkillpoints(newRankId);
@@ -601,6 +754,11 @@ updateRankAnnounceHUD()
 }
 
 
+/** @deprecated
+ * @brief NOOP
+ *
+ * @returns nothing
+ */
 endGameUpdate()
 {
     log("trace", "msg|in _rank::endGameUpdate()||");
@@ -609,49 +767,11 @@ endGameUpdate()
 }
 
 
-updateRankScoreHUD(amount)
-{
-    log("trace", "msg|in _rank::updateRankScoreHUD()||");
-
-    /*self endon( "disconnect" );
-    self endon( "joined_team" );
-    self endon( "joined_spectators" );
-
-    if ( amount == 0 )
-        return;
-
-    self notify( "update_score" );
-    self endon( "update_score" );
-
-    self.rankUpdateTotal += amount;
-
-    wait ( 0.05 );
-
-    if( isDefined( self.hud_rankscroreupdate ) )
-    {
-        if ( self.rankUpdateTotal < 0 )
-        {
-            self.hud_rankscroreupdate.label = &"";
-            self.hud_rankscroreupdate.color = (1,0,0);
-        }
-        else
-        {
-            self.hud_rankscroreupdate.label = &"MP_PLUS";
-            self.hud_rankscroreupdate.color = (1,1,0.5);
-        }
-
-        self.hud_rankscroreupdate setValue(self.rankUpdateTotal);
-        self.hud_rankscroreupdate.alpha = 0.85;
-        self.hud_rankscroreupdate thread maps\mp\gametypes\_hud::fontPulse( self );
-
-        wait 1.25;
-        self.hud_rankscroreupdate fadeOverTime( 0.75 );
-        self.hud_rankscroreupdate.alpha = 0;
-
-        self.rankUpdateTotal = 0;
-    }*/
-}
-
+/**
+ * @brief Gets a player's rank
+ *
+ * @returns integer The rankId for the player
+ */
 getRank()
 {
     log("trace", "msg|in _rank::getRank()||");
@@ -666,6 +786,14 @@ getRank()
     }
 }
 
+
+/**
+ * @brief Gets the rankId for the given XP points
+ *
+ * @param xpVal integer the XP to calculate the rankId for
+ *
+ * @returns integer The rankId
+ */
 getRankForXp(xpVal)
 {
     log("trace", "msg|in _rank::getRankForXp()||");
@@ -691,10 +819,20 @@ getRankForXp(xpVal)
     return rankId;
 }
 
+
+/**
+ * @brief Returns the player's Score Per Minute (SPM) value based on rank.
+ *
+ * Unused. Could be used as a score multiplier of to give upgrade points per minute.
+ * Higher ranked players get higher SPM.
+ *
+ * @returns float SPM value in range [3.5, 30.5]
+ */
 getSPM()
 {
     log("trace", "msg|in _rank::getSPM()||");
 
+    // getRank() should return an integer [0, 54]
     rankLevel = (self getRank() % 61) + 1;
     return 3 + (rankLevel * 0.5);
 }
@@ -740,7 +878,7 @@ incRankXP(amount)
     xp = self getRankXP();
     newXp = (xp + amount);
 
-    if (self.pers["rank"] == level.maxRank && newXp >= getRankInfoMaxXP(level.maxRank)) {
+    if ((self.pers["rank"] == level.maxRank) && (newXp >= getRankInfoMaxXP(level.maxRank))) {
         newXp = getRankInfoMaxXP(level.maxRank);
         if (self.pers["prestige"] != level.maxPrestige) {
             // ready to prestige
@@ -930,6 +1068,7 @@ demotionAnnouncement(newRankId)
 
     if(!isDefined(self)) {return;}
 
+    // rgb 255,0,0 is red
     self glowMessage(&"ZOMBIE_RANK_DEMOTED", "", decimalRgbToColor(255, 0, 0), 5, 90, 2, "mp_level_up");
 
     // tableLookupIString( <filename>, <column>, <row>, <string_ref_column> )

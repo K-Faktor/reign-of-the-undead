@@ -474,9 +474,12 @@ onPlayerConnect()
     wait 0.05;
 
     if ((self scripts\players\_rank::getRankXP() == int(level.rankTable[level.maxRank][7])) &&
-        (self.pers["prestige"] != level.maxPrestige)) {
+        (self.pers["prestige"] != level.maxPrestige))
+    {
         needToPrestige = true;
-    } else {needToPrestige = false;}
+    } else {
+        needToPrestige = false;
+    }
 
     // Players that prestige can get special weapons in last half of game
     if ((self scripts\players\_rank::getPrestigeLevel() < 1) || // have never prestiged
@@ -571,7 +574,7 @@ onWaveIntermissionBegins()
 
     level endon("game_ended");
 
-    while(1) {
+    while (1) {
         level waittill("wave_finished");
         players = level.players;
         for (i=0; i<players.size; i++) {
