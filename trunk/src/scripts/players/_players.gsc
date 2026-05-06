@@ -74,6 +74,7 @@ init()
     thread uav();
 }
 
+
 precache()
 {
     log("trace", "msg|in _players::precache()||");
@@ -94,6 +95,7 @@ precache()
     precacheStatusIcon( "icon_spec" );
     precacheStatusIcon( "icon_dev" );
 }
+
 
 /**
  * @brief Periodically shows zombies on the minimap
@@ -127,6 +129,14 @@ uav()
     }
 }
 
+
+/**
+ * @brief Sets a player's downed state to match \c isDown
+ *
+ * @param isDown bool Whether the player should be down or not
+ *
+ * @returns nothing
+ */
 setDown(isDown)
 {
     log("trace", "msg|in _players::setDown()||");
@@ -165,6 +175,7 @@ downed()
     }
 }
 
+
 /**
  * @brief Prints an automatic message to the text console
  *
@@ -184,7 +195,24 @@ autoText(message)
     self sayall(message);
 }
 
-Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration )
+
+/**
+ * @brief Handles a player's Last Stand ability
+ *        Saved as level.callbackPlayerLastStand
+ *
+ * @param eInflictor entity The entity that causes the damage.(e.g. a turret)
+ * @param attacker entity The entity that is attacking
+ * @param iDamage integer The amount of damage done
+ * @param sMeansOfDeath string The method of death
+ * @param sWeapon string The weapon used to inflict the damage
+ * @param vDir vector The direction the damage is from
+ * @param sHitLoc string The location of the hit
+ * @param psOffsetTime integer The time offset for the damage, ms  
+ * @param deathAnimDuration float Duration of the death animation  
+ *
+ * @returns nothing
+ */
+Callback_PlayerLastStand(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
     log("trace", "msg|in _players::Callback_PlayerLastStand()||");
 
@@ -212,7 +240,6 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
     self setDown(true);
     self.isTargetable = false;
 
-
     // abort any usables this player was using when they went down
     self scripts\players\_usables::usableAbort();
 
@@ -225,9 +252,7 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
     }
 
     self.lastStandWeapon = self GetCurrentWeapon();
-
     self setclientdvars("ui_hintstring", "", "ui_specialtext", "^1Special Unavailable");
-
     level scripts\players\_usables::addUsable(self, "revive", "Hold [USE] to revive", 96);
     wait 0.05;
 
@@ -241,31 +266,24 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
         }
     }
 
-    iPrintln( self.name + " ^7is down!" );
-    self.deaths ++;
+    iPrintln(self.name + " ^7is down!");
+    self.deaths++;
     self.isAlive = false;
-
     self setStatusIcon("icon_down");
-
     self removeTimers();
-
-    //self usableAbort();
 
     self.health = 10;
     self updateHealthHud(0);
 
     weaponslist = self getweaponslist();
-    for( i = 0; i < weaponslist.size; i++ )
-    {
+    for (i=0; i<weaponslist.size; i++) {
         weapon = weaponslist[i];
-
-        if ( weapon == self.secondary  ) //scripts\players\_weapons::isPistol( weapon )
-        {
+        if (weapon == self.secondary) {
             self switchtoweapon(weapon);
             continue;
+        } else {
+            self takeweapon(weapon);
         }
-        else
-        self takeweapon(weapon);
     }
 
     // Help new players out
@@ -276,6 +294,7 @@ Callback_PlayerLastStand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon,
         level.alivePlayers -= 1;
     }
 }
+
 
 /**
  * @brief Is this a new player eligible for new player assistance?
@@ -296,6 +315,7 @@ isNewPlayer()
     }
     return false;
 }
+
 
 /**
  * @brief Make the game a bit easier for new players
@@ -318,6 +338,12 @@ assistNewPlayers()
     self.newPlayerAssistCount++;
 
     wait 0.05;
+    // N.B. we didn't decrement alivePlayers in Callback_PlayerLastStand,
+    // as part of new player assistance, because if they were they only player,
+    // the game would end (zero alive players). But above, revive() increments
+    // alivePlayers, so now we have one player too many, so we need to decrement
+    // here so the count is correct.
+    level.alivePlayers -= 1;
 
     if (self.infected) {
         self scripts\players\_infection::cureInfection();
@@ -331,13 +357,18 @@ assistNewPlayers()
     self iprintlnbold("^1You must keep running to survive!");
 }
 
+
+/**
+ * @brief Gives a player full ammo for any weapon that can be reloaded
+ *
+ * @returns nothing
+ */
 restoreAmmo()
 {
     log("trace", "msg|in _players::restoreAmmo()||");
 
     weapons = self getweaponslist();
-    for( i = 0; i < weapons.size; i++ )
-    {
+    for (i=0; i<weapons.size; i++) {
         if (scripts\players\_weapons::canRestoreAmmo(weapons[i])) {
             self GiveMaxAmmo(weapons[i]);
             self setWeaponAmmoClip(weapons[i], weaponClipSize(weapons[i]));
@@ -345,6 +376,12 @@ restoreAmmo()
     }
 }
 
+
+/**
+ * @brief Initializes a new player into the game
+ *
+ * @returns nothing
+ */
 onPlayerConnect()
 {
     log("trace", "msg|in _players::onPlayerConnect()||");
@@ -523,6 +560,11 @@ defaultHeadicon()
 }
 
 
+/**
+ * @brief Set the beginning of wave intermission
+ *
+ * @returns nothing
+ */
 onWaveIntermissionBegins()
 {
     log("trace", "msg|in _players::onWaveIntermissionBegins()||");
@@ -544,6 +586,13 @@ onWaveIntermissionBegins()
 }
 
 
+/**
+ * @brief Process the end of the wave intermission, and intermission activity.
+ *        For example, we see who we need to punish for not helping teammates
+ *        that needed to be revived.
+ *
+ * @returns nothing
+ */
 onWaveIntermissionEnds()
 {
     log("trace", "msg|in _players::onWaveIntermissionEnds()||");
@@ -672,6 +721,21 @@ onWaveIntermissionEnds()
 }
 
 
+/**
+ * @brief Handles a player's death
+ *
+ * @param eInflictor entity The entity that causes the damage.(e.g. a turret)
+ * @param attacker entity The entity that is attacking
+ * @param iDamage integer The amount of damage done
+ * @param sMeansOfDeath string The method of death
+ * @param sWeapon string The weapon used to inflict the damage
+ * @param vDir vector The direction the damage is from
+ * @param sHitLoc string The location of the hit
+ * @param psOffsetTime integer The time offset for the damage, ms  
+ * @param deathAnimDuration float Duration of the death animation  
+ *
+ * @returns nothing
+ */
 onPlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
     log("trace", "msg|in _players::onPlayerKilled()||");
@@ -704,44 +768,38 @@ onPlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHit
         }
         return;
     }
-    // CLEANUP
+    // Cleanup
     self cleanup();
-
     self endon("spawned");
-
     self notify("killed_player");
     self.lastDownTime = getTime();
 
-    if(self.sessionteam == "spectator")
-        return;
+    if (self.sessionteam == "spectator") {return;}
+    if (sHitLoc == "head" && sMeansOfDeath != "MOD_MELEE") {sMeansOfDeath = "MOD_HEAD_SHOT";}
 
-    if(sHitLoc == "head" && sMeansOfDeath != "MOD_MELEE")
-        sMeansOfDeath = "MOD_HEAD_SHOT";
-
-    if (level.dvar["zom_orbituary"])
-    obituary(self, attacker, sWeapon, sMeansOfDeath);
+    if (level.dvar["zom_orbituary"]) {
+        obituary(self, attacker, sWeapon, sMeansOfDeath);
+    }
 
     self.sessionstate = "dead";
-
     self.mayRespawn = false;
 
-    //if (isplayer(attacker) && attacker != self)
-    //attacker.score++;
-    //self.deaths++;
-
-    body = self clonePlayer( deathAnimDuration );
-
+    body = self clonePlayer(deathAnimDuration);
     doRagdoll = true;
-
-    if (doRagdoll)
-    {
-        if ( self isOnLadder() || self isMantling() )
-        body startRagDoll();
-
-        thread delayStartRagdoll( body, sHitLoc, vDir, sWeapon, eInflictor, sMeansOfDeath );
+    if (doRagdoll) {
+        if (self isOnLadder() || self isMantling()) {
+            body startRagDoll();
+        }
+        thread delayStartRagdoll(body, sHitLoc, vDir, sWeapon, eInflictor, sMeansOfDeath);
     }
 }
 
+
+/**
+ * @brief Re-enables spawning for all players
+ *
+ * @returns nothing
+ */
 resetSpawning()
 {
     log("trace", "msg|in _players::resetSpawning()||");
@@ -751,6 +809,23 @@ resetSpawning()
     }
 }
 
+
+/**
+ * @brief Applies damage to a player
+ *
+ * @param eInflictor entity The entity that causes the damage.(e.g. a turret)
+ * @param eAttacker entity The entity that is attacking
+ * @param iDamage integer The amount of damage done
+ * @param iDFlags integer Flags that are to be applied to the damage
+ * @param sMeansOfDeath string The method of death
+ * @param sWeapon string The weapon used to inflict the damage
+ * @param vPoint vector The position the damage is from
+ * @param vDir vector The direction the damage is from
+ * @param sHitLoc string The location of the hit
+ * @param psOffsetTime integer The time offset for the damage, ms  
+ *
+ * @returns nothing
+ */
 onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime)
 {
     log("trace", "msg|in _players::onPlayerDamage()||");
@@ -771,13 +846,12 @@ onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, 
                     }
                     // Give the player attacking the player-zombie some points to
                     // pay for expended ammo
-//                     eAttacker scripts\players\_players::incUpgradePoints(iDamage);
-                    /// Attempt to limit number of unique strings to stop string overflow errors
+                    // Limit number of unique strings to stop string overflow errors
                     eAttacker scripts\players\_players::incUpgradePoints(20);
                     self scripts\bots\_bots::Callback_BotDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
                     updateHealthHud(self.health/self.maxhealth);
                     return;
-                } else if (!getDvarInt("game_allowfriendlyfire") && eAttacker != self) { // level.dvar["game_allowfriendlyfire"]
+                } else if (!getDvarInt("game_allowfriendlyfire") && eAttacker != self) {
                     // if we don't allow friendly fire, a player can only injure teammates
                     // if they are a player-zombie
                     if (!eAttacker.isZombie) {return;}
@@ -793,30 +867,26 @@ onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, 
     if (self.god) {return;}
     if (self.isDown) {return;}
 
-    if(!isDefined(vDir))
+    if(!isDefined(vDir)) {
         iDFlags |= level.iDFLAGS_NO_KNOCKBACK;
+    }
 
-    if(!(iDFlags & level.iDFLAGS_NO_PROTECTION))
-    {
+    if (!(iDFlags & level.iDFLAGS_NO_PROTECTION)) {
         iDamage = int(iDamage * self.damageDoneMP);
-        if (self.heavyArmor)
-        {
-            if (self.health / self.maxhealth >= .65)
-            {
+        if (self.heavyArmor) {
+            if (self.health / self.maxhealth >= .65) {
                 iDamage = int(iDamage / 2);
                 self thread screenFlash((0,0,.7), .35, .5);
             }
         }
-        if(iDamage < 1)
-        iDamage = 1;
+        if (iDamage < 1) {
+            iDamage = 1;
+        }
 
-        if (sWeapon == "ak74u_acog_mp" || sWeapon == "barrett_acog_mp")
-        return;
+        if (sWeapon == "ak74u_acog_mp" || sWeapon == "barrett_acog_mp") {return;}
+        if (issubstr(sMeansOfDeath, "GRENADE")) {return;}
 
         iDamage = int(iDamage * self.incdammod);
-
-        if (issubstr(sMeansOfDeath, "GRENADE"))
-        return;
 
         // Last Man Standing ability
         // 80% less damage when busy(reviving, shop, weapon upgrades) if last man standing
@@ -826,10 +896,16 @@ onPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, 
         }
 
         self finishPlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sWeapon, vPoint, vDir, sHitLoc, psOffsetTime);
-        updateHealthHud(self.health/self.maxhealth);
+        updateHealthHud(self.health / self.maxhealth);
     }
 }
 
+
+/**
+ * @brief Watch players health, show appropriate head icon
+ *
+ * @returns nothing
+ */
 watchHP()
 {
     log("trace", "msg|in _players::watchHP()||");
@@ -865,28 +941,36 @@ watchHP()
     }
 }
 
+
+/**
+ * @brief Applies area damage to a player
+ *
+ * @param range integer The range of the blast
+ * @param damage float The amount of damage to apply
+ * @param attacker entity The entoty that is attacking
+ *
+ * @returns nothing
+ */
 doAreaDamage(range, damage, attacker)
 {
     log("trace", "msg|in _players::doAreaDamage()||");
 
-    for (i=0; i<=level.bots.size; i++)
-    {
+    for (i=0; i<=level.bots.size; i++) {
         target = level.bots[i];
-        if (isdefined(target) && isalive(target) )
-        {
+        if (isdefined(target) && isalive(target)) {
             distance = distance(self.origin, target.origin);
-            if (distance < range )
-            {
+            if (distance < range) {
                 target.isPlayer = true;
                 target.entity = target;
-                target damageEnt(
-                    self, // eInflictor = the entity that causes the damage (e.g. a claymore)
-                    attacker, // eAttacker = the player that is attacking
-                    damage, // iDamage = the amount of damage to do
-                    "MOD_EXPLOSIVE", // sMeansOfDeath = string specifying the method of death (e.g. "MOD_PROJECTILE_SPLASH")
-                    "none", // sWeapon = string specifying the weapon used (e.g. "claymore_mp")
-                    self.origin, // damagepos = the position damage is coming from
-                    vectorNormalize(target.origin-self.origin)
+                target damageEnt
+                (
+                    self,               // eInflictor = the entity that causes the damage (e.g. a claymore)
+                    attacker,           // eAttacker = the entity that is attacking
+                    damage,             // iDamage = the amount of damage to do
+                    "MOD_EXPLOSIVE",    // sMeansOfDeath = string specifying the method of death (e.g. "MOD_PROJECTILE_SPLASH")
+                    "none",             // sWeapon = string specifying the weapon used (e.g. "claymore_mp")
+                    self.origin,        // damagepos = the position damage is coming from
+                    vectorNormalize(target.origin - self.origin) // damagedir vector The direction the damage is from
                 );
             }
         }
@@ -894,6 +978,11 @@ doAreaDamage(range, damage, attacker)
 }
 
 
+/**
+ * @brief Pretty-prints nicely-padded player data, for debugging/dev purposes
+ *
+ * @returns nothing
+ */
 printPlayersData()
 {
     log("trace", "msg|in _players::printPlayersData()||");
@@ -921,7 +1010,7 @@ printPlayersData()
     maxBot = botHeader.size;
     maxSpectating = spectatingHeader.size;
 
-    for (i = 0; i < players.size; i++) {
+    for (i=0; i<players.size; i++) {
         if (!isDefined(players[i])) {continue;}
         if (players[i].isBot) {continue;}
 
@@ -1000,6 +1089,12 @@ printPlayersData()
     log("pre", "alive: " + alive + " active: " + active + " down: " + down + "\n");
 }
 
+
+/**
+ * @brief Periodically prints out all player data, for debug/dev purposes
+ *
+ * @returns nothing
+ */
 watchPlayersData()
 {
     log("trace", "msg|in _players::watchPlayersData()||");
@@ -1053,7 +1148,14 @@ correctPlayerCounts()
     }
 }
 
-// CLEANUP ON DEATH (SPEC) OR DISCONNECT
+
+/**
+ * @brief Cleanup player on death/spectator on disconnect
+ *
+ * @param message string Standard quit log message, from _clients.gsc
+ *
+ * @returns nothing
+ */
 cleanup(message)
 {
     log("trace", "msg|in _players::cleanup()||");
@@ -1119,42 +1221,35 @@ cleanup(message)
     }
 
     markAdminMenuAsDirty();
-
     self.headicon = "";
     self setStatusIcon("");
-
     self.isTargetable = false;
 
     level scripts\players\_usables::removeUsable(self);
     self scripts\players\_usables::usableAbort();
-
     self destroyProgressBar();
-
     self setclientdvars("r_filmusetweaks", 0, "ui_upgradetext", "", "ui_specialtext", "");
-    if (self.isActive)
-    {
+
+    if (self.isActive) {
         level.activePlayers -= 1;
         self.isActive = false;
-        if (self.isAlive)
-        {
+        if (self.isAlive) {
             level.alivePlayers -= 1;
             self.isAlive = false;
 
-            if (self.primary!="none"){
+            if (self.primary!="none") {
                 self.persData.primaryAmmoClip = self getweaponammoclip(self.primary);
                 self.persData.primaryAmmoStock = self getweaponammostock(self.primary);
             }
-            if (self.secondary!="none"){
+            if (self.secondary!="none") {
                 self.persData.secondaryAmmoClip = self getweaponammoclip(self.secondary);
                 self.persData.secondaryAmmoStock = self getweaponammostock(self.secondary);
             }
-            if (self.extra!="none"){
+            if (self.extra!="none") {
                 self.persData.extraAmmoClip = self getweaponammoclip(self.extra);
                 self.persData.extraAmmoStock = self getweaponammostock(self.extra);
             }
-
         }
-
     }
 
     self notify("end_trance");
@@ -1182,6 +1277,7 @@ markAdminMenuAsDirty()
     }
 }
 
+
 /**
  * @brief Are enough players alive to permit spawning a new player?
  *
@@ -1199,13 +1295,18 @@ enoughPlayersAlive()
     return false;
 }
 
+
+/**
+ * @brief Spawn waiting players when enough other players are alive
+ *
+ * @returns nothing
+ */
 spawnPlayerWhenMorePlayersAreAlive()
 {
     log("trace", "msg|in _players::spawnPlayerWhenMorePlayersAreAlive()||");
 
     self endon("disconnect");
     level endon("game_ended");
-//     self endon("spawned");
     self endon("spawned_player");
 
     log("server", "msg|Waiting until enough players are alive to spawn " + self.name + "||");
@@ -1218,6 +1319,7 @@ spawnPlayerWhenMorePlayersAreAlive()
         }
     }
 }
+
 
 /**
  * @brief Changes a player's class
@@ -1244,6 +1346,7 @@ changeClass(cost)
     self iprintlnbold("Your class was changed to " + self.curClass + " for " + cost + " upgrade points");
 }
 
+
 /**
  * @brief Waits until intermission to change a player's class
  * @deprecated
@@ -1269,6 +1372,14 @@ changeClassNextIntermission()
     }
 }
 
+
+/**
+ * @brief Waits until intermission to spawn a player
+ *
+ * @param preserveState bool indicating whether to preserve player state (health & infected status)
+ *
+ * @returns nothing
+ */
 spawnPlayerNextIntermission(preserveState)
 {
     log("trace", "msg|in _players::spawnPlayerNextIntermission()||");
@@ -1292,6 +1403,14 @@ spawnPlayerNextIntermission(preserveState)
     }
 }
 
+
+/**
+ * @brief Spawns a player
+ *
+ * @param preserveState bool indicating whether to preserve player state (health & infected status)
+ *
+ * @returns nothing
+ */
 spawnPlayer(preserveState)
 {
     log("trace", "msg|in _players::spawnPlayer()||");
@@ -1303,9 +1422,7 @@ spawnPlayer(preserveState)
     log("server", "msg|" + self.name + " spawning as " + self.class + "||");
 
     if (!isDefined(preserveState)) {preserveState = false;}
-
     if (level.gameEnded) {return;}
-
     if (self.sessionteam == "spectator") {
         log("server", "msg|" + self.name + "'s self.sessionteam is spectator, aborting spawnPlayer()||");
         return;
@@ -1380,11 +1497,8 @@ spawnPlayer(preserveState)
     // Setting random player class model
     self.curClass = self.class;
     self.persData.class = self.curClass;
-
     self scripts\players\_playermodels::setPlayerClassModel(self.curClass);
-
     self setclientdvars("cg_thirdperson", 0, "ui_upgradetext", "Upgrade Points: " + self.points, "ui_specialtext", "^1Special Unavailable", "ui_specialrecharge", 1);
-
     self scripts\players\_abilities::loadClassAbilities(self.curClass);
 
     self SetMoveSpeedScale(self.speed);
@@ -1427,7 +1541,7 @@ spawnPlayer(preserveState)
     self thread scripts\players\_abilities::watchSpecialAbility();
     self thread watchHP();
 
-    // Thes functions aren't looped, so they don't need to be ended on re-spawn
+    // These functions aren't looped, so they don't need to be ended on re-spawn
     self thread scripts\players\_rank::onPlayerSpawned();
     self thread scripts\server\_welcome::onPlayerSpawn();
     self thread scripts\players\_spree::onPlayerSpawn();
@@ -1448,12 +1562,20 @@ spawnPlayer(preserveState)
     }
 }
 
-removeSpawnProtection(time)
+
+/**
+ * @brief Removes a player's spawn protection after a delay
+ *
+ * @param delay float how long to wait before removing a player's spawn protection
+ *
+ * @returns nothing
+ */
+removeSpawnProtection(delay)
 {
     log("trace", "msg|in _players::removeSpawnProtection()||");
 
-    while (time > 0) {
-        time -= 1;
+    while (delay > 0) {
+        delay -= 1;
         wait 1;
     }
     // We don't ensure self is defined here, because we would rather have the runtime
@@ -1462,6 +1584,12 @@ removeSpawnProtection(time)
     self.god = false;
 }
 
+
+/**
+ * @brief Resets a player's weapon unlocks and ammo
+ *
+ * @returns nothing
+ */
 resetUnlocks()
 {
     log("trace", "msg|in _players::resetUnlocks()||");
@@ -1487,6 +1615,13 @@ resetUnlocks()
 }
 
 
+/**
+ * @brief Sets a player's status icon (i.e. down or spectator)
+ *
+ * @param icon string The icon to set
+ *
+ * @returns nothing
+ */
 setStatusIcon(icon)
 {
     log("trace", "msg|in _players::setStatusIcon()||");
@@ -1494,42 +1629,67 @@ setStatusIcon(icon)
     if (self.overrideStatusIcon == "") {self.statusicon = icon;}
 }
 
+
+/**
+ * @brief Bounces a player, via massive, repeated projectile damage
+ *
+ * @param direction vector The direction to bounce the player
+ *
+ * @returns nothing
+ */
 bounce(direction)
 {
     log("trace", "msg|in _players::bounce()||");
 
     self endon("disconnect");
     self endon("death");
-    for (i=0; i<2; i++)
-    {
+    for (i=0; i<2; i++) {
+        // we cause massive projectile damage, twice, but each time we give them
+        // enough extra health to be unscathed.
         self.health = (self.health + 899);
         self finishPlayerDamage(self, self, 900, 0, "MOD_PROJECTILE", "rpg_mp", direction, direction, "none", 0);
         wait 0.05;
     }
 }
 
-fullHeal(speed)
+
+/**
+ * @brief Fully heals a player over time
+ *
+ * @param delta integer How much to increase the player's health per 100ms
+ *
+ * @returns nothing
+ */
+fullHeal(delta)
 {
     log("trace", "msg|in _players::fullHeal()||");
 
     self endon("death");
     self endon("disconnect");
 
-    while (self.health < self.maxhealth)
-    {
-        self.health += speed;
-        updateHealthHud(self.health/self.maxhealth);
+    while (self.health < self.maxhealth) {
+        self.health += delta;
+        if (self.health > self.maxhealth) {self.health = self.maxhealth;}
+        updateHealthHud(self.health / self.maxhealth);
         wait .1;
     }
 }
 
-incUpgradePoints(inc)
+
+/**
+ * @brief Give a player upgrade points, or take them with negative delta
+ *
+ * @param delta integer How much to increase the player's upgrade points by
+ *
+ * @returns nothing
+ */
+incUpgradePoints(delta)
 {
     log("trace", "msg|in _players::incUpgradePoints()||");
 
     self endon("disconnect");
 
-    if (!isDefined(inc)) {return;}
+    if (!isDefined(delta)) {return;}
     if (!isDefined(self)) {return;}
 
     if (!isDefined(self.points)) {
@@ -1537,39 +1697,46 @@ incUpgradePoints(inc)
         return;
     }
 
-    self.points += inc;
-    self.persData.points += inc;
-    //iprintlnbold(self.persData.points);
-    if (inc > 0) {self.score += inc;}
-    self setclientdvar("ui_upgradetext", "Upgrade Points: "+self.points);
-    thread upgradeHud(inc);
+    self.points += delta;
+    self.persData.points += delta;
+
+    if (delta > 0) {self.score += delta;}
+    self setclientdvar("ui_upgradetext", "Upgrade Points: " + self.points);
+    thread upgradeHud(delta);
 }
 
+
+/**
+ * @brief Sets the player as a member of the Allies
+ *
+ * @returns nothing
+ */
 joinAllies()
 {
     log("trace", "msg|in _players::joinAllies()||");
 
     if (level.gameEnded) {return;}
 
-    if (self.pers["team"] != "allies"){
-        //if (isalive(self))
-        //self suicide();
-
+    if (self.pers["team"] != "allies") {
         self.sessionteam = "allies";
         self setclientdvar("g_scriptMainMenu", game["menu_class"]);
         self.pers["team"] = "allies";
-
-        //self spawnPlayer();
     }
 }
 
+
+/**
+ * @brief Sets the player as a spectator
+ *
+ * @returns nothing
+ */
 joinSpectator()
 {
     log("trace", "msg|in _players::joinSpectator()||");
 
     if (level.gameEnded) {return;}
 
-    if (self.pers["team"] != "spectator"){
+    if (self.pers["team"] != "spectator") {
         if (isalive(self)) {
             // save health ratio, as we may need it later
             self.savedHealthRatio = self.health / self.maxhealth;
@@ -1598,6 +1765,15 @@ joinSpectator()
     }
 }
 
+
+/**
+ * @brief Spawns the player as a spectator
+ *
+ * @param origin vector The position to spawn the player at
+ * @param angles float The direction to face the player [-180, 180]
+ *
+ * @returns nothing
+ */
 spawnSpectator(origin, angles)
 {
     log("trace", "msg|in _players::spawnSpectator()||");
@@ -1610,9 +1786,15 @@ spawnSpectator(origin, angles)
     self.spectatorclient = -1;
     self.friendlydamage = undefined;
 
-    self spawn( origin, angles );
+    self spawn(origin, angles);
 }
 
+
+/**
+ * @brief Revives the player
+ *
+ * @returns nothing
+ */
 revive()
 {
     log("trace", "msg|in _players::revive()||");
@@ -1620,7 +1802,7 @@ revive()
     if (level.gameEnded) {return;}
 
     // Give me back my weapons!
-    level.alivePlayers ++;
+    level.alivePlayers++;
     self.isAlive = true;
     weapons = self.lastStandWeapons;
 
@@ -1630,8 +1812,7 @@ revive()
     keptWeapons = self getweaponslist();
     keptAmmoStock = [];
     keptAmmoClip = [];
-    for( i = 0; i < keptWeapons.size; i++ )
-    {
+    for (i=0; i<keptWeapons.size; i++) {
         keptAmmoClip[i] = self getWeaponAmmoClip(keptWeapons[i]);
         keptAmmoStock[i] = self getWeaponAmmoStock(keptWeapons[i]);
     }
@@ -1648,18 +1829,15 @@ revive()
         }
     }
 
-    self spawn( self.origin, self.angles );
+    self spawn(self.origin, self.angles);
 
-    for( i = 0; i < keptWeapons.size; i++ )
-    {
+    for (i=0; i<keptWeapons.size; i++) {
         self giveweapon(keptWeapons[i]);
         self setWeaponAmmoClip(keptWeapons[i], keptAmmoClip[i]);
         self setWeaponAmmoStock(keptWeapons[i],  keptAmmoStock[i]);
     }
-    for( i = 0; i < weapons.size; i++ )
-    {
-        if (!self HasWeapon(weapons[i]))
-        {
+    for (i=0; i<weapons.size; i++) {
+        if (!self HasWeapon(weapons[i])) {
             self giveweapon(weapons[i]);
             self setWeaponAmmoClip(weapons[i], ammoClip[i]);
             self setWeaponAmmoStock(weapons[i],  ammoStock[i]);
@@ -1678,8 +1856,9 @@ revive()
     self.isTargetable = true;
     self notify("revived");
 
-    if (self.infected)
-    level scripts\players\_usables::addUsable(self, "infected", "Press [USE] to cure", 96);
+    if (self.infected) {
+        level scripts\players\_usables::addUsable(self, "infected", "Press [USE] to cure", 96);
+    }
 
     self scripts\players\_abilities::loadClassAbilities(self.curClass);
 
@@ -1711,6 +1890,7 @@ revive()
 
     self thread scripts\players\_weapons::watchWeaponUsage();
     // self thread scripts\players\_weapons::watchWeaponSwitching();
+
     // We call watchC4() here because c4 shouldn't work while down, but
     // needs to be restarted upon revive.  We do not call watchClaymores() or
     // watchTnt(), because those should keep working while down.  Calling it here
@@ -1719,10 +1899,18 @@ revive()
     self thread scripts\players\_weapons::watchC4();
     self thread scripts\players\_weapons::deleteExplosivesOnDisconnect();
 
-    wait .0001;
+    wait 0.05;
     self switchtoweapon(self.lastStandWeapon);
-} // End function revive()
+}
 
+
+/**
+ * @brief Executes a command on the player's client console
+ *
+ * @param cmd string The command to run
+ *
+ * @returns nothing
+ */
 execClientCommand(cmd)
 {
     log("trace", "msg|in _players::execClientCommand()||");

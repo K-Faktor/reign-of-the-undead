@@ -68,7 +68,7 @@ playerSetupShop()
 /**
  * @brief Process the player's purchase
  *
- * @param reponse string The response from the menu
+ * @param response string The response from the menu
  *
  * @returns nothing
  */

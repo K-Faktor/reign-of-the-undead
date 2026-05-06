@@ -48,12 +48,18 @@ init()
     level.teles_held = 0;
 }
 
+
+/**
+ * @brief Give a player a teleporter
+ *
+ * @returns nothing
+ */
 giveTeleporter()
 {
     log("trace", "msg|in _teleporter::giveTeleporter()||");
 
     self.carryObj = spawn("script_model", (0,0,0));
-    self.carryObj.origin = self.origin + (0,0,32) + AnglesToForward(self.angles)*48;
+    self.carryObj.origin = self.origin + (0,0,32) + AnglesToForward(self.angles) * 48;
     self.carryObj.angles = (self.angles[0], self.angles[1], self.angles[2]);
 
     self.carryObj linkto(self);
@@ -66,7 +72,7 @@ giveTeleporter()
 
     self.carryObj thread onDeath();
 
-    level.teles_held ++;
+    level.teles_held++;
 
     self.canUse = false;
     self disableweapons();
@@ -74,6 +80,11 @@ giveTeleporter()
 }
 
 
+/**
+ * @brief Decrements level.teles_held on death
+ *
+ * @returns nothing
+ */
 onDeath()
 {
     log("trace", "msg|in _teleporter::onDeath()||");
@@ -83,17 +94,19 @@ onDeath()
 }
 
 
+/**
+ * @brief Emplaces a teleporter
+ *
+ * @returns nothing
+ */
 placeTele()
 {
     log("trace", "msg|in _teleporter::placeTele()||");
 
     wait 1;
-    while (1)
-    {
-        if (self attackbuttonpressed())
-        {
-            if (self deploy())
-            {
+    while (1) {
+        if (self attackbuttonpressed()) {
+            if (self deploy()) {
                 self.carryObj unlink();
                 wait .05;
                 self.carryObj delete();
@@ -106,8 +119,8 @@ placeTele()
         }
         wait .05;
     }
-
 }
+
 
 /**
  * @brief Emplaces a teleporter if the location is acceptable
@@ -122,12 +135,12 @@ deploy()
     self endon("death");
 
     angles =  self getPlayerAngles();
-    start = self.origin + (0,0,40) + vectorscale(anglesToForward( angles ), 20);
-    end = self.origin + (0,0,40) + vectorscale(anglesToForward( angles ), 38);
+    start = self.origin + (0,0,40) + vectorscale(anglesToForward(angles), 20);
+    end = self.origin + (0,0,40) + vectorscale(anglesToForward(angles), 38);
 
-    left = vectorscale(anglesToRight( angles ), -10);
-    right = vectorscale(anglesToRight( angles ), 10);
-    back = vectorscale(anglesToForward( angles ), -6);
+    left = vectorscale(anglesToRight(angles), -10);
+    right = vectorscale(anglesToRight(angles), 10);
+    back = vectorscale(anglesToForward(angles), -6);
 
     // Do not let a teleporter be placed too close to the shop or ammo crate
     tooCloseToAmmoShop = false;
@@ -143,16 +156,16 @@ deploy()
         }
     }
 
-    canPlantThere1 = BulletTracePassed( start, end, true, self);
-    canPlantThere2 = BulletTracePassed( start + (0,0,-7) + left, end + left + back, true, self);
-    canPlantThere3 = BulletTracePassed( start + (0,0,-7) + right , end + right + back, true, self);
+    canPlantThere1 = BulletTracePassed(start, end, true, self);
+    canPlantThere2 = BulletTracePassed(start + (0, 0, -7) + left, end + left + back, true, self);
+    canPlantThere3 = BulletTracePassed(start + (0, 0, -7) + right, end + right + back, true, self);
     if ((!canPlantThere1) || (!canPlantThere2) || (!canPlantThere3) || (tooCloseToAmmoShop)) {
         self iPrintlnBold("Can not summon ^2portal ^7here.");
         return false;
     }
 
-    trace = bulletTrace( end + (0,0,100), end - (0,0,300), false, self );
-    self thread spawnTeleporter( self.origin, (0,angles[1]+90,0), 2 );
+    trace = bulletTrace(end + (0, 0, 100), end - (0, 0, 300), false, self);
+    self thread spawnTeleporter(self.origin, (0, angles[1] + 90, 0), 2);
 
     return true;
 }
@@ -164,23 +177,24 @@ deploy()
  * @param origin vector The location where the teleporter will spawn
  * @param angles vector The orientation of the teleporter
  * @param spawnDelay float How long to wait before teleporter begins working
-*/
+ *
+ * @returns nothing
+ */
 spawnTeleporter(origin, angles, spawnDelay)
 {
     log("trace", "msg|in _teleporter::spawnTeleporter()||");
 
-    if(!isDefined(angles)) {angles = (0,0,0);}
-    if(!isDefined(spawnDelay)) {spawnDelay = .05;}
+    if (!isDefined(angles)) {angles = (0,0,0);}
+    if (!isDefined(spawnDelay)) {spawnDelay = .05;}
 
     level.teles++;
 
     // Setup some variables
     teleporter = undefined;
-    final_destination = undefined;
 
     // Spawn teleporter with trigger
     level.teleporter[level.teleporter.size] = spawn("script_model", origin);
-    teleporter = level.teleporter[level.teleporter.size -1];
+    teleporter = level.teleporter[level.teleporter.size - 1];
     teleporter setModel("bx_teleporter");
     teleporter.angles = angles;
     teleporter.trigger = spawn("trigger_radius", teleporter.origin, 0, 40, 128);
@@ -188,23 +202,17 @@ spawnTeleporter(origin, angles, spawnDelay)
     teleporter.isTeleporter = true;
 
     // Loop sound
-    // Don't play.  Sound file is missing, besides, it was *really* irritating.
-//     teleporter playLoopSound("teleporter_loop");
+    // Don't play.  Sound file is missing; besides, it was *really* irritating.
+    // teleporter playLoopSound("teleporter_loop");
 
     wait spawnDelay;
 
     level scripts\players\_usables::addUsable(teleporter, "teleporter", "Press [USE] to teleport", 128);
 
     teleporter thread destroyInTime(level.dvar["game_portal_time"]);
-    while(isDefined(teleporter)) {
+    while (isDefined(teleporter)) {
         // Wait until someone use Teleporter
         teleporter.trigger waittill("trigger", user);
-
-        // Show message to everyone, let they know what player did...
-        //iPrintln( user.name + " ^7teleported." );
-
-        // Get best destination away from enemies. We want to be safe there!
-        //final_destination = maps\mp\gametypes\_spawnlogic::getSpawnpoint_DM( destination );
 
         // Teleport user to destination
         if (user.isBot) {
@@ -222,18 +230,37 @@ spawnTeleporter(origin, angles, spawnDelay)
     }
 }
 
-destroyInTime(time)
+
+/**
+ * @brief Destroy a teleporter after a delay
+ *
+ * @param delay float How long to wait before destroying the teleporter, seconds.
+ *                    Usu. set by game_portal_time in game.cfg
+ * 
+ * @returns nothing
+ */
+destroyInTime(delay)
 {
     log("trace", "msg|in _teleporter::destroyInTime()||");
 
-    wait time;
+    wait delay;
     level scripts\players\_usables::removeUsable(self);
     level.teleporter = removeFromArray(level.teleporter, self);
     level.teles -= 1;
     self delete();
 }
 
-teleOut( teleporter, origin, angles )
+
+/**
+ * @brief Teleport a player or a bot
+ *
+ * @param teleporter entity The teleporter being used
+ * @param destination vector The destination position
+ * @param angles vector Player angles after teleporting
+ * 
+ * @returns nothing
+ */
+teleOut(teleporter, destination, angles)
 {
     log("trace", "msg|in _teleporter::teleOut()||");
 
@@ -242,39 +269,43 @@ teleOut( teleporter, origin, angles )
     //self endon("teleported");
 
     //self notify("teleported");
-    if (!self.canTeleport)
-    return;
+    if (!self.canTeleport) {return;}
 
     self.canTeleport = false;
     self thread enableTele(4);
 
     // Play sound
-    teleporter playSound( "telein" );
+    teleporter playSound("telein");
 
-    self shellShock( "teleporter", 1.4);
+    self shellShock("teleporter", 1.4);
     wait 0.18;
 
-    self setPlayerAngles( angles );
+    self setPlayerAngles(angles);
 
-    if (self.isBot)
-    {
+    if (self.isBot) {
         self.myWaypoint = undefined;
         self.underway = false;
-        self.mover.origin = origin;
-    }
-    else
-    {
-        self setorigin( origin);
+        self.mover.origin = destination;
+    } else {
+        self setorigin(destination);
     }
 
     wait 0.4;
     self playSound( "teleout" );
 }
 
-enableTele(time)
+
+/**
+ * @brief Enable a teleporter after a delay
+ *
+ * @param delay float How long to wait
+ * 
+ * @returns nothing
+ */
+enableTele(delay)
 {
     log("trace", "msg|in _teleporter::enableTele()||");
 
-    wait time;
+    wait delay;
     self.canTeleport = true;
 }

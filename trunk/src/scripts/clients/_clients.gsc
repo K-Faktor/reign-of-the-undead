@@ -179,6 +179,7 @@ Callback_PlayerDisconnect()
     self notify( "disconnect" );
 }
 
+
 /**
  * @brief Forwards a damage call to the appropriate method for bots or real players
  *

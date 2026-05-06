@@ -33,6 +33,20 @@
 
 #include scripts\include\utility;
 
+
+/**
+ * @brief Applies damage to an entity
+ *
+ * @param eInflictor entity The entity that causes the damage.(e.g. a turret)
+ * @param eAttacker entity The entity that is attacking
+ * @param iDamage integer The amount of damage done
+ * @param sMeansOfDeath string The method of death
+ * @param sWeapon string The weapon used to inflict the damage
+ * @param damagepos vector The position the damage is from
+ * @param damagedir vector The direction the damage is from
+ *
+ * @returns nothing
+ */
 damageEnt(eInflictor, eAttacker, iDamage, sMeansOfDeath, sWeapon, damagepos, damagedir)
 {
     log("trace", "msg|in entities::damageEnt()||");
@@ -61,18 +75,27 @@ damageEnt(eInflictor, eAttacker, iDamage, sMeansOfDeath, sWeapon, damagepos, dam
     }
 }
 
-getClosestEntity(targetname, type)
+
+/**
+ * @brief Finds the closest matching entity
+ *
+ * @param name string The target/class name to search for
+ * @param type string The entity property to search, [default=targetname|classname]
+ *
+ * @returns entity The closest matching entity
+ */
+getClosestEntity(name, type)
 {
     log("trace", "msg|in entities::getClosestEntity()||");
 
     if (!isdefined(type)) {type = "targetname";}
 
-    ents = getentarray(targetname, type);
+    ents = getentarray(name, type);
     nearestEnt = undefined;
     nearestDistance = level.MAX_INT; // 2147483647, 32-bit ints
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
-        distance = Distance(self.origin, ent.origin);
+        distance = distanceSquared(self.origin, ent.origin);
 
         if(distance < nearestDistance) {
             nearestDistance = distance;
@@ -82,6 +105,12 @@ getClosestEntity(targetname, type)
     return nearestEnt;
 }
 
+
+/**
+ * @brief Finds the closest player
+ *
+ * @returns entity The closest matching entity
+ */
 getClosestPlayer()
 {
     log("trace", "msg|in entities::getClosestPlayer()||");
@@ -91,7 +120,7 @@ getClosestPlayer()
     nearestDistance = level.MAX_INT; // 2147483647, 32-bit ints
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
-        distance = Distance(self.origin, ent.origin);
+        distance = distanceSquared(self.origin, ent.origin);
 
         if(distance < nearestDistance) {
             nearestDistance = distance;
@@ -101,40 +130,49 @@ getClosestPlayer()
     return nearestEnt;
 }
 
+
+/**
+ * @brief Finds the closest players
+ *
+ * @returns array A sorted array of the closest players; closest at nearPlayers[0]
+ */
 getClosestPlayerArray()
 {
     log("trace", "msg|in entities::getClosestPlayerArray()||");
 
     playerCount = level.players.size;
-
     nearPlayers = [];
-    nearDistance = [];
-    for (i=0; i<playerCount; i++) {
-        nearDistance[i] = level.MAX_INT; // 2147483647, 32-bit ints
+    distances = [];
+
+    for (i=0; i<level.players.size; i++) {
+        player = level.players[i];       
+        if (!isDefined(player) || !player.isAlive || !player.isTargetable) {continue;}
+            
+        nearPlayers[nearPlayers.size] = player;
+        distances[distances.size] = distanceSquared(self.origin, player.origin);
     }
 
-    for (i=0; i<playerCount; i++) {
-        player = level.players[i];
-        if (player.isAlive) {
-            if (player.isTargetable) {
-                distance = distanceSquared(self.origin, player.origin);
-                for (j=0; j<playerCount; j++) {
-                    if(distance < nearDistance[j]) {
-                        for (k=i; k>=j; k--) {
-                            nearDistance[k+1] = nearDistance[k];
-                            nearPlayers[k+1] = nearPlayers[k];
-                        }
-                        nearDistance[j] = distance;
-                        nearPlayers[j] = player;
-                    }
-                }
+    for (i=0; i<nearPlayers.size; i++) {
+        for (j=i+1; j<nearPlayers.size; j++) {
+            if (distances[j] < distances[i]) {
+                // swap distances
+                tempDist = distances[i];
+                distances[i] = distances[j];
+                distances[j] = tempDist;
+
+                // swap players
+                tempPlayer = nearPlayers[i];
+                nearPlayers[i] = nearPlayers[j];
+                nearPlayers[j] = tempPlayer;
             }
         }
     }
     return nearPlayers;
 }
 
-/** @deprecated
+
+/**
+ * @deprecated
  * @brief Gets closest alive player
  *
  * @returns entity the closest alive player
@@ -149,7 +187,7 @@ getClosestTarget()
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
         if (!isDefined(ent)) {continue;}
-        distance = Distance(self.origin, ent.origin);
+        distance = distanceSquared(self.origin, ent.origin);
         if (ent.isAlive) {
             if (!ent.isTargetable) {continue;}
             if (distance < nearestDistance) {
@@ -161,16 +199,30 @@ getClosestTarget()
     return nearestEnt;
 }
 
-getRandomEntity(targetname)
+
+/**
+ * @brief Gets a random entity by targetname
+ *
+ * @param name string The value of the targetname to return a random example of
+ *
+ * @returns entity The random entity with a matching targetname value
+ */
+getRandomEntity(name)
 {
     log("trace", "msg|in entities::getRandomEntity()||");
 
-    ents = getentarray(targetname, "targetname");
+    ents = getentarray(name, "targetname");
     if (ents.size > 0) {
         return ents[randomint(ents.size)];
     }
 }
 
+
+/**
+ * @brief Gets a random team deathmatch spawn point
+ *
+ * @returns entity The random team deathmatch spawnpoint
+ */
 getRandomTdmSpawn()
 {
     log("trace", "msg|in entities::getRandomTdmSpawn()||");

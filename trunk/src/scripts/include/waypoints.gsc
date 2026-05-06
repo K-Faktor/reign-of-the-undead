@@ -375,7 +375,23 @@ kdWaypointSiftDown(array, start, end, axis)
     return array;
 }
 
-/// just for verifying that heapsort works properly
+
+/**
+ * @brief Prints a formatted representation of an array of waypoints/entities 
+ *        along a chosen axis, highlighting the pivot index.
+ *
+ * This function is used primarily for debugging and verifying that heapsort 
+ * is working correctly by visually showing the current state of the array.
+ *
+ * @param array       Array of entities/structures that contain an .origin field
+ * @param axis        Axis to display: 0 = X, 1 = Y, 2 = Z
+ * @param pivotIndex  (Optional) Index of the pivot element to highlight. 
+ *                    Defaults to 0 if not provided.
+ *
+ * @returns string    A formatted string in the format:
+ *                    "[x-axis] [123] [456] **[789]** [012] ..."
+ *                    (pivot value wrapped in ** **)
+ */
 printArray(array, axis, pivotIndex)
 {
     log("trace", "msg|in waypoints::printArray()||");
@@ -398,6 +414,16 @@ printArray(array, axis, pivotIndex)
 }
 
 
+/**
+ * @brief Prints information about a bullet trace for debugging purposes
+ *
+ * @param trace object The bullettrace() result to print
+ * @param from vector The position vector for the origin
+ * @param to vector The position vector for the destination
+ * @param ignoreEntity entity The entity to ignore
+ *
+ * @returns nothing
+ */
 printTrace(trace, from, to, ignoreEntity)
 {
     log("trace", "msg|in waypoints::printTrace()||");
@@ -416,7 +442,6 @@ printTrace(trace, from, to, ignoreEntity)
         case "dirt":        // fall through
         case "rubber":      // fall through
         case "concrete":
-//             return;
     }
     normal = trace["normal"];
     name = "";
@@ -436,11 +461,22 @@ printTrace(trace, from, to, ignoreEntity)
         if (isDefined(trace["entity"].name)) {name = trace["entity"].name;}
     }
     if (trace["fraction"] == 0) {
+        // do nothing
     }
 
     log("dev", "msg|trace(from, to, fraction, position, entity, name, surface, normal): (" + from + ", " + to + ", " + fraction + ", " + position + ", " + entity + ", " + name + ", " + surface + ", " + normal + ")||");
 }
 
+
+/**
+ * @brief Tests if a path is clear
+ *
+ * @param from vector The position vector for the origin
+ * @param to vector The position vector for the destination
+ * @param ignoreEntity entity The entity to ignore
+ *
+ * @returns integer The clear distance, or a negative integer representing an error code
+ */
 isPathClear(from, to, ignoreEntity)
 {
     // quality:ignore_trace
@@ -528,10 +564,20 @@ isPathClear(from, to, ignoreEntity)
     return -3;
 }
 
+
+/**
+ * @brief Debugging version of isPathClaer()
+ *
+ * @param from vector The position vector for the origin
+ * @param to vector The position vector for the destination
+ * @param ignoreEntity entity The entity to ignore
+ *
+ * @returns integer The clear distance, or a negative integer representing an error code
+ */
 debugIsPathClear(from, to, ignoreEntity)
 {
     // quality:ignore_trace
-    
+
     origin = from;
     originalEntity = ignoreEntity;
     from = from + (0,0,40);
@@ -2092,6 +2138,14 @@ getSmoothedPath(pathList, pathId, samplesPerSegment, steps)
     return newSmoothPath;    
 }
 
+
+/**
+ * @brief Reverses an array. Usefule for turning a queue-like array insto a stack-like array, and vice-versa
+ *
+ * @param arr array The array to reverse
+ *
+ * @returns nothing
+ */
 reverseArray(arr)
 {
     // quality:ignore_trace
@@ -2102,6 +2156,7 @@ reverseArray(arr)
     }
     return result;
 }
+
 
 /**
  * @brief Finds the best path between two waypoints
@@ -2301,7 +2356,6 @@ AStarNew(startWp, goalWp, validateWaypoints)
  *
  * @returns boolean indicating whether the array is empty or not
  */
-// PQIsEmpty(Q, QSize)
 PQIsEmpty(QSize)
 {
     // quality:ignore_trace

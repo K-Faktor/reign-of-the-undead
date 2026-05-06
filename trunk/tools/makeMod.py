@@ -1542,7 +1542,8 @@ def findFunctionDefinitions(file):
                 columnNumber = 0
                 
                 # We found a function definition, now check if it is properly documented
-                if not re.search(r' \*/\n', lines[lineNumber - 1]):
+                # if not re.search(r' \*/\n', lines[lineNumber - 1]):
+                if not re.search(r' \*/\s*$', lines[lineNumber - 1]):       # allow ' */ \n'
                     global undocumentedFunctions
                     undocumentedFunctions.append(f"Undocumented function found: {relFile}:{lineNumber}:{fnPrototype}")
                 else:

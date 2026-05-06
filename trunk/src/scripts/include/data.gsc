@@ -32,56 +32,89 @@
 ******************************************************************************/
 #include scripts\include\utility;
 
-atof(string)
+
+/**
+ * @brief Converts a string representation of a float to a numeric float
+ *
+ * @param value string The string to convert
+ *
+ * @returns float the converted value
+ */
+atof(value)
 {
     log("trace", "msg|in data::atof()||");
 
-    setdvar("2float", string);
+    setdvar("2float", value);
     return getdvarfloat("2float");
 }
 
-atoi(string)
+
+/**
+ * @brief Converts a string representation of an integer to a numeric integer
+ *
+ * @param value string The string to convert
+ *
+ * @returns integer the converted value
+ */
+atoi(value)
 {
     log("trace", "msg|in data::atoi()||");
 
-    setdvar("2int", string);
+    setdvar("2int", value);
     return getdvarint("2int");
 }
 
-removeFromArray(array, item)
+
+/**
+ * @brief Removes an item from an array without changing the order
+ *
+ * @param list array The array to remove the item from
+ * @param item variable The data item to remove
+ *
+ * @returns array The array with the item removed
+ */
+removeFromArray(list, item)
 {
     log("trace", "msg|in data::removeFromArray()||");
 
-    for (i=0; i<array.size; i++) {
-        if (array[i] == item) {
-            for (; i<array.size - 1; i++) {
-                array[i] = array[i+1];
+    for (i=0; i<list.size; i++) {
+        if (list[i] == item) {
+            for (; i<list.size - 1; i++) {
+                list[i] = list[i+1];
             }
-            array[array.size-1] = undefined;
-            return array;
+            list[list.size-1] = undefined;
+            return list;
         }
     }
-    return array;
+    return list;
 }
 
-dissect(string)
+
+/**
+ * @brief Splits a string on whitespace, greedily collapsing whitespace
+ *
+ * @param value string The string to tokenize
+ *
+ * @returns array The array of parsed tokens
+ */
+dissect(value)
 {
     log("trace", "msg|in data::dissect()||");
 
     ret = [];
     index = -1;
     skip = 1;
-    for (i=0; i<string.size; i++) {
-        if (string[i]==" ") {
+    for (i=0; i<value.size; i++) {
+        if (value[i] == " ") {
             skip = 1;
             continue;
         } else {
             if (skip) {
-                index ++;
+                index++;
                 skip = 0;
                 ret[index] = "";
             }
-            ret[index] += string[i];
+            ret[index] += value[i];
         }
     }
     return ret;
