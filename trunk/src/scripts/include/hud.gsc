@@ -187,30 +187,53 @@ timer(time, label, glowcolor, text)
     thread scripts\gamemodes\_hud::timer(time, label, glowcolor, text);
 }
 
-fadeout(time)
+
+/**
+ * @brief Fades a HUD element out over time
+ *
+ * @param duration numeric The duration of the fade out transition
+ *
+ * @returns nothing
+ */
+fadeout(duration)
 {
     log("trace", "msg|in hud::fadeout()||");
 
     if (isDefined(self)) {
-        self fadeOverTime( time );
+        self fadeOverTime(duration);
         self.alpha = 0;
-        wait time;
+        wait duration;
         if (isDefined(self)) {
             self destroy();
         }
     }
 }
 
-fadein(time, alpha)
+
+/**
+ * @brief Fades a HUD element in over time
+ *
+ * @param duration numeric The duration of the fade in transition
+ * @param alpha numeric The target alpha level. Default is 1 (opaque)
+ *
+ * @returns nothing
+ */
+fadein(duration, alpha)
 {
     log("trace", "msg|in hud::fadein()||");
 
     self.alpha = 0;
-    self fadeOverTime( time );
+    self fadeOverTime(duration);
     if (!isdefined(alpha)) {alpha = 1;}
     else {alpha = alpha;}
 }
 
+
+/**
+ * @brief Initializes a font-pulse effect
+ *
+ * @returns nothing
+ */
 fontPulseInit()
 {
     log("trace", "msg|in hud::fontPulseInit()||");
@@ -221,6 +244,14 @@ fontPulseInit()
     self.outFrames = 5;
 }
 
+
+/**
+ * @brief Pulses a font
+ *
+ * @param player entity The whose HUD is displying the font
+ *
+ * @returns nothing
+ */
 fontPulse(player)
 {
     log("trace", "msg|in hud::fontPulse()||");
@@ -232,14 +263,17 @@ fontPulse(player)
     player endon("joined_spectators");
 
     scaleRange = self.maxFontScale - self.baseFontScale;
+    // divide by zero guards
+    if (self.inFrames == 0) {self.inFrames = 3;}
+    if (self.outFrames == 0) {self.outFrames = 5;}
 
     while (self.fontScale < self.maxFontScale) {
-        self.fontScale = min( self.maxFontScale, self.fontScale + (scaleRange / self.inFrames) );
+        self.fontScale = min(self.maxFontScale, self.fontScale + (scaleRange / self.inFrames));
         wait 0.05;
     }
 
     while (self.fontScale > self.baseFontScale) {
-        self.fontScale = max( self.baseFontScale, self.fontScale - (scaleRange / self.outFrames) );
+        self.fontScale = max(self.baseFontScale, self.fontScale - (scaleRange / self.outFrames));
         wait 0.05;
     }
 }
@@ -297,6 +331,11 @@ barSetScale(scale, color)
 }
 
 
+/**
+ * @brief Destroys a HUD progress bar
+ *
+ * @returns nothing
+ */
 destroyProgressBar()
 {
     log("trace", "msg|in hud::destroyProgressBar()||");
@@ -305,6 +344,12 @@ destroyProgressBar()
     if (isDefined(self.bar_fg)) {self.bar_fg destroy();}
 }
 
+
+/**
+ * @brief Creates a HUD element for kill streaks
+ *
+ * @returns nothing
+ */
 streakHud()
 {
     log("trace", "msg|in hud::streakHud()||");
@@ -328,13 +373,34 @@ streakHud()
     self.hud_streak fontPulseInit();
 }
 
+
+/**
+ * @brief Scales each component of an RGB color tuple to a float in range [0, 1].
+ *        This is the color spec format CoD4 uses.
+ *        @see utilty::decimalRgbToColor()
+ *
+ * @param r integer The red component [0, 255]
+ * @param g integer The green component [0, 255]
+ * @param b integer The blue component [0, 255]
+ *
+ * @returns vector The CoD4-compliant color
+ */
 rgb(r, g, b)
 {
     log("trace", "msg|in hud::rgb()||");
 
-    return (r/255,g/255,b/255);
+    return (r/255, g/255, b/255);
 }
 
+
+/**
+ * @brief Displays upgrade points earned on the HUD. The points
+ *        translate in random directions & fade out.
+ *
+ * @param points integer The red component [0, 255]
+ *
+ * @returns nothing
+ */
 upgradeHud(points)
 {
     log("trace", "msg|in hud::upgradeHud()||");
@@ -354,11 +420,11 @@ upgradeHud(points)
     hud_score.horzAlign = "center";
     hud_score.vertAlign = "middle";
     if (points > 0) {
-        hud_score.glowColor = (.1, .9, .2);
+        hud_score.glowColor = (.1, .9, .2); // green
         hud_score settext("+"+points);
     } else {
         // zero or < 0 points
-        hud_score.glowColor = (.9, .1, .2);
+        hud_score.glowColor = (.9, .1, .2); // red
         hud_score setvalue(points);
     }
 
@@ -368,8 +434,8 @@ upgradeHud(points)
     hud_score.alpha = 1;
 
     hud_score MoveOverTime(1.5);
-    hud_score.x = cos(direction)*64;
-    hud_score.y = sin(direction)*64;
+    hud_score.x = cos(direction) * 64;
+    hud_score.y = sin(direction) * 64;
     wait 1.3;
     hud_score FadeOverTime(.3);
     hud_score.alpha = 0;
@@ -378,13 +444,32 @@ upgradeHud(points)
 
 }
 
-updateHealthHud(delta)
+
+/**
+ * @brief Updates a player's health HUD element
+ *
+ * @param fraction float The current health fraction, [0, 1]. Defined as (currentHealth / maxHealth)
+ *
+ * @returns nothing
+ */
+updateHealthHud(fraction)
 {
     log("trace", "msg|in hud::updateHealthHud()||");
 
-    self setclientdvar("ui_healthbar", delta);
+    self setclientdvar("ui_healthbar", fraction);
 }
 
+
+/**
+ * @brief Makes a player's screen flash briefly
+ *
+ * @param color tuple The color for the screen flash. A CoD4 color tuple.
+ *                    @see utilty::decimalRgbToColor()
+ * @param time numeric The duration of the timer Usu. 0.5 seconds
+ * @param alpha numeric The target alpha level. [0, 1], Usu.. 0.6
+ *
+ * @returns nothing
+ */
 screenFlash(color, time, alpha)
 {
     log("trace", "msg|in hud::screenFlash()||");
@@ -408,6 +493,15 @@ screenFlash(color, time, alpha)
     whitescreen destroy();
 }
 
+
+/**
+ * @brief Creates the player's critical health overlay, used for infected players
+ *
+ * @param color tuple The color for the screen flash. A CoD4 color tuple.
+ *                    @see utilty::decimalRgbToColor()
+ *
+ * @returns nothing
+ */
 createHealthOverlay(color)
 {
     log("trace", "msg|in hud::createHealthOverlay()||");
@@ -428,15 +522,48 @@ createHealthOverlay(color)
     return whitescreen;
 }
 
-playerFilmTweaks(enable, invert, desaturation, darktint,  lighttint, brightness, contrast, fovscale)
+
+/**
+ * @brief Applies temporary custom film tweaks (color grading / post-process effects) to a player.
+ *        Used for abilities, promod-style visuals, or cinematic effects.
+ *        Enables `r_filmusetweaks` + `r_filmtweaks` and sets the individual tweak dvars.
+ *
+ * @param enable         float   Enables/disables the film tweak effect. Usually `1` (on) or `0` (off).
+ * @param invert         float   Inverts the colors (negative image). `0` = normal, `1` = fully inverted. Usually `0`.
+ * @param desaturation   float   Removes color saturation. `0` = full color, `1` = grayscale. Common range: `0.0` - `0.8`.
+ * @param darktint       string  RGB color multiplier applied to dark areas (shadows/midtones). Format: `"R G B"` (e.g. `"1.7 1.7 2"`). Values > 1 boost that channel.
+ * @param lighttint      string  RGB color multiplier applied to bright areas (highlights). Format: `"R G B"` (e.g. `"0.75 0.75 0.75"` or `"1.2 1.3 1.5"`). Values > 1 boost that channel.
+ * @param brightness     float   Overall brightness offset. Positive values brighten the image. Typical range: `0.0` - `0.5`.
+ * @param contrast       float   Overall contrast. Higher values increase difference between light and dark. Typical range: `1.0` - `2.5+`.
+ * @param fovscale       float   Multiplier for the player's field of view (`cg_fov * fovscale`). Common values: `1.0` (default) to `1.25` (wider FOV).
+ *
+ * @returns nothing
+ */
+playerFilmTweaks(enable, invert, desaturation, darktint, lighttint, brightness, contrast, fovscale)
 {
     log("trace", "msg|in hud::playerFilmTweaks()||");
 
     self.tweaksOverride = 1;
-    self setClientDvars( "r_filmusetweaks", 1, "r_filmtweaks", 1 , "r_filmtweakenable", enable , "r_filmtweakinvert", invert , "r_filmtweakdesaturation", desaturation , "r_filmtweakdarktint",
-    darktint , "r_filmtweaklighttint", lighttint , "r_filmtweakbrightness", brightness ,"r_filmtweakcontrast", contrast, "cg_fovscale", fovscale );
+    self setClientDvars(
+        "r_filmusetweaks", 1,
+        "r_filmtweaks", 1,
+        "r_filmtweakenable", enable,
+        "r_filmtweakinvert", invert,
+        "r_filmtweakdesaturation", desaturation,
+        "r_filmtweakdarktint", darktint,
+        "r_filmtweaklighttint", lighttint,
+        "r_filmtweakbrightness", brightness,
+        "r_filmtweakcontrast", contrast,
+        "cg_fovscale", fovscale
+    );
 }
 
+
+/**
+ * @brief Resets player film tweaks to CoD4 defaults, or to RotU defaults
+ *
+ * @returns nothing
+ */
 playerFilmTweaksOff()
 {
     log("trace", "msg|in hud::playerFilmTweaksOff()||");
@@ -446,6 +573,20 @@ playerFilmTweaksOff()
     if (self.tweaksPermanent) {doPermanentTweaks();}
 }
 
+
+/**
+ * @brief Applies RotU permanent film tweaks (color grading / post-process effects) to a player.
+ *
+ * @param invert         float   Inverts the colors (negative image). `0` = normal, `1` = fully inverted. Usually `0`.
+ * @param desaturation   float   Removes color saturation. `0` = full color, `1` = grayscale. Common range: `0.0` - `0.8`.
+ * @param darktint       string  RGB color multiplier applied to dark areas (shadows/midtones). Format: `"R G B"` (e.g. `"1.7 1.7 2"`). Values > 1 boost that channel.
+ * @param lighttint      string  RGB color multiplier applied to bright areas (highlights). Format: `"R G B"` (e.g. `"0.75 0.75 0.75"` or `"1.2 1.3 1.5"`). Values > 1 boost that channel.
+ * @param brightness     float   Overall brightness offset. Positive values brighten the image. Typical range: `0.0` - `0.5`.
+ * @param contrast       float   Overall contrast. Higher values increase difference between light and dark. Typical range: `1.0` - `2.5+`.
+ * @param fovscale       float   Multiplier for the player's field of view (`cg_fov * fovscale`). Common values: `1.0` (default) to `1.25` (wider FOV).
+ *
+ * @returns nothing
+ */
 playerSetPermanentTweaks(invert, desaturation, darktint,  lighttint, brightness, contrast, fovscale)
 {
     log("trace", "msg|in hud::playerSetPermanentTweaks()||");
@@ -462,14 +603,36 @@ playerSetPermanentTweaks(invert, desaturation, darktint,  lighttint, brightness,
     doPermanentTweaks();
 }
 
+
+/**
+ * @brief Sets the permanent RotU film tweak dvars to values set above in playerSetPermanentTweaks()
+ *
+ * @returns nothing
+ */
 doPermanentTweaks()
 {
     log("trace", "msg|in hud::doPermanentTweaks()||");
 
-    self setClientDvars("r_filmusetweaks", 1, "r_filmtweaks", 1 , "r_filmtweakenable", 1 , "r_filmtweakinvert", self.tweakInvert , "r_filmtweakdesaturation", self.tweakDesaturation , "r_filmtweakdarktint",
-    self.tweakDarkTint , "r_filmtweaklighttint", self.tweakLightTint , "r_filmtweakbrightness", self.tweakBrightness ,"r_filmtweakcontrast", self.tweakContrast, "cg_fovscale", self.tweakFovScale );
+    self setClientDvars(
+        "r_filmusetweaks", 1,
+        "r_filmtweaks", 1,
+        "r_filmtweakenable", 1,
+        "r_filmtweakinvert", self.tweakInvert,
+        "r_filmtweakdesaturation", self.tweakDesaturation,
+        "r_filmtweakdarktint", self.tweakDarkTint,
+        "r_filmtweaklighttint", self.tweakLightTint,
+        "r_filmtweakbrightness", self.tweakBrightness,
+        "r_filmtweakcontrast", self.tweakContrast,
+        "cg_fovscale", self.tweakFovScale
+    );
 }
 
+
+/**
+ * @brief Resets player film tweaks to CoD4 defaults
+ *
+ * @returns nothing
+ */
 permanentTweaksOff()
 {
     log("trace", "msg|in hud::permanentTweaksOff()||");

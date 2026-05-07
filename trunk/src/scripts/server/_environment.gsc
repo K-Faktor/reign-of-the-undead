@@ -41,8 +41,8 @@ init()
     precache();
 
     level.blur = level.dvar["env_blur"];
-
     wait .25;
+
     if (level.dvar["env_ambient"]) {
         AmbientStop(0);
     }
@@ -56,10 +56,16 @@ precache()
 {
     log("trace", "msg|in _environment::precache()||");
 
-    level.lighting_fx = loadfx("weather/lightning");
+    level.lightning_fx = loadfx("weather/lightning");
     level.ember_fx = loadfx("fire/emb_burst_a");
 }
 
+
+/**
+ * @brief Returns the default vison mode
+ *
+ * @returns string Either "rotu" or the name of the map
+ */
 getDefaultVision()
 {
     log("trace", "msg|in _environment::getDefaultVision()||");
@@ -68,6 +74,12 @@ getDefaultVision()
     else {return getDvar("mapname");}
 }
 
+
+/**
+ * @brief Sets the current blur level when a player connects
+ *
+ * @returns nothing
+ */
 onPlayerConnect()
 {
     log("trace", "msg|in _environment::onPlayerConnect()||");
@@ -75,6 +87,14 @@ onPlayerConnect()
     self setclientdvar("r_blur", level.blur);
 }
 
+
+/**
+ * @brief Sets a new blur level on all players
+ *
+ * @param blur float Motion blur fraction [0, 1]
+ *
+ * @returns nothing
+ */
 updateBlur(blur)
 {
     log("trace", "msg|in _environment::updateBlur()||");
@@ -85,6 +105,15 @@ updateBlur(blur)
     }
 }
 
+
+/**
+ * @brief Sets a new blur level on all players over time
+ *
+ * @param blur float Motion blur fraction [0, 1]
+ * @param time float Duration to change the blur over
+ *
+ * @returns nothing
+ */
 setBlur(blur, time)
 {
     log("trace", "msg|in _environment::setBlur()||");
@@ -96,11 +125,19 @@ setBlur(blur, time)
     }
 }
 
-setGlobalFX(fxtype)
+
+/**
+ * @brief Sets a new global environment FX
+ *
+ * @param fxType string the name of the FX type
+ *
+ * @returns nothing
+ */
+setGlobalFX(fxType)
 {
     log("trace", "msg|in _environment::setGlobalFX()||");
 
-    switch (fxtype) {
+    switch (fxType) {
         case "lightning":
             thread lightningFX();
             break;
@@ -113,6 +150,13 @@ setGlobalFX(fxtype)
     }
 }
 
+
+/**
+ * @brief Plays ember FX at random waypoints, or at random spawnpoints if no waypoints in map
+ *        Used for burning, burning_dog, burning_tank, and inferno special waves
+ *
+ * @returns nothing
+ */
 emberFX()
 {
     log("trace", "msg|in _environment::emberFX()||");
@@ -128,25 +172,32 @@ emberFX()
             origin = level.wp[randomint(level.wp.size)].origin;
         }
         playfx(level.ember_fx, origin);
-        Earthquake( 0.25, 2, origin, 512);
-        wait .2 + randomfloat(.2);
+        Earthquake(0.25, 2, origin, 512);
+        wait 0.2 + randomfloat(0.2);
     }
 }
 
+
+/**
+ * @brief Plays lightning FX & thunder sounds, used for tank special wave
+ *
+ * @returns nothing
+ */
 lightningFX()
 {
     log("trace", "msg|in _environment::lightningFX()||");
 
     level endon("global_fx_end");
-    while(1) {
+    while (1) {
         if (level.playerspawns == "") {
             spawn = getRandomTdmSpawn();
         } else {
             spawn = getRandomEntity(level.playerspawns);
         }
-        playfx(level.lighting_fx, spawn.origin);
+        // play lightning every iteration, play one of two sounds on all players 50% of the time
+        playfx(level.lightning_fx, spawn.origin);
         r = randomint(4);
-        for (i=0; i<level.players.size; i++){
+        for (i=0; i<level.players.size; i++) {
             if (r == 0) {
                 level.players[i] playlocalsound("amb_thunder1");
             }
@@ -156,29 +207,35 @@ lightningFX()
         }
         wait 1 + randomfloat(2);
     }
-
 }
 
+
+/**
+ * @brief Plays lightning FX & thunder sounds. Used for boss, many_bosses, cyclops special waves
+ *
+ * @returns nothing
+ */
 lightningBossFX()
 {
     log("trace", "msg|in _environment::lightningBossFX()||");
 
     level endon("global_fx_end");
     wait 15;
-    while(1) {
+    while (1) {
         if (level.playerspawns == "") {
             spawn = getRandomTdmSpawn();
         } else {
             spawn = getRandomEntity(level.playerspawns);
         }
-        playfx(level.lighting_fx, spawn.origin);
+        // play lightning every iteration, play one of two sounds on all players 66% of the time
+        playfx(level.lightning_fx, spawn.origin);
         wait .2;
         setVision("thunder", .2);
         setExpFog(999999, 9999999, 0, 0, 0, .2);
         r = randomint(3);
         for (i=0; i<level.players.size; i++) {
             if (r == 0) {
-             level.players[i] playlocalsound("amb_thunder1");
+                level.players[i] playlocalsound("amb_thunder1");
             } else if (r == 1) {
                 level.players[i] playlocalsound("amb_thunder2");
             }
@@ -190,6 +247,15 @@ lightningBossFX()
     }
 }
 
+
+/**
+ * @brief Sets a named fog filter for the map
+ *
+ * @param name string The name of the fog to apply
+ * @param time float How long to fade the transition in
+ *
+ * @returns nothing
+ */
 setFog(name, time)
 {
     log("trace", "msg|in _environment::setFog()||");
@@ -203,9 +269,9 @@ setFog(name, time)
             break;
         default:
             if (level.dvar["env_fog"]) {
-                setExpFog( level.dvar["env_fog_start_distance"], level.dvar["env_fog_half_distance"], level.dvar["env_fog_red"]/255, level.dvar["env_fog_green"]/255, level.dvar["env_fog_blue"]/255, time);
+                setExpFog(level.dvar["env_fog_start_distance"], level.dvar["env_fog_half_distance"], level.dvar["env_fog_red"]/255, level.dvar["env_fog_green"]/255, level.dvar["env_fog_blue"]/255, time);
             } else {
-                setExpFog( 999999, 9999999, 0, 0, 0, time);
+                setExpFog(999999, 9999999, 0, 0, 0, time);
             }
             break;
     }
@@ -215,7 +281,7 @@ setFog(name, time)
 /**
  * @brief Sets a named vision filter for the map
  *
- * @param name string The name of the vision ao apply
+ * @param name string The name of the vision to apply
  * @param time float How long to fade the transition in
  *
  * @returns nothing
@@ -228,6 +294,14 @@ setVision(name, time)
     visionSetNaked(name, time);
 }
 
+
+/**
+ * @brief Resets vision to the level default
+ *
+ * @param time float How long to fade the transition in
+ *
+ * @returns nothing
+ */
 resetVision(time)
 {
     log("trace", "msg|in _environment::resetVision()||");
@@ -236,16 +310,43 @@ resetVision(time)
     visionSetNaked(level.vision, time);
 }
 
-setAmbient(ambient)
+
+/**
+ * @brief Plays a new ambient sound track with optional fade-in.
+ *
+ * This is a wrapper around the native `AmbientPlay()` function.
+ * Only one ambient track can play at a time — calling this will replace the previous one.
+ *
+ * @param alias     string   The sound alias (from your soundaliases CSV) to play as ambient.
+ * @param fadeTime  float    Fade-in duration in seconds (how long it takes to reach full volume).
+ *                           Common values: 0-2 (quick), 3-8 (smooth crossfade). Defaults depend on the engine.
+ *
+ * @returns void
+ */
+setAmbient(alias, fadeTime)
 {
     log("trace", "msg|in _environment::setAmbient()||");
 
     if (level.dvar["env_ambient"]) {
+        if (!isdefined(fadeTime)) {
+            fadeTime = 0;
+        }
         AmbientStop(0);
-        AmbientPlay(ambient, 15);
+        AmbientPlay(alias, fadeTime);
     }
 }
 
+
+/**
+ * @brief Stops the currently playing ambient sound with an optional fade-out.
+ *
+ * This is a wrapper around the native `AmbientStop()` function.
+ *
+ * @param time   float   Fade-out duration in seconds. If undefined, defaults to 10.
+ *                       Common values: 0 (instant), 1-3 (quick), 5-15 (smooth).
+ *
+ * @returns void
+ */
 stopAmbient(time)
 {
     log("trace", "msg|in _environment::stopAmbient()||");

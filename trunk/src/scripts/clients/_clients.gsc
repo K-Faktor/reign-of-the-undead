@@ -43,7 +43,6 @@ init()
     level.players = [];
     level.activePlayers = 0;
     SetupCallbacks();
-
 }
 
 precache()
@@ -53,6 +52,11 @@ precache()
     precacheStatusIcon("hud_status_connecting");
 }
 
+/**
+ * @brief Assigns callback methods for player connections & damage
+ *
+ * @returns nothing
+ */
 SetupCallbacks()
 {
     log("trace", "msg|in _clients::SetupCallbacks()||");
@@ -63,6 +67,12 @@ SetupCallbacks()
     level.callbackPlayerKilled = ::Callback_PlayerKilled;
 }
 
+
+/**
+ * @brief Distinguishes bots from human players
+ *
+ * @returns boolean where 1 means it is a bot, and 0 means it is a human
+ */
 catchBot()
 {
     log("trace", "msg|in _clients::catchBot()||");
@@ -95,6 +105,12 @@ catchBot()
     return 0;
 }
 
+
+/**
+ * @brief Initializes a connecting player
+ *
+ * @returns nothing
+ */
 Callback_PlayerConnect()
 {
     log("trace", "msg|in _clients::Callback_PlayerConnect()||");
@@ -108,42 +124,45 @@ Callback_PlayerConnect()
     self waittill("begin");
     self.hasBegun = true;
 
-    //self setclientdvars("rotu2_publickey", getsubstr(level.str,5), "rotu2_baseurl", getdvar("sv_wwwbaseurl"));
-
     self.statusicon = "";
-    //self.sessionteam = "spectator";
-    //self.sessionstate = "spectator";
     self.pers["team"] = "free";
 
     if (!self.isBot) {
-        self scripts\server\_ranks::loadPlayerRank();
+        // self scripts\server\_ranks::loadPlayerRank();        // @deprecated
         self scripts\players\_weapons::initPlayerWeapons();
 
-        if (self.title == "") {iPrintln( self.name + " ^7connected." );}
-        else {iPrintln( self.name + "^7[" + self.title + "^7] connected." );}
+        self.guid = self getGuid();
+        self.title = "";
+        if (self.guid == "") {
+            self.title = "^5HOST";
+        }
+        self.overrideStatusIcon = "";    // unused, except _players::setStatusIcon() tests for empty string
 
-        self setClientDvars( "cg_drawSpectatorMessages", 1,
-                             "ui_hud_hardcore", 0,
-                             "player_sprintTime", 10,
-                             "ui_uav_client", 1 ,
-                             "ui_hintstring", "",
-                             "ui_infostring", "",
-                             "cg_enemynamefadein", level.MAX_INT,
-                             "cg_enemynamefadeout", 0,
-                             "ui_clientcmd", "empty",
-                             "r_filmusetweaks", 0,
-                             "cg_fovscale", 1,
-                             "ui_healthbar", -1,
-                             "ui_upgradetext", "",
-                             "ui_specialtext", "");
+        if (self.title == "") {iPrintln(self.name + " ^7connected.");}
+        else {iPrintln(self.name + "^7[" + self.title + "^7] connected.");}
+
+        self setClientDvars(
+            "cg_drawSpectatorMessages", 1,
+            "ui_hud_hardcore", 0,
+            "player_sprintTime", 10,
+            "ui_uav_client", 1 ,
+            "ui_hintstring", "",
+            "ui_infostring", "",
+            "cg_enemynamefadein", level.MAX_INT,
+            "cg_enemynamefadeout", 0,
+            "ui_clientcmd", "empty",
+            "r_filmusetweaks", 0,
+            "cg_fovscale", 1,
+            "ui_healthbar", -1,
+            "ui_upgradetext", "",
+            "ui_specialtext", ""
+        );
 
         // Set the clan-specific message on the player's main menu
         self setClientDvar("ui_main_menu_clan_text", getDvar("server_main_menu_clan_text"));
 
         lpselfnum = self getEntityNumber();
-        self.guid = self getGuid();
         logPrint("J;" + self.guid + ";" + lpselfnum + ";" + self.name + "\n");
-
 
         waittillframeend;
 
@@ -155,10 +174,15 @@ Callback_PlayerConnect()
         self thread scripts\players\_players::onPlayerConnect();
         self thread scripts\gamemodes\_hud::onPlayerConnect();
         self thread scripts\players\_players::joinAllies();
-
     }
 }
 
+
+/**
+ * @brief Cleans up when a player is disconnected
+ *
+ * @returns nothing
+ */
 Callback_PlayerDisconnect()
 {
     log("trace", "msg|in _clients::Callback_PlayerDisconnect()||");
@@ -176,7 +200,7 @@ Callback_PlayerDisconnect()
     wait 0.05;
     level.players = removeFromArray(level.players, self);
 
-    self notify( "disconnect" );
+    self notify("disconnect");
 }
 
 
@@ -208,6 +232,21 @@ Callback_PlayerDamage(eInflictor, eAttacker, iDamage, iDFlags, sMeansOfDeath, sW
 }
 
 
+/**
+ * @brief Forwards a killed call to the appropriate method for bots or real players
+ *
+ * @param eInflictor entity The entity that causes the damage.(e.g. a turret)
+ * @param attacker entity The entity that is attacking
+ * @param iDamage integer The amount of damage done
+ * @param sMeansOfDeath string The method of death
+ * @param sWeapon string The weapon used to inflict the damage
+ * @param vDir vector The direction the damage is from
+ * @param sHitLoc string The location of the hit
+ * @param psOffsetTime integer The time offset for the damage, ms  
+ * @param deathAnimDuration float Duration of the death animation  
+ *
+ * @returns nothing
+ */
 Callback_PlayerKilled(eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration)
 {
     log("trace", "msg|in _clients::Callback_PlayerKilled()||");

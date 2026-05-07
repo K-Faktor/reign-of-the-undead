@@ -67,7 +67,7 @@ init()
 
     thread scripts\server\_settings::init();
     thread maps\mp\_umiEditor::init();
-    thread scripts\server\_ranks::init();
+    // thread scripts\server\_ranks::init();        // @deprecated, I think
     thread scripts\server\_welcome::init();
     thread scripts\server\_maps::init();
     thread scripts\server\_environment::init();

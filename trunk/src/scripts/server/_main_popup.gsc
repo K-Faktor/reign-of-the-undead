@@ -44,6 +44,11 @@
  *      rotu21\scripts\server\_adminmenu.gsc            Code to handle admin actions
  */
 
+/**
+ * @brief Initializes the main pop-up menu
+ *
+ * @return nothing
+ */
 init()
 {
     log("trace", "msg|in _main_popup::init()||");
@@ -51,28 +56,46 @@ init()
     level thread onPlayerConnect();
 }
 
+
+/**
+ * @brief When a player connects, waits until they spawn
+ *
+ * @return nothing
+ */
 onPlayerConnect()
 {
     log("trace", "msg|in _main_popup::onPlayerConnect()||");
 
-    while(true) {
+    while (true) {
         level waittill("connected", player);
         player thread onPlayerSpawned();
     }
 }
 
+
+/**
+ * @brief When a player spawns, begins watching to the admin menu
+ *
+ * @return nothing
+ */
 onPlayerSpawned()
 {
     log("trace", "msg|in _main_popup::onPlayerSpawned()||");
 
     self endon("disconnect");
 
-    while(true) {
+    while (true) {
         self waittill("spawned_player");
         self thread onMenuResponse();
     }
 }
 
+
+/**
+ * @brief When the main pop-up menu's 'Admin Menu' is chosen, open the admin menu
+ *
+ * @return nothing
+ */
 onMenuResponse()
 {
     log("trace", "msg|in _main_popup::onMenuResponse()||");
@@ -80,7 +103,7 @@ onMenuResponse()
     self endon("death");
     self endon("disconnect");
 
-    while(true) {
+    while (true) {
         self waittill("menuresponse", menu, response);
 
         // Call the onOpenAdminMenu function

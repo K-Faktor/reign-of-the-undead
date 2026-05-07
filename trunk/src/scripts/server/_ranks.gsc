@@ -32,6 +32,13 @@
 ******************************************************************************/
 #include scripts\include\utility;
 
+// This file is deprecated, and needs to be removed
+
+/** @deprecated
+ * @brief init
+ *
+ * @returns nothing
+ */
 init()
 {
     log("trace", "msg|in _ranks::init()||");
@@ -40,41 +47,62 @@ init()
     setupRanks();
 }
 
+
+/** @deprecated
+ * @brief Loads custom rank dvars
+ *
+ * @returns nothing
+ */
 setupRanks()
 {
     log("trace", "msg|in _ranks::setupRanks()||");
 
     i = 1;
     for (;;) {
-        dvar = getdvar("rank_custom_"+i);
+        dvar = getdvar("rank_custom_" + i);
         if (dvar == "") {return;}
         else {addRank(dvar);}
         i++;
     }
 }
 
+
+/** @deprecated
+ * @brief Loads a player's rank
+ * 
+ * This entire file seems mostly deprecated.  This is the pnly method used; called from
+ * _clients::Callback_PlayerConnect().
+ *
+ * It mostly loads level.rank[] array, which is unused outside of this file.
+ *
+ * @returns boolean 1 if rank was loaded, 0 otherwise
+ */
 loadPlayerRank()
 {
     log("trace", "msg|in _ranks::loadPlayerRank()||");
 
-    self.title = "";
-    self.overrideStatusIcon = "";
-    self.power = 0;
+    log("dev", "msg|in _ranks::loadPlayerRank()||");
+    self.title = "";                // used in _players::Callback_PlayerConnect() if non-empty, and tested for non-empty
+    self.overrideStatusIcon = "";   // unused, except for tested for empty string in _players::setStatusIcon()
+    self.power = 0;                 // unused
     guid = self getGuid();
 
     if (guid == "") {
         self.title = "^5HOST";
         self.power = 100;
+        log("dev", "msg|setting title to HOST||");
         return 1;
     }
 
+    log("dev", "msg|level.rank.size: " + level.rank.size + "||");
+
     for (i=0; i<level.rank.size; i++) {
         struct = level.rank[i];
-        for (ii=0; ii<struct.players.size; ii++) {
-            if (struct.players[ii] == getSubStr(guid, 24, 32)) {
-                self.title = struct.title;
-                self.power = struct.power;
-                self.overrideStatusIcon = struct.icon;
+        for (j=0; j<level.rank[i].players.size; j++) {
+            if (level.rank[i].players[j] == getSubStr(guid, 24, 32)) {
+                self.title = level.rank[i].title;
+                self.power = level.rank[i].power;
+                self.overrideStatusIcon = level.rank[i].icon;
                 self.statusicon = self.overrideStatusIcon;
                 return 1;
             }
@@ -83,6 +111,15 @@ loadPlayerRank()
     return 0;
 }
 
+
+/** @deprecated
+ * @brief unused
+ *
+ * @param rank_title string unused
+ * @param guid string unused
+ * 
+ * @returns nothing
+ */
 addGuid(rank_title, guid)
 {
     log("trace", "msg|in _ranks::addGuid()||");
@@ -95,10 +132,20 @@ addGuid(rank_title, guid)
     }
 }
 
+/** @deprecated
+ * @brief unused
+ *
+ * @param title string unused
+ * @param power integer unused
+ * @param icon string unused
+ * 
+ * @returns nothing
+ */
 addRank(title, power, icon)
 {
     log("trace", "msg|in _ranks::addRank()||");
 
+    // only called from ::setupRanks, but with a single param, the value of a rank_custom_N dvar
     struct = spawnstruct();
     struct.ID = level.rank.size;
     level.rank[level.rank.size] = struct;

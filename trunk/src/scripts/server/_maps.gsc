@@ -38,7 +38,7 @@ init()
 {
     log("trace", "msg|in _maps::init()||");
 
-    level.onChangeMap = ::blank;
+    level.onChangeMap = ::blank; // one of ::blank, ::map_rotate, or ::startMapVote
     if (level.dvar["game_mapvote"] == 1) {
         thread scripts\server\_mapvoting22::init();
     } else {
@@ -136,6 +136,12 @@ applyMapFixes()
     }
 }
 
+
+/**
+ * @brief Parses the sv_maprotation dvar and builds level.maprotation[]
+ *
+ * @returns nothing
+ */
 getMaprotation()
 {
     log("trace", "msg|in _maps::getMaprotation()||");
@@ -149,64 +155,63 @@ getMaprotation()
     gametype = 0;
     map = 0;
     nextgametype = "";
-    for (i=0; i<dissect_sv_rotation.size; i++)
-    {
-        if (!map)
-        {
-            if (dissect_sv_rotation[i] == "gametype")
-            {
+    for (i=0; i<dissect_sv_rotation.size; i++) {
+        if (!map) {
+            if (dissect_sv_rotation[i] == "gametype") {
                 gametype = 1;
                 continue;
             }
-            if (gametype)
-            {
+            if (gametype) {
                 gametype = 0;
                 nextgametype = dissect_sv_rotation[i];
                 continue;
             }
-            if (dissect_sv_rotation[i] == "map")
-            {
+            if (dissect_sv_rotation[i] == "map") {
                 map = 1;
                 continue;
             }
-        }
-        else
-        {
+        } else {
             //level.maprotation[index] = nextgametype;
             level.maprotation[index] = dissect_sv_rotation[i];
             nextgametype = "";
             index += 1;
-            map  =0;
+            map = 0;
         }
     }
 }
 
+
+/**
+ * @brief gets the next map to load
+ *
+ * @returns string The name of the next map to load, or undefined
+ */
 getNextMap()
 {
     log("trace", "msg|in _maps::getNextMap()||");
 
     level.currentmap = getdvar("mapname");
-    for (i=0; i<level.maprotation.size; i++)
-    {
-        if (tolower(level.maprotation[i]) == tolower(level.currentmap))
-        {
+    for (i=0; i<level.maprotation.size; i++) {
+        if (tolower(level.maprotation[i]) == tolower(level.currentmap)) {
             new_index = i+1;
-            if (new_index >= level.maprotation.size)
-            {
+            if (new_index >= level.maprotation.size) {
                 new_index = new_index - level.maprotation.size;
             }
             return level.maprotation[new_index];
         }
     }
-    if (level.maprotation.size>0)
-    return level.maprotation[0];
-    else
-    return undefined;
+    // fallback: use the first map, or none at all
+    if (level.maprotation.size > 0) {
+        return level.maprotation[0];
+    } else {
+        return undefined;
+    }
 }
 
 
 /**
  * @brief Logs the players in the game when it ended
+ *
  * This let's us see who left the game before the server successfully restarted,
  * so we can warn or ban them for potentially hanging the server.
  *
@@ -235,6 +240,13 @@ logPlayersAtGameEnd()
 }
 
 
+/**
+ * @brief Changed the map to the requested map
+ *
+ * @param mapname string The new map to load
+ *
+ * @returns nothing
+ */
 changeMap(mapname)
 {
     log("trace", "msg|in _maps::changeMap()||");
@@ -275,7 +287,7 @@ changeMap(mapname)
         level.players[i] setclientdvar("hastoreconnect", "1");
     }
 
-    while(1) {
+    while (1) {
         // create and set a temporary rcon password
         tempPassword = "temp" + randomint(10000);
         setdvar("rcon_password", tempPassword);
@@ -321,14 +333,14 @@ changeMap(mapname)
             log("server", "msg|Your rcon password was properly reset after restart attempt " + serverRestartAttempts + ".||");
         }
 
-        // give up after six (why six Bipo?) attempts
+        // give up after six attempts
         if (serverRestartAttempts > 5) {
             log("error", "msg|Failed to restart the server after " + serverRestartAttempts + ".||");
             map_restart(false);
             level notify("map_change_failed");
         }
     }
-} // End function changeMap()
+}
 
 
 /**

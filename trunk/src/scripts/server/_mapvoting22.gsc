@@ -41,7 +41,7 @@ init()
 
     precacheshader("white");
     level.mapvote = 0;
-    level.onChangeMap = ::startMapVote;
+    level.onChangeMap = ::startMapVote;     // one of ::blank, ::map_rotate, or ::startMapVote
     level.votingTime = getdvarInt("game_mapvote_time");
     level.numberOfMaps = getdvarInt("game_mapvote_count");
     level.notaOptionUsed = false; // flag; has the nota vote option won the voting?

@@ -37,9 +37,15 @@ init()
     log("trace", "msg|in _maprotation::init()||");
 
     scripts\server\_maps::getMaprotation();
-    level.onChangeMap = ::map_rotate;
+    level.onChangeMap = ::map_rotate;   // one of ::blank, ::map_rotate, or ::startMapVote
 }
 
+
+/**
+ * @brief Loads the map returned by _maps::getNextMap()
+ *
+ * @return nothing
+ */
 map_rotate()
 {
     log("trace", "msg|in _maprotation::map_rotate()||");
