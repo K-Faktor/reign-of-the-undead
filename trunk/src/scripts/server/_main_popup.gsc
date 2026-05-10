@@ -47,7 +47,7 @@
 /**
  * @brief Initializes the main pop-up menu
  *
- * @return nothing
+ * @returns nothing
  */
 init()
 {
@@ -60,7 +60,7 @@ init()
 /**
  * @brief When a player connects, waits until they spawn
  *
- * @return nothing
+ * @returns nothing
  */
 onPlayerConnect()
 {
@@ -76,7 +76,7 @@ onPlayerConnect()
 /**
  * @brief When a player spawns, begins watching to the admin menu
  *
- * @return nothing
+ * @returns nothing
  */
 onPlayerSpawned()
 {
@@ -94,7 +94,7 @@ onPlayerSpawned()
 /**
  * @brief When the main pop-up menu's 'Admin Menu' is chosen, open the admin menu
  *
- * @return nothing
+ * @returns nothing
  */
 onMenuResponse()
 {

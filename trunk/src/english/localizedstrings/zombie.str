@@ -183,6 +183,9 @@ LANG_ENGLISH        "Waypoint Type: "
 REFERENCE           WAYPOINT_SHORTCUTS
 LANG_ENGLISH        "Keyboard Shortcuts:\nToggle Give Waypoints (H)\nLink Waypoint (J)\nDelete Waypoint (K)\nDelete Link (L)\nCycle Waypoint Type (M)\n"
 
+REFERENCE           CENTROID_SHORTCUTS
+LANG_ENGLISH        "Keyboard Shortcuts:\nIncrement X (H)\nDecrement X (J)\nIncrement Y (K)\nDecrement Y (L)\nIncrement Z (N)\nDecrement Z (M)\n Toggle Rotate X (X)\nToggle Rotate Y (Y)\nToggle Rotate Z (Z)\n"
+
 REFERENCE           PLAYER_X
 LANG_ENGLISH        "Player x: &&1"
 
@@ -191,6 +194,15 @@ LANG_ENGLISH        "Player y: &&1"
 
 REFERENCE           PLAYER_Z
 LANG_ENGLISH        "Player z: &&1"
+
+REFERENCE           COORD_X
+LANG_ENGLISH        "Coordinate x: &&1"
+
+REFERENCE           COORD_Y
+LANG_ENGLISH        "Coordinate y: &&1"
+
+REFERENCE           COORD_Z
+LANG_ENGLISH        "Coordinate z: &&1"
 
 REFERENCE           RANK_DEMOTED
 LANG_ENGLISH        "You've been demoted!"

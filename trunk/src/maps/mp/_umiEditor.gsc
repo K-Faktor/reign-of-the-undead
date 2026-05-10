@@ -219,7 +219,10 @@ initMapEditor()
 
     // screenshotMode = true;
 
+    log("warn", "msg|level.screenshotMode: "+ level.screenshotMode + "||");
     if (level.screenshotMode) {
+        log("server", "msg|In screenshot mode.||");
+
         // hide everything.  Almost works.
         // still need to hide minimap, rank progress bar, and 'spectate'
         // hud messages
@@ -1686,7 +1689,7 @@ devDrawWaypointLinks()
             if (i == level.currentWaypointLink) {color = currentLinkColor;}
             else {color = level.waypointLinks[i].color;}
             // Line( <start>, <end>, <color>, <depthTest>, <duration> )
-            line(from, to, color, false, 25);
+            // line(from, to, color, false, 25); @todo need to uncomment this; was commented for dev testing
         }
         wait 0.05;
     }

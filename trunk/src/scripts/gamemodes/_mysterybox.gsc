@@ -31,7 +31,10 @@
     EULA.
 ******************************************************************************/
 #include scripts\include\utility;
+#include scripts\include\matrix;
+#include scripts\include\hud;
 
+// called from scripts\gamemodes\gamemodes::init()
 init()
 {
     log("trace", "msg|in _mysterybox::init()||");
@@ -54,7 +57,6 @@ init()
     addMysWep("weapon_crossbow_1" , "crossbow_mp", "secondary");
     addMysWep("weapon_desert_eagle_gold", "deserteaglegold_mp", "secondary");
     addMysWep("weapon_mini_uzi", "uzi_mp", "secondary");
-    addMysWep("weapon_desert_eagle_gold", "deserteaglegold_mp", "secondary");
 
     addMysWep("weapon_mw2_f2000_wm", "m14_acog_mp", "primary");
     addMysWep("weapon_spas12", "m1014_reflex_mp", "primary");
@@ -65,14 +67,25 @@ init()
 
     addMysWep("mw2_mp5k_worldmodel", "mp5_acog_mp", "secondary");
 
-    addMysWep("weapon_raygun", "barret_acog_mp", "primary");
+    addMysWep("weapon_raygun", "barrett_acog_mp", "primary"); // fixed: barrett, not barret
     addMysWep("weapon_flamethrower", "skorpion_acog_mp", "primary");
     addMysWep("mw2_intervention_wm", "deserteagle_mp", "primary");
 
-    //precache();
+    // findCentroidManually("weapon_desert_eagle_gold", "deserteaglegold_mp", "secondary");
+    // scripts\tools\modelCentroidFinder::init("weapon_desert_eagle_gold", "deserteaglegold_mp", "secondary");
+    // log("warn", "msg|added msytery box weapons. level.ammoStockType: " + level.ammoStockType + "||");
 }
 
 
+/**
+ * @brief Precaches mystery weapon models & builds level.mys_wep[] array.
+ *
+ * @param model string The name of the weapon model, like weapon_desert_eagle_gold
+ * @param weaponName string The name of the weapon, like deserteaglegold_mp
+ * @param slot string The weapon slot [primary|secondary]
+ * 
+ * @returns nothing
+ */
 addMysWep(model, weaponName, slot)
 {
     log("trace", "msg|in _mysterybox::addMysWep()||");
@@ -85,96 +98,200 @@ addMysWep(model, weaponName, slot)
     struct.slot = slot;
 }
 
-/// @todo is there a reason precache() isn't being called?
+
+/**
+ * @brief Build a crate for testing the mystery box, as not
+ *        all amps will a have a small green crate.
+ *
+ * @returns nothing
+ */
+buildTestCrate()
+{
+    log("trace", "msg|in _mysterybox::buildTestCrate()||");
+
+    level.ammoStockType = "weapon";
+    level.ammoStockTypeForced = "weapon"; // force it, for testing
+    position = (0, 0, 0); // mp_surv_testmap
+    if (level.currentMap == "mp_surv_gold_rush") {position = (640, 1180, 0);}
+    weaponupgrade = spawn("script_model", position);
+    if (isDefined(weaponupgrade)) {
+        weaponupgrade.angles = (0, 0, 0);
+        weaponupgrade setModel("com_plasticcase_green_big"); // single large green crate
+
+        // spawn a solid trigger_radius to simulate xmodel actually being solid
+        level.solid = spawn("trigger_radius", (0, 0, 0), 0, 21, 27 );
+        level.solid.origin = weaponupgrade.origin;
+        level.solid.angles = weaponupgrade.angles;
+        level.solid setContents(1);
+
+        level scripts\players\_usables::addUsable(weaponupgrade, "ammobox", "Press [USE] for a weapon! (^1"+level.dvar["surv_waw_costs"]+"^7)", 96);
+        createTeamObjpoint(weaponupgrade.origin + (0,0,72), "hud_weapons", 1);
+    }
+    return weaponupgrade;
+}
+
+
+/** @deprecated
+ * @brief Precaches weapon models.  Unused, these are precached in addMysWep()
+ *
+ * @returns nothing
+ */
 precache()
 {
     log("trace", "msg|in _mysterybox::precache()||");
 
-    precachemodel("weapon_ak47");
-    precachemodel("weapon_m4gre_sp_silencer_reflex");
-    precachemodel("weapon_beretta");
-    precachemodel("weapon_usp");
-    precachemodel("weapon_crossbow_1");
-    precachemodel("weapon_saw_new_rescue");
-    precachemodel("weapon_colt1911_silencer");
-    precachemodel("weapon_m40a3");
-    precachemodel("weapon_benelli_super_90");
-    precachemodel("weapon_m67_grenade");
-    precachemodel("weapon_m14_scout_mp");
-    precachemodel("weapon_ak74u");
-    precachemodel("weapon_g36");
-    precachemodel("weapon_desert_eagle_gold");
-    precachemodel("weapon_m16_mp");
-    precachemodel("weapon_m60");
-    precachemodel("weapon_p90");
-    precachemodel("weapon_mini_uzi");
+    // @fixme  previously, these weren't precached, as precache() was never called
+    // but they ring a bell.  I think they were special weapons,
+    // like weapon_saw_new_rescue was a Stihl Concrete Saw.
+    // We *should* remove the precaching from addMysWep, to this method, before
+    // relocating the precaching close to bootstrap()
     precachemodel("weapon_desert_eagle_silver");
-
+    precachemodel("weapon_saw_new_rescue");
+    precachemodel("weapon_m67_grenade");
 }
 
-mystery_box(box)
-{
-    log("trace", "msg|in _mysterybox::mystery_box()||");
 
-    weapon = spawn( "script_model", box.origin + (0,0,20) );
-    weapon.angles = (0,(box.angles[1] + 90),0);
-    weapon.done = false;
-    weapon hide();
-    weapon showtoplayer(self);
-    weapon moveZ( 32, 2.4 );
-    lastnum = weapon createRandomItem(self);
+/**
+ * @brief Entry point for dev testing of mystery box
+ *
+ * @returns nothing
+ */
+testMysteryBox()
+{
+    log("trace", "msg|in _mysterybox::testMysteryBox()||");
+
+    crate = buildTestCrate();
+}
+
+
+/**
+ * @brief Main mystery box sequence for a player.
+ *        Spawns a floating weapon model, makes it hover & 'scroll' up.
+ *        Rapidly cycles through available weapons, then cleans up.
+ *
+ * Called from _usables when (self.curEnt.type == "ammobox") &&
+ *                           (level.ammoStockType == "weapon")
+ *
+ * @param box entity The mystery box trigger/chest entity.
+ *
+ * @returns nothing
+ */
+mysteryBox(box)
+{
+    log("trace", "msg|in _mysterybox::mysteryBox()||");
+
+    // @todo use this trace technique to set better heights for the creatTeamObjpoint()
+    trace = bulletTrace(box.origin + (0,0,72), box.origin + (0,0,-100), false, box);
+    topPos = trace["position"];
+    newPos = topPos + (0, 0, 17);
+    weapon = spawn("script_model", newPos);
+
+    // log("dev", "msg|box.origin|" + box.origin + "||topPos|" + topPos + "||" + "||newPos|" + newPos + "||");
+    weapon.angles = (0, box.angles[1] + 0, 0);
     self.box_weapon = weapon;
-    self playlocalsound("zom_mystery");
-    for( i = 0; i < 14; i++ )
-    {
-        wait 0.2;
-        lastnum = weapon createRandomItem(self, lastnum);
+    weapon hide();
+    weapon showToPlayer(self);
+    self playLocalSound("zom_mystery");
+    // Hover up
+    weapon moveZ(32, 2.4);
+    /**
+     * N.B. Before you try to implement rotating weapons about an axis at an arbitrary point,
+     * such the weapon's centroid or a tag, read the warning at the top of
+     * scripts/tools/modelCentroidFinder.gsc
+     */
+
+    // Fake rolling animation by cycling weapon models
+    lastIndex = undefined;
+    // ~3.5 seconds of rolling
+    for (i=0; i<14; i++) {
+        if (!isDefined(self.box_weapon)) {break;} // box_weapon is deleted when the user takes a weapon
+        self.box_weapon.done = false;
+        lastIndex = weapon createRandomItem(self, lastIndex);
+        self.box_weapon.done = true;
+        wait 0.25;
     }
     wait 0.05;
-    weapon.done = true;
-    weapon thread deleteOverTime(7);
 
+    // Auto-cleanup if player doesn't take the weapon in time
+    weapon thread deleteOverTime(7);
 }
 
-createRandomItem(player, lastNum)
+
+/**
+ * @brief Changes the mystery box model to a random weapon the player doesn't already own.
+ *
+ * @param player entity The player using the box.
+ * @param lastIndex integer Index of the previously shown weapon (to prevent repeats).
+ *
+ * @returns integer The index of the weapon chosen this frame.
+ */
+createRandomItem(player, lastIndex)
 {
     log("trace", "msg|in _mysterybox::createRandomItem()||");
 
-    if (isdefined(lastNum))
-    {
-        num = randomInt( level.mys_wep.size-3 );
-        if (num >= lastNum)
-        num++;
-    }
-    else
-    {
-        num = randomInt( level.mys_wep.size-2 );
-        lastNum = -2;
+    if ((!isDefined(level.mys_wep)) || (level.mys_wep.size <= 0)) {
+        return 0;
     }
 
-    for (i=0; i<level.mys_wep.size; i++)
-    {
-        wep = level.mys_wep[i];
-        if (wep.weaponName == player.primary || wep.weaponName == player.secondary || i == lastNum)
-        {
-            num++;
+    attempts = 0;
+    while (attempts < 40) {  // Safety to prevent infinite loop
+        index = randomInt(level.mys_wep.size);
+
+        // Don't show the exact same weapon twice in a row
+        if ((isDefined(lastIndex)) && (index == lastIndex)) {
+            attempts++;
             continue;
         }
-        if (i == num)
+
+        wep = level.mys_wep[index];
+
+        // Skip weapons the player already has
+        if (((isDefined(player.primary))   && (wep.weaponName == player.primary)) ||
+            ((isDefined(player.secondary)) && (wep.weaponName == player.secondary)))
         {
-            self setmodel(wep.model);
-            self.weaponName = wep.weaponName;
-            self.slot = wep.slot;
+            attempts++;
+            continue;
         }
 
+        // Found a good one
+        self setModel(wep.model);
+        self.weaponName = wep.weaponName;
+        self.slot = wep.slot;
+
+        return index;
     }
+
+    // Fallback: just pick any weapon that isn't the last one shown
+    for (i=0; i<level.mys_wep.size; i++) {
+        if ((isDefined(lastIndex)) && (i == lastIndex)) {
+            continue;
+        }
+
+        wep = level.mys_wep[i];
+        self setModel(wep.model);
+        self.weaponName = wep.weaponName;
+        self.slot = wep.slot;
+        return i;
+    }
+
+    return 0;
 }
 
+
+/**
+ * @brief Deletes and item after a delay
+ *
+ * @param time integer Seconds to wait before deleting an item, if it still exists
+ *
+ * @returns nothing
+ */
 deleteOverTime(time)
 {
     log("trace", "msg|in _mysterybox::deleteOverTime()||");
 
     self endon("death");
     wait time;
-    self delete();
+    if (isDefined(self)) {
+        self delete();
+    }
 }

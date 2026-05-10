@@ -44,7 +44,7 @@ init()
 /**
  * @brief Loads the map returned by _maps::getNextMap()
  *
- * @return nothing
+ * @returns nothing
  */
 map_rotate()
 {

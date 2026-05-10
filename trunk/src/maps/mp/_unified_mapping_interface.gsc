@@ -795,12 +795,15 @@ buildBarricade(targetname, partCount, health, deathFx, buildFx, dropAll) {}
 buildWeaponPickup(targetname, itemText, weapon, weaponType) {}
 
 
-/**
+/** @deprecated, kept for compat
  * @brief Allows a mapmaker override the ammoStockType
  *
- * @param onGiveWeapons integer [0|1] Sets ammo stock type
+ * ::setAmmoStockType is preferred, as it doesn't use naked numbers
+ *
+ * @param onGiveWeapons integer [0|1|2] Sets ammo stock type
  *                                    0 sets level.ammoStockType to "weapon"
  *                                    1 sets level.ammoStockType to "upgrade"
+ *                                    2 sets level.ammoStockType to "ammo"
  *
  * @returns nothing
  */

@@ -581,7 +581,7 @@ usableUse()
                             if (level.dvar["surv_waw_alwayspay"]) {
                                 self scripts\players\_players::incUpgradePoints(-1*level.dvar["surv_waw_costs"]);
                             }
-                            scripts\gamemodes\_mysterybox::mystery_box(self.curEnt);
+                            scripts\gamemodes\_mysterybox::mysteryBox(self.curEnt);
                         }
                     } else {
                         if (self.box_weapon.done) {

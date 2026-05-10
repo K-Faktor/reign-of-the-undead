@@ -3,7 +3,7 @@ m1014_reflex_mp --> spas12
 rpd_acog_mp --> aug
 g3_acog_mp --> thundergun
 m60e4_acog_mp --> aa12
-barret_acog_mp --> raygun
+barrett_acog_mp --> raygun
 saw_acog_mp --> minigun
 ak74u_acog_mp --> tesla
 mp5_acog_mp --> mp5k

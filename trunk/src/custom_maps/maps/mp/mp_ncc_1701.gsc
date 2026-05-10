@@ -89,6 +89,24 @@ main()
     startGame();
 }
 
+
+/**
+ * @brief Moves an entity along the Z-axis (up/down).
+ *
+ * This is a native engine function commonly used for elevators, doors, platforms,
+ * traps, and moving script_models / script_brushmodels.
+ *
+ * @param distance   float   Distance to move in units. Positive = up, Negative = down.
+ * @param time       float   Total travel time in seconds. Must be > 0.
+ * @param accelTime  float   Optional: Time (in seconds) to accelerate from 0 to full speed. Default 0.
+ * @param decelTime  float   Optional: Time (in seconds) to decelerate to a stop. Default 0.
+ *
+ * @returns void
+ * @note The entity will start moving immediately. You can use wait() after calling this.
+ * @note If accelTime + decelTime > time, the engine will adjust the values automatically.
+ */
+ 
+
 loadDoors()
 {
     door = spawnStruct();

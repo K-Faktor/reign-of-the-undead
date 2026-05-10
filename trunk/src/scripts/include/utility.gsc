@@ -197,7 +197,8 @@ tokenizeMessage(encodedJson)
     // nice alignment to the msg in server_mp.log
     parts = split(buf, "|msg|");
     if (!isDefined(parts[0])) {
-        logPrint("BUG: no |msg| in string to split() at, so can't rightPad()\n"); 
+        logPrint("BUG: no |msg| in string to split() at, so can't rightPad(). encodedJson:\n");
+        logPrint(encodedJson);
     } else {
         a = rightPad(parts[0], " ", 21); // 24
         buf = a + "|msg|" + parts[1];

@@ -58,6 +58,63 @@
 
 
 /**
+ * @brief Run RotU in a special non-game mode.
+ *
+ *        This lets us run other mini-apps useful for dev purposes, like screenshot mode,
+ *        UMI Map Editor, or the Model Centroid Finder.
+ *
+ * @returns nothing
+ */
+doSpecialRunMode()
+{
+    log("trace", "msg|in _umi::modName()||");
+    log("dev", "msg|in _umi::doSpecialRunMode()||");
+
+    runMode = getdvar("run_mode"); // empty string if dvar not set
+    if (runMode == "" && runMode == "game") {
+        return;
+    }
+
+    // let runMode override eveything else
+    if (runMode != "") {
+        switch (runMode) {
+            case "screenshotMode":
+                log("dev", "msg|in screenshot mode||");
+                return;
+            case "testMysteryBox":
+                log("dev", "msg|in test mystery box mode||");
+                scripts\gamemodes\_mysterybox::testMysteryBox();
+                return;
+            case "centroidFinder":
+                log("dev", "msg|in centroidFinder mode||");
+                scripts\tools\modelCentroidFinder::init("weapon_desert_eagle_gold", "deserteaglegold_mp", "secondary");
+                // scripts\tools\modelCentroidFinder::init("weapon_colt1911_silencer" , "colt45_silencer_mp", "secondary");
+                // scripts\tools\modelCentroidFinder::init("weapon_mw2_f2000_wm", "m14_acog_mp", "primary");
+                // scripts\tools\modelCentroidFinder::init("worldmodel_bo_minigun", "saw_acog_mp", "primary");
+                return;
+            case "umi":
+                log("dev", "msg|in UMI mode||");
+                devDrawAllPossibleSpawnpoints();
+                maps\mp\_umiEditor::initMapEditor();
+                return;
+        }
+    }
+
+    // if runMode isn't set
+    if ((getdvarInt("screenshot_mode") == 1) || (level.screenshotMode)) {
+        // do nothing
+        log("dev", "msg|in screenshot mode||");
+        return;
+    } else if (level.umiEnabled) {
+        log("dev", "msg|in UMI mode||");
+        devDrawAllPossibleSpawnpoints();
+        maps\mp\_umiEditor::initMapEditor();
+        return;
+    }
+}
+
+
+/**
  * @brief Returns the lower-cased name of the mod that is trying to load the map
  *
  * @returns string The name of the mod, e.g. "rotu", "rozo", etc
@@ -1053,12 +1110,13 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
         ent.loadtime = loadTime;
+        log("warn", "msg|building weapon shop. level.ammoStockType: " + level.ammoStockType + "||");
         if (level.ammoStockType == "weapon") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] for a weapon! (^1"+level.dvar["surv_waw_costs"]+"^7)", 96);
-            createTeamObjpoint(ent.origin+(0,0,72), "hud_weapons", 1);
+            createTeamObjpoint(ent.origin + (0,0,72), "hud_weapons", 1);
         } else if (level.ammoStockType == "upgrade") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] to upgrade your weapon!", 96);
-            createTeamObjpoint(ent.origin+(0,0,72), "hud_weapons", 1);
+            createTeamObjpoint(ent.origin + (0,0,72), "hud_weapons", 1);
         } else if (level.ammoStockType == "ammo") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Hold [USE] to restock ammo", 96);
         } else {
@@ -2098,6 +2156,8 @@ waitUntilFirstPlayerSpawns()                        // quality:external_interfac
     while (level.activePlayers == 0) {
         wait 0.5;
     }
+
+    maps\mp\_umi::doSpecialRunMode();
 }
 
 
@@ -2113,7 +2173,7 @@ startGame()                                         // quality:external_interfac
 
     if (level.umiEnabled) {
         // Do Nothing.  Don't really start game when we are using UMI or taking screenshots
-        log("server", "UMI mode is enabled, not starting game.||");
+        log("server", "msg|UMI mode is enabled, not starting game.||");
     } else {
         findAdditionalSpawnpoints();        
         scripts\gamemodes\_survival::beginGame();
@@ -2482,14 +2542,45 @@ buildWeaponPickup(targetname, itemText, weapon, weaponType) // quality:external_
 }
 
 
-// I don't know any maps that use any of these, or need to
-
 /**
  * @brief Allows a mapmaker override the ammoStockType 
  *
- * @param onGiveWeapons integer [0|1] Sets ammo stock type
+ * Call immediately before buildWeaponShopsByTargetname("ammostock")
+ *
+ * @param type string [weapon|upgrade|ammo] Sets ammo stock type
+ *                    weapon    sets level.ammoStockType to "weapon"    // mystery box
+ *                    upgrade   sets level.ammoStockType to "upgrade"   // upgrade
+ *                    ammo      sets level.ammoStockType to "ammo"      // restock ammo
+ *
+ * @returns nothing
+ */
+setAmmoStockType(type)
+{
+    log("trace", "msg|in _umi::setAmmoStockType()||");
+
+    if (isDefined(type)) {
+        switch(type) {
+            case "weapon":  // mystery box
+            case "upgrade": // weapon upgrade
+            case "ammo":    // restock ammo 
+                level.ammoStockType = type;
+                return;
+        }
+        log("error", "msg|level.ammoStockType isn't a valid ammoStockType.||");
+    }
+    log("error", "msg|type undefined isn't a valid ammoStockType.||");
+}
+
+
+/** @deprecated, kept for compat
+ * @brief Allows a mapmaker override the ammoStockType
+ *
+ * ::setAmmoStockType is preferred, as it doesn't use naked numbers
+ *
+ * @param onGiveWeapons integer [0|1|2] Sets ammo stock type
  *                                    0 sets level.ammoStockType to "weapon"
  *                                    1 sets level.ammoStockType to "upgrade"
+ *                                    2 sets level.ammoStockType to "ammo"
  *
  * @returns nothing
  */
@@ -2503,6 +2594,9 @@ setWeaponHandling(onGiveWeapons)                    // quality:external_interfac
     } else if (onGiveWeapons == 1) {
         level.onGiveWeapons = 1;
         level.ammoStockType = "upgrade";
+    } else if (onGiveWeapons == 2) {
+        level.onGiveWeapons = 2;
+        level.ammoStockType = "ammo";
     }
 }
 

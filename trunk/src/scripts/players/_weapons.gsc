@@ -55,7 +55,7 @@ init()
     level.weaponIDs = [];
     max_weapon_num = 149;
     attachment_num = 150;
-    for( i = 0; i <= max_weapon_num; i++ ) {
+    for (i=0; i<=max_weapon_num; i++) {
         weapon_name = tablelookup("mp/statstable.csv", 0, i, 4);
         if ((!isdefined(weapon_name)) || (weapon_name == "")) {
             level.weaponIDs[i] = "";

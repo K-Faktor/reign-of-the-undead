@@ -62,24 +62,17 @@ main()
 
     waitUntilFirstPlayerSpawns();
 
-    if (level.umiEnabled) {
-        if (level.screenshotMode) {
-            // do nothing
-        }
-        else {
-            devDrawAllPossibleSpawnpoints();
-            maps\mp\_umiEditor::initMapEditor();
-        }
-    } else {
-        buildWeaponShopsByTargetname("ammostock");
-        buildShopsByTargetname("weaponupgrade");
-    }
+    // play the game
+    // setAmmoStockType("weapon");  // testing mysteryBox()
+    buildWeaponShopsByTargetname("ammostock");
+    buildShopsByTargetname("weaponupgrade");
 
     buildZombieSpawnByTargetname("spawngroup1", 1);
     buildZombieSpawnByTargetname("spawngroup2", 1);
     buildZombieSpawnByTargetname("spawngroup3", 1);
 
     startGame();
+    
 }
 
 // spawnpoint_protection()
