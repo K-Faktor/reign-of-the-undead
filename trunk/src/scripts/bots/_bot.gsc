@@ -78,31 +78,31 @@ instantiate()
  * @returns string a bot name
  */
 getBotName() {
-	// if ( !isDefined( level.bot_names ) ) {
-	// 	level.bot_names = [];
+    // if ( !isDefined( level.bot_names ) ) {
+    //     level.bot_names = [];
 
-	// 	if ( getDvar( "temp_dvar_bot_name_cursor" ) == "" )
-	// 		setDvar( "temp_dvar_bot_name_cursor", 0 );
+    //     if ( getDvar( "temp_dvar_bot_name_cursor" ) == "" )
+    //         setDvar( "temp_dvar_bot_name_cursor", 0 );
 
-	// 	filename = "botnames.txt";
+    //     filename = "botnames.txt";
 
-	// 	if ( FS_TestFile( filename ) ) {
-	// 		f = FS_FOpen( filename, "read" );
+    //     if ( FS_TestFile( filename ) ) {
+    //         f = FS_FOpen( filename, "read" );
 
-	// 		name = FS_ReadLine( f );
+    //         name = FS_ReadLine( f );
 
-	// 		while ( isDefined( name ) && name != "" ) {
-	// 			level.bot_names[level.bot_names.size] = name;
+    //         while ( isDefined( name ) && name != "" ) {
+    //             level.bot_names[level.bot_names.size] = name;
 
-	// 			name = FS_ReadLine( f );
-	// 		}
+    //             name = FS_ReadLine( f );
+    //         }
 
-	// 		FS_FClose( f );
-	// 	}
-	// }
+    //         FS_FClose( f );
+    //     }
+    // }
 
-	// if ( !level.bot_names.size )
-	// 	return undefined;
+    // if ( !level.bot_names.size )
+    //     return undefined;
 
     // cur = getDvarInt( "temp_dvar_bot_name_cursor" );
     // name = level.bot_names[cur % level.bot_names.size];
@@ -224,6 +224,7 @@ remove(botsToRemove)
         level.availableBots[i] = level.bots[level.availableBots[i]].index;
     }
 }
+
 
 /**
  * @brief Makes a bot available for use as a zombie

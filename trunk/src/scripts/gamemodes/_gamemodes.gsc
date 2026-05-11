@@ -44,7 +44,6 @@ init()
     thread scripts\gamemodes\_mysterybox::init();
     dropSpawns();
 
-
     level.gameEnded = false;
     level.dif_zomHPMod = 1;
     level.dif_zomMax = 100;
@@ -56,7 +55,6 @@ init()
 
     level.ammoStockType = "ammo";
 
-//  level.creditTime = 7;
     level.creditBasetime = 5;
     level.objectiveIndexAvailability = [];
     level.objectiveIndexAvailability[0] = 1;
@@ -75,28 +73,37 @@ init()
     level.objectiveIndexAvailability[13] = 1;
     level.objectiveIndexAvailability[14] = 1;
     level.objectiveIndexAvailability[15] = 1;
-
 }
 
+
+/**
+ * @brief Finds the position of the ground at each spawpoint, and updates spawnpoint
+ *
+ * @returns nothing
+ */
 dropSpawns()
 {
     log("trace", "msg|in _gamemodes::dropSpawns()||");
 
     TDMSpawns = getentarray("mp_tdm_spawn", "classname");
-
     for (i=0; i<TDMSpawns.size; i++) {
         spawn = TDMSpawns[i];
-        spawn.origin = dropPlayer(spawn.origin+(0,0,32), 300);
+        spawn.origin = dropPlayer(spawn.origin + (0,0,32), 300);
     }
 
     DMSpawns = getentarray("mp_dm_spawn", "classname");
-
     for (i=0; i<DMSpawns.size; i++) {
         spawn = DMSpawns[i];
-        spawn.origin = dropPlayer(spawn.origin+(0,0,32), 300);
+        spawn.origin = dropPlayer(spawn.origin + (0,0,32), 300);
     }
 }
 
+
+/**
+ * @brief Loads the default game mode
+ *
+ * @returns nothing
+ */
 initGameMode()
 {
     log("trace", "msg|in _gamemodes::initGameMode()||");
@@ -108,6 +115,14 @@ initGameMode()
     loadDifficulty(level.dvar["game_difficulty"]);
 }
 
+
+/**
+ * @brief Loads the specificed game mode
+ *
+ * @param mode string the game mode to load [waves_special|waves_endless]
+ *
+ * @returns nothing
+ */
 loadGameMode(mode)
 {
     log("trace", "msg|in _gamemodes::loadGameMode()||");
@@ -128,15 +143,25 @@ loadGameMode(mode)
     }
 }
 
-/// @deprecated
+
+/** @deprecated
+ * @brief NOOP. Scripted mode is deprecated
+ *
+ * @returns nothing
+ */
 loadScriptedMode()
 {
     log("trace", "msg|in _gamemodes::loadScriptedMode()||");
 
     // Scripted mode doesn't do much
-
 }
 
+
+/** @deprecated
+ * @brief NOOP. Onslaught mode is deprecated
+ *
+ * @returns nothing
+ */
 loadOnslaughtMode()
 {
     log("trace", "msg|in _gamemodes::loadOnslaughtMode()||");
@@ -144,6 +169,14 @@ loadOnslaughtMode()
     level.currentPlayer = 0;
 }
 
+
+/**
+ * @brief Loads the specified survival mode
+ *
+ * @param mode string the game mode to load [special|endless]
+ *
+ * @returns nothing
+ */
 loadSurvivalMode(mode)
 {
     log("trace", "msg|in _gamemodes::loadSurvivalMode()||");
@@ -154,6 +187,14 @@ loadSurvivalMode(mode)
     thread scripts\gamemodes\_survival::initGame();
 }
 
+
+/**
+ * @brief Loads the specified survival mode
+ *
+ * @param preset string the zombie types initialize [basic|all] (regular|dogs are unused)
+ *
+ * @returns nothing
+ */
 buildZomTypes(preset)
 {
     log("trace", "msg|in _gamemodes::buildZomTypes()||");
@@ -245,6 +286,14 @@ buildZomTypes(preset)
     level.weightedSpecialTypes[16] = "tank";
 }
 
+
+/**
+ * @brief Gets the default weight (relative likelihood to spawn) for a zombie type
+ *
+ * @param type string the type of zombie
+ *
+ * @returns integer The relative spawn likelihood
+ */
 getDefaultWeight(type)
 {
     log("trace", "msg|in _gamemodes::getDefaultWeight()||");
@@ -272,6 +321,14 @@ getDefaultWeight(type)
     }
 }
 
+
+/**
+ * @brief Builds the zombie spwan types & weights arrays
+ *
+ * @param type string the type of zombie [runners|burning|...]
+ *
+ * @returns nothing
+ */
 addSpawnType(type)
 {
     log("trace", "msg|in _gamemodes::addSpawnType()||");
@@ -316,14 +373,21 @@ getRandomSpecialType()
 }
 
 
+/**
+ * @brief Sets zombies per player and zombie hit points modifier, base on difficulty setting
+ *
+ * @param difficulty integer the difficulty level [1,4] 0 is easiet, 4 is hardest
+ *
+ * @returns nothing
+ */
 loadDifficulty(difficulty)
 {
     log("trace", "msg|in _gamemodes::loadDifficulty()||");
 
     switch (difficulty) {
         case 1:
-            level.dif_zomPP = 2;
-            level.dif_zomHPMod = .5;
+            level.dif_zomPP = 2;        // Max zombies per player
+            level.dif_zomHPMod = .5;    // Zombies hitpoints modifier
         break;
         case 2:
             level.dif_zomPP = 3;
@@ -332,21 +396,30 @@ loadDifficulty(difficulty)
         case 3:
             level.dif_zomPP = 5;
             level.dif_zomHPMod = 1;
-
         break;
-        case 4:
+        case 4:         // Fall through
+        case 5:
             level.dif_zomPP = 10;
             level.dif_zomHPMod = 1.5;
-
         break;
         default:
-            thread custom_scripts\_difficulty::difficulty(difficulty);
+            level.dif_zomPP = 10; 
+            level.dif_zomHPMod = 1.5; 
         break;
     }
 
     if (level.dvar["zom_dynamicdifficulty"]) {level thread monitorDifficulty();}
 }
 
+
+/**
+ * @brief Monitors and adjusts the game difficulty every 5 seconds.
+ *
+ *        The adjustment is based on the number of alive players &
+ *        the recent zombie kill rate.
+ *
+ * @returns nothing
+ */
 monitorDifficulty()
 {
     log("trace", "msg|in _gamemodes::monitorDifficulty()||");
@@ -356,12 +429,12 @@ monitorDifficulty()
     level waittill("start_monitoring");
     while (1) {
         level.dif_zomMax = level.dif_zomPP * level.activePlayers;
-        level.dif_zomSpawnRate = .1;
-        if (level.dif_killedLast5Sec!=0) {
+        level.dif_zomSpawnRate = 0.1;
+        if (level.dif_killedLast5Sec != 0) {
             // Divide by zero protection
             if (level.activePlayers != 0) {
-                level.dif_zomSpawnRate = .5 * ( level.dif_killedLast5Sec / level.activePlayers);
-            } else {level.dif_zomSpawnRate = .5 * level.dif_killedLast5Sec;}
+                level.dif_zomSpawnRate = 0.5 * ( level.dif_killedLast5Sec / level.activePlayers);
+            } else {level.dif_zomSpawnRate = 0.5 * level.dif_killedLast5Sec;}
             if (level.dif_zomSpawnRate < 0.05) {level.dif_zomSpawnRate = 0.05;}
             level.dif_killedLast5Sec = 0;
         }
@@ -379,6 +452,12 @@ monitorDifficulty()
     }
 }
 
+
+/**
+ * @brief Resumes difficulty monitoring after it has been suspended
+ *
+ * @returns nothing
+ */
 resumeMonitoring()
 {
     log("trace", "msg|in _gamemodes::resumeMonitoring()||");
@@ -387,6 +466,16 @@ resumeMonitoring()
     thread monitorDifficulty();
 }
 
+
+/**
+ * @brief Main logic for the end of the game, concludes with loading a new map
+ *
+ * @param endReasontext string the reason for ending the map, displayed in the HUD
+ *                             ["All survivors have died!"|"All waves have been held off!"]
+ * @param showcredits boolean indicating whether to show the credits or not
+ *
+ * @returns nothing
+ */
 endMap(endReasontext, showcredits)
 {
     log("trace", "msg|in _gamemodes::endMap()||");
@@ -400,17 +489,16 @@ endMap(endReasontext, showcredits)
     level.gameEndTime = getTime();
     level.gameEnded = true;
 
-//  game["state"] = "intermission";
     game["state"] = "postgame";
     level notify("intermission");
     level notify("game_ended");
 
-    setGameEndTime( 0 );
+    setGameEndTime(0);
 
     alliedscore = getTeamScore("allies");
     axisscore = getTeamScore("axis");
 
-    setdvar( "g_deadChat", 1 );
+    setdvar("g_deadChat", 1);
 
     // Don't lock the 'Leave' menu on a Listen server
     if (!level.isDedicated) {
@@ -474,12 +562,12 @@ endMap(endReasontext, showcredits)
     if (showcredits) {
         level.blackscreen fadeOverTime(7.5);
         level.blackscreen.alpha = 1;
-        level.end_text setPulseFX( 95, int(7000), 1000 );
+        level.end_text setPulseFX(95, int(7000), 1000);
         wait 10;
     } else {
         level.blackscreen fadeOverTime(10);
         level.blackscreen.alpha = 1;
-        level.end_text setPulseFX( 150, int(10000), 1000 );
+        level.end_text setPulseFX(150, int(10000), 1000);
         wait 15;
     }
     level.end_text destroy();
@@ -504,6 +592,14 @@ endMap(endReasontext, showcredits)
     } else {[[level.onChangeMap]]();}
 }
 
+
+/**
+ * @brief Builds the end credits
+ *
+ * @returns array The movie credit results.
+ *                results[0] is newline-separated list of labels
+ *                results[1] is newline separated list of credits
+ */
 buildMovieCreditText()
 {
     log("trace", "msg|in _gamemodes::buildMovieCreditText()||");
@@ -512,7 +608,7 @@ buildMovieCreditText()
     credits = [];
     results = [];
 
-    // Unless you are committing code to the Official RotU subversion repository,
+    // Unless you are committing code to the Official RotU git repository,
     // do not call yourself a developer.  Use the "Server Customization" credit instead.
     labels[0] = "Developer";
     credits[0] = "Mark A. Taff";
@@ -636,6 +732,15 @@ buildCenteredCreditText()
     return credits;
 }
 
+
+/**
+ * @brief Displays the centered final credit
+ *
+ * @param credit string Newline-separated text for the centered credit
+ * @param scale float The fontScale for the credit
+ *
+ * @returns nothing
+ */
 showCenteredCredit(credit, scale)
 {
     log("trace", "msg|in _gamemodes::showCenteredCredit()||");
@@ -644,7 +749,6 @@ showCenteredCredit(credit, scale)
     creditHeightPerNewline = 20;    // base height of each credit line in pixels
 
     newlineCount = tokenMatchCount(credit, "\n");
-//     creditTime = 2 + level.creditBasetime + (creditTimePerNewline * newlineCount);
     creditHeight = (creditHeightPerNewline * scale) * newlineCount;
 
     end_text = newHudElem();
@@ -667,6 +771,7 @@ showCenteredCredit(credit, scale)
     wait level.creditTime - 5;
     end_text destroy();
 }
+
 
 /**
  * @brief Shows credits center-tab-aligned like most movies
@@ -737,6 +842,12 @@ showMovieStyleCredit(label, credits)
     creditText destroy();
 }
 
+
+/**
+ * @brief Plays the game-end musical outro
+ *
+ * @returns nothing
+ */
 playEndSound()
 {
     log("trace", "msg|in _gamemodes::playEndSound()||");
@@ -744,14 +855,28 @@ playEndSound()
     playSoundOnPlayers("zom_outro");
 }
 
+
+/**
+ * @brief Plays the credits music
+ *
+ * @returns nothing
+ */
 playCreditsSound()
 {
     log("trace", "msg|in _gamemodes::playCreditsSound()||");
 
     AmbientStop(0);
-    AmbientPlay("ambient_tank" , 1);
+    AmbientPlay("ambient_tank", 1);
 }
 
+
+/**
+ * @brief Plays a sound on all players
+ *
+ * @param sound string the name of the sound to play
+ *
+ * @returns nothing
+ */
 playSoundOnPlayers(sound)
 {
     log("trace", "msg|in _gamemodes::playSoundOnPlayers()||");
@@ -761,6 +886,12 @@ playSoundOnPlayers(sound)
     }
 }
 
+
+/**
+ * @brief Freezes a player while we end the game, and get a new map started
+ *
+ * @returns nothing
+ */
 freezePlayerForRoundEnd()
 {
     log("trace", "msg|in _gamemodes::freezePlayerForRoundEnd()||");
@@ -768,7 +899,7 @@ freezePlayerForRoundEnd()
     self closeMenu();
     self closeInGameMenu();
 
-    self freezeControls( true );
+    self freezeControls(true);
 }
 
 

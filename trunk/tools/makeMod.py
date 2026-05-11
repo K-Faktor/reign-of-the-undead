@@ -812,7 +812,7 @@ def quality_check(root_dir: Path, config):
         relFile = match.group(1) if match else file_str
 
         if '\t' in contents:
-            tab += f"Found tab character: {relFile}\n"
+            tab.append(f"Found tab character: {relFile}")
     print("done.")
 
     print("Checking for 'bug', 'todo', 'hack', 'fixme', and 'deprecated' notations...", end="")
