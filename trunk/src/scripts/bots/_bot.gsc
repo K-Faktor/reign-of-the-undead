@@ -36,6 +36,7 @@
 #include scripts\include\waypoints;
 #include scripts\include\utility;
 #include scripts\include\physics;
+#include scripts\bots\_botnames;
 
 /**
  * @brief Creates a bot
@@ -45,6 +46,8 @@
 instantiate()
 {
     log("trace", "msg|in _bot::instantiate()||");
+
+    scripts\bots\_botnames::init();
 
     // bot = addTestClient();  // pure CoD4 1.7 version
 
@@ -64,52 +67,6 @@ instantiate()
 
     initialize(bot);
     return true;
-}
-
-// lifted from Fluffy Man from -nVts- 
-/**
- * @brief Gets a friendly bot name. ***COD4X Only***
- *
- * If this truly works, will:
- *   - implement several bot name-sets, and
- *   - allow custom name-sets, and
- *   - allow sequential pop'ing of names vs random pop'ing of names
- *
- * @returns string a bot name
- */
-getBotName() {
-    // if ( !isDefined( level.bot_names ) ) {
-    //     level.bot_names = [];
-
-    //     if ( getDvar( "temp_dvar_bot_name_cursor" ) == "" )
-    //         setDvar( "temp_dvar_bot_name_cursor", 0 );
-
-    //     filename = "botnames.txt";
-
-    //     if ( FS_TestFile( filename ) ) {
-    //         f = FS_FOpen( filename, "read" );
-
-    //         name = FS_ReadLine( f );
-
-    //         while ( isDefined( name ) && name != "" ) {
-    //             level.bot_names[level.bot_names.size] = name;
-
-    //             name = FS_ReadLine( f );
-    //         }
-
-    //         FS_FClose( f );
-    //     }
-    // }
-
-    // if ( !level.bot_names.size )
-    //     return undefined;
-
-    // cur = getDvarInt( "temp_dvar_bot_name_cursor" );
-    // name = level.bot_names[cur % level.bot_names.size];
-    // setDvar( "temp_dvar_bot_name_cursor", cur + 1 );
-
-    // return name;
-    return "Oxygen";
 }
 
 
