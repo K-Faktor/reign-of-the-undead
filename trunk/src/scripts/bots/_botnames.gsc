@@ -35,15 +35,19 @@
 #include scripts\include\utility;
 
 /**
- * Initializes custom bot naming system.
+ * @brief Initializes custom bot naming system.
  *
  * NOTE: Bot names are read-only properties on CoD4 1.7 stock. While this code will
  *       generate/proccess bot names, and *try* to set them, they will be silently
  *       ignored by CoD4 1.7 stock.  Untested, but I'm told it will work on COD4X,
  *       so I've implemented this code to do that.
+ *
+ * @returns nothing
  */
 init()
 {
+    log("trace", "msg|in _botnames::init()||");
+
     if (isDefined(level.botNameStack)) {return;}
 
     level.botClanTagsSep = [];
@@ -76,6 +80,8 @@ init()
  */
 buildClans()
 {
+    log("trace", "msg|in _botnames::buildClans()||");
+
     data = "Braindead Bastards,BDB;Walker Stalkers,WSK;Rotting Renegades,RTR;Bite Club,BTC;Undead Uprising,UU;No Brains Left,NBL;Last Breath Legion,LBL;Infected Elite,IE;Deadhead Division,DHD";
 
     items = strTok(data, ";");
@@ -97,6 +103,8 @@ buildClans()
  */
 buildClanTagSeparators()
 {
+    log("trace", "msg|in _botnames::buildClanTagSeparators()||");
+
     data = "|,|;-,-;=,=;_,_;[,];{,};";
 
     items = strTok(data, ";");
@@ -117,6 +125,8 @@ buildClanTagSeparators()
  */
 loadNameSet()
 {
+    log("trace", "msg|in _botnames::loadNameSet()||");
+
     elements = "Hydrogen,Helium,Lithium,Beryllium,Boron,Carbon,Nitrogen,Oxygen,Fluorine,Neon,Sodium,Magnesium,Aluminum,Silicon,Phosphorus,Sulfur,Chlorine,Argon,Potassium,Calcium,Scandium,Titanium,Vanadium,Chromium,Manganese,Iron,Cobalt,Nickel,Copper,Zinc";
     presidents = "Washington,Adams,Jefferson,Madison,Monroe,Adams,Jackson,Van Buren,Harrison,Tyler,Polk,Taylor,Fillmore,Pierce,Buchanan,Lincoln,Johnson,Grant,Hayes,Garfield,Arthur,Cleveland,Harrison,McKinley,Taft,Wilson,Harding,Coolidge,Hoover,Roosevelt";
     protagonists = "Rick Grimes,Daryl Dixon,Michonne,Carol Peletier,Morgan Jones,Joel Miller,Ellie Williams,Shaun Riley,Columbus,Tallahassee,Wichita,Jim,Selena,Frank,Alice Abernathy,Leon S. Kennedy,Jill Valentine,Claire Redfield,Gerry Lane,Robert Neville,Ben,Peter,Ana Clark,Kenneth Hall,Ash Williams,Roberta Warren,Madison Clark,Clementine,Lee Everett,Bill Overbeck";
@@ -147,10 +157,14 @@ loadNameSet()
 /**
  * @brief Builds bot name stack we will use to name the bots
  *
+ * @param nameset string A comma-separated nameset
+ *
  * @returns nothing
  */
 buildBotNameStack(nameset)
 {
+    log("trace", "msg|in _botnames::buildBotNameStack()||");
+
     items = strTok(nameset, ",");
     // for (i=0; i<items.size; i++) {
     limit = 50;
@@ -179,7 +193,7 @@ buildBotNameStack(nameset)
         } else {
             name = temp;
         }
-        logPrint("Bot name: " + name + "\n");  // can't json log(), as name may have pipes '|'
+        // logPrint("Bot name: " + name + "\n");  // can't json log(), as name may have pipes '|'
         level.botNameStack stPush(name);
         count++;
     }
@@ -198,6 +212,9 @@ buildBotNameStack(nameset)
  *
  * @returns string a bot name
  */
-getBotName() {
+getBotName()
+{
+    log("trace", "msg|in _botnames::getBotName()||");
+
     return level.botNameStack stPop();
 }

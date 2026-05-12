@@ -180,7 +180,6 @@ mysteryBox(box)
 {
     log("trace", "msg|in _mysterybox::mysteryBox()||");
 
-    // @todo use this trace technique to set better heights for the creatTeamObjpoint()
     trace = bulletTrace(box.origin + (0,0,72), box.origin + (0,0,-100), false, box);
     topPos = trace["position"];
     newPos = topPos + (0, 0, 17);

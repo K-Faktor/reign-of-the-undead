@@ -1038,7 +1038,8 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
         x = value(R,1,1);
         y = value(R,2,1);
         level scripts\players\_usables::addUsable(shop, "extras", "Press [USE] to buy upgrades!", 96);
-        createTeamObjpoint(tradespawn.origin + (x,y,85), "hud_ammo", 1);
+        center = tradespawn.origin + (x, y, 0);
+        createTeamObjpoint(getObjHudPosition(tradespawn, center), "hud_ammo", 1);
 
         // spawn a solid trigger_radius to simulate xmodel actually being solid
         level.solid = spawn("trigger_radius", (0, 0, 0), 0, 22, 122 );
@@ -1077,8 +1078,38 @@ buildShopsByTargetname(targetname)                  // quality:external_interfac
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
         level scripts\players\_usables::addUsable(ent, "extras", "Press [USE] to buy upgrades!", 96);
-        createTeamObjpoint(ent.origin+(0,0,72), "hud_ammo", 1);
+        createTeamObjpoint(getObjHudPosition(ent), "hud_ammo", 1);
     }
+}
+
+
+/**
+ * @brief Calculates the hieght above a shop for the team objective HUD
+ *
+ * @param ent entity entity serving as the shop
+ * @param centroid vector The x-y center of the model used for a shop. Optional.
+ *                        Needed when the model origin isn't in the central axis of the model
+ *
+ * @returns vector The position to place the team objective HUD element at
+ * @since RotU 2.2.3
+ */
+getObjHudPosition(ent, centroid)
+{
+    log("trace", "msg|in _umi::getObjHudPosition()||");
+
+    if (isDefined(centroid)) {
+        trace = bulletTrace(centroid + (0, 0, 85), centroid + (0, 0, -100), false, ent);
+        topPos = trace["position"];
+        newPos = topPos + (0, 0, 30);
+        // oldPos = centroid + (0, 0, 85);
+    } else {
+        trace = bulletTrace(ent.origin + (0, 0, 72), ent.origin + (0, 0, -100), false, ent);
+        topPos = trace["position"];
+        newPos = topPos + (0, 0, 30);
+        // oldPos = ent.origin + (0, 0, 72);
+    }
+    // log("debug", sprintfLog("msg|Objective HUD position data||oldPos|$1||newPos|$2", oldPos, newPos));
+    return newPos;
 }
 
 
@@ -1113,10 +1144,10 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
         log("warn", "msg|building weapon shop. level.ammoStockType: " + level.ammoStockType + "||");
         if (level.ammoStockType == "weapon") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] for a weapon! (^1"+level.dvar["surv_waw_costs"]+"^7)", 96);
-            createTeamObjpoint(ent.origin + (0,0,72), "hud_weapons", 1);
+            createTeamObjpoint(getObjHudPosition(ent), "hud_weapons", 1);
         } else if (level.ammoStockType == "upgrade") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] to upgrade your weapon!", 96);
-            createTeamObjpoint(ent.origin + (0,0,72), "hud_weapons", 1);
+            createTeamObjpoint(getObjHudPosition(ent), "hud_weapons", 1);
         } else if (level.ammoStockType == "ammo") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Hold [USE] to restock ammo", 96);
         } else {
@@ -1171,7 +1202,7 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)    // quality:exter
             level.solid setContents(1);
 
             level scripts\players\_usables::addUsable(weaponupgrade, "ammobox", "Press [USE] to upgrade your weapon!", 96);
-            createTeamObjpoint(tradespawn.origin + (0,0,72), "hud_weapons", 1);
+            createTeamObjpoint(getObjHudPosition(tradespawn), "hud_weapons", 1);
         }
     }
 }
