@@ -53,10 +53,12 @@ init()
     level.botClanTagsSep = [];
     level.botClans = [];
 
-    level.useBotClanName = getdvar("bot_use_clan_name");    // [0|1]
-    if (level.useBotClanName == "") {level.useBotClanName = true;}
-    else if (level.useBotClanName == 0) {level.useBotClanName = false;}
-    else if (level.useBotClanName == 1) {level.useBotClanName = true;}
+    dvarStr = getdvar("bot_use_clan_name");     // [0|1]
+    if (dvarStr == "") {
+        level.useBotClanName = true;            // missing → default true
+    } else {
+        level.useBotClanName = (getDvarInt("bot_use_clan_name") != 0);
+    }
 
     // [elements|presidents|protagonists|punny], or a complete comma-separated list of bot names
     level.botNameSet = getdvar("bot_nameset");

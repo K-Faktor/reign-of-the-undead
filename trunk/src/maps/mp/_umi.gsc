@@ -56,6 +56,11 @@
 // aren't part of RotU.
 //
 
+// @todo Need to be able to add zombie spawnpoints manually
+// maybe a method like: addZombieSpawnpointByOrigin(origin, targetname)
+// that creates entity at origin w/targetname spawngroup[N], then calls
+// buildZombieSpawnByTargetname()
+
 
 /**
  * @brief Run RotU in a special non-game mode.
@@ -69,6 +74,8 @@ doSpecialRunMode()
 {
     log("trace", "msg|in _umi::modName()||");
     log("dev", "msg|in _umi::doSpecialRunMode()||");
+
+    // maps\mp\_umiEditor::devDumpEntities();
 
     runMode = getdvar("run_mode"); // empty string if dvar not set
     if (runMode == "" && runMode == "game") {
@@ -326,7 +333,7 @@ devDrawAllPossibleSpawnpoints()
     for (i=0; i<codSpawnpointClasses.size; i++) {
         ents = getentarray(codSpawnpointClasses[i], "classname");
         for (j=0; j<ents.size; j++) {
-            maps\mp\_umiEditor::devDrawLaser("red", ents[j].origin, (0,0,1));
+            maps\mp\_umiEditor::devDrawLaser("green", ents[j].origin, (0,0,1));
         }
     }
 }
@@ -1141,7 +1148,7 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
         ent.loadtime = loadTime;
-        log("warn", "msg|building weapon shop. level.ammoStockType: " + level.ammoStockType + "||");
+        // log("warn", "msg|building weapon shop. level.ammoStockType: " + level.ammoStockType + "||");
         if (level.ammoStockType == "weapon") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] for a weapon! (^1"+level.dvar["surv_waw_costs"]+"^7)", 96);
             createTeamObjpoint(getObjHudPosition(ent), "hud_weapons", 1);
@@ -1897,6 +1904,7 @@ isSpawnpointOk(origin)
         } else {return trace["position"];}
     } else {return undefined;}
 }
+
 
 /**
  * @brief UMI to build player spawn points by entities' classname property

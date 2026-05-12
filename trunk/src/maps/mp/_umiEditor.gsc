@@ -2561,10 +2561,10 @@ devDumpEntities()
 
     ents = getentarray();
     for (i=0; i<ents.size; i++) {
-        classname = "";
-        targetname = "";
-        origin = "";
-        script_noteworthy = "";
+        classname = "null";
+        targetname = "null";
+        origin = "null";
+        script_noteworthy = "null";
         if (isDefined(ents[i].classname)) {classname = ents[i].classname;}
         if (isDefined(ents[i].targetname)) {targetname = ents[i].targetname;}
         if (isDefined(ents[i].origin)) {origin = ents[i].origin;}

@@ -80,6 +80,10 @@ main(bScriptgened, bCSVgened, bsgenabled)
     log("trace", "msg|in _load::main()||");
     log("debug", "msg|in _load::main()||");
 
+    // Even non-RotU maps often call _load::main(), so this is a good spot for this hook
+    // for inspecting new maps
+    // maps\mp\_umiEditor::devDumpEntities();
+
     if ( !isdefined( level.script_gen_dump_reasons ) )
         level.script_gen_dump_reasons = [];
     if ( !isdefined( bsgenabled ) )

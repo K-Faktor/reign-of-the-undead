@@ -70,7 +70,7 @@
     },
     {
       "codeName": "mp_ancient_final",
-      "englishName": "",
+      "englishName": "null",
       "listingImage": "listing_mp_ancient_final.jpg",
       "smallImage": "small_mp_ancient_final.jpg",
       "desc": "",
@@ -78,19 +78,19 @@
       "authorContact": "",
       "authorWebsite": "",
       "rating": 4,
-      "works": "Partial",
-      "blacklisted": true,
+      "works": "Yes",
+      "blacklisted": false,
       "md5Map": "d8e258834128689ded06dd450330d749 mp_ancient_final.ff",
       "md5Load": "286e775bc59ba81bd4d5fa6dd3b5fa3a mp_ancient_final_load.ff",
       "md5Iwd": "39c81df4a89132aae05aadf112b3b142 mp_ancient_final.iwd",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "25fe623",
+        "gitRevision": "994eac7",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
-        "didSpawnZombie": false,
-        "timestamp": "2026-04-15 21:07:08 CDT (UTC-5)",
+        "didSpawnZombie": true,
+        "timestamp": "2026-05-12 09:31:52 CDT (UTC-5)",
         "waypointsValid": "",
         "waypointCount": 0,
         "waypointType": "None",
@@ -98,9 +98,9 @@
         "equipmentShopCount": 0,
         "compileErrors": 0,
         "runtimeErrors": 0,
-        "overallSuccess": false
+        "overallSuccess": true
       },
-      "notes": "Needs waypoints & tradespawns, maybe bot spaw points"
+      "notes": "Needs waypoints & tradespawns, and bot spawn points"
     },
     {
       "codeName": "mp_argel",
@@ -2186,29 +2186,29 @@
       "authorContact": "",
       "authorWebsite": "",
       "rating": 4,
-      "works": "Partial",
-      "blacklisted": true,
+      "works": "Yes",
+      "blacklisted": false,
       "md5Map": "2077312091e25496eb23bd70ca0d09d1 mp_fnrp_metro.ff",
       "md5Load": "e5943dbfd25a551c99019538d82b7a25 mp_fnrp_metro_load.ff",
       "md5Iwd": "d8ca457a392546b46581dbfcf60ca6bf mp_fnrp_metro.iwd",
       "overallSuccess": true,
       "tests": {
-        "gitRevision": "25fe623",
+        "gitRevision": "994eac7",
         "platform": "Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display",
         "didStartMap": true,
         "didSpawnHuman": true,
-        "didSpawnZombie": false,
-        "timestamp": "2026-04-15 21:19:16 CDT (UTC-5)",
+        "didSpawnZombie": true,
+        "timestamp": "2026-05-12 10:34:17 CDT (UTC-5)",
         "waypointsValid": "Valid",
         "waypointCount": 291,
         "waypointType": "internal",
-        "weaponShopCount": 0,
-        "equipmentShopCount": 0,
+        "weaponShopCount": 6,
+        "equipmentShopCount": 6,
         "compileErrors": 0,
         "runtimeErrors": 0,
-        "overallSuccess": false
+        "overallSuccess": true
       },
-      "notes": "TDM map, needs shops & override script."
+      "notes": ""
     },
     {
       "codeName": "mp_fnrp_mohbaazar",

@@ -489,13 +489,12 @@ mapTextName(mapname)
         return textName;
     }
 
-
     // Use the mapname if there is no English name for the map
     if ((textName == "") && (mapname != "nota")) {
         message = "English name for the map " + mapname + " not set in configuration files (mapvote.cfg sv_mapnames[N] dvars).\n";
         message += "\t\t\t\t\t\t If this is a playable map in RotU, please file a bug report on github about the missing name in our master map name json file.\n";
-        message += "\t\t\t\t\t\t For now, you can set the name manually via: \t" + "set name_" + mapname + " \"Custom Map Name\"";
-        log("warn", "msg|" + message + "||");
+        message += "\t\t\t\t\t\t For now, you can set the name manually via: \t" + "set name_" + mapname + " \"Custom Map Name\"\n";
+        log("pre", message);
         return mapname;
     }
     return textName;
