@@ -1,64 +1,37 @@
 # Map Testing Report
-**Generated**: 9:51pm Wednesday, April 15, 2026
+**Generated**: 4:48pm Wednesday, May 13, 2026
 
 [Planned] You can see the test results for each map in the README.md file in map's testing folder: map_testing/[mp_mapname]/README.md
 
-## Missing Authors (57):
+## Missing Authors (30):
 No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, so wasn't extracted. More research is required.
- - mp_bsf_backlot
  - mp_evil_house
- - mp_ffc_de_attack
  - mp_fnrp_araka
- - mp_fnrp_boss_zoo
- - mp_fnrp_bridge
- - mp_fnrp_cabin
- - mp_fnrp_dulc
- - mp_fnrp_gas
- - mp_fnrp_icecream
  - mp_fnrp_liberty
  - mp_fnrp_mohbaazar
- - mp_fnrp_outfield
- - mp_fnrp_paintball
- - mp_fnrp_panchokill
- - mp_fnrp_piramides
- - mp_fnrp_power_station
- - mp_fnrp_smurfs
- - mp_fnrp_soccer_match
- - mp_fnrp_soccer_revenge
- - mp_grad_shelter
- - mp_modern_rust
  - mp_mrx_castle
  - mp_nuke_snow
  - mp_surv_Pharaoh's_tomb
- - mp_surv_apex
  - mp_surv_area_69_v1
  - mp_surv_bunker
  - mp_surv_cemetery
  - mp_surv_ddv_army
- - mp_surv_dust2
- - mp_surv_forestwar
  - mp_surv_groundwar
  - mp_surv_hideout
  - mp_surv_kratovo
  - mp_surv_lastcrash
- - mp_surv_lock
- - mp_surv_loft
  - mp_surv_plane
  - mp_surv_platforms
  - mp_surv_pyramid
- - mp_surv_shipment
  - mp_surv_shipment_v2
  - mp_surv_skyfall
  - mp_surv_ssc_doom
  - mp_surv_street
  - mp_surv_subway_final
- - mp_surv_town
- - mp_surv_trap
  - mp_surv_village
  - mp_surv_wakamoto
  - mp_surv_wetwork
  - mp_surv_zombiebox
- - mp_surv_zombiedesert
  - mp_wakamoto3
  - mp_wakamoto_killhouse
  - mp_wakamoto_re5_2
@@ -81,12 +54,12 @@ These are maps I lost files to over the years, some certainly used to work in Ro
  - mp_surv_kfc
  - mp_surv_modern_dust2
 
-## Maps that Work (171):
+## Maps that Work (173):
 These maps passed rudimentary tests.
+ - mp_ancient_final
  - mp_argel
  - mp_bastogne
  - mp_bsf_apartment
- - mp_bsf_backlot
  - mp_bsf_dead_night
  - mp_bsf_tunnel_v2
  - mp_damnalley
@@ -117,6 +90,7 @@ These maps passed rudimentary tests.
  - mp_fnrp_liberty
  - mp_fnrp_lighthouse
  - mp_fnrp_market
+ - mp_fnrp_metro
  - mp_fnrp_mohbaazar
  - mp_fnrp_mountains
  - mp_fnrp_movies
@@ -254,25 +228,19 @@ These maps passed rudimentary tests.
  - mp_xtr_abydos
  - mp_xtr_arena
  - mp_xtr_volcano
+ - mp_fart_house_v2
 
-## Maps with Compile or Runtime Errors (6):
+## Maps with Compile or Runtime Errors (2):
 These maps have errors that need to be investigated. Some are errors in the maps, and some are errors in RotU.
  - mp_fnrp_bigfight
  - mp_fnrp_corridors
- - mp_mrx_castle
- - mp_surv_dust2
- - mp_surv_ffc_parkorman
- - mp_surv_town
 
-## Maps to Port to RotU (13):
+## Maps to Port to RotU (10):
 These maps likely just need waypoints & tradespawns to port to RotU.
- - mp_ancient_final
- - mp_burgundy_bulls
  - mp_dust2_classic
  - mp_dust3
  - mp_fnrp_futurama_v3
  - mp_fnrp_laberinto_v2
- - mp_fnrp_metro
  - mp_fnrp_piratas
  - mp_hhk_ballroom
  - mp_onslaught
