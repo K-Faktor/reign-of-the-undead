@@ -434,6 +434,20 @@ buildZombieSpawnsByClassname(classname) {}
 
 
 /**
+ * @brief UMI to manually build a zombie spawn point
+ *
+ * NOTE: For coercing zombie spawnpoints into old maps. Mapmakers should place entities
+ *       with a targetname of spanwgroup[N] for zombie spawns.
+ *
+ * @param position vector The position for the spawnpoint
+ *
+ * @returns nothing
+ * @since RotU 2.2.3
+ */
+buildManualZombieSpawns(position) {}
+
+
+/**
  * @brief UMI to build a zombie spawn point by an entity's targetname property
  *
  * @param targetname string The value of the entities' targetname property

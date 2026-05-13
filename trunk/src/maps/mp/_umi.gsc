@@ -101,7 +101,8 @@ doSpecialRunMode()
                 return;
             case "umi":
                 log("dev", "msg|in UMI mode||");
-                devDrawAllPossibleSpawnpoints();
+                // devDrawAllPossibleSpawnpoints();
+                devDrawUsedSpawnpoints();
                 maps\mp\_umiEditor::initMapEditor();
                 return;
         }
@@ -114,7 +115,8 @@ doSpecialRunMode()
         return;
     } else if (level.umiEnabled) {
         log("dev", "msg|in UMI mode||");
-        devDrawAllPossibleSpawnpoints();
+        // devDrawAllPossibleSpawnpoints();
+        devDrawUsedSpawnpoints();
         maps\mp\_umiEditor::initMapEditor();
         return;
     }
@@ -281,6 +283,7 @@ devDumpBtdWaypointsToCsv()                          // quality:external_interfac
     }
 }
 
+
 /**
  * @brief UMI draws all possible spawnpoints on the map
  * This is useful when placing tradespawns to ensure you don't block a spawning player
@@ -337,6 +340,25 @@ devDrawAllPossibleSpawnpoints()
         }
     }
 }
+
+
+/**
+ * @brief UMI draws all spawnpoints RotU actually uses
+ * This is useful when placing tradespawns to ensure you don't block a spawning player
+ * @threaded
+ *
+ * @returns nothing
+ * @since RotU 2.2.3
+ */
+devDrawUsedSpawnpoints()
+{
+    log("trace", "msg|in _umi::devDrawUsedSpawnpoints()||");
+
+    for (i=0; i<level.botSpawnpoints.size; i++) {
+        maps\mp\_umiEditor::devDrawLaser("blue", level.botSpawnpoints[i].origin, (0,0,1));
+    }
+}
+
 
 /**
  * @brief UMI deletes from memory unused spawn entities from maps
@@ -1046,7 +1068,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
         y = value(R,2,1);
         level scripts\players\_usables::addUsable(shop, "extras", "Press [USE] to buy upgrades!", 96);
         center = tradespawn.origin + (x, y, 0);
-        createTeamObjpoint(getObjHudPosition(tradespawn, center), "hud_ammo", 1);
+        createTeamObjpoint(getObjHudPosition(tradespawn, center, true), "hud_ammo", 1);
 
         // spawn a solid trigger_radius to simulate xmodel actually being solid
         level.solid = spawn("trigger_radius", (0, 0, 0), 0, 22, 122 );
@@ -1096,26 +1118,36 @@ buildShopsByTargetname(targetname)                  // quality:external_interfac
  * @param ent entity entity serving as the shop
  * @param centroid vector The x-y center of the model used for a shop. Optional.
  *                        Needed when the model origin isn't in the central axis of the model
+ * @param isEquipmentTradespawn boolean Is this an equipmenst shop we added? Needs special handling.
  *
  * @returns vector The position to place the team objective HUD element at
  * @since RotU 2.2.3
  */
-getObjHudPosition(ent, centroid)
+getObjHudPosition(ent, centroid, isEquipmentTradespawn)
 {
     log("trace", "msg|in _umi::getObjHudPosition()||");
 
+    height = 30;
+    // The equipment shops we place by tradespawn do not bullettrace properly, we find the ground,
+    // not the top of the soda machine, so we used a fixed hud height
+    if (isDefined(isEquipmentTradespawn)) {height = 85;}
+    // Allow for specifying a hud height in tradespawns file, like: level.tradespawns[1].hudHeight = 85;
+    // @todo Could be used with: level.tradespawns[1].hasModel = true; to use an existing brush/model as the shop
+    if ((isDefined(ent.hudHeight)) && (ent.hudHeight > 20)) {height = ent.hudHeight;}
+
     if (isDefined(centroid)) {
+        // getObjHudPosition
         trace = bulletTrace(centroid + (0, 0, 85), centroid + (0, 0, -100), false, ent);
         topPos = trace["position"];
-        newPos = topPos + (0, 0, 30);
+        newPos = topPos + (0, 0, height);
         // oldPos = centroid + (0, 0, 85);
     } else {
         trace = bulletTrace(ent.origin + (0, 0, 72), ent.origin + (0, 0, -100), false, ent);
         topPos = trace["position"];
-        newPos = topPos + (0, 0, 30);
+        newPos = topPos + (0, 0, height);
         // oldPos = ent.origin + (0, 0, 72);
     }
-    // log("debug", sprintfLog("msg|Objective HUD position data||oldPos|$1||newPos|$2", oldPos, newPos));
+    // log("debug", sprintfLog("msg|Objective HUD position data: " + height + "||oldPos|$1||newPos|$2", oldPos, newPos));
     return newPos;
 }
 
@@ -1672,6 +1704,31 @@ buildZombieSpawnsByClassname(classname)             // quality:external_interfac
 
 
 /**
+ * @brief UMI to manually build a zombie spawn point
+ *
+ * NOTE: For coercing zombie spawnpoints into old maps. Mapmakers should place entities
+ *       with a targetname of spanwgroup[N] for zombie spawns.
+ *
+ * @param position vector The position for the spawnpoint
+ *
+ * @returns nothing
+ * @since RotU 2.2.3
+ */
+buildManualZombieSpawns(position)             // quality:external_interface
+{
+    log("trace", "msg|in _umi::buildManualZombieSpawns()||");
+
+    spawnpoint = spawnStruct();
+    spawnpoint.origin = position;
+    spawnpoint.angles = (0,0,0);
+    spawnpoint.priority = 1;
+    spawnpoint.children = 0;
+
+    level.botSpawnpoints[level.botSpawnpoints.size] = spawnpoint;    
+}
+
+
+/**
  * @brief UMI to build a zombie spawn point by an entity's targetname property
  *
  * @param targetname string The value of the entities' targetname property
@@ -2196,7 +2253,7 @@ waitUntilFirstPlayerSpawns()                        // quality:external_interfac
         wait 0.5;
     }
 
-    maps\mp\_umi::doSpecialRunMode();
+    // maps\mp\_umi::doSpecialRunMode();
 }
 
 
@@ -2209,6 +2266,8 @@ waitUntilFirstPlayerSpawns()                        // quality:external_interfac
 startGame()                                         // quality:external_interface
 {
     log("trace", "msg|in _umi::startGame()||");
+
+    maps\mp\_umi::doSpecialRunMode();
 
     if (level.umiEnabled) {
         // Do Nothing.  Don't really start game when we are using UMI or taking screenshots

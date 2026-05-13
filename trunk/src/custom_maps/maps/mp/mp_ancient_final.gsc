@@ -41,7 +41,7 @@ main()
 
     deletePickupItems();
     deleteSabotageEntities();
-    // deleteHqEntities();
+    deleteHqEntities();
     deleteCtfEntities();
     deleteUnusedSpawnpoints(true, true, true, true);
 
@@ -59,27 +59,34 @@ main()
 
     setdvar("r_specularcolorscale", "2");
 
-    // still use internal waypoints
-    // thread maps\mp\mp_surv_tunnel_waypoints::load_waypoints();
-    // convertToNativeWaypoints();
+    thread maps\mp\mp_ancient_final_waypoints::load_waypoints();
+    thread maps\mp\mp_ancient_final_tradespawns::load_tradespawns();    
+    convertToNativeWaypoints();
 
     waitUntilFirstPlayerSpawns();
 
     // play the game
-    // buildWeaponShopsByTargetname("ammostock");
-    buildWeaponShopsByTargetname("exploder"); //   flag_primary radiotrigger  exploder pf68_auto1
-    // buildShopsByTargetname("weaponupgrade");
-    buildShopsByTargetname("hq_hardpoint"); // can't use hq_hardpoint if we do deleteHqEntities();
-    // @todo run deleteHqEntities(), and make our own tradespawns file
-    // also need a waypoints file
-    // also need to manually spec zombie spawnpoints
+    buildWeaponShopsByTradespawns("0 2 4");
+    buildShopsByTradespawns("1 3 5");    
 
+    // prefered method for zombie spawnpoints
     // buildZombieSpawnByTargetname("spawngroup1", 1);
     // buildZombieSpawnByTargetname("spawngroup2", 1);
     // buildZombieSpawnByTargetname("spawngroup3", 1);
 
-    // backup for maps without real zombie spawnpoints
-    buildZombieSpawnsByClassname("mp_dm_spawn");
+    buildManualZombieSpawns((8615, 1516, 15.7));
+    buildManualZombieSpawns((8645, 489, 15));
+    buildManualZombieSpawns((4983, -2457, 127));
+    buildManualZombieSpawns((3279, 4125, 237));
+    buildManualZombieSpawns((-1197, 919, 30));
+    buildManualZombieSpawns((-1205, 1413, 23));
+    buildManualZombieSpawns((-2083, 3260, 42));
+    buildManualZombieSpawns((714, 4335, 177));
+    buildManualZombieSpawns((4542, 4236, 204));
+    devDrawUsedSpawnpoints();
+
+    // An option in lieu of buildManualZombieSpawns() for maps without real zombie spawnpoints
+    // buildZombieSpawnsByClassname("mp_dm_spawn");
 
     startGame();
     

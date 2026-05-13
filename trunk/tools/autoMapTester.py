@@ -289,7 +289,7 @@ def get_map_english_name(map_name):
         # print(f"{map_name} maps to {map_lookup_dict[map_name]}")
         return map_lookup_dict[map_name]
     else:
-        # print(f"{map_name} not found.")
+        print(f"{map_name} not found.")
         return None
 
 
@@ -550,6 +550,7 @@ def testMap(map_name):
     map_entry = None
     for m in maps_data['maps']:
         if m['codeName'] == map_name:
+            m["englishName"] = get_map_english_name(map_name)
             map_entry = m
             break
 
@@ -584,8 +585,8 @@ def testMap(map_name):
     if 'tests' not in map_entry or not isinstance(map_entry['tests'], list):
         map_entry['tests'] = []
 
-    # Update with test data
-    map_entry['englishName'] = test_data.get('mapEnglishName', map_entry.get('englishName', ''))
+    # Use english map name from master.map.names
+    map_entry['englishName'] = get_map_english_name(map_name)
 
 
     cfg_englishName = get_map_english_name(map_name)

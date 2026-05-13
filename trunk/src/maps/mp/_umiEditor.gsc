@@ -903,6 +903,14 @@ devEmplaceWaypoint()
     wait 1;
 
     while (1) {
+        // @todo debug the delete link crashes
+        if (!isDefined(level.Wp)) {
+            log("bug", "msg|908: level.Wp is undefined||");
+        } else if (!isDefined(self.carryObj.waypointId)) {
+            log("bug", "msg|910: self.carryObj.waypointId is undefined||");
+        } else if (!isDefined(level.Wp[self.carryObj.waypointId])) {
+            log("bug", "msg|912: level.Wp[" + self.carryObj.waypointId + "] is undefined||");
+        }
         if ((level.waypointModeTurnedOff) && (!isDefined(level.Wp[self.carryObj.waypointId].linked))) {
             // player turned off give waypoints mode while carrying a unlinked flag
             self.carryObj unlink();
@@ -1550,6 +1558,9 @@ devUnflagWaypoint(waypointId)
 {
     log("trace", "msg|in _umiEditor::devUnflagWaypoint()||");
 
+    if (!isDefined(level.Wp[waypointId])) {
+        log("bug", "msg|1559: level.Wp[" + waypointId + "] is undefined||");
+    }
     if (!isDefined(level.Wp[waypointId].linked)) {
         for (i=0; i<level.unlinkedWaypointFlags.size; i++) {
             if (level.unlinkedWaypointFlags[i].waypointId == waypointId) {
@@ -1689,7 +1700,7 @@ devDrawWaypointLinks()
             if (i == level.currentWaypointLink) {color = currentLinkColor;}
             else {color = level.waypointLinks[i].color;}
             // Line( <start>, <end>, <color>, <depthTest>, <duration> )
-            // line(from, to, color, false, 25); @todo need to uncomment this; was commented for dev testing
+            line(from, to, color, false, 25);
         }
         wait 0.05;
     }

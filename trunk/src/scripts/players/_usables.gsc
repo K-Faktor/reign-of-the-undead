@@ -135,7 +135,7 @@ checkForUsableObjects()
     while (1) {
         // Don't let the player use this usable if they aren't allowed to use it
         if (!self.canUse) {
-            log("dev", "msg|117:" + self.name + " can't use this " + self.curEnt.type + " usable, aborting.||");
+            // log("dev", "msg|117:" + self.name + " can't use this " + self.curEnt.type + " usable, aborting.||");
             self usableAbort();
             wait .1;
             continue;
