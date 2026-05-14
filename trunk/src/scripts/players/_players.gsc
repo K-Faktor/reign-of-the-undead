@@ -1759,8 +1759,15 @@ joinSpectator()
         self.sessionstate = "spectator";
 
         spawns = getentarray("mp_global_intermission", "classname");
-        log("server", "msg|Trying to spawn " + self.name + " as spectator; spawns.size = " + spawns.size + "||");
-        spawn = spawns[randomint(spawns.size)]; /// @bug randomint param 0 bug
+        if (spawns.size == 0) {
+            /** fixed: randomint param 0 bug
+            * One instance of this bug happened on mp_fnrp_cube
+            * Cause: mp_fnrp_cube map does not have any entities with classname mp_global_intermission 
+            */
+            log("server", "msg|Map: " + level.currentMap + " is missing 'mp_global_intermission' spawnpoint, falling back to a 'mp_tdm_spawn' spawnpoint.");
+            spawns = getentarray("mp_tdm_spawn", "classname");
+        }
+        spawn = spawns[randomint(spawns.size)];
 
         self setclientdvar("cg_thirdperson", 1);
 
