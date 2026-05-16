@@ -4996,7 +4996,7 @@
         "runtimeErrors": 0,
         "overallSuccess": true
       },
-      "notes": ""
+      "notes": "Ladder is broken.  Ladder isn't solid. Look for a better version of map."
     },
     {
       "codeName": "mp_summit",
@@ -5132,7 +5132,7 @@
         "runtimeErrors": 18281,
         "overallSuccess": true
       },
-      "notes": ""
+      "notes": "Ladders are broken.  They are solid, so likely missing the proper ladder material. Look for another version of map."
     },
     {
       "codeName": "mp_surv_[bok]hq",

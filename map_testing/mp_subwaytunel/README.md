@@ -19,7 +19,7 @@ Zombies in a subway station.
 
 ## Notes
 
-
+Ladder is broken.  Ladder isn't solid. Look for a better version of map.
 
 ## Tested Version
 

@@ -1769,6 +1769,11 @@ joinSpectator()
         }
         spawn = spawns[randomint(spawns.size)];
 
+        // hack to fix bad spectator spawn angles.
+        if (level.currentMap == "mp_surv_trap") {
+            spawn.angles = (0, 0, 0);
+        }
+
         self setclientdvar("cg_thirdperson", 1);
 
         spawnSpectator(spawn.origin, spawn.angles);

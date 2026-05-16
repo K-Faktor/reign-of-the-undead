@@ -19,7 +19,7 @@
 
 ## Notes
 
-
+Ladders are broken.  They are solid, so likely missing the proper ladder material. Look for another version of map.
 
 ## Tested Version
 
