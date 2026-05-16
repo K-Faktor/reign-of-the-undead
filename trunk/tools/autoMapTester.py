@@ -73,6 +73,7 @@ map_names_json = os.path.join(PROJECT_PATH, 'master.map.names.json')
 maps_json = os.path.join(PROJECT_PATH, 'maps.json')
 history_file = os.path.join(PROJECT_PATH, '_private.map.test.history.txt')
 master_maps_dir = os.path.join(PROJECT_PATH, 'master_maps')
+map_testing_dir = os.path.join(PROJECT_PATH, 'map_testing')
 playmod_script = os.path.join(MOD_PATH, 'playMod.sh')
 server_log = os.path.join(MOD_PATH, 'server_mp.log')
 console_log = os.path.join(MOD_PATH, 'console_mp.log')
@@ -329,7 +330,7 @@ def prepareSummary():
 
     summary = "# Map Testing Report\n"
     summary += f"**Generated**: {friendly_timestamp}\n\n"
-    summary += "[Planned] You can see the test results for each map in the README.md file in map's testing folder: map_testing/[mp_mapname]/README.md\n"
+    summary += "You can see the test results for each map in the README.md file in map's testing folder: map_testing/[mp_mapname]/README.md\n"
 
     mapsThatWork = []
     mapsWithErrors = []
@@ -342,6 +343,7 @@ def prepareSummary():
     mapName = None
     # Ensure the 'maps' key exists and is a list
     if 'maps' in data and isinstance(data['maps'], list):
+        mapCount = len(data['maps'])
         for map in data['maps']:
             mapName = map['codeName']
             if map['works'] == "Yes":
@@ -373,6 +375,11 @@ def prepareSummary():
             if not os.path.isfile(ffPath):
                 mapsWithoutFastFile.append(mapName)
 
+    summary += f"\n## Maps that Work ({len(mapsThatWork)}/{mapCount}):\n"
+    summary += "These maps passed rudimentary tests.\n"
+    for m in mapsThatWork:
+        summary += f" - {get_map_english_name(m)} [{m}]({m}/README.md)\n"
+
     summary += f"\n## Missing Authors ({len(mapsWithoutAuthors)}):\n"
     summary += "No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, so wasn't extracted. More research is required.\n"
     for m in mapsWithoutAuthors: summary += f" - {m}\n"
@@ -385,10 +392,6 @@ def prepareSummary():
     summary += "These are maps I lost files to over the years, some certainly used to work in RotU.\n"
     for m in mapsWithoutFastFile: summary += f" - {m}\n"
 
-    summary += f"\n## Maps that Work ({len(mapsThatWork)}):\n"
-    summary += "These maps passed rudimentary tests.\n"
-    for m in mapsThatWork: summary += f" - {m}\n"
-
     summary += f"\n## Maps with Compile or Runtime Errors ({len(mapsWithErrors)}):\n"
     summary += "These maps have errors that need to be investigated. Some are errors in the maps, and some are errors in RotU.\n"
     for m in mapsWithErrors: summary += f" - {m}\n"
@@ -397,6 +400,11 @@ def prepareSummary():
     summary += "These maps likely just need waypoints & tradespawns to port to RotU.\n"
     for m in mapsToPortToRotU: summary += f" - {m}\n"
 
+    summary += f"\n## Maps without Listing Images ({len(mapsWithoutImages)}):\n"
+    summary += "These maps need screenshots to be taken.\n"
+    for m in mapsWithoutImages: summary += f" - {m}\n"
+
+
     # The raygun bug was fixed, but the cause was the map was a TDM, DR, etc map, that never
     # loaded zombie stuff or called startGame()
     # summary += f"\n## Maps with Raygun Error ({len(mapsWithRaygunErrors)}):\n"
@@ -404,10 +412,73 @@ def prepareSummary():
     # for m in mapsWithRaygunErrors: summary += f" - {m}\n"
 
 
-    summary_file = os.path.join(PROJECT_PATH, 'map_testing', 'READEME.md')
+    summary_file = os.path.join(PROJECT_PATH, 'map_testing', 'README.md')
     with open(summary_file, "w") as f:
         f.write(f"{summary}\n")
+
+    syncAllMapReportsToTesting()        
+
     print(summary)
+
+
+def syncAllMapReportsToTesting():
+    global master_maps_dir, map_testing_dir
+    """
+    Automatically syncs the three key files for EVERY map:
+        - listing_{map_name}.jpg
+        - small_{map_name}.jpg
+        - README.md
+    from master_maps_dir into map_testing_dir/[map_name]
+    """
+    # # <<< CHANGE THESE PATHS IF NEEDED >>>
+    master_maps_dir = Path(master_maps_dir)      # ← Update this
+    map_testing_dir = Path(map_testing_dir)      # ← Update this
+
+    if not master_maps_dir.exists():
+        print(f"ERROR: Master maps directory not found: {master_maps_dir}", file=sys.stderr)
+        return
+
+    for map_dir in master_maps_dir.iterdir():
+        if not map_dir.is_dir():
+            continue
+
+        map_name = map_dir.name
+        dst_dir = map_testing_dir / map_name
+
+        # Files to copy
+        files_to_copy = [
+            f"listing_{map_name}.jpg",
+            f"small_{map_name}.jpg",
+            "README.md"
+        ]
+
+        copied_any = False
+
+        for fname in files_to_copy:
+            src_file = map_dir / fname
+            if not src_file.exists():
+                continue
+
+            try:
+                # Create destination folder only if we actually have something to copy
+                dst_dir.mkdir(parents=True, exist_ok=True)
+
+                dst_file = dst_dir / fname
+
+                # Copy if missing or source is newer
+                if (not dst_file.exists() or 
+                    src_file.stat().st_mtime > dst_file.stat().st_mtime):
+                    
+                    shutil.copy2(src_file, dst_file)
+                    copied_any = True
+
+            except Exception as e:
+                print(f"ERROR copying {fname} for map {map_name}: {e}", file=sys.stderr)
+
+        # Optional: you can remove this if you want total silence on success
+        # if copied_any:
+        #     print(f"Synced: {map_name}")
+
 
 def get_md5(file_path):
     """Calculate MD5 hash of a file."""

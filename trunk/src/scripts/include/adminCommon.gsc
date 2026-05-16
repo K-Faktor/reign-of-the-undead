@@ -412,7 +412,7 @@ onPlayerConnect()
         player.isAdmin = false;
 
         guid = getSubStr(player getGuid(), 24, 32);
-        log("dev", "msg|Connecting guid: " + guid + "||");
+        log("dev", "msg|Connecting guid (expect this to be garbage on a Listen server): " + guid + "||");
 
         // force admin guid if required
         if (level.dedicated == "listen server") {

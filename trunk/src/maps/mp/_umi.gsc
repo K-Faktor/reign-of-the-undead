@@ -1068,7 +1068,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
         y = value(R,2,1);
         level scripts\players\_usables::addUsable(shop, "extras", "Press [USE] to buy upgrades!", 96);
         center = tradespawn.origin + (x, y, 0);
-        createTeamObjpoint(getObjHudPosition(tradespawn, center, true), "hud_ammo", 1);
+        createTeamObjpoint(getObjHudPosition(tradespawn, center, "equipment"), "hud_ammo", 1);
 
         // spawn a solid trigger_radius to simulate xmodel actually being solid
         level.solid = spawn("trigger_radius", (0, 0, 0), 0, 22, 122 );
@@ -1093,6 +1093,7 @@ buildShopsByTradespawns(equipmentShops, havePrefabModels)   // quality:external_
 buildShopsByTargetname(targetname)                  // quality:external_interface
 {
     log("trace", "msg|in _umi::buildShopsByTargetname()||");
+    log("debug", "msg|in _umi::buildShopsByTargetname()||");
 
     ents = getentarray(targetname, "targetname");
     if (level.autoMapTesting) {
@@ -1107,7 +1108,25 @@ buildShopsByTargetname(targetname)                  // quality:external_interfac
     for (i=0; i<ents.size; i++) {
         ent = ents[i];
         level scripts\players\_usables::addUsable(ent, "extras", "Press [USE] to buy upgrades!", 96);
-        createTeamObjpoint(getObjHudPosition(ent), "hud_ammo", 1);
+        createTeamObjpoint(getObjHudPosition(ent, ent.origin, "equipment"), "hud_ammo", 1);
+    }
+}
+
+
+getCustomHudHeight(pos, mapname)
+{
+    switch (mapname) {
+        case "mp_surv_testmap":
+            if (pos == (160, -792, 67)) {return 20;}        // weap
+            if (pos == (-160, -797, 56)) {return 40;}       // equip
+        break;
+        case "mp_fnrp_bridge":
+            if (pos == (3363, -144, -36)) {return 60;}      // weap
+            if (pos == (2204, -528, -24)) {return 60;}      // equip
+            if (pos == (4516, -112, -24)) {return 60;}      // equip
+
+        default:
+            return undefined;
     }
 }
 
@@ -1116,39 +1135,78 @@ buildShopsByTargetname(targetname)                  // quality:external_interfac
  * @brief Calculates the hieght above a shop for the team objective HUD
  *
  * @param ent entity entity serving as the shop
- * @param centroid vector The x-y center of the model used for a shop. Optional.
+ * @param position vector The x-y center of the model used for a shop. Optional.
  *                        Needed when the model origin isn't in the central axis of the model
- * @param isEquipmentTradespawn boolean Is this an equipmenst shop we added? Needs special handling.
+ * @param type string Type of tradespawn [equipment|weapon]
  *
  * @returns vector The position to place the team objective HUD element at
  * @since RotU 2.2.3
  */
-getObjHudPosition(ent, centroid, isEquipmentTradespawn)
+getObjHudPosition(ent, position, type)
 {
     log("trace", "msg|in _umi::getObjHudPosition()||");
 
-    height = 30;
-    // The equipment shops we place by tradespawn do not bullettrace properly, we find the ground,
-    // not the top of the soda machine, so we used a fixed hud height
-    if (isDefined(isEquipmentTradespawn)) {height = 85;}
-    // Allow for specifying a hud height in tradespawns file, like: level.tradespawns[1].hudHeight = 85;
-    // @todo Could be used with: level.tradespawns[1].hasModel = true; to use an existing brush/model as the shop
-    if ((isDefined(ent.hudHeight)) && (ent.hudHeight > 20)) {height = ent.hudHeight;}
+    /**
+     * There is no reliable programmatic way to determime the height above a tradespawn
+     * to place the team objective; there is simply too much variability in the maps.
+     * First, some tradespawns aren't solid, so a bullet trace finds the ground. Others are
+     * solid, so bullet trace finds the top of the tradespawn (or at least *part* of the top--tops
+     * aren't nessesarily a single flat plane).
+     *
+     * Also, entity.origin is variable: sometimes it is at the top of the object, sometimes at
+     * the bottom, and sometimes it isn't even centered.
+     */
+    // default heights above ent.origin
+    equipmentHeight = 72;
+    weaponHeight = 60;
 
-    if (isDefined(centroid)) {
-        // getObjHudPosition
-        trace = bulletTrace(centroid + (0, 0, 85), centroid + (0, 0, -100), false, ent);
-        topPos = trace["position"];
-        newPos = topPos + (0, 0, height);
-        // oldPos = centroid + (0, 0, 85);
+    // allow hudHeight property to set the height above ent.origin, if it is set
+    if ((isDefined(ent.hudHeight)) && (ent.hudHeight > 20)) {
+        equipmentHeight = ent.hudHeight;    // 85 works fine for soda machines we create
+        weaponHeight = ent.hudHeight;
     } else {
-        trace = bulletTrace(ent.origin + (0, 0, 72), ent.origin + (0, 0, -100), false, ent);
-        topPos = trace["position"];
-        newPos = topPos + (0, 0, height);
-        // oldPos = ent.origin + (0, 0, 72);
+        // get our map-specific overrides, manually determined
+        h = getCustomHudHeight(position, getDvar("mapname"));
+        if (isDefined(h)) {
+            equipmentHeight = h;
+            weaponHeight = h;
+        }
     }
-    // log("debug", sprintfLog("msg|Objective HUD position data: " + height + "||oldPos|$1||newPos|$2", oldPos, newPos));
+    oldPos = (0,0,0);
+    newPos = (0,0,0);
+    if (type == "equipment") {
+        oldPos = position + (0, 0, 85);
+        newPos = position + (0, 0, equipmentHeight);
+    }
+    if (type == "weapon") {
+        oldPos = position + (0, 0, 72);
+        newPos = position + (0, 0, weaponHeight);
+    }
+    log("debug", sprintfLog("msg|HUD data||type|$4||givenPos|$3||oldPos|$1||newPos|$2", oldPos, newPos, position, type));
     return newPos;
+
+    // height = 30;
+    // // The equipment shops we place by tradespawn do not bullettrace properly, we find the ground,
+    // // not the top of the soda machine, so we used a fixed hud height
+    // if (isDefined(isEquipmentTradespawn)) {height = 85;}
+    // // Allow for specifying a hud height in tradespawns file, like: level.tradespawns[1].hudHeight = 85;
+    // // @todo Could be used with: level.tradespawns[1].hasModel = true; to use an existing brush/model as the shop
+    // if ((isDefined(ent.hudHeight)) && (ent.hudHeight > 20)) {height = ent.hudHeight;}
+
+    // if (isDefined(centroid)) {
+    //     // getObjHudPosition
+    //     trace = bulletTrace(centroid + (0, 0, 85), centroid + (0, 0, -100), false, ent);
+    //     topPos = trace["position"];
+    //     newPos = topPos + (0, 0, height);
+    //     oldPos = centroid + (0, 0, 85);
+    // } else {
+    //     trace = bulletTrace(ent.origin + (0, 0, 72), ent.origin + (0, 0, -100), false, ent);
+    //     topPos = trace["position"];
+    //     newPos = topPos + (0, 0, height);
+    //     oldPos = ent.origin + (0, 0, 72);
+    // }
+    // log("debug", sprintfLog("msg|Objective HUD position data: " + height + "||oldPos|$1||newPos|$2", oldPos, newPos));
+    // return newPos;
 }
 
 
@@ -1183,10 +1241,10 @@ buildWeaponShopsByTargetname(targetname, loadTime)  // quality:external_interfac
         // log("warn", "msg|building weapon shop. level.ammoStockType: " + level.ammoStockType + "||");
         if (level.ammoStockType == "weapon") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] for a weapon! (^1"+level.dvar["surv_waw_costs"]+"^7)", 96);
-            createTeamObjpoint(getObjHudPosition(ent), "hud_weapons", 1);
+            createTeamObjpoint(getObjHudPosition(ent, ent.origin, "weapon"), "hud_weapons", 1);
         } else if (level.ammoStockType == "upgrade") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Press [USE] to upgrade your weapon!", 96);
-            createTeamObjpoint(getObjHudPosition(ent), "hud_weapons", 1);
+            createTeamObjpoint(getObjHudPosition(ent, ent.origin, "weapon"), "hud_weapons", 1);
         } else if (level.ammoStockType == "ammo") {
             level scripts\players\_usables::addUsable(ent, "ammobox", "Hold [USE] to restock ammo", 96);
         } else {
@@ -1241,7 +1299,7 @@ buildWeaponShopsByTradespawns(weaponShops, havePrefabModels)    // quality:exter
             level.solid setContents(1);
 
             level scripts\players\_usables::addUsable(weaponupgrade, "ammobox", "Press [USE] to upgrade your weapon!", 96);
-            createTeamObjpoint(getObjHudPosition(tradespawn), "hud_weapons", 1);
+            createTeamObjpoint(getObjHudPosition(tradespawn, tradespawn.origin, "weapon"), "hud_weapons", 1);
         }
     }
 }
@@ -2235,7 +2293,7 @@ precacheCommonItems()
  */
 waitUntilFirstPlayerSpawns()                        // quality:external_interface
 {
-    log("trace", "msg|in _umi::waitUntilFirstPlayerSpawns()||");
+    // quality:ignore_trace  if we have't bootstrapped, we can't log()
 
     // NOTE: Some maps call this method almost *immediately*, thus giving RotU
     // almost no time to get itself set up.  So we ensure we bootstrap a few
@@ -2565,7 +2623,7 @@ buildSurvSpawn(targetname, priority)                // quality:external_interfac
  */
 waittillStart()                                     // quality:external_interface
 {
-    log("trace", "msg|in _umi::waittillStart()||");
+    // quality:ignore_trace  if we have't bootstrapped, we can't log()
 
     waitUntilFirstPlayerSpawns();
 }

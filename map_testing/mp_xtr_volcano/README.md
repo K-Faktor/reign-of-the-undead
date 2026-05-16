@@ -1,0 +1,50 @@
+![Screenshot of map](small_mp_xtr_volcano.jpg)
+
+# Volcano
+
+A giant volcano on a beach.
+
+ - **name**: mp_xtr_volcano
+ - **author**: jerkan
+ - **email**: jerkan@net.hr
+ - **web**: https://jerkanmaps.weebly.com/rotu-maps.html
+
+**Works\***: Yes
+ 
+\* *'Works' here just means it passed my basic checks.  It does not mean it doesn't have bugs or is a good map; just that it appears to function as a RotU map.*
+
+**Blacklisted\***: False
+ 
+\* *'Blacklisted' means the map is, or will be after I exhaust efforts to fix it, blacklisted by RotU, and the mod will refuse to load the map. This helps minimize server crashes, and people trying unsuitable maps.*
+
+## Notes
+
+
+
+## Tested Version
+
+These test results apply to the files with the MD5 hashes below. There may be multiple versions of map out there
+with the same name but different data.
+
+```
+1d8aa2260ea04307b56debb73e4694a1 mp_xtr_volcano.ff
+2b847a2135144a4e44fe3ab3a8846888 mp_xtr_volcano_load.ff
+4811779a9d6f3c4ab65446c9e0434786 mp_xtr_volcano.iwd
+```
+
+## Test Results
+
+ - **RotU git revision**: 63181be
+ - **test timestamp**: 2026-04-12 13:28:01 CDT (UTC-5)
+ - **platform**: Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display
+ - **map started**: True
+ - **player spawned**: True
+ - **zombie spawned & stalked player**: True
+ - **waypoint validity**: Valid
+ - **weapon shops**: 4
+ - **equipment shops**: 3
+ - **waypoint count**: 126
+ - **waypoints type**: internal
+ - **compile error count**: 0
+ - **runtime error count**: 0
+ - **overall success**: True

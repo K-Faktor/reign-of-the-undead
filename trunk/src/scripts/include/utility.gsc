@@ -268,7 +268,7 @@ log(eventType, message, includeEpoch)
         pre = "event|bug||";
         if (includeEpoch) {pre += epoch;}
         temp = pre + message;
-        temp = "Error: " + tokenizeMessage(temp);
+        temp = "Error:  " + tokenizeMessage(temp);
         break;
     case "warn":
         pre = "event|warn||";

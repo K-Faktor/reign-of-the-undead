@@ -206,7 +206,7 @@ startSurvWaves()
  */
 waittillStart()
 {
-    log("trace", "msg|in maps/mp/_zombiescript::waittillStart()||");
+    // quality:ignore_trace  if we have't bootstrapped, we can't log()
 
     level.isZombiescript = 1;
     maps\mp\_umi::waittillStart(); // redirects to maps\mp\_umi::waitUntilFirstPlayerSpawns();
