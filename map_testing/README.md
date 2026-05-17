@@ -1,5 +1,5 @@
 # Map Testing Report
-**Generated**: 8:26pm Saturday, May 16, 2026
+**Generated**: 10:49pm Saturday, May 16, 2026
 
 You can see the test results for each map in the README.md file in map's testing folder: map_testing/[mp_mapname]/README.md
 
@@ -179,15 +179,12 @@ These maps passed rudimentary tests.
  - Volcano [mp_xtr_volcano](mp_xtr_volcano/README.md)
  - Fart House [mp_fart_house_v2](mp_fart_house_v2/README.md)
 
-## Missing Authors (30):
-No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, so wasn't extracted. More research is required.
+## Missing Authors (25):
+No author in readme, or extracted loadscreen, or no loadscreen at all, no in-map author tags. If you *know* who made these maps, let me know. Unsourced AI hallucinations don't count.
  - mp_evil_house
  - mp_fnrp_araka
  - mp_fnrp_liberty
- - mp_fnrp_mohbaazar
- - mp_mrx_castle
  - mp_nuke_snow
- - mp_surv_Pharaoh's_tomb
  - mp_surv_area_69_v1
  - mp_surv_bunker
  - mp_surv_cemetery
@@ -201,12 +198,10 @@ No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, 
  - mp_surv_pyramid
  - mp_surv_shipment_v2
  - mp_surv_skyfall
- - mp_surv_ssc_doom
  - mp_surv_street
  - mp_surv_subway_final
  - mp_surv_village
  - mp_surv_wakamoto
- - mp_surv_wetwork
  - mp_surv_zombiebox
  - mp_wakamoto3
  - mp_wakamoto_killhouse

@@ -5,9 +5,9 @@
 
 
  - **name**: mp_surv_wetwork
- - **author**: 
- - **email**: 
- - **web**: 
+ - **author**: jerkan
+ - **email**: jerkan@net.hr
+ - **web**: https://jerkanmaps.weebly.com/rotu-maps.html
 
 **Works\***: Yes
  

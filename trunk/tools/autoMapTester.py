@@ -381,7 +381,7 @@ def prepareSummary():
         summary += f" - {get_map_english_name(m)} [{m}]({m}/README.md)\n"
 
     summary += f"\n## Missing Authors ({len(mapsWithoutAuthors)}):\n"
-    summary += "No author in readme, or extracted loadscreen, or loadscreen is in the fastfile, so wasn't extracted. More research is required.\n"
+    summary += "No author in readme, or extracted loadscreen, or no loadscreen at all, no in-map author tags. If you *know* who made these maps, let me know. Unsourced AI hallucinations don't count.\n"
     for m in mapsWithoutAuthors: summary += f" - {m}\n"
 
     summary += f"\n## Working Maps Missing Names ({len(mapsWithoutNames)}):\n"

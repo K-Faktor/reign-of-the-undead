@@ -5,7 +5,7 @@
 
 
  - **name**: mp_surv_ssc_doom
- - **author**: 
+ - **author**: Blade
  - **email**: 
  - **web**: 
 

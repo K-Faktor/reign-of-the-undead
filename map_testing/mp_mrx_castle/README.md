@@ -5,9 +5,9 @@
 
 
  - **name**: mp_mrx_castle
- - **author**: 
+ - **author**: mr-x, Mizuno Clan
  - **email**: 
- - **web**: 
+ - **web**: mizuno-clan.com
 
 **Works\***: Yes
  
