@@ -34,8 +34,8 @@ ac8c56fadc93c9d2ae1277e0893ee5d2 mp_xtr_abydos_load.ff
 
 ## Test Results
 
- - **RotU git revision**: 63181be
- - **test timestamp**: 2026-04-12 13:25:51 CDT (UTC-5)
+ - **RotU git revision**: 07c4093
+ - **test timestamp**: 2026-05-16 19:36:50 CDT (UTC-5)
  - **platform**: Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display
  - **map started**: True
  - **player spawned**: True

@@ -1,5 +1,5 @@
 # Map Testing Report
-**Generated**: 6:58pm Saturday, May 16, 2026
+**Generated**: 8:26pm Saturday, May 16, 2026
 
 You can see the test results for each map in the README.md file in map's testing folder: map_testing/[mp_mapname]/README.md
 
@@ -250,14 +250,6 @@ These maps likely just need waypoints & tradespawns to port to RotU.
  - mp_ruins
  - mp_toujane_beta
 
-## Maps without Listing Images (8):
+## Maps without Listing Images (0):
 These maps need screenshots to be taken.
- - mp_evil_house
- - mp_fnrp_bigfight
- - mp_fnrp_cemetery
- - mp_fnrp_snow
- - mp_surv_bjwifi_beach
- - mp_surv_kratovo
- - mp_surv_zombiebox
- - mp_xtr_abydos
 

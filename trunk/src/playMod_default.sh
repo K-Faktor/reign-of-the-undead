@@ -169,19 +169,19 @@ if [ "$MODE" = "maptest" ]; then
       +devmap "$MAPNAME"
 
 elif [ "$MODE" = "screenshot" ]; then
-    # ======================
     # SCREENSHOT MODE
     # ======================
     echo "Launching CoD4 in **SCREENSHOT** mode on map: $MAPNAME"
-    echo "Incant in the in-game console: ~, then /exec minimap, then ~"
+    echo "Incant in the in-game console: ~, then /exec screenshot, then ~"
     wine "./iw3mp.exe" \
       +set fs_game "mods/rotudev" \
       +set sv_punkbuster "0" \
       +set dedicated 0 \
       +set developer 1 \
-      +set developer_script 1 \
+      +set developer_script 0 \
       +set g_gametype "surv" \
-      +set screenshot_mode 1 \
+      +set screenshot_mode 0 \
+      +set run_mode "screenshotMode" \
       +set enable_umi_editor 1 \
       +set real_time_base "$UNIXEPOCH" \
       +set real_time_offset -5 \

@@ -34,8 +34,8 @@ b8eac9dc1f9c2f381e0be4e74e45322c mp_fnrp_cemetery.iwd
 
 ## Test Results
 
- - **RotU git revision**: 63181be
- - **test timestamp**: 2026-04-12 00:14:48 CDT (UTC-5)
+ - **RotU git revision**: 07c4093
+ - **test timestamp**: 2026-05-16 19:36:21 CDT (UTC-5)
  - **platform**: Linux Kubuntu 25.10 | CoD4 1.7 original 1080p | Wine v.10.0, @ 192 DPI | AMD Radeon 680M 4GiB, 4K Display
  - **map started**: True
  - **player spawned**: True
